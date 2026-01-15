@@ -1,8 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install)",
-      "Bash(npm run dev:*)"
-    ]
+      "SlashCommand(/commit --style=simple)",
+      "SlashCommand(/commit:*)",
+      "Edit",
+      "Bash(cd:*)",
+      "Bash(grep:*)",
+      "Read(C:\\Users\\Administrator\\Desktop\\音色工厂\\qwenttsflas.txt)",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "mcp__acp__Bash",
+      "Bash(git:*)",
+      "Read(C:\\Users\\Administrator\\.gitconfig)"
+    ],
+    "deny": [],
+    "ask": []
   }
 }
