@@ -1,0 +1,41 @@
+{
+  "inviteCodes": {
+    "invite_mfdjdsdy_c6554feb": {
+      "id": "invite_mfdjdsdy_c6554feb",
+      "code": "L2-MFDJDSDY-F44F82",
+      "permissionLevel": 2,
+      "createdBy": "user_mfdjdsdt_51ab4ef52742",
+      "usedBy": [],
+      "maxUses": 1,
+      "currentUses": 0,
+      "expiresAt": null,
+      "metadata": {
+        "description": "测试邀请码",
+        "source": "manual_creation"
+      },
+      "createdAt": "2025-09-10T05:26:01.462Z",
+      "updatedAt": "2025-09-10T05:26:01.462Z"
+    },
+    "invite_mfdke637_ceff81ae": {
+      "id": "invite_mfdke637_ceff81ae",
+      "code": "L2-MFDKE637-5CE461",
+      "permissionLevel": 2,
+      "createdBy": "user_mfdjdsdt_51ab4ef52742",
+      "usedBy": [],
+      "maxUses": 1,
+      "currentUses": 0,
+      "expiresAt": null,
+      "metadata": {
+        "description": "测试邀请码",
+        "source": "manual_creation"
+      },
+      "createdAt": "2025-09-10T05:54:18.835Z",
+      "updatedAt": "2025-09-10T05:54:18.835Z"
+    }
+  },
+  "metadata": {
+    "version": 0,
+    "totalCodes": 2,
+    "lastModified": "2025-09-10T05:26:01.463Z"
+  }
+}

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTS音色库SDK - 示例页面</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      background: #f8f9fa;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .stat-card .label {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .search-section {
+      padding: 30px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      flex: 1;
+      padding: 12px 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .search-box button {
+      padding: 12px 30px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .search-box button:hover {
+      background: #5568d3;
+    }
+
+    .filters {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-group label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .filter-group select {
+      padding: 8px 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .voices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .voice-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .voice-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .voice-card.selected {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .voice-card .voice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .voice-card .voice-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .voice-card .voice-gender {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .voice-card .voice-gender.male {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .voice-card .voice-gender.female {
+      background: #fce4ec;
+      color: #c2185b;
+    }
+
+    .voice-card .voice-info {
+      margin-bottom: 12px;
+    }
+
+    .voice-card .voice-info p {
+      font-size: 14px;
+      color: #666;
+      margin: 4px 0;
+    }
+
+    .voice-card .voice-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .voice-card .tag {
+      padding: 4px 10px;
+      background: #f0f0f0;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .voice-card .tag.hot {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .loading:after {
+      content: '...';
+      animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    .error {
+      text-align: center;
+      padding: 40px 20px;
+      color: #dc3545;
+    }
+
+    .selected-voice-info {
+      padding: 20px 30px;
+      background: #f8f9ff;
+      border-top: 2px solid #667eea;
+      display: none;
+    }
+
+    .selected-voice-info.show {
+      display: block;
+    }
+
+    .selected-voice-info h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .selected-voice-info pre {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎙️ TTS音色库</h1>
+      <p>Powered by VoiceLibraryClient SDK</p>
+    </header>
+
+    <!-- 统计信息 -->
+    <div class="stats" id="stats">
+      <div class="stat-card">
+        <div class="number" id="total-voices">-</div>
+        <div class="label">总音色数</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="total-providers">-</div>
+        <div class="label">服务商</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="total-male">-</div>
+        <div class="label">男声</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" id="total-female">-</div>
+        <div class="label">女声</div>
+      </div>
+    </div>
+
+    <!-- 搜索和筛选 -->
+    <div class="search-section">
+      <div class="search-box">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="搜索音色名称、标签..."
+          autocomplete="off"
+        >
+        <button onclick="app.search()">🔍 搜索</button>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label>服务商:</label>
+          <select id="provider-filter" onchange="app.filter()">
+            <option value="">全部</option>
+            <option value="aliyun">阿里云</option>
+            <option value="tencent">腾讯云</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>性别:</label>
+          <select id="gender-filter" onchange="app.filter()">
+            <option value="">全部</option>
+            <option value="male">男声</option>
+            <option value="female">女声</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>语言:</label>
+          <select id="language-filter" onchange="app.filter()">
+            <option value="">全部</option>
+            <option value="zh-CN">中文</option>
+            <option value="en-US">英语</option>
+            <option value="ja-JP">日语</option>
+            <option value="ko-KR">韩语</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>标签:</label>
+          <select id="tag-filter" onchange="app.filter()">
+            <option value="">全部</option>
+            <option value="热门">热门</option>
+            <option value="双语">双语</option>
+            <option value="可爱">可爱</option>
+            <option value="方言">方言</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 音色列表 -->
+    <div class="voices-grid" id="voices-grid">
+      <div class="loading">正在加载音色数据</div>
+    </div>
+
+    <!-- 选中的音色信息 -->
+    <div class="selected-voice-info" id="selected-info">
+      <h3>✅ 已选中音色</h3>
+      <pre id="selected-voice-json"></pre>
+    </div>
+  </div>
+
+  <!-- 引入SDK -->
+  <script src="./VoiceLibraryClient.js"></script>
+
+  <script>
+    class VoiceLibraryApp {
+      constructor() {
+        this.client = new VoiceLibraryClient({
+          apiBaseUrl: '/api',
+          cacheTTL: 300000  // 5分钟缓存
+        });
+
+        this.voices = [];
+        this.filteredVoices = [];
+        this.selectedVoice = null;
+
+        this.init();
+      }
+
+      async init() {
+        try {
+          // 监听音色加载事件
+          this.client.on('voicesLoaded', (voices) => {
+            console.log(`✅ 音色加载完成: ${voices.length} 个`);
+          });
+
+          // 加载音色数据
+          this.voices = await this.client.getVoices();
+          this.filteredVoices = this.voices;
+
+          // 显示统计信息
+          await this.showStats();
+
+          // 显示音色列表
+          this.renderVoices();
+
+          // 绑定搜索事件
+          this.bindEvents();
+
+        } catch (error) {
+          console.error('初始化失败:', error);
+          this.showError(error.message);
+        }
+      }
+
+      async showStats() {
+        try {
+          const stats = await this.client.getStatistics();
+
+          document.getElementById('total-voices').textContent = stats.total;
+          document.getElementById('total-providers').textContent =
+            Object.keys(stats.byProvider).length;
+          document.getElementById('total-male').textContent =
+            stats.byGender.male || 0;
+          document.getElementById('total-female').textContent =
+            stats.byGender.female || 0;
+
+        } catch (error) {
+          console.error('获取统计信息失败:', error);
+        }
+      }
+
+      renderVoices() {
+        const grid = document.getElementById('voices-grid');
+
+        if (this.filteredVoices.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <p>没有找到匹配的音色</p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = this.filteredVoices.map(voice => `
+          <div class="voice-card ${this.selectedVoice?.id === voice.id ? 'selected' : ''}"
+               onclick="app.selectVoice('${voice.id}')">
+            <div class="voice-header">
+              <div class="voice-name">${voice.name}</div>
+              <span class="voice-gender ${voice.gender}">
+                ${voice.gender === 'male' ? '♂ 男声' : '♀ 女声'}
+              </span>
+            </div>
+
+            <div class="voice-info">
+              <p><strong>服务商:</strong> ${this.getProviderName(voice.provider)}</p>
+              <p><strong>模型:</strong> ${voice.model}</p>
+              <p><strong>语言:</strong> ${voice.languages.join(', ')}</p>
+            </div>
+
+            <div class="voice-tags">
+              ${voice.tags.map(tag =>
+                `<span class="tag ${tag === '热门' ? 'hot' : ''}">${tag}</span>`
+              ).join('')}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async selectVoice(voiceId) {
+        try {
+          this.selectedVoice = await this.client.getVoiceById(voiceId);
+          this.renderVoices();
+
+          // 显示选中信息
+          const infoDiv = document.getElementById('selected-info');
+          const jsonPre = document.getElementById('selected-voice-json');
+
+          infoDiv.classList.add('show');
+          jsonPre.textContent = JSON.stringify(this.selectedVoice, null, 2);
+
+          console.log('✅ 已选中音色:', this.selectedVoice);
+
+        } catch (error) {
+          console.error('选择音色失败:', error);
+        }
+      }
+
+      async search() {
+        const keyword = document.getElementById('search-input').value.trim();
+
+        if (!keyword) {
+          this.filteredVoices = this.voices;
+        } else {
+          this.filteredVoices = await this.client.searchVoices(keyword);
+        }
+
+        this.applyFilters();
+      }
+
+      async filter() {
+        const provider = document.getElementById('provider-filter').value;
+        const gender = document.getElementById('gender-filter').value;
+        const language = document.getElementById('language-filter').value;
+        const tag = document.getElementById('tag-filter').value;
+
+        const filters = {};
+        if (provider) filters.provider = provider;
+        if (gender) filters.gender = gender;
+        if (language) filters.language = language;
+        if (tag) filters.tags = [tag];
+
+        // 先应用搜索结果
+        const keyword = document.getElementById('search-input').value.trim();
+        if (keyword) {
+          filters.search = keyword;
+        }
+
+        this.filteredVoices = await this.client.filterVoices(filters);
+        this.renderVoices();
+      }
+
+      applyFilters() {
+        // 应用下拉筛选
+        this.filter();
+      }
+
+      bindEvents() {
+        const searchInput = document.getElementById('search-input');
+
+        // 回车搜索
+        searchInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            this.search();
+          }
+        });
+
+        // 实时搜索（防抖）
+        let timeout;
+        searchInput.addEventListener('input', () => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => this.search(), 300);
+        });
+      }
+
+      getProviderName(provider) {
+        const names = {
+          'aliyun': '阿里云',
+          'tencent': '腾讯云',
+          'volcengine': '火山引擎',
+          'minimax': 'MiniMax'
+        };
+        return names[provider] || provider;
+      }
+
+      showError(message) {
+        const grid = document.getElementById('voices-grid');
+        grid.innerHTML = `
+          <div class="error">
+            <h3>❌ 加载失败</h3>
+            <p>${message}</p>
+            <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">
+              重新加载
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // 初始化应用
+    const app = new VoiceLibraryApp();
+  </script>
+</body>
+</html>

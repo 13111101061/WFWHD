@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-01-09T08:09:16.207Z",
+  "today": {},
+  "sevenDayAverage": null,
+  "realtime": {
+    "timestamp": 1767946156207,
+    "auth": {
+      "success": 0,
+      "failure": 0,
+      "denied": 0,
+      "total": 0
+    },
+    "tts": {
+      "requests": 0,
+      "success": 0,
+      "failure": 0,
+      "cacheHits": 0
+    },
+    "api": {
+      "requests": 0,
+      "errors": 0,
+      "avgResponseTime": 0
+    },
+    "storage": {
+      "files": 0,
+      "size": 0,
+      "cleanup": 0
+    }
+  },
+  "serviceCount": 1,
+  "storageFiles": 0,
+  "storageSize": 0
+}

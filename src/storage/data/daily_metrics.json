@@ -1,0 +1,30 @@
+{
+  "lastUpdate": "2026-01-09T08:10:16.154Z",
+  "dates": {
+    "2025-10-30": {
+      "date": "2025-10-30",
+      "auth": {
+        "success": 1,
+        "failure": 0,
+        "denied": 0,
+        "total": 1
+      },
+      "tts": {
+        "requests": 1,
+        "success": 1,
+        "failure": 0,
+        "cacheHits": 0
+      },
+      "api": {
+        "requests": 1,
+        "errors": 0,
+        "avgResponseTime": 0
+      },
+      "storage": {
+        "files": 0,
+        "size": 0,
+        "cleanup": 0
+      }
+    }
+  }
+}

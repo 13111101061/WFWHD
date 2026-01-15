@@ -1,0 +1,13 @@
+# Runtime/output
+var/
+audio/
+audio_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Env
+.env
+.env.*
+nul  

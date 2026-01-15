@@ -1,0 +1,2062 @@
+{
+  "models": [
+    {
+      "id": "aliyun-cosyvoice-longxiaochun",
+      "name": "龙小淳",
+      "provider": "aliyun",
+      "service": "cosyvoice",
+      "voiceId": "longxiaochun_v2",
+      "model": "cosyvoice-v2",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "sweet",
+        "young-female",
+        "storytelling"
+      ],
+      "description": "温柔甜美的年轻女声，适合讲故事和助手场景"
+    },
+    {
+      "id": "aliyun-cosyvoice-longcheng",
+      "name": "龙橙",
+      "provider": "aliyun",
+      "service": "cosyvoice",
+      "voiceId": "longcheng_v2",
+      "model": "cosyvoice-v2",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "young-male",
+        "energetic"
+      ],
+      "description": "充满活力的年轻男声"
+    },
+    {
+      "id": "aliyun-cosyvoice-stella",
+      "name": "Stella",
+      "provider": "aliyun",
+      "service": "cosyvoice",
+      "voiceId": "loongstella",
+      "model": "cosyvoice-v2",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "en-US"
+      ],
+      "tags": [
+        "bilingual",
+        "professional",
+        "english"
+      ],
+      "description": "专业双语女声，支持中英文"
+    },
+    {
+      "id": "aliyun-cosyvoice-loongeva",
+      "name": "Eva",
+      "provider": "aliyun",
+      "service": "cosyvoice",
+      "voiceId": "loongeva",
+      "model": "cosyvoice-v2",
+      "gender": "female",
+      "languages": [
+        "en-GB"
+      ],
+      "tags": [
+        "english",
+        "british",
+        "elegant"
+      ],
+      "description": "英式英文女声，优雅成熟"
+    },
+    {
+      "id": "aliyun-qwen-cherry",
+      "name": "Cherry",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Cherry",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "en-US"
+      ],
+      "tags": [
+        "bilingual",
+        "popular"
+      ],
+      "description": "双语女声，中英文"
+    },
+    {
+      "id": "aliyun-qwen-ethan",
+      "name": "Ethan",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Ethan",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "en-US"
+      ],
+      "tags": [
+        "bilingual"
+      ],
+      "description": "双语男声，中英文"
+    },
+    {
+      "id": "aliyun-qwen-chelsie",
+      "name": "Chelsie",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Chelsie",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "en-US"
+      ],
+      "tags": [
+        "bilingual"
+      ],
+      "description": "双语女声，中英文"
+    },
+    {
+      "id": "aliyun-qwen-serena",
+      "name": "Serena",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Serena",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "en-US"
+      ],
+      "tags": [
+        "bilingual"
+      ],
+      "description": "双语女声，中英文"
+    },
+    {
+      "id": "aliyun-qwen-dylan",
+      "name": "Dylan",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Dylan",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "dialect"
+      ],
+      "description": "北京话男声"
+    },
+    {
+      "id": "aliyun-qwen-jada",
+      "name": "Jada",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Jada",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "dialect"
+      ],
+      "description": "上海话女声"
+    },
+    {
+      "id": "aliyun-qwen-sunny",
+      "name": "Sunny",
+      "provider": "aliyun",
+      "service": "qwen",
+      "voiceId": "Sunny",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "dialect"
+      ],
+      "description": "四川话女声"
+    },
+    {
+      "id": "tencent-tts-101001",
+      "name": "亲亲",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101001",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "popular",
+        "sweet"
+      ],
+      "description": "温柔甜美女声"
+    },
+    {
+      "id": "tencent-tts-101002",
+      "name": "鸭鸭",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101002",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101003",
+      "name": "圆圆",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101003",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101004",
+      "name": "小郭",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101004",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101005",
+      "name": "小何",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101005",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101006",
+      "name": "小玲",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101006",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101007",
+      "name": "小露",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101007",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101008",
+      "name": "小倩",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101008",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101009",
+      "name": "小蓉",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101009",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101010",
+      "name": "小宋",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101010",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101011",
+      "name": "小唐",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101011",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101012",
+      "name": "小王",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101012",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101013",
+      "name": "小魏",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101013",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101014",
+      "name": "小文",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101014",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101015",
+      "name": "小欣",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101015",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101016",
+      "name": "小颜",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101016",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101017",
+      "name": "小包",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101017",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101018",
+      "name": "小蔡",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101018",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101019",
+      "name": "小岑",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101019",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础女声"
+    },
+    {
+      "id": "tencent-tts-101020",
+      "name": "小戴",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101020",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic"
+      ],
+      "description": "基础男声"
+    },
+    {
+      "id": "tencent-tts-101070",
+      "name": "翻译腔男声",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101070",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "character",
+        "special"
+      ],
+      "description": "特色音色，翻译腔"
+    },
+    {
+      "id": "volcengine-http-bv001-streaming",
+      "name": "通用女声",
+      "provider": "volcengine",
+      "service": "http",
+      "voiceId": "BV001_streaming",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic",
+        "popular"
+      ],
+      "description": "标准女声音色"
+    },
+    {
+      "id": "volcengine-http-bv002-streaming",
+      "name": "通用男声",
+      "provider": "volcengine",
+      "service": "http",
+      "voiceId": "BV002_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic",
+        "popular"
+      ],
+      "description": "标准男声音色"
+    },
+    {
+      "id": "volcengine-http-bv032-streaming",
+      "name": "甜美女声",
+      "provider": "volcengine",
+      "service": "http",
+      "voiceId": "BV032_streaming",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "sweet",
+        "young-female"
+      ],
+      "description": "甜美年轻女声"
+    },
+    {
+      "id": "volcengine-http-bv033-streaming",
+      "name": "沉稳男声",
+      "provider": "volcengine",
+      "service": "http",
+      "voiceId": "BV033_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "deep",
+        "mature"
+      ],
+      "description": "沉稳成熟男声"
+    },
+    {
+      "id": "volcengine-http-bv034-streaming",
+      "name": "活力男声",
+      "provider": "volcengine",
+      "service": "http",
+      "voiceId": "BV034_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "energetic",
+        "young-male"
+      ],
+      "description": "活力年轻男声"
+    },
+    {
+      "id": "volcengine-ws-bv001-streaming",
+      "name": "通用女声",
+      "provider": "volcengine",
+      "service": "ws",
+      "voiceId": "BV001_streaming",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic",
+        "popular"
+      ],
+      "description": "标准女声音色（WebSocket）"
+    },
+    {
+      "id": "volcengine-ws-bv002-streaming",
+      "name": "通用男声",
+      "provider": "volcengine",
+      "service": "ws",
+      "voiceId": "BV002_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "basic",
+        "popular"
+      ],
+      "description": "标准男声音色（WebSocket）"
+    },
+    {
+      "id": "volcengine-ws-bv032-streaming",
+      "name": "甜美女声",
+      "provider": "volcengine",
+      "service": "ws",
+      "voiceId": "BV032_streaming",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "sweet",
+        "young-female"
+      ],
+      "description": "甜美年轻女声（WebSocket）"
+    },
+    {
+      "id": "volcengine-ws-bv033-streaming",
+      "name": "沉稳男声",
+      "provider": "volcengine",
+      "service": "ws",
+      "voiceId": "BV033_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "deep",
+        "mature"
+      ],
+      "description": "沉稳成熟男声（WebSocket）"
+    },
+    {
+      "id": "volcengine-ws-bv034-streaming",
+      "name": "活力男声",
+      "provider": "volcengine",
+      "service": "ws",
+      "voiceId": "BV034_streaming",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "energetic",
+        "young-male"
+      ],
+      "description": "活力年轻男声（WebSocket）"
+    },
+    {
+      "id": "minimax-tts-female-zh-1",
+      "name": "温柔女声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "female-zh",
+      "model": "speech-01-hd-preview",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "sweet",
+        "popular"
+      ],
+      "description": "温柔中文女声"
+    },
+    {
+      "id": "minimax-tts-male-zh-1",
+      "name": "磁性男声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "male-zh",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "deep",
+        "popular"
+      ],
+      "description": "磁性中文男声"
+    },
+    {
+      "id": "minimax-tts-female-en-1",
+      "name": "优雅女士",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "English_Graceful_Lady",
+      "model": "speech-01-hd-preview",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "elegant"
+      ],
+      "description": "优雅英文女声"
+    },
+    {
+      "id": "minimax-tts-male-en-1",
+      "name": "睿智演讲者",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "English_Insightful_Speaker",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "professional"
+      ],
+      "description": "睿智英文男声"
+    },
+    {
+      "id": "minimax-tts-female-zh-2",
+      "name": "活泼女声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "female-zh-2",
+      "model": "speech-01-hd-preview",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "energetic",
+        "young-female"
+      ],
+      "description": "活泼中文女声"
+    },
+    {
+      "id": "minimax-tts-male-zh-2",
+      "name": "稳重男声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "male-zh-2",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "calm",
+        "mature"
+      ],
+      "description": "稳重中文男声"
+    },
+    {
+      "id": "minimax-tts-child-1",
+      "name": "儿童声音",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "child-001",
+      "model": "speech-01-hd-preview",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "child",
+        "cute"
+      ],
+      "description": "可爱儿童声音"
+    },
+    {
+      "id": "minimax-tts-narrator",
+      "name": "旁白声音",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "narrator-male",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "professional",
+        "calm"
+      ],
+      "description": "专业旁白男声"
+    },
+    {
+      "id": "minimax-tts-news-female",
+      "name": "新闻女主播",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "news-female",
+      "model": "speech-01-hd-preview",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "professional",
+        "news"
+      ],
+      "description": "专业新闻女声"
+    },
+    {
+      "id": "minimax-tts-audiobook",
+      "name": "有声书男声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "audiobook-male",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "storytelling",
+        "calm"
+      ],
+      "description": "故事讲述男声"
+    },
+    {
+      "id": "minimax-tts-advertisement",
+      "name": "广告男声",
+      "provider": "minimax",
+      "service": "tts",
+      "voiceId": "ad-male",
+      "model": "speech-01-hd-preview",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "energetic",
+        "advertisement"
+      ],
+      "description": "活力广告男声"
+    },
+    {
+      "id": "tencent-tts-101030",
+      "name": "智儿",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101030",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101031",
+      "name": "智萍",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101031",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101032",
+      "name": "智华",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101032",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101033",
+      "name": "智莉",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101033",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101034",
+      "name": "智琪",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101034",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101035",
+      "name": "智靖",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101035",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101036",
+      "name": "智敏",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101036",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101037",
+      "name": "智婷",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101037",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101038",
+      "name": "智娜",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101038",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101039",
+      "name": "智琳",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101039",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101040",
+      "name": "智岳",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101040",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101041",
+      "name": "智彤",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101041",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101042",
+      "name": "智琴",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101042",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101043",
+      "name": "智敏2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101043",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101044",
+      "name": "智鑫",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101044",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101045",
+      "name": "智伟",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101045",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101046",
+      "name": "智娜2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101046",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101047",
+      "name": "智涛",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101047",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101048",
+      "name": "智洁",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101048",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "female"
+      ],
+      "description": "精品女声"
+    },
+    {
+      "id": "tencent-tts-101049",
+      "name": "智勇",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101049",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101050",
+      "name": "智军",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101050",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "premium",
+        "male"
+      ],
+      "description": "精品男声"
+    },
+    {
+      "id": "tencent-tts-101060",
+      "name": "智瑜",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101060",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101061",
+      "name": "智婷2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101061",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101062",
+      "name": "智雪",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101062",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101063",
+      "name": "智霞",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101063",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101064",
+      "name": "智娟",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101064",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101065",
+      "name": "智英",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101065",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101066",
+      "name": "智红",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101066",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101067",
+      "name": "智梅",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101067",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101068",
+      "name": "智玲",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101068",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101069",
+      "name": "智华2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101069",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "special",
+        "female"
+      ],
+      "description": "特色女声"
+    },
+    {
+      "id": "tencent-tts-101080",
+      "name": "英文女声1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101080",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "female"
+      ],
+      "description": "英文女声"
+    },
+    {
+      "id": "tencent-tts-101081",
+      "name": "英文男声1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101081",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "male"
+      ],
+      "description": "英文男声"
+    },
+    {
+      "id": "tencent-tts-101082",
+      "name": "英文女声2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101082",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "female"
+      ],
+      "description": "英文女声"
+    },
+    {
+      "id": "tencent-tts-101083",
+      "name": "英文男声2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101083",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "male"
+      ],
+      "description": "英文男声"
+    },
+    {
+      "id": "tencent-tts-101084",
+      "name": "英文女声3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101084",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "female"
+      ],
+      "description": "英文女声"
+    },
+    {
+      "id": "tencent-tts-101085",
+      "name": "英文男声3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101085",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "male"
+      ],
+      "description": "英文男声"
+    },
+    {
+      "id": "tencent-tts-101086",
+      "name": "英文女声4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101086",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "female"
+      ],
+      "description": "英文女声"
+    },
+    {
+      "id": "tencent-tts-101087",
+      "name": "英文男声4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101087",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "male"
+      ],
+      "description": "英文男声"
+    },
+    {
+      "id": "tencent-tts-101088",
+      "name": "英文女声5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101088",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "female"
+      ],
+      "description": "英文女声"
+    },
+    {
+      "id": "tencent-tts-101089",
+      "name": "英文男声5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101089",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "en-US"
+      ],
+      "tags": [
+        "english",
+        "male"
+      ],
+      "description": "英文男声"
+    },
+    {
+      "id": "tencent-tts-101100",
+      "name": "粤语女声1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101100",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "female"
+      ],
+      "description": "粤语女声"
+    },
+    {
+      "id": "tencent-tts-101101",
+      "name": "粤语男声1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101101",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "male"
+      ],
+      "description": "粤语男声"
+    },
+    {
+      "id": "tencent-tts-101102",
+      "name": "粤语女声2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101102",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "female"
+      ],
+      "description": "粤语女声"
+    },
+    {
+      "id": "tencent-tts-101103",
+      "name": "粤语男声2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101103",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "male"
+      ],
+      "description": "粤语男声"
+    },
+    {
+      "id": "tencent-tts-101104",
+      "name": "粤语女声3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101104",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "female"
+      ],
+      "description": "粤语女声"
+    },
+    {
+      "id": "tencent-tts-101105",
+      "name": "粤语男声3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101105",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "male"
+      ],
+      "description": "粤语男声"
+    },
+    {
+      "id": "tencent-tts-101106",
+      "name": "粤语女声4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101106",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "female"
+      ],
+      "description": "粤语女声"
+    },
+    {
+      "id": "tencent-tts-101107",
+      "name": "粤语男声4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101107",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "male"
+      ],
+      "description": "粤语男声"
+    },
+    {
+      "id": "tencent-tts-101108",
+      "name": "粤语女声5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101108",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "female"
+      ],
+      "description": "粤语女声"
+    },
+    {
+      "id": "tencent-tts-101109",
+      "name": "粤语男声5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101109",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN",
+        "yue"
+      ],
+      "tags": [
+        "dialect",
+        "cantonese",
+        "male"
+      ],
+      "description": "粤语男声"
+    },
+    {
+      "id": "tencent-tts-101110",
+      "name": "智助手女1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101110",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    },
+    {
+      "id": "tencent-tts-101111",
+      "name": "智助手男1",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101111",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "male",
+        "ai"
+      ],
+      "description": "AI助手男声"
+    },
+    {
+      "id": "tencent-tts-101112",
+      "name": "智助手女2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101112",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    },
+    {
+      "id": "tencent-tts-101113",
+      "name": "智助手男2",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101113",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "male",
+        "ai"
+      ],
+      "description": "AI助手男声"
+    },
+    {
+      "id": "tencent-tts-101114",
+      "name": "智助手女3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101114",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    },
+    {
+      "id": "tencent-tts-101115",
+      "name": "智助手男3",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101115",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "male",
+        "ai"
+      ],
+      "description": "AI助手男声"
+    },
+    {
+      "id": "tencent-tts-101116",
+      "name": "智助手女4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101116",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    },
+    {
+      "id": "tencent-tts-101117",
+      "name": "智助手男4",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101117",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "male",
+        "ai"
+      ],
+      "description": "AI助手男声"
+    },
+    {
+      "id": "tencent-tts-101118",
+      "name": "智助手女5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101118",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    },
+    {
+      "id": "tencent-tts-101119",
+      "name": "智助手男5",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101119",
+      "model": "1",
+      "gender": "male",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "male",
+        "ai"
+      ],
+      "description": "AI助手男声"
+    },
+    {
+      "id": "tencent-tts-101120",
+      "name": "智助手女6",
+      "provider": "tencent",
+      "service": "tts",
+      "voiceId": "101120",
+      "model": "1",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "tags": [
+        "assistant",
+        "female",
+        "ai"
+      ],
+      "description": "AI助手女声"
+    }
+  ],
+  "tags": {
+    "popular": {
+      "name": "热门",
+      "color": "#ff6b6b"
+    },
+    "basic": {
+      "name": "基础",
+      "color": "#a8a8a8"
+    },
+    "sweet": {
+      "name": "甜美",
+      "color": "#ff6bb6"
+    },
+    "storytelling": {
+      "name": "讲故事",
+      "color": "#45b7d1"
+    },
+    "young-female": {
+      "name": "年轻女声",
+      "color": "#96ceb4"
+    },
+    "young-male": {
+      "name": "年轻男声",
+      "color": "#88d8b0"
+    },
+    "bilingual": {
+      "name": "双语",
+      "color": "#a8e6cf"
+    },
+    "professional": {
+      "name": "专业",
+      "color": "#4ecdc4"
+    },
+    "english": {
+      "name": "英文",
+      "color": "#dcedc1"
+    },
+    "energetic": {
+      "name": "活力",
+      "color": "#ffd93d"
+    },
+    "british": {
+      "name": "英式",
+      "color": "#6bcf7f"
+    },
+    "elegant": {
+      "name": "优雅",
+      "color": "#a29bfe"
+    },
+    "dialect": {
+      "name": "方言",
+      "color": "#95e1d3"
+    },
+    "character": {
+      "name": "特色",
+      "color": "#f38181"
+    },
+    "special": {
+      "name": "特别",
+      "color": "#ff9f43"
+    },
+    "deep": {
+      "name": "深沉",
+      "color": "#6c5ce7"
+    },
+    "mature": {
+      "name": "成熟",
+      "color": "#a29bfe"
+    },
+    "calm": {
+      "name": "平静",
+      "color": "#74b9ff"
+    },
+    "child": {
+      "name": "儿童",
+      "color": "#ffeaa7"
+    },
+    "cute": {
+      "name": "可爱",
+      "color": "#fdcb6e"
+    },
+    "news": {
+      "name": "新闻",
+      "color": "#81ecec"
+    },
+    "advertisement": {
+      "name": "广告",
+      "color": "#fab1a0"
+    },
+    "premium": {
+      "name": "精品",
+      "color": "#9b59b6"
+    },
+    "cantonese": {
+      "name": "粤语",
+      "color": "#3498db"
+    },
+    "assistant": {
+      "name": "助手",
+      "color": "#1abc9c"
+    },
+    "ai": {
+      "name": "AI",
+      "color": "#e74c3c"
+    }
+  }
+}

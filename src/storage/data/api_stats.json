@@ -1,0 +1,195 @@
+{
+  "data": {},
+  "metadata": {
+    "version": 0,
+    "lastModified": "2025-09-16T03:14:19.967Z"
+  },
+  "totalCalls": 270,
+  "endpoints": {
+    "GET /admin/stats/overall": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:14:39.318Z"
+    },
+    "GET /admin/stats/summary": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:14:41.312Z"
+    },
+    "GET /admin/stats/endpoints": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:14:40.829Z"
+    },
+    "GET /admin/stats/daily": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:14:40.404Z"
+    },
+    "POST /api/qwen-tts-http": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:21:55.902Z"
+    },
+    "GET /audio/qwen-http-audio_de4459b1-60a4-41f9-b004-4b730c1f1e0b.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2025-09-16T03:14:37.054Z"
+    },
+    "GET /tts-test.html": {
+      "totalCalls": 2,
+      "lastCalled": "2025-09-16T03:21:26.246Z"
+    },
+    "GET /@vite/client": {
+      "totalCalls": 6,
+      "lastCalled": "2025-10-30T15:25:26.156Z"
+    },
+    "GET /audio/qwen-http-audio_52e8a0fd-ee53-42d0-95db-c832ce3e3abe.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2025-09-16T03:21:55.916Z"
+    },
+    "GET /api/sms/health": {
+      "totalCalls": 9,
+      "lastCalled": "2025-09-19T10:42:13.724Z"
+    },
+    "POST /api/sms/phone": {
+      "totalCalls": 9,
+      "lastCalled": "2025-09-19T10:42:14.101Z"
+    },
+    "GET /api/sms/account": {
+      "totalCalls": 3,
+      "lastCalled": "2025-09-19T10:42:13.917Z"
+    },
+    "GET /api/sms/provinces": {
+      "totalCalls": 3,
+      "lastCalled": "2025-09-19T10:42:13.921Z"
+    },
+    "GET /api/sms/operators": {
+      "totalCalls": 3,
+      "lastCalled": "2025-09-19T10:42:13.920Z"
+    },
+    "POST /api/sms/complete": {
+      "totalCalls": 3,
+      "lastCalled": "2025-09-19T10:42:14.322Z"
+    },
+    "GET /api/snpan/auth": {
+      "totalCalls": 1,
+      "lastCalled": "2025-09-22T09:32:01.860Z"
+    },
+    "POST /api/snpan/auth/refresh": {
+      "totalCalls": 1,
+      "lastCalled": "2025-09-22T09:32:02.008Z"
+    },
+    "GET /api/snpan/upload-url": {
+      "totalCalls": 1,
+      "lastCalled": "2025-09-22T09:32:02.076Z"
+    },
+    "GET /": {
+      "totalCalls": 17,
+      "lastCalled": "2025-11-01T07:26:20.595Z"
+    },
+    "GET /api/tts/voices": {
+      "totalCalls": 14,
+      "lastCalled": "2025-10-31T16:49:45.901Z"
+    },
+    "GET /hybridaction/zybTrackerStatisticsAction": {
+      "totalCalls": 18,
+      "lastCalled": "2026-01-09T07:10:40.946Z"
+    },
+    "GET /api/tts/voices/models": {
+      "totalCalls": 6,
+      "lastCalled": "2026-01-09T07:35:37.295Z"
+    },
+    "GET /api/voice-models/models": {
+      "totalCalls": 8,
+      "lastCalled": "2025-10-31T15:15:06.194Z"
+    },
+    "GET /api/voice-models/providers/aliyun": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T13:17:09.807Z"
+    },
+    "GET /api/voice-models/categories/female": {
+      "totalCalls": 8,
+      "lastCalled": "2025-10-31T15:15:06.196Z"
+    },
+    "GET /api/voice-models/tags/sweet": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T13:17:18.913Z"
+    },
+    "GET /api/voice-models/stats": {
+      "totalCalls": 8,
+      "lastCalled": "2026-01-10T14:26:54.293Z"
+    },
+    "POST /api/tts/synthesize": {
+      "totalCalls": 69,
+      "lastCalled": "2026-01-09T10:03:08.756Z"
+    },
+    "GET /admin/api-keys": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T13:44:24.670Z"
+    },
+    "GET /api/voice-models/tags/popular": {
+      "totalCalls": 4,
+      "lastCalled": "2025-10-31T15:15:06.198Z"
+    },
+    "GET /api/voice-models/search": {
+      "totalCalls": 4,
+      "lastCalled": "2025-10-31T15:15:06.200Z"
+    },
+    "GET /api/voice-models/categories/male": {
+      "totalCalls": 4,
+      "lastCalled": "2025-10-31T15:15:06.197Z"
+    },
+    "HEAD /uploads/audio/qwen-http-audio_401a78a7-cfc9-91fc-9255-2c2e472977b3.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T13:48:44.640Z"
+    },
+    "GET /api/tts/providers": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T14:58:30.672Z"
+    },
+    "GET /api/tts/stats": {
+      "totalCalls": 1,
+      "lastCalled": "2025-10-31T14:58:30.683Z"
+    },
+    "GET /api/public/info": {
+      "totalCalls": 4,
+      "lastCalled": "2025-11-01T09:52:16.884Z"
+    },
+    "POST /api/tts": {
+      "totalCalls": 8,
+      "lastCalled": "2025-11-01T09:52:11.560Z"
+    },
+    "GET /api/auth/stats": {
+      "totalCalls": 2,
+      "lastCalled": "2025-11-01T09:52:11.561Z"
+    },
+    "POST /api/auth/keys": {
+      "totalCalls": 2,
+      "lastCalled": "2025-11-01T09:52:11.562Z"
+    },
+    "GET /api/monitoring/stats": {
+      "totalCalls": 6,
+      "lastCalled": "2025-11-01T09:52:16.891Z"
+    },
+    "GET /admin": {
+      "totalCalls": 1,
+      "lastCalled": "2026-01-09T07:10:37.557Z"
+    },
+    "GET /login": {
+      "totalCalls": 1,
+      "lastCalled": "2026-01-09T07:10:40.895Z"
+    },
+    "GET /api/tts/voices/categories": {
+      "totalCalls": 16,
+      "lastCalled": "2026-01-09T07:35:37.294Z"
+    },
+    "GET /api/tts/voices/models/aliyun-cosyvoice-longxiaochun": {
+      "totalCalls": 5,
+      "lastCalled": "2026-01-09T07:35:37.298Z"
+    },
+    "GET /api/tts/voices/stats": {
+      "totalCalls": 5,
+      "lastCalled": "2026-01-09T07:35:37.299Z"
+    },
+    "GET /api/voice-models/models/aliyun-qwen-kai": {
+      "totalCalls": 1,
+      "lastCalled": "2026-01-10T14:26:54.299Z"
+    }
+  },
+  "lastUpdated": "2026-01-10T14:26:54.299Z"
+}

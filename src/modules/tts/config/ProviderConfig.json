@@ -1,0 +1,363 @@
+{
+  "providers": {
+    "aliyun": {
+      "name": "阿里云",
+      "services": {
+        "cosyvoice": {
+          "name": "CosyVoice",
+          "apiStructure": "flat",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "voice",
+              "type": "string",
+              "required": true,
+              "description": "音色ID"
+            },
+            "speed": {
+              "apiField": "rate",
+              "type": "number",
+              "range": { "min": 0.5, "max": 2.0 },
+              "default": 1.0,
+              "standardization": "direct",
+              "description": "语速，0.5为慢速，2.0为快速"
+            },
+            "volume": {
+              "apiField": "volume",
+              "type": "number",
+              "range": { "min": 0, "max": 100 },
+              "default": 50,
+              "standardization": {
+                "inputRange": { "min": 0, "max": 10 },
+                "transform": "value * 10"
+              },
+              "description": "音量，0-100"
+            },
+            "pitch": {
+              "apiField": "pitch",
+              "type": "number",
+              "range": { "min": 0.5, "max": 2.0 },
+              "default": 1.0,
+              "description": "音调，0.5为低音调，2.0为高音调"
+            },
+            "sample_rate": {
+              "apiField": "sample_rate",
+              "type": "enum",
+              "values": [8000, 16000, 22050, 24000],
+              "default": 22050,
+              "description": "采样率"
+            },
+            "format": {
+              "apiField": "format",
+              "type": "enum",
+              "values": ["mp3", "wav", "pcm", "flac"],
+              "default": "mp3",
+              "description": "音频格式"
+            }
+          }
+        },
+        "qwen_http": {
+          "name": "Qwen HTTP",
+          "apiStructure": "nested",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "input.voice",
+              "type": "string",
+              "required": true,
+              "description": "音色ID"
+            },
+            "language_type": {
+              "apiField": "input.language_type",
+              "type": "enum",
+              "values": ["Chinese", "English", "German", "Italian", "Portuguese", "Spanish", "Japanese", "Korean", "French", "Russian", "Auto"],
+              "default": "Auto",
+              "description": "语言类型，Auto为自动检测"
+            },
+            "speed": {
+              "supported": false,
+              "description": "Qwen不支持语速调整"
+            },
+            "volume": {
+              "supported": false,
+              "description": "Qwen不支持音量调整"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "Qwen不支持音调调整"
+            },
+            "sample_rate": {
+              "apiField": "input.sample_rate",
+              "type": "number",
+              "default": 24000,
+              "description": "采样率"
+            }
+          }
+        },
+        "qwen_ws": {
+          "name": "Qwen WebSocket",
+          "apiStructure": "nested",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "input.voice",
+              "type": "string",
+              "required": true,
+              "description": "音色ID"
+            },
+            "speed": {
+              "supported": false,
+              "description": "Qwen不支持语速调整"
+            },
+            "volume": {
+              "supported": false,
+              "description": "Qwen不支持音量调整"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "Qwen不支持音调调整"
+            },
+            "sample_rate": {
+              "apiField": "input.sample_rate",
+              "type": "number",
+              "default": 24000,
+              "description": "采样率"
+            }
+          }
+        }
+      }
+    },
+    "tencent": {
+      "name": "腾讯云",
+      "services": {
+        "tts": {
+          "name": "TTS",
+          "apiStructure": "flat",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "VoiceType",
+              "type": "number",
+              "required": true,
+              "transform": "parseInt",
+              "description": "音色类型ID"
+            },
+            "speed": {
+              "apiField": "Speed",
+              "type": "number",
+              "range": { "min": 0.6, "max": 2.0 },
+              "default": 1.0,
+              "description": "语速"
+            },
+            "volume": {
+              "apiField": "Volume",
+              "type": "number",
+              "range": { "min": 0, "max": 10 },
+              "default": 5,
+              "standardization": "direct",
+              "description": "音量"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "腾讯云不支持音调调整"
+            },
+            "sample_rate": {
+              "apiField": "SampleRate",
+              "type": "number",
+              "default": 16000,
+              "description": "采样率"
+            },
+            "format": {
+              "apiField": "Codec",
+              "type": "enum",
+              "values": ["mp3", "wav", "pcm"],
+              "default": "wav",
+              "description": "音频格式"
+            }
+          }
+        }
+      }
+    },
+    "volcengine": {
+      "name": "火山引擎",
+      "services": {
+        "volcengine_http": {
+          "name": "HTTP",
+          "apiStructure": "nested",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "audio.voice_type",
+              "type": "string",
+              "required": true,
+              "description": "音色类型"
+            },
+            "speed": {
+              "apiField": "audio.speed_ratio",
+              "type": "number",
+              "range": { "min": 0.2, "max": 3.0 },
+              "default": 1.0,
+              "description": "语速"
+            },
+            "volume": {
+              "apiField": "audio.volume_ratio",
+              "type": "number",
+              "range": { "min": 0, "max": 10 },
+              "default": 10,
+              "standardization": {
+                "inputRange": { "min": 0, "max": 10 },
+                "transform": "value / 10.0"
+              },
+              "description": "音量，0-1范围"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "火山引擎不支持音调调整"
+            },
+            "sample_rate": {
+              "apiField": "audio.rate",
+              "type": "number",
+              "default": 24000,
+              "description": "采样率"
+            },
+            "format": {
+              "apiField": "audio.encoding",
+              "type": "enum",
+              "values": ["mp3", "wav", "flac"],
+              "default": "mp3",
+              "description": "音频格式"
+            }
+          }
+        },
+        "volcengine_ws": {
+          "name": "WebSocket",
+          "apiStructure": "nested",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "audio.voice_type",
+              "type": "string",
+              "required": true,
+              "description": "音色类型"
+            },
+            "speed": {
+              "apiField": "audio.speed_ratio",
+              "type": "number",
+              "range": { "min": 0.2, "max": 3.0 },
+              "default": 1.0,
+              "description": "语速"
+            },
+            "volume": {
+              "apiField": "audio.volume_ratio",
+              "type": "number",
+              "range": { "min": 0, "max": 10 },
+              "default": 10,
+              "standardization": {
+                "inputRange": { "min": 0, "max": 10 },
+                "transform": "value / 10.0"
+              },
+              "description": "音量，0-1范围"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "火山引擎不支持音调调整"
+            },
+            "sample_rate": {
+              "apiField": "audio.sample_rate",
+              "type": "number",
+              "default": 24000,
+              "description": "采样率"
+            },
+            "format": {
+              "apiField": "audio.encoding",
+              "type": "enum",
+              "values": ["mp3", "wav", "flac"],
+              "default": "mp3",
+              "description": "音频格式"
+            }
+          }
+        }
+      }
+    },
+    "minimax": {
+      "name": "MiniMax",
+      "services": {
+        "minimax_tts": {
+          "name": "TTS",
+          "apiStructure": "nested",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "voice_setting.voice_id",
+              "type": "string",
+              "required": true,
+              "description": "音色ID"
+            },
+            "speed": {
+              "apiField": "voice_setting.speed",
+              "type": "number",
+              "range": { "min": 0.1, "max": 2.0 },
+              "default": 1.0,
+              "description": "语速"
+            },
+            "volume": {
+              "apiField": "voice_setting.vol",
+              "type": "number",
+              "range": { "min": 0.0, "max": 1.0 },
+              "default": 1.0,
+              "standardization": {
+                "inputRange": { "min": 0, "max": 10 },
+                "transform": "value / 10.0"
+              },
+              "description": "音量"
+            },
+            "pitch": {
+              "apiField": "voice_setting.pitch",
+              "type": "number",
+              "range": { "min": -12, "max": 12 },
+              "default": 0,
+              "standardization": {
+                "inputRange": { "min": 0.5, "max": 1.5 },
+                "transform": "(value - 1) * 24"
+              },
+              "description": "音调，-12到+12"
+            },
+            "sample_rate": {
+              "apiField": "audio_setting.sample_rate",
+              "type": "number",
+              "default": 32000,
+              "description": "采样率"
+            },
+            "format": {
+              "apiField": "audio_setting.format",
+              "type": "enum",
+              "values": ["mp3", "wav", "pcm"],
+              "default": "mp3",
+              "description": "音频格式"
+            },
+            "emotion": {
+              "apiField": "voice_setting.emotion",
+              "type": "enum",
+              "values": ["calm", "happy", "sad", "angry", "fearful"],
+              "default": "calm",
+              "description": "情感"
+            }
+          }
+        }
+      }
+    }
+  },
+  "standardParameters": {
+    "speed": {
+      "name": "语速",
+      "type": "number",
+      "standardRange": { "min": 0, "max": 5.0 },
+      "description": "语速调整，1.0为正常速度"
+    },
+    "volume": {
+      "name": "音量",
+      "type": "number",
+      "standardRange": { "min": 0, "max": 10 },
+      "description": "音量调整，0-10范围"
+    },
+    "pitch": {
+      "name": "音调",
+      "type": "number",
+      "standardRange": { "min": 0.5, "max": 1.5 },
+      "description": "音调调整，1.0为正常音调"
+    }
+  }
+}

@@ -1,0 +1,1043 @@
+{
+  "version": 1,
+  "generatedAt": "2026-01-09T07:30:51.937Z",
+  "source": {
+    "mappingVersion": 1,
+    "sourceFingerprint": "3f22bd899d59e47d",
+    "totalVoices": 21
+  },
+  "categories": [
+    {
+      "key": "gender_female",
+      "title": "女声",
+      "icon": "👩",
+      "order": 1,
+      "count": 13,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-longxiaochun",
+          "title": "龙小淳",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101001",
+          "title": "亲亲",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv001-streaming",
+          "title": "通用女声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "minimax-tts-female-zh-1",
+          "title": "温柔女声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101002",
+          "title": "鸭鸭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101003",
+          "title": "圆圆",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-chelsie",
+          "title": "Chelsie",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-loongeva",
+          "title": "Eva",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "en-GB"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jada",
+          "title": "Jada",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-serena",
+          "title": "Serena",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sunny",
+          "title": "Sunny",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "gender_male",
+      "title": "男声",
+      "icon": "👨",
+      "order": 2,
+      "count": 8,
+      "items": [
+        {
+          "systemId": "minimax-tts-male-zh-1",
+          "title": "磁性男声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101070",
+          "title": "翻译腔男声",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-longcheng",
+          "title": "龙橙",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv002-streaming",
+          "title": "通用男声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101004",
+          "title": "小郭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101005",
+          "title": "小何",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dylan",
+          "title": "Dylan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ethan",
+          "title": "Ethan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_zh_cn",
+      "title": "中文",
+      "icon": "🇨🇳",
+      "order": 10,
+      "count": 20,
+      "items": [
+        {
+          "systemId": "minimax-tts-male-zh-1",
+          "title": "磁性男声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101070",
+          "title": "翻译腔男声",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-longcheng",
+          "title": "龙橙",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-longxiaochun",
+          "title": "龙小淳",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101001",
+          "title": "亲亲",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv002-streaming",
+          "title": "通用男声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv001-streaming",
+          "title": "通用女声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "minimax-tts-female-zh-1",
+          "title": "温柔女声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101004",
+          "title": "小郭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101005",
+          "title": "小何",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101002",
+          "title": "鸭鸭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101003",
+          "title": "圆圆",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-chelsie",
+          "title": "Chelsie",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dylan",
+          "title": "Dylan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ethan",
+          "title": "Ethan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jada",
+          "title": "Jada",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-serena",
+          "title": "Serena",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sunny",
+          "title": "Sunny",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_en_us",
+      "title": "英文",
+      "icon": "🇺🇸",
+      "order": 11,
+      "count": 5,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-chelsie",
+          "title": "Chelsie",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ethan",
+          "title": "Ethan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-serena",
+          "title": "Serena",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_en_gb",
+      "title": "英式英文",
+      "icon": "🇬🇧",
+      "order": 12,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-loongeva",
+          "title": "Eva",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "en-GB"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "provider_aliyun",
+      "title": "阿里云",
+      "icon": "☁️",
+      "order": 20,
+      "count": 11,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-longcheng",
+          "title": "龙橙",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-longxiaochun",
+          "title": "龙小淳",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-chelsie",
+          "title": "Chelsie",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dylan",
+          "title": "Dylan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ethan",
+          "title": "Ethan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-loongeva",
+          "title": "Eva",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "en-GB"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jada",
+          "title": "Jada",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-serena",
+          "title": "Serena",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sunny",
+          "title": "Sunny",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "provider_tencent",
+      "title": "腾讯云",
+      "icon": "🐧",
+      "order": 21,
+      "count": 6,
+      "items": [
+        {
+          "systemId": "tencent-tts-101070",
+          "title": "翻译腔男声",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101001",
+          "title": "亲亲",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101004",
+          "title": "小郭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101005",
+          "title": "小何",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101002",
+          "title": "鸭鸭",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101003",
+          "title": "圆圆",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "provider_volcengine",
+      "title": "火山引擎",
+      "icon": "🌋",
+      "order": 22,
+      "count": 2,
+      "items": [
+        {
+          "systemId": "volcengine-http-bv002-streaming",
+          "title": "通用男声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv001-streaming",
+          "title": "通用女声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "provider_minimax",
+      "title": "MiniMax",
+      "icon": "🤖",
+      "order": 23,
+      "count": 2,
+      "items": [
+        {
+          "systemId": "minimax-tts-male-zh-1",
+          "title": "磁性男声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "minimax-tts-female-zh-1",
+          "title": "温柔女声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_popular",
+      "title": "热门推荐",
+      "icon": "🔥",
+      "order": 30,
+      "count": 6,
+      "items": [
+        {
+          "systemId": "minimax-tts-male-zh-1",
+          "title": "磁性男声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101001",
+          "title": "亲亲",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv002-streaming",
+          "title": "通用男声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "volcengine-http-bv001-streaming",
+          "title": "通用女声",
+          "provider": "volcengine",
+          "service": "http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "minimax-tts-female-zh-1",
+          "title": "温柔女声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_bilingual",
+      "title": "双语音色",
+      "icon": "🌐",
+      "order": 31,
+      "count": 5,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-chelsie",
+          "title": "Chelsie",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-cherry",
+          "title": "Cherry",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ethan",
+          "title": "Ethan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-serena",
+          "title": "Serena",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_sweet",
+      "title": "甜美音色",
+      "icon": "🍬",
+      "order": 32,
+      "count": 3,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-longxiaochun",
+          "title": "龙小淳",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "tencent-tts-101001",
+          "title": "亲亲",
+          "provider": "tencent",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "minimax-tts-female-zh-1",
+          "title": "温柔女声",
+          "provider": "minimax",
+          "service": "tts",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_professional",
+      "title": "专业音色",
+      "icon": "💼",
+      "order": 33,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-stella",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_storytelling",
+      "title": "讲故事",
+      "icon": "📖",
+      "order": 34,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-cosyvoice-longxiaochun",
+          "title": "龙小淳",
+          "provider": "aliyun",
+          "service": "cosyvoice",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_dialect",
+      "title": "方言音色",
+      "icon": "🗣️",
+      "order": 35,
+      "count": 3,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-dylan",
+          "title": "Dylan",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jada",
+          "title": "Jada",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sunny",
+          "title": "Sunny",
+          "provider": "aliyun",
+          "service": "qwen",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        }
+      ]
+    }
+  ]
+}

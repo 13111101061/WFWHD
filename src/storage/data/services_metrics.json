@@ -1,0 +1,13 @@
+{
+  "lastUpdate": "2026-01-09T08:10:16.155Z",
+  "services": {
+    "test_service": {
+      "service": "test_service",
+      "total": 1,
+      "success": 1,
+      "failure": 0,
+      "totalTime": 150,
+      "lastUsed": "2025-10-30T10:08:42.096Z"
+    }
+  }
+}

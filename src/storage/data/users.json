@@ -1,0 +1,38 @@
+{
+  "users": {
+    "user_mfdjdsdt_51ab4ef52742": {
+      "id": "user_mfdjdsdt_51ab4ef52742",
+      "username": "admin",
+      "email": "admin@example.com",
+      "passwordHash": "$2b$12$d.gPaIQPIUsO9SfBTTWgHeaus464tLjvHn41lv200/E9HOGOU8ix2",
+      "role": "admin",
+      "permissionLevel": 1,
+      "apiKey": "uk_mfdjdsdt_c02db8cef0203f0639a93d0a135599d6",
+      "apiKeyVersion": 1,
+      "inviteCode": null,
+      "profile": {
+        "firstName": "System",
+        "lastName": "Administrator",
+        "phone": "",
+        "avatar": ""
+      },
+      "status": "active",
+      "permissionExpiry": null,
+      "specialPermissions": [],
+      "metadata": {
+        "lastLogin": null,
+        "loginCount": 0,
+        "apiCallCount": 0,
+        "lastApiCall": null,
+        "lastPermissionUpdate": "2025-09-10T05:26:01.457Z"
+      },
+      "createdAt": "2025-09-10T05:26:01.457Z",
+      "updatedAt": "2025-09-10T05:26:01.457Z"
+    }
+  },
+  "metadata": {
+    "version": 0,
+    "totalUsers": 1,
+    "lastModified": "2025-09-10T05:26:01.457Z"
+  }
+}

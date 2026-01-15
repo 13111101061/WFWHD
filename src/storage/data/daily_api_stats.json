@@ -1,0 +1,105 @@
+{
+  "data": {},
+  "metadata": {
+    "version": 0,
+    "lastModified": "2025-09-16T03:14:19.970Z"
+  },
+  "dates": {
+    "2025-09-16": {
+      "totalCalls": 15,
+      "endpoints": {
+        "GET /admin/stats/overall": 2,
+        "GET /admin/stats/summary": 2,
+        "GET /admin/stats/endpoints": 2,
+        "GET /admin/stats/daily": 2,
+        "POST /api/qwen-tts-http": 2,
+        "GET /audio/qwen-http-audio_de4459b1-60a4-41f9-b004-4b730c1f1e0b.wav": 1,
+        "GET /tts-test.html": 2,
+        "GET /@vite/client": 1,
+        "GET /audio/qwen-http-audio_52e8a0fd-ee53-42d0-95db-c832ce3e3abe.wav": 1
+      }
+    },
+    "2025-09-19": {
+      "totalCalls": 30,
+      "endpoints": {
+        "GET /api/sms/health": 9,
+        "POST /api/sms/phone": 9,
+        "GET /api/sms/account": 3,
+        "GET /api/sms/provinces": 3,
+        "GET /api/sms/operators": 3,
+        "POST /api/sms/complete": 3
+      }
+    },
+    "2025-09-22": {
+      "totalCalls": 3,
+      "endpoints": {
+        "GET /api/snpan/auth": 1,
+        "POST /api/snpan/auth/refresh": 1,
+        "GET /api/snpan/upload-url": 1
+      }
+    },
+    "2025-10-30": {
+      "totalCalls": 30,
+      "endpoints": {
+        "GET /": 9,
+        "GET /api/tts/voices": 10,
+        "GET /hybridaction/zybTrackerStatisticsAction": 6,
+        "GET /@vite/client": 5
+      }
+    },
+    "2025-10-31": {
+      "totalCalls": 92,
+      "endpoints": {
+        "GET /api/tts/voices/models": 1,
+        "GET /api/voice-models/models": 8,
+        "GET /api/voice-models/providers/aliyun": 1,
+        "GET /api/voice-models/categories/female": 8,
+        "GET /api/voice-models/tags/sweet": 1,
+        "GET /api/tts/voices": 4,
+        "GET /api/voice-models/stats": 7,
+        "POST /api/tts/synthesize": 42,
+        "GET /admin/api-keys": 1,
+        "GET /api/voice-models/tags/popular": 4,
+        "GET /api/voice-models/search": 4,
+        "GET /api/voice-models/categories/male": 4,
+        "HEAD /uploads/audio/qwen-http-audio_401a78a7-cfc9-91fc-9255-2c2e472977b3.wav": 1,
+        "GET /": 4,
+        "GET /api/tts/providers": 1,
+        "GET /api/tts/stats": 1
+      }
+    },
+    "2025-11-01": {
+      "totalCalls": 51,
+      "endpoints": {
+        "GET /api/public/info": 4,
+        "POST /api/tts": 8,
+        "GET /api/auth/stats": 2,
+        "POST /api/auth/keys": 2,
+        "GET /api/monitoring/stats": 6,
+        "GET /": 4,
+        "GET /hybridaction/zybTrackerStatisticsAction": 4,
+        "POST /api/tts/synthesize": 21
+      }
+    },
+    "2026-01-09": {
+      "totalCalls": 47,
+      "endpoints": {
+        "GET /hybridaction/zybTrackerStatisticsAction": 8,
+        "GET /admin": 1,
+        "GET /login": 1,
+        "GET /api/tts/voices/categories": 16,
+        "GET /api/tts/voices/models": 5,
+        "GET /api/tts/voices/models/aliyun-cosyvoice-longxiaochun": 5,
+        "GET /api/tts/voices/stats": 5,
+        "POST /api/tts/synthesize": 6
+      }
+    },
+    "2026-01-10": {
+      "totalCalls": 2,
+      "endpoints": {
+        "GET /api/voice-models/stats": 1,
+        "GET /api/voice-models/models/aliyun-qwen-kai": 1
+      }
+    }
+  }
+}

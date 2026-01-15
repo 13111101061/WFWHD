@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai音色全链路测试 - TTS音色工厂</title>
+    <script src="../apps/api/public/js/tts-client.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .config-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .config-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .voice-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .voice-info .label {
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .voice-info .value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .test-steps {
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .step.pending {
+            background: #fff3cd;
+        }
+
+        .step.running {
+            background: #cce5ff;
+        }
+
+        .step.success {
+            background: #d4edda;
+        }
+
+        .step.error {
+            background: #f8d7da;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .step.pending .step-icon {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .step.running .step-icon {
+            background: #007bff;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        .step.success .step-icon {
+            background: #28a745;
+            color: white;
+        }
+
+        .step.error .step-icon {
+            background: #dc3545;
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .step-detail {
+            font-size: 12px;
+            color: #666;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .result-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-section h3 {
+            margin-bottom: 15px;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .result-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .result-item .label {
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .result-item .value {
+            color: #333;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎙️ Kai音色全链路测试</h1>
+            <p>TTS音色工厂 - 端到端集成测试</p>
+        </div>
+
+        <div class="content">
+            <div class="config-section">
+                <h3>⚙️ 配置</h3>
+                <div class="form-group">
+                    <label>API基础URL</label>
+                    <input type="text" id="apiBaseUrl" value="http://localhost:3000" placeholder="http://localhost:3000">
+                </div>
+                <div class="form-group">
+                    <label>API密钥</label>
+                    <input type="text" id="apiKey" value="key2" placeholder="输入API密钥">
+                </div>
+                <div class="form-group">
+                    <label>测试文本</label>
+                    <textarea id="testText">你好，我是Kai。这是一个全链路测试语音。Hello, this is a full chain test voice.</textarea>
+                </div>
+                <div class="form-group">
+                    <label>音色</label>
+                    <select id="voiceSelect" disabled>
+                        <option value="aliyun-qwen-kai">Kai (aliyun-qwen-kai)</option>
+                    </select>
+                    <div class="voice-info" id="voiceInfo" style="display: none;">
+                        <div class="label">音色ID:</div>
+                        <div class="value" id="voiceId"></div>
+                        <div class="label">名称:</div>
+                        <div class="value" id="voiceName"></div>
+                        <div class="label">服务商:</div>
+                        <div class="value" id="voiceProvider"></div>
+                        <div class="label">模型:</div>
+                        <div class="value" id="voiceModel"></div>
+                        <div class="label">语言:</div>
+                        <div class="value" id="voiceLanguages"></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="startTestBtn" onclick="startTest()">开始测试</button>
+                <button class="btn btn-secondary" id="clearBtn" onclick="clearResults()">清除结果</button>
+            </div>
+
+            <div class="test-steps" id="testSteps">
+            </div>
+
+            <div class="result-section" id="resultSection">
+                <h3>✅ 测试成功</h3>
+                <audio class="audio-player" id="audioPlayer" controls></audio>
+                <div class="result-info">
+                    <div class="result-item">
+                        <div class="label">音色</div>
+                        <div class="value" id="resultVoice"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">模型</div>
+                        <div class="value" id="resultModel"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">时长</div>
+                        <div class="value" id="resultDuration"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">文件格式</div>
+                        <div class="value" id="resultFormat"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">音频URL</div>
+                        <div class="value" id="resultAudioUrl"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">文件路径</div>
+                        <div class="value" id="resultFilePath"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ttsClient = null;
+        let voiceConfig = null;
+
+        const testSteps = [
+            { id: 'step1', title: '初始化TTS客户端', detail: '连接到API服务器' },
+            { id: 'step2', title: 'API密钥认证', detail: '验证访问权限' },
+            { id: 'step3', title: '查询Kai音色配置', detail: '获取音色详细信息' },
+            { id: 'step4', title: 'TTS语音合成', detail: '调用音色工厂服务' },
+            { id: 'step5', title: '验证音频文件', detail: '检查音频生成结果' }
+        ];
+
+        function createStepElement(step) {
+            const div = document.createElement('div');
+            div.className = 'step pending';
+            div.id = step.id;
+            div.innerHTML = `
+                <div class="step-icon">⏳</div>
+                <div class="step-content">
+                    <div class="step-title">${step.title}</div>
+                    <div class="step-detail">${step.detail}</div>
+                </div>
+            `;
+            return div;
+        }
+
+        function updateStepStatus(stepId, status, detail = '') {
+            const step = document.getElementById(stepId);
+            if (!step) return;
+
+            step.className = `step ${status}`;
+            const icon = step.querySelector('.step-icon');
+            const stepDetail = step.querySelector('.step-detail');
+
+            switch (status) {
+                case 'running':
+                    icon.innerHTML = '⟳';
+                    if (detail) stepDetail.textContent = detail;
+                    break;
+                case 'success':
+                    icon.innerHTML = '✓';
+                    if (detail) stepDetail.textContent = detail;
+                    break;
+                case 'error':
+                    icon.innerHTML = '✗';
+                    if (detail) stepDetail.textContent = detail;
+                    break;
+            }
+        }
+
+        function initTestSteps() {
+            const container = document.getElementById('testSteps');
+            container.innerHTML = '';
+            testSteps.forEach(step => {
+                container.appendChild(createStepElement(step));
+            });
+        }
+
+        function clearResults() {
+            initTestSteps();
+            document.getElementById('resultSection').classList.remove('show');
+            document.getElementById('voiceInfo').style.display = 'none';
+        }
+
+        async function startTest() {
+            const apiBaseUrl = document.getElementById('apiBaseUrl').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const testText = document.getElementById('testText').value.trim();
+
+            if (!apiBaseUrl) {
+                alert('请输入API基础URL');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('请输入API密钥');
+                return;
+            }
+
+            if (!testText) {
+                alert('请输入测试文本');
+                return;
+            }
+
+            const btn = document.getElementById('startTestBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>测试中...';
+
+            clearResults();
+
+            try {
+                await runFullChainTest(apiBaseUrl, apiKey, testText);
+            } catch (error) {
+                console.error('测试失败:', error);
+                alert(`测试失败: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '开始测试';
+            }
+        }
+
+        async function runFullChainTest(baseUrl, apiKey, text) {
+            ttsClient = new TTSClient(baseUrl, apiKey);
+
+            updateStepStatus('step1', 'running', '正在连接到服务器...');
+
+            const serviceStatus = await ttsClient.checkServiceStatus();
+            if (!serviceStatus) {
+                throw new Error('无法连接到服务器，请检查URL和服务是否运行');
+            }
+            updateStepStatus('step1', 'success', `服务器运行正常: ${baseUrl}`);
+
+            updateStepStatus('step2', 'running', '正在验证API密钥...');
+            try {
+                await ttsClient.getModels();
+                updateStepStatus('step2', 'success', `API密钥认证成功: ${apiKey.substring(0, 8)}...`);
+            } catch (error) {
+                updateStepStatus('step2', 'error', `认证失败: ${error.message}`);
+                throw error;
+            }
+
+            updateStepStatus('step3', 'running', '正在查询Kai音色配置...');
+            try {
+                voiceConfig = await ttsClient.getModel('aliyun-qwen-kai');
+                updateStepStatus('step3', 'success', `音色ID: ${voiceConfig.id}, 名称: ${voiceConfig.name}`);
+
+                document.getElementById('voiceInfo').style.display = 'block';
+                document.getElementById('voiceId').textContent = voiceConfig.id;
+                document.getElementById('voiceName').textContent = voiceConfig.name;
+                document.getElementById('voiceProvider').textContent = voiceConfig.provider;
+                document.getElementById('voiceModel').textContent = voiceConfig.model;
+                document.getElementById('voiceLanguages').textContent = voiceConfig.languages.join(', ');
+            } catch (error) {
+                updateStepStatus('step3', 'error', `查询失败: ${error.message}`);
+                throw error;
+            }
+
+            updateStepStatus('step4', 'running', '正在调用TTS合成API...');
+            let result;
+            try {
+                result = await ttsClient.synthesize(text, {
+                    service: `${voiceConfig.provider}_${voiceConfig.service}`,
+                    voice: voiceConfig.voiceId,
+                    model: voiceConfig.model,
+                    format: 'mp3',
+                    sample_rate: 22050
+                });
+                updateStepStatus('step4', 'success', `合成完成，任务ID: ${result.taskId}`);
+            } catch (error) {
+                updateStepStatus('step4', 'error', `合成失败: ${error.message}`);
+                throw error;
+            }
+
+            updateStepStatus('step5', 'running', '正在验证音频文件...');
+            try {
+                const audioUrl = `${baseUrl}${result.audioUrl}`;
+                
+                const response = await fetch(audioUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                const contentLength = response.headers.get('content-length');
+                const sizeKB = ((parseInt(contentLength) || 0) / 1024).toFixed(2);
+
+                updateStepStatus('step5', 'success', `音频文件验证成功，大小: ${sizeKB} KB`);
+
+                const resultSection = document.getElementById('resultSection');
+                resultSection.classList.add('show');
+
+                document.getElementById('audioPlayer').src = audioUrl;
+                document.getElementById('resultVoice').textContent = result.voice;
+                document.getElementById('resultModel').textContent = result.model;
+                document.getElementById('resultDuration').textContent = `${result.duration}秒`;
+                document.getElementById('resultFormat').textContent = result.format;
+                document.getElementById('resultAudioUrl').textContent = audioUrl;
+                document.getElementById('resultFilePath').textContent = result.filePath || 'N/A';
+            } catch (error) {
+                updateStepStatus('step5', 'error', `验证失败: ${error.message}`);
+                throw error;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTestSteps();
+        });
+    </script>
+</body>
+</html>
