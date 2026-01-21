@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-01-09T07:30:51.937Z",
+  "generatedAt": "2026-01-21T01:17:47.525Z",
   "source": {
     "mappingVersion": 1,
-    "sourceFingerprint": "3f22bd899d59e47d",
-    "totalVoices": 21
+    "sourceFingerprint": "d43738573fecce13",
+    "totalVoices": 49
   },
   "categories": [
     {
@@ -12,73 +12,52 @@
       "title": "女声",
       "icon": "👩",
       "order": 1,
-      "count": 13,
+      "count": 22,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-longxiaochun",
-          "title": "龙小淳",
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101001",
-          "title": "亲亲",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "volcengine-http-bv001-streaming",
-          "title": "通用女声",
-          "provider": "volcengine",
-          "service": "http",
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "minimax-tts-female-zh-1",
-          "title": "温柔女声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101002",
-          "title": "鸭鸭",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101003",
-          "title": "圆圆",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-chelsie",
           "title": "Chelsie",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -89,7 +68,7 @@
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -97,30 +76,147 @@
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-loongeva",
-          "title": "Eva",
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "en-GB"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-jada",
           "title": "Jada",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kiki",
+          "title": "Kiki",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-serena",
           "title": "Serena",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -128,24 +224,66 @@
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
-            "en-US"
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-sunny",
           "title": "Sunny",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -155,73 +293,144 @@
       "title": "男声",
       "icon": "👨",
       "order": 2,
-      "count": 8,
+      "count": 27,
       "items": [
         {
-          "systemId": "minimax-tts-male-zh-1",
-          "title": "磁性男声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101070",
-          "title": "翻译腔男声",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "aliyun-cosyvoice-longcheng",
-          "title": "龙橙",
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "volcengine-http-bv002-streaming",
-          "title": "通用男声",
-          "provider": "volcengine",
-          "service": "http",
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101004",
-          "title": "小郭",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101005",
-          "title": "小何",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-dylan",
           "title": "Dylan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eric",
+          "title": "Eric",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN"
@@ -231,11 +440,193 @@
           "systemId": "aliyun-qwen-ethan",
           "title": "Ethan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN",
             "en-US"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-li",
+          "title": "Li",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-marcus",
+          "title": "Marcus",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-peter",
+          "title": "Peter",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-rocky",
+          "title": "Rocky",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-roy",
+          "title": "Roy",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -245,133 +636,119 @@
       "title": "中文",
       "icon": "🇨🇳",
       "order": 10,
-      "count": 20,
+      "count": 49,
       "items": [
         {
-          "systemId": "minimax-tts-male-zh-1",
-          "title": "磁性男声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101070",
-          "title": "翻译腔男声",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "aliyun-cosyvoice-longcheng",
-          "title": "龙橙",
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-longxiaochun",
-          "title": "龙小淳",
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
           "provider": "aliyun",
-          "service": "cosyvoice",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101001",
-          "title": "亲亲",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "volcengine-http-bv002-streaming",
-          "title": "通用男声",
-          "provider": "volcengine",
-          "service": "http",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "volcengine-http-bv001-streaming",
-          "title": "通用女声",
-          "provider": "volcengine",
-          "service": "http",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "minimax-tts-female-zh-1",
-          "title": "温柔女声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101004",
-          "title": "小郭",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101005",
-          "title": "小何",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101002",
-          "title": "鸭鸭",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101003",
-          "title": "圆圆",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-chelsie",
           "title": "Chelsie",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -382,7 +759,7 @@
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -390,10 +767,87 @@
           ]
         },
         {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
           "systemId": "aliyun-qwen-dylan",
           "title": "Dylan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eric",
+          "title": "Eric",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN"
@@ -403,7 +857,7 @@
           "systemId": "aliyun-qwen-ethan",
           "title": "Ethan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN",
@@ -414,17 +868,300 @@
           "systemId": "aliyun-qwen-jada",
           "title": "Jada",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kiki",
+          "title": "Kiki",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-li",
+          "title": "Li",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-marcus",
+          "title": "Marcus",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-peter",
+          "title": "Peter",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-rocky",
+          "title": "Rocky",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-roy",
+          "title": "Roy",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-serena",
           "title": "Serena",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -432,24 +1169,79 @@
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
-            "en-US"
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-sunny",
           "title": "Sunny",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -459,13 +1251,119 @@
       "title": "英文",
       "icon": "🇺🇸",
       "order": 11,
-      "count": 5,
+      "count": 39,
       "items": [
+        {
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
         {
           "systemId": "aliyun-qwen-chelsie",
           "title": "Chelsie",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -476,7 +1374,7 @@
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -484,10 +1382,77 @@
           ]
         },
         {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
           "systemId": "aliyun-qwen-ethan",
           "title": "Ethan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN",
@@ -495,10 +1460,233 @@
           ]
         },
         {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
           "systemId": "aliyun-qwen-serena",
           "title": "Serena",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -506,33 +1694,1154 @@
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
-            "en-US"
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
     },
     {
-      "key": "lang_en_gb",
-      "title": "英式英文",
-      "icon": "🇬🇧",
-      "order": 12,
+      "key": "lang_ja_jp",
+      "title": "日语",
+      "icon": "🇯🇵",
+      "order": 13,
+      "count": 35,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_ko_kr",
+      "title": "韩语",
+      "icon": "🇰🇷",
+      "order": 14,
+      "count": 35,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_es_es",
+      "title": "西班牙语",
+      "icon": "🇪🇸",
+      "order": 15,
+      "count": 3,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_ru_ru",
+      "title": "俄语",
+      "icon": "🇷🇺",
+      "order": 16,
       "count": 1,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-loongeva",
-          "title": "Eva",
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
           "provider": "aliyun",
-          "service": "cosyvoice",
-          "gender": "female",
+          "service": "qwen_http",
+          "gender": "male",
           "languages": [
-            "en-GB"
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_it_it",
+      "title": "意大利语",
+      "icon": "🇮🇹",
+      "order": 17,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_fr_fr",
+      "title": "法语",
+      "icon": "🇫🇷",
+      "order": 18,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "lang_de_de",
+      "title": "德语",
+      "icon": "🇩🇪",
+      "order": 19,
+      "count": 1,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -542,33 +2851,119 @@
       "title": "阿里云",
       "icon": "☁️",
       "order": 20,
-      "count": 11,
+      "count": 49,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-longcheng",
-          "title": "龙橙",
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-longxiaochun",
-          "title": "龙小淳",
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-andre",
+          "title": "Andre",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bellona",
+          "title": "Bellona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bodega",
+          "title": "Bodega",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-chelsie",
           "title": "Chelsie",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -579,7 +2974,7 @@
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -587,10 +2982,87 @@
           ]
         },
         {
+          "systemId": "aliyun-qwen-dolce",
+          "title": "Dolce",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "it-IT",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
           "systemId": "aliyun-qwen-dylan",
           "title": "Dylan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ebona",
+          "title": "Ebona",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-elias",
+          "title": "Elias",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-emilien",
+          "title": "Emilien",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "fr-FR",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eric",
+          "title": "Eric",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN"
@@ -600,38 +3072,311 @@
           "systemId": "aliyun-qwen-ethan",
           "title": "Ethan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN",
             "en-US"
-          ]
-        },
-        {
-          "systemId": "aliyun-cosyvoice-loongeva",
-          "title": "Eva",
-          "provider": "aliyun",
-          "service": "cosyvoice",
-          "gender": "female",
-          "languages": [
-            "en-GB"
           ]
         },
         {
           "systemId": "aliyun-qwen-jada",
           "title": "Jada",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kiki",
+          "title": "Kiki",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-li",
+          "title": "Li",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-marcus",
+          "title": "Marcus",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mochi",
+          "title": "Mochi",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-peter",
+          "title": "Peter",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-pip",
+          "title": "Pip",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-radiogol",
+          "title": "Radio Gol",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-rocky",
+          "title": "Rocky",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-roy",
+          "title": "Roy",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-seren",
+          "title": "Seren",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-serena",
           "title": "Serena",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -639,151 +3384,79 @@
           ]
         },
         {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
+          "systemId": "aliyun-qwen-sohee",
+          "title": "Sohee",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
-            "en-US"
+            "en-US",
+            "ko-KR",
+            "ja-JP"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-sonrisa",
+          "title": "Sonrisa",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "es-ES",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
           "systemId": "aliyun-qwen-sunny",
           "title": "Sunny",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
           ]
-        }
-      ]
-    },
-    {
-      "key": "provider_tencent",
-      "title": "腾讯云",
-      "icon": "🐧",
-      "order": 21,
-      "count": 6,
-      "items": [
+        },
         {
-          "systemId": "tencent-tts-101070",
-          "title": "翻译腔男声",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-vincent",
+          "title": "Vincent",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101001",
-          "title": "亲亲",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101004",
-          "title": "小郭",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101005",
-          "title": "小何",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101002",
-          "title": "鸭鸭",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101003",
-          "title": "圆圆",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "provider_volcengine",
-      "title": "火山引擎",
-      "icon": "🌋",
-      "order": 22,
-      "count": 2,
-      "items": [
-        {
-          "systemId": "volcengine-http-bv002-streaming",
-          "title": "通用男声",
-          "provider": "volcengine",
-          "service": "http",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "volcengine-http-bv001-streaming",
-          "title": "通用女声",
-          "provider": "volcengine",
-          "service": "http",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        }
-      ]
-    },
-    {
-      "key": "provider_minimax",
-      "title": "MiniMax",
-      "icon": "🤖",
-      "order": 23,
-      "count": 2,
-      "items": [
-        {
-          "systemId": "minimax-tts-male-zh-1",
-          "title": "磁性男声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "minimax-tts-female-zh-1",
-          "title": "温柔女声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -793,63 +3466,13 @@
       "title": "热门推荐",
       "icon": "🔥",
       "order": 30,
-      "count": 6,
+      "count": 1,
       "items": [
-        {
-          "systemId": "minimax-tts-male-zh-1",
-          "title": "磁性男声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "tencent-tts-101001",
-          "title": "亲亲",
-          "provider": "tencent",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "volcengine-http-bv002-streaming",
-          "title": "通用男声",
-          "provider": "volcengine",
-          "service": "http",
-          "gender": "male",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "volcengine-http-bv001-streaming",
-          "title": "通用女声",
-          "provider": "volcengine",
-          "service": "http",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
-        {
-          "systemId": "minimax-tts-female-zh-1",
-          "title": "温柔女声",
-          "provider": "minimax",
-          "service": "tts",
-          "gender": "female",
-          "languages": [
-            "zh-CN"
-          ]
-        },
         {
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -863,13 +3486,13 @@
       "title": "双语音色",
       "icon": "🌐",
       "order": 31,
-      "count": 5,
+      "count": 4,
       "items": [
         {
           "systemId": "aliyun-qwen-chelsie",
           "title": "Chelsie",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -880,7 +3503,7 @@
           "systemId": "aliyun-qwen-cherry",
           "title": "Cherry",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -891,7 +3514,7 @@
           "systemId": "aliyun-qwen-ethan",
           "title": "Ethan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN",
@@ -902,18 +3525,7 @@
           "systemId": "aliyun-qwen-serena",
           "title": "Serena",
           "provider": "aliyun",
-          "service": "qwen",
-          "gender": "female",
-          "languages": [
-            "zh-CN",
-            "en-US"
-          ]
-        },
-        {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
-          "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
@@ -927,36 +3539,110 @@
       "title": "甜美音色",
       "icon": "🍬",
       "order": 32,
-      "count": 3,
+      "count": 8,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-longxiaochun",
-          "title": "龙小淳",
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "tencent-tts-101001",
-          "title": "亲亲",
-          "provider": "tencent",
-          "service": "tts",
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         },
         {
-          "systemId": "minimax-tts-female-zh-1",
-          "title": "温柔女声",
-          "provider": "minimax",
-          "service": "tts",
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-stella-flash",
+          "title": "Stella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -966,17 +3652,32 @@
       "title": "专业音色",
       "icon": "💼",
       "order": 33,
-      "count": 1,
+      "count": 2,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-stella",
-          "title": "Stella",
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
           "provider": "aliyun",
-          "service": "cosyvoice",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN",
-            "en-US"
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-neil",
+          "title": "Neil",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -986,16 +3687,32 @@
       "title": "讲故事",
       "icon": "📖",
       "order": 34,
-      "count": 1,
+      "count": 2,
       "items": [
         {
-          "systemId": "aliyun-cosyvoice-longxiaochun",
-          "title": "龙小淳",
+          "systemId": "aliyun-qwen-arthur",
+          "title": "Arthur",
           "provider": "aliyun",
-          "service": "cosyvoice",
-          "gender": "female",
+          "service": "qwen_http",
+          "gender": "male",
           "languages": [
-            "zh-CN"
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eldric",
+          "title": "Eldric Sage",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]
@@ -1005,13 +3722,23 @@
       "title": "方言音色",
       "icon": "🗣️",
       "order": 35,
-      "count": 3,
+      "count": 10,
       "items": [
         {
           "systemId": "aliyun-qwen-dylan",
           "title": "Dylan",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-eric",
+          "title": "Eric",
+          "provider": "aliyun",
+          "service": "qwen_http",
           "gender": "male",
           "languages": [
             "zh-CN"
@@ -1021,8 +3748,68 @@
           "systemId": "aliyun-qwen-jada",
           "title": "Jada",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kiki",
+          "title": "Kiki",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-li",
+          "title": "Li",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-marcus",
+          "title": "Marcus",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-peter",
+          "title": "Peter",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-rocky",
+          "title": "Rocky",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-roy",
+          "title": "Roy",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
           "languages": [
             "zh-CN"
           ]
@@ -1031,10 +3818,260 @@
           "systemId": "aliyun-qwen-sunny",
           "title": "Sunny",
           "provider": "aliyun",
-          "service": "qwen",
+          "service": "qwen_http",
           "gender": "female",
           "languages": [
             "zh-CN"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_cute",
+      "title": "可爱音色",
+      "icon": "🎀",
+      "order": 36,
+      "count": 7,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-bella",
+          "title": "Bella",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-bunny",
+          "title": "Bunny",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-mia",
+          "title": "Mia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-momo",
+          "title": "Momo",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nini",
+          "title": "Nini",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-onoanna",
+          "title": "Ono Anna",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-vivian",
+          "title": "Vivian",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_mature",
+      "title": "成熟音色",
+      "icon": "👔",
+      "order": 37,
+      "count": 3,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-jennifer",
+          "title": "Jennifer",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-katerina",
+          "title": "Katerina",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-maia",
+          "title": "Maia",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "female",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tag_young_male",
+      "title": "青年男声",
+      "icon": "👦",
+      "order": 38,
+      "count": 7,
+      "items": [
+        {
+          "systemId": "aliyun-qwen-aiden",
+          "title": "Aiden",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-alek",
+          "title": "Alek",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ru-RU",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-kai",
+          "title": "Kai",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-lenn",
+          "title": "Lenn",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "de-DE",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-moon",
+          "title": "Moon",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-nofish",
+          "title": "Nofish",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
+          ]
+        },
+        {
+          "systemId": "aliyun-qwen-ryan",
+          "title": "Ryan",
+          "provider": "aliyun",
+          "service": "qwen_http",
+          "gender": "male",
+          "languages": [
+            "zh-CN",
+            "en-US",
+            "ja-JP",
+            "ko-KR"
           ]
         }
       ]

@@ -212,7 +212,14 @@ class VoiceCategoryGenerator {
     const languageMap = {
       'zh-CN': { key: 'lang_zh_cn', title: '中文', icon: '🇨🇳', order: 10 },
       'en-US': { key: 'lang_en_us', title: '英文', icon: '🇺🇸', order: 11 },
-      'en-GB': { key: 'lang_en_gb', title: '英式英文', icon: '🇬🇧', order: 12 }
+      'en-GB': { key: 'lang_en_gb', title: '英式英文', icon: '🇬🇧', order: 12 },
+      'ja-JP': { key: 'lang_ja_jp', title: '日语', icon: '🇯🇵', order: 13 },
+      'ko-KR': { key: 'lang_ko_kr', title: '韩语', icon: '🇰🇷', order: 14 },
+      'es-ES': { key: 'lang_es_es', title: '西班牙语', icon: '🇪🇸', order: 15 },
+      'ru-RU': { key: 'lang_ru_ru', title: '俄语', icon: '🇷🇺', order: 16 },
+      'it-IT': { key: 'lang_it_it', title: '意大利语', icon: '🇮🇹', order: 17 },
+      'fr-FR': { key: 'lang_fr_fr', title: '法语', icon: '🇫🇷', order: 18 },
+      'de-DE': { key: 'lang_de_de', title: '德语', icon: '🇩🇪', order: 19 }
     };
 
     const categories = [];
@@ -249,41 +256,105 @@ class VoiceCategoryGenerator {
       minimax: { key: 'provider_minimax', title: 'MiniMax', icon: '🤖', order: 23 }
     };
 
-    return Object.entries(providerMap).map(([provider, config]) => {
+    const categories = [];
+
+    Object.entries(providerMap).forEach(([provider, config]) => {
       const items = voices
         .filter(v => v.provider === provider)
         .map(v => this.createCategoryItem(v))
         .sort((a, b) => this.compareByPopularity(a, b));
 
-      return {
-        key: config.key,
-        title: config.title,
-        icon: config.icon,
-        order: config.order,
-        count: items.length,
-        items: items
-      };
+      if (items.length > 0) {
+        categories.push({
+          key: config.key,
+          title: config.title,
+          icon: config.icon,
+          order: config.order,
+          count: items.length,
+          items: items
+        });
+      }
     });
+
+    return categories;
   }
 
   /**
    * 按标签分类
    */
   categorizeByTags(voices) {
+    // 支持中英文标签映射
     const tagMap = {
-      popular: { key: 'tag_popular', title: '热门推荐', icon: '🔥', order: 30 },
-      bilingual: { key: 'tag_bilingual', title: '双语音色', icon: '🌐', order: 31 },
-      sweet: { key: 'tag_sweet', title: '甜美音色', icon: '🍬', order: 32 },
-      professional: { key: 'tag_professional', title: '专业音色', icon: '💼', order: 33 },
-      storytelling: { key: 'tag_storytelling', title: '讲故事', icon: '📖', order: 34 },
-      dialect: { key: 'tag_dialect', title: '方言音色', icon: '🗣️', order: 35 }
+      popular: {
+        key: 'tag_popular',
+        title: '热门推荐',
+        icon: '🔥',
+        order: 30,
+        aliases: ['popular', '热门', '推荐']
+      },
+      bilingual: {
+        key: 'tag_bilingual',
+        title: '双语音色',
+        icon: '🌐',
+        order: 31,
+        aliases: ['bilingual', '双语', '多语言']
+      },
+      sweet: {
+        key: 'tag_sweet',
+        title: '甜美音色',
+        icon: '🍬',
+        order: 32,
+        aliases: ['sweet', '甜美', '可爱', '温柔']
+      },
+      professional: {
+        key: 'tag_professional',
+        title: '专业音色',
+        icon: '💼',
+        order: 33,
+        aliases: ['professional', '专业', '新闻']
+      },
+      storytelling: {
+        key: 'tag_storytelling',
+        title: '讲故事',
+        icon: '📖',
+        order: 34,
+        aliases: ['storytelling', '讲故事', '长者']
+      },
+      dialect: {
+        key: 'tag_dialect',
+        title: '方言音色',
+        icon: '🗣️',
+        order: 35,
+        aliases: ['dialect', '方言']
+      },
+      cute: {
+        key: 'tag_cute',
+        title: '可爱音色',
+        icon: '🎀',
+        order: 36,
+        aliases: ['cute', '可爱', '调皮', '年轻女性']
+      },
+      mature: {
+        key: 'tag_mature',
+        title: '成熟音色',
+        icon: '👔',
+        order: 37,
+        aliases: ['mature', '成熟', '优雅']
+      },
+      young_male: {
+        key: 'tag_young_male',
+        title: '青年男声',
+        icon: '👦',
+        order: 38,
+        aliases: ['young_male', '年轻男性', '酷']
+      }
     };
 
     const categories = [];
 
-    Object.entries(tagMap).forEach(([tag, config]) => {
+    Object.entries(tagMap).forEach(([tagKey, config]) => {
       const items = voices
-        .filter(v => v.tags && v.tags.includes(tag))
+        .filter(v => v.tags && v.tags.some(t => config.aliases.includes(t)))
         .map(v => this.createCategoryItem(v))
         .sort((a, b) => this.compareByPopularity(a, b));
 

@@ -10,4 +10,8 @@ npm-debug.log*
 # Env
 .env
 .env.*
-nul  
+nul
+
+# AI/IDE config
+.claude/
+CLAUDE.md
