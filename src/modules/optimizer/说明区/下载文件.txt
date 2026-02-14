@@ -1,0 +1,220 @@
+
+## API Docs
+- 开发文档 > 网络接口 > 登录注册 [账号密码登录](https://doc.buildingai.cc/400401823e0.md): 
+- 开发文档 > 网络接口 > 登录注册 [账号密码注册](https://doc.buildingai.cc/400401824e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [单个上传](https://doc.buildingai.cc/400401825e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [多个上传](https://doc.buildingai.cc/400401826e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [列表](https://doc.buildingai.cc/400401827e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [详情](https://doc.buildingai.cc/400401828e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [下载](https://doc.buildingai.cc/400401829e0.md): 
+- 开发文档 > 网络接口 > 前台 > 文件上传/下载 [删除](https://doc.buildingai.cc/400401830e0.md): 
+- 开发文档 > 网络接口 > 前台 > 用户 [算力明细](https://doc.buildingai.cc/400401831e0.md): 
+- 开发文档 > 网络接口 > 前台 > 用户 [登录配置](https://doc.buildingai.cc/400401832e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [对话(非流式)](https://doc.buildingai.cc/400401833e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [流式对话](https://doc.buildingai.cc/400401834e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [对话记录](https://doc.buildingai.cc/400401835e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [对话详情](https://doc.buildingai.cc/400401836e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [修改记录](https://doc.buildingai.cc/400401837e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [删除记录](https://doc.buildingai.cc/400401838e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI聊天 [获取记录对话](https://doc.buildingai.cc/400401839e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [列表](https://doc.buildingai.cc/400401840e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [所有记录](https://doc.buildingai.cc/400401841e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [详情:id](https://doc.buildingai.cc/400401842e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [创建](https://doc.buildingai.cc/400401843e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [修改](https://doc.buildingai.cc/400401844e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [可见状态](https://doc.buildingai.cc/400401845e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [添加](https://doc.buildingai.cc/400401846e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [关联详情](https://doc.buildingai.cc/400401847e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [系统MCP](https://doc.buildingai.cc/400401848e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [json导入](https://doc.buildingai.cc/400401849e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [移除](https://doc.buildingai.cc/400401850e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [删除](https://doc.buildingai.cc/400401851e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [获取快捷菜单](https://doc.buildingai.cc/400401852e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [系统MCP详情:id](https://doc.buildingai.cc/400401853e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [连通性](https://doc.buildingai.cc/400401854e0.md): 
+- 开发文档 > 网络接口 > 前台 > MCP [批量连通性](https://doc.buildingai.cc/400401855e0.md): 
+- 开发文档 > 网络接口 > 前台 > 充值中心 [充值中心](https://doc.buildingai.cc/400401856e0.md): 
+- 开发文档 > 网络接口 > 前台 > 充值中心 [充值提交订单](https://doc.buildingai.cc/400401857e0.md): 
+- 开发文档 > 网络接口 > 前台 > 充值中心 [充值记录](https://doc.buildingai.cc/400401858e0.md): 
+- 开发文档 > 网络接口 > 前台 > 充值中心 [预支付](https://doc.buildingai.cc/400401859e0.md): 
+- 开发文档 > 网络接口 > 前台 > 充值中心 [获取支付结果](https://doc.buildingai.cc/400401860e0.md): 
+- 开发文档 > 网络接口 > 前台 > 模型厂商 [列表](https://doc.buildingai.cc/400401861e0.md): 
+- 开发文档 > 网络接口 > 前台 > 模型厂商 [详情:id](https://doc.buildingai.cc/400401862e0.md): 
+- 开发文档 > 网络接口 > 前台 > 模型厂商 [详情:code](https://doc.buildingai.cc/400401863e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI模型 [列表](https://doc.buildingai.cc/400401864e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI模型 [详情:id](https://doc.buildingai.cc/400401865e0.md): 
+- 开发文档 > 网络接口 > 前台 > AI模型 [默认模型](https://doc.buildingai.cc/400401866e0.md): 
+- 开发文档 > 网络接口 > 前台 > 数据分析 [数据记录](https://doc.buildingai.cc/400401867e0.md): 
+- 开发文档 > 网络接口 > 前台 > 会员中心 [会员中心信息](https://doc.buildingai.cc/400401868e0.md): 
+- 开发文档 > 网络接口 > 前台 > 会员中心 [获取套餐列表](https://doc.buildingai.cc/400401869e0.md): 
+- 开发文档 > 网络接口 > 前台 > 会员中心 [预支付](https://doc.buildingai.cc/400401870e0.md): 
+- 开发文档 > 网络接口 > 前台 > 会员中心 [订阅提交订单](https://doc.buildingai.cc/400401871e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [列表](https://doc.buildingai.cc/400401872e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [详情](https://doc.buildingai.cc/400401873e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [创建](https://doc.buildingai.cc/400401874e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [修改](https://doc.buildingai.cc/400401875e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [删除](https://doc.buildingai.cc/400401876e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [批量删除](https://doc.buildingai.cc/400401877e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [启用状态](https://doc.buildingai.cc/400401878e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [json导入](https://doc.buildingai.cc/400401879e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [连通性](https://doc.buildingai.cc/400401880e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [批量连通性](https://doc.buildingai.cc/400401881e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [获取快捷菜单](https://doc.buildingai.cc/400401882e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > MCP [设置快捷菜单](https://doc.buildingai.cc/400401883e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [列表](https://doc.buildingai.cc/400401884e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [新增](https://doc.buildingai.cc/400401885e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [详情:id](https://doc.buildingai.cc/400401886e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [详情:provider](https://doc.buildingai.cc/400401887e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [修改](https://doc.buildingai.cc/400401888e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [删除](https://doc.buildingai.cc/400401889e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 厂商管理 [状态](https://doc.buildingai.cc/400401890e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [列表](https://doc.buildingai.cc/400401891e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [新增](https://doc.buildingai.cc/400401892e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [详情:id](https://doc.buildingai.cc/400401893e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [修改](https://doc.buildingai.cc/400401894e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [删除:id](https://doc.buildingai.cc/400401895e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [批量删除](https://doc.buildingai.cc/400401896e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [设为默认](https://doc.buildingai.cc/400401897e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [模型类型](https://doc.buildingai.cc/400401898e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [模型支持能力](https://doc.buildingai.cc/400401899e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI模型 > 模型管理 [父级模型类型](https://doc.buildingai.cc/400401900e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库列表](https://doc.buildingai.cc/400401901e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库详情](https://doc.buildingai.cc/400401902e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [转移知识库](https://doc.buildingai.cc/400401903e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库删除](https://doc.buildingai.cc/400401904e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库文档列表](https://doc.buildingai.cc/400401905e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库文档详情](https://doc.buildingai.cc/400401906e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库文档删除](https://doc.buildingai.cc/400401907e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库分段列表](https://doc.buildingai.cc/400401908e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库分段详情](https://doc.buildingai.cc/400401909e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [知识库分段删除](https://doc.buildingai.cc/400401910e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI知识库 [数据列表接口](https://doc.buildingai.cc/400401911e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体创建](https://doc.buildingai.cc/400401912e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体列表](https://doc.buildingai.cc/400401913e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体详情](https://doc.buildingai.cc/400401914e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体对话记录列表](https://doc.buildingai.cc/400401915e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体对话记录详情](https://doc.buildingai.cc/400401916e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体对话](https://doc.buildingai.cc/400401917e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体发布API接口对话](https://doc.buildingai.cc/400401918e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体发布API获取对话列表](https://doc.buildingai.cc/400401919e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体发布API获取对话消息](https://doc.buildingai.cc/400401920e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体发布API更新对话](https://doc.buildingai.cc/400401921e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > AI智能体 [智能体发布API删除对话](https://doc.buildingai.cc/400401922e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [列表](https://doc.buildingai.cc/400401923e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [全部列表](https://doc.buildingai.cc/400401924e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [详情](https://doc.buildingai.cc/400401925e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [创建](https://doc.buildingai.cc/400401926e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [修改](https://doc.buildingai.cc/400401927e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [删除](https://doc.buildingai.cc/400401928e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [批量删除](https://doc.buildingai.cc/400401929e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [修改状态](https://doc.buildingai.cc/400401930e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥模板 [json导入](https://doc.buildingai.cc/400401931e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [列表](https://doc.buildingai.cc/400401932e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [列表:templateId](https://doc.buildingai.cc/400401933e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [创建](https://doc.buildingai.cc/400401934e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [统计](https://doc.buildingai.cc/400401935e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [详情](https://doc.buildingai.cc/400401936e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [完整详情](https://doc.buildingai.cc/400401937e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [修改](https://doc.buildingai.cc/400401938e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [修改状态](https://doc.buildingai.cc/400401939e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [删除](https://doc.buildingai.cc/400401940e0.md): 
+- 开发文档 > 网络接口 > 后台 > 工作空间 > 密钥管理 > 密钥配置 [批量删除](https://doc.buildingai.cc/400401941e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [列表](https://doc.buildingai.cc/400401942e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [创建](https://doc.buildingai.cc/400401943e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [详情:id](https://doc.buildingai.cc/400401944e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [删除](https://doc.buildingai.cc/400401945e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [批量删除](https://doc.buildingai.cc/400401946e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [重置密码](https://doc.buildingai.cc/400401947e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [更新状态](https://doc.buildingai.cc/400401948e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [重置随机密码](https://doc.buildingai.cc/400401949e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [登录设置](https://doc.buildingai.cc/400401950e0.md): 
+- 开发文档 > 网络接口 > 后台 > 用户管理 [登录设置](https://doc.buildingai.cc/400401951e0.md): 
+- 开发文档 > 网络接口 > 后台 > 角色管理 [创建](https://doc.buildingai.cc/400401952e0.md): 
+- 开发文档 > 网络接口 > 后台 > 角色管理 [详情:id](https://doc.buildingai.cc/400401953e0.md): 
+- 开发文档 > 网络接口 > 后台 > 角色管理 [修改](https://doc.buildingai.cc/400401954e0.md): 
+- 开发文档 > 网络接口 > 后台 > 角色管理 [删除](https://doc.buildingai.cc/400401955e0.md): 
+- 开发文档 > 网络接口 > 后台 > 角色管理 [列表](https://doc.buildingai.cc/400401956e0.md): 
+- 开发文档 > 网络接口 > 后台 > 菜单管理 [创建](https://doc.buildingai.cc/400401957e0.md): 
+- 开发文档 > 网络接口 > 后台 > 菜单管理 [详情:id](https://doc.buildingai.cc/400401958e0.md): 
+- 开发文档 > 网络接口 > 后台 > 菜单管理 [修改](https://doc.buildingai.cc/400401959e0.md): 
+- 开发文档 > 网络接口 > 后台 > 菜单管理 [删除](https://doc.buildingai.cc/400401960e0.md): 
+- 开发文档 > 网络接口 > 后台 > 菜单管理 [列表](https://doc.buildingai.cc/400401961e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [列表](https://doc.buildingai.cc/400401962e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [修改](https://doc.buildingai.cc/400401963e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [详情:id](https://doc.buildingai.cc/400401964e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [创建](https://doc.buildingai.cc/400401965e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [启用列表](https://doc.buildingai.cc/400401966e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [批量删除](https://doc.buildingai.cc/400401967e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [删除:id](https://doc.buildingai.cc/400401968e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [批量状态](https://doc.buildingai.cc/400401969e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [禁用:id](https://doc.buildingai.cc/400401970e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [启用:id](https://doc.buildingai.cc/400401971e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [是否存在:identifier](https://doc.buildingai.cc/400401972e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [详情:identifier](https://doc.buildingai.cc/400401973e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [入库插件详情:identifier](https://doc.buildingai.cc/400401974e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [本地列表](https://doc.buildingai.cc/400401975e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [类型列表](https://doc.buildingai.cc/400401976e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [版本列表:identifier](https://doc.buildingai.cc/400401977e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [安装](https://doc.buildingai.cc/400401978e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 我的插件 [卸载](https://doc.buildingai.cc/400401979e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 插件操作 [下载](https://doc.buildingai.cc/400401980e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 插件操作 [安装](https://doc.buildingai.cc/400401981e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 平台密钥 [获取开发者密钥](https://doc.buildingai.cc/400401982e0.md): 
+- 开发文档 > 网络接口 > 后台 > 插件管理 > 平台密钥 [设置开发者密钥](https://doc.buildingai.cc/400401983e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [列表](https://doc.buildingai.cc/400401984e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [扫描权限](https://doc.buildingai.cc/400401985e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [同步到库](https://doc.buildingai.cc/400401986e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [扫描接口](https://doc.buildingai.cc/400401987e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [清理废弃权限](https://doc.buildingai.cc/400401988e0.md): 
+- 开发文档 > 网络接口 > 后台 > 权限管理 [详情:code](https://doc.buildingai.cc/400401989e0.md): 
+- 开发文档 > 网络接口 > 后台 > 字典配置 [列表](https://doc.buildingai.cc/400401990e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 支付配置 [列表](https://doc.buildingai.cc/400401991e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 支付配置 [详情:id](https://doc.buildingai.cc/400401992e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 支付配置 [状态](https://doc.buildingai.cc/400401993e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 支付配置 [更新](https://doc.buildingai.cc/400401994e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 系统信息 [安装状态](https://doc.buildingai.cc/400401995e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > 系统信息 [安装状态](https://doc.buildingai.cc/400401996e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [进程列表](https://doc.buildingai.cc/400401997e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [日志](https://doc.buildingai.cc/400401998e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [重启](https://doc.buildingai.cc/400401999e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [重载](https://doc.buildingai.cc/400402000e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [停止进程](https://doc.buildingai.cc/400402001e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [进程详情](https://doc.buildingai.cc/400402002e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [进程状态](https://doc.buildingai.cc/400402003e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [清空日志](https://doc.buildingai.cc/400402004e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [保存进程](https://doc.buildingai.cc/400402005e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [健康检查](https://doc.buildingai.cc/400402006e0.md): 
+- 开发文档 > 网络接口 > 后台 > 系统操作 > pm2 [删除进程](https://doc.buildingai.cc/400402007e0.md): 
+- 开发文档 > 网络接口 > 后台 > 套餐充值 [获取套餐充值配置](https://doc.buildingai.cc/400402008e0.md): 
+- 开发文档 > 网络接口 > 后台 > 套餐充值 [获取套餐充值配置 Copy](https://doc.buildingai.cc/400402009e0.md): 
+- 开发文档 > 网络接口 > 后台 > 财务 [财务中心](https://doc.buildingai.cc/400402010e0.md): 
+- 开发文档 > 网络接口 > 后台 > 财务 [用户余额明细](https://doc.buildingai.cc/400402011e0.md): 
+- 开发文档 > 网络接口 > 后台 > 订单管理 [充值订单列表](https://doc.buildingai.cc/400402012e0.md): 
+- 开发文档 > 网络接口 > 后台 > 订单管理 [充值订单详情](https://doc.buildingai.cc/400402013e0.md): 
+- 开发文档 > 网络接口 > 后台 > 订单管理 [充值订单退款](https://doc.buildingai.cc/400402014e0.md): 
+- 开发文档 > 网络接口 > 后台 > 订单管理 [会员订单列表](https://doc.buildingai.cc/400402015e0.md): 
+- 开发文档 > 网络接口 > 后台 > 渠道管理 > 公众号配置 [详情](https://doc.buildingai.cc/400402016e0.md): 
+- 开发文档 > 网络接口 > 后台 > 渠道管理 > 公众号配置 [修改](https://doc.buildingai.cc/400402017e0.md): 
+- 开发文档 > 网络接口 > 后台 > 数据分析 [数据看板](https://doc.buildingai.cc/400402018e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 会员等级 [新增会员等级](https://doc.buildingai.cc/400402019e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 会员等级 [会员等级列表](https://doc.buildingai.cc/400402020e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 会员等级 [修改会员等级](https://doc.buildingai.cc/400402021e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 会员等级 [会员等级详情](https://doc.buildingai.cc/400402022e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 会员等级 [删除会员等级](https://doc.buildingai.cc/400402023e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [新增订阅计划](https://doc.buildingai.cc/400402024e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [订阅计划设置](https://doc.buildingai.cc/400402025e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [设置会员功能状态](https://doc.buildingai.cc/400402026e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [更改订阅计划状态](https://doc.buildingai.cc/400402027e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [订阅计划详情](https://doc.buildingai.cc/400402028e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [修改订阅计划](https://doc.buildingai.cc/400402029e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [删除订阅计划](https://doc.buildingai.cc/400402030e0.md): 
+- 开发文档 > 网络接口 > 后台 > VIP 会员 > 订阅计划 [更新订阅计划排序](https://doc.buildingai.cc/400402031e0.md): 
+- 开发文档 > 网络接口 > 插件 > 文章插件 > 前台 [列表](https://doc.buildingai.cc/400402032e0.md): 
+- 开发文档 > 网络接口 > 插件 > 文章插件 > 后台 > 文章 [列表](https://doc.buildingai.cc/400402033e0.md): 文章列表
+- 开发文档 > 网络接口 > 插件 > 文章插件 > 后台 > 文章 [创建](https://doc.buildingai.cc/400402034e0.md): 
+- 开发文档 > 网络接口 > 插件 > 文章插件 > 后台 > 分类 [列表](https://doc.buildingai.cc/400402035e0.md): 文章列表
+- 开发文档 > 网络接口 > 插件 > 文章插件 > 后台 > 分类 [创建](https://doc.buildingai.cc/400402036e0.md): 
+- 开发文档 > 网络接口 > 插件 > 智能体-企业微信插件 [对话接口](https://doc.buildingai.cc/400402037e0.md): 
+- 开发文档 > 网络接口 > 插件 > 配图大师 > 后台 [配图记录](https://doc.buildingai.cc/400402038e0.md): 
+- 开发文档 > 网络接口 > 插件 > 配图大师 > 后台 [获取配图插件](https://doc.buildingai.cc/400402039e0.md): 
+- 开发文档 > 网络接口 > 插件 > 配图大师 > 后台 [插件设置](https://doc.buildingai.cc/400402040e0.md): 

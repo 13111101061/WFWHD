@@ -1,547 +1,693 @@
 {
   "version": 1,
   "description": "音色ID映射表 - 后端转译专用（技术映射）",
-  "lastUpdated": "2026-01-09T00:00:00.000Z",
+  "lastUpdated": "2026-01-27T07:42:49.552Z",
   "voices": [
     {
       "id": "aliyun-qwen-cherry",
       "name": "Cherry",
+      "displayName": "爱千月",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Cherry",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US"],
-      "tags": ["双语", "热门"]
+      "tags": ["舒缓", "亲切", "自然", "治愈", "温柔", "温暖"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/cherry.wav",
+      "description": "阳光积极的邻家姐姐，用亲切自然的话语予人最贴心的治愈。"
     },
     {
       "id": "aliyun-qwen-ethan",
       "name": "Ethan",
+      "displayName": "爱晨曦",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Ethan",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US"],
-      "tags": ["双语"]
+      "tags": ["阳光", "温暖", "活力", "朝气", "磁性", "可靠"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/ethan.wav",
+      "description": "充满朝气与活力的青年之声，温暖有力，尽显北方口音的爽朗与可靠。"
     },
     {
       "id": "aliyun-qwen-chelsie",
       "name": "Chelsie",
+      "displayName": "爱千雪",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Chelsie",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US"],
-      "tags": ["双语"]
+      "tags": ["二次元", "软萌", "甜美", "娇憨", "亲密", "心动"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/chelsie.wav",
+      "description": "甜美软萌的二次元虚拟女友，声音亲密无间，带着一丝娇憨与心动。"
     },
     {
       "id": "aliyun-qwen-serena",
       "name": "Serena",
+      "displayName": "爱苏瑶",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Serena",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US"],
-      "tags": ["双语"]
+      "tags": ["阳光", "明亮", "亲切", "清澈", "活泼", "温柔"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/serena.wav",
+      "description": "温柔而充满阳光的声音，如同明亮清泉，带来清澈亲切的听觉体验。"
     },
     {
       "id": "aliyun-qwen-dylan",
       "name": "Dylan",
+      "displayName": "北京-晓东",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Dylan",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言"]
+      "tags": ["少年", "活力", "地道", "胡同"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav",
+      "description": "从北京胡同里长大的少年，充满活力，口音地道。"
     },
     {
       "id": "aliyun-qwen-jada",
       "name": "Jada",
+      "displayName": "上海-阿珍",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Jada",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN"],
-      "tags": ["方言"]
+      "tags": ["阿姐", "干练", "活泼", "爽朗"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jada.wav",
+      "description": "风风火火的沪上阿姐，做事干练，性格爽朗。"
     },
     {
       "id": "aliyun-qwen-sunny",
       "name": "Sunny",
+      "displayName": "四川-晴儿",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Sunny",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN"],
-      "tags": ["方言", "四川话"]
+      "tags": ["川妹子", "甜美", "活泼", "娇媚"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sunny.wav",
+      "description": "甜到心里的川妹子，声音活泼娇媚，感染力十足。"
     },
     {
       "id": "aliyun-qwen-momo",
       "name": "Momo",
+      "displayName": "爱伏兔",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Momo",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["调皮", "可爱", "年轻女性"]
+      "tags": ["搞怪", "撒娇", "活泼", "俏皮", "灵动", "元气少女"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Momo.wav",
+      "description": "古灵精怪的开心果，声音多变搞怪，擅长用撒娇和俏皮逗你开心。"
     },
     {
       "id": "aliyun-qwen-vivian",
       "name": "Vivian",
+      "displayName": "爱十一",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Vivian",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["活泼", "可爱", "年轻女性"]
+      "tags": ["傲娇", "帅气", "个性", "小暴躁", "叛逆", "反差萌"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vivian.wav",
+      "description": "外表帅气、拽拽的傲娇少女，偶尔的可爱小暴躁下藏着一颗柔软的心。"
     },
     {
       "id": "aliyun-qwen-moon",
       "name": "Moon",
+      "displayName": "爱月白",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Moon",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["酷", "年轻男性"]
+      "tags": ["清冷", "帅气", "洒脱", "磁性", "冷静", "少年感"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Moon.wav",
+      "description": "率性帅气的清冷少年音，语调从容洒脱，如月光般皎洁而有磁性。"
     },
     {
       "id": "aliyun-qwen-maia",
       "name": "Maia",
+      "displayName": "爱七月",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Maia",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["温柔", "成熟"]
+      "tags": ["知性", "温柔", "御姐", "气质", "陪伴", "成熟"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Maia.wav",
+      "description": "知性与温柔并存的御姐，如月光般优雅迷人。"
     },
     {
       "id": "aliyun-qwen-kai",
       "name": "Kai",
+      "displayName": "凯",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Kai",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["舒缓", "年轻男性"]
+      "tags": ["低沉", "磁性", "专业", "评述", "冷静", "深度"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Kai.wav",
+      "description": "声线低沉磁性，如同专业的音乐评述人，冷静而富有深度。"
     },
     {
       "id": "aliyun-qwen-nofish",
       "name": "Nofish",
+      "displayName": "不爱吃鱼",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Nofish",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["冷静", "年轻男性"]
+      "tags": ["清新", "文艺", "少年音", "平舌", "自然", "个性"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nofish.wav",
+      "description": "不会翘舌的清新少年音，自然率性，如同文艺范的设计师。"
     },
     {
       "id": "aliyun-qwen-bella",
       "name": "Bella",
+      "displayName": "爱晴宝",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Bella",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["儿童", "可爱"]
+      "tags": ["萝莉", "奶萌", "俏皮", "活泼", "酒鬼", "个性"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav",
+      "description": "奶萌俏皮的小萝莉，声音里带着不打醉拳的狡黠与活泼。"
     },
     {
       "id": "aliyun-qwen-jennifer",
       "name": "Jennifer",
+      "displayName": "詹妮弗",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Jennifer",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["英文", "专业", "成熟"]
+      "tags": ["英语", "专业", "高级", "优雅", "成熟", "广告"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav",
+      "description": "品牌级英语广告女声，质感优雅，尽显高级与专业。"
     },
     {
       "id": "aliyun-qwen-ryan",
       "name": "Ryan",
+      "displayName": "斯威特",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Ryan",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["情感丰富", "年轻男性"]
+      "tags": ["英语", "电影感", "张力", "情感丰富", "沉浸", "演技派"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ryan.wav",
+      "description": "戏感炸裂的英语电影男声，节奏与张力十足，极具沉浸感。"
     },
     {
       "id": "aliyun-qwen-katerina",
       "name": "Katerina",
+      "displayName": "卡捷琳娜",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Katerina",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["成熟", "优雅"]
+      "tags": ["英语", "御姐", "韵律", "成熟", "优雅", "气场"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Katerina.wav",
+      "description": "韵律十足的英语御姐音，成熟优雅，气场全开。"
     },
     {
       "id": "aliyun-qwen-aiden",
       "name": "Aiden",
+      "displayName": "艾登",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Aiden",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["英文", "年轻男性"]
+      "tags": ["英语", "青年", "腼腆", "干净", "阳光", "邻家"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Aiden.wav",
+      "description": "精通美语的腼腆大男孩，声音干净，带着邻家般的阳光感。"
     },
     {
       "id": "aliyun-qwen-eldric",
       "name": "Eldric Sage",
+      "displayName": "沧明子",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Eldric Sage",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["长者", "智慧", "深沉"]
+      "tags": ["长者", "睿智", "沉稳", "沧桑", "故事感", "哲学"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eldric+Sage.wav",
+      "description": "沉稳睿智的老者，声音历经沧桑，心明如镜，充满故事感。"
     },
     {
       "id": "aliyun-qwen-mia",
       "name": "Mia",
+      "displayName": "爱念棠",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Mia",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["温柔", "甜美", "年轻女性"]
+      "tags": ["乖巧", "温顺", "甜美", "软糯", "年轻女性", "治愈"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mia.wav",
+      "description": "温顺乖巧的邻家小妹，声音甜美软糯，治愈力十足。"
     },
     {
       "id": "aliyun-qwen-mochi",
       "name": "Mochi",
+      "displayName": "爱星冉",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Mochi",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["儿童", "聪明"]
+      "tags": ["正太", "聪明", "小大人", "童真", "清秀", "早慧"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mochi.wav",
+      "description": "聪明伶俐的小大人，童真未泯，声音清秀又透着一丝早慧。"
     },
     {
       "id": "aliyun-qwen-bellona",
       "name": "Bellona",
+      "displayName": "爱铮莺",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Bellona",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["强力", "戏剧性"]
+      "tags": ["洪亮", "清晰", "戏剧性", "说书人", "江湖", "热血"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bellona.wav",
+      "description": "声音洪亮清晰的江湖说书人，节奏感强，字正腔圆，一听就让人热血沸腾。"
     },
     {
       "id": "aliyun-qwen-vincent",
       "name": "Vincent",
+      "displayName": "田叔",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Vincent",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["深沉", "粗犷"]
+      "tags": ["沙哑", "烟嗓", "说书人", "沧桑", "豪情", "故事"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vincent.wav",
+      "description": "一口独特的沙哑烟嗓，是道尽江湖豪情与千军万马的传奇说书人。"
     },
     {
       "id": "aliyun-qwen-bunny",
       "name": "Bunny",
+      "displayName": "爱芽芽",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Bunny",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["儿童", "可爱"]
+      "tags": ["萝莉", "萌", "甜美", "软糯", "可爱", "儿童"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bunny.wav",
+      "description": "萌属性爆棚的小萝莉音，甜美可爱，让人瞬间心化。"
     },
     {
       "id": "aliyun-qwen-neil",
       "name": "Neil",
+      "displayName": "阿明远",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Neil",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["专业", "新闻"]
+      "tags": ["专业", "新闻", "客观", "字正腔圆", "权威", "沉稳"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Neil.wav",
+      "description": "字正腔圆的专业新闻主持人，语调平直客观，极具权威感。"
     },
     {
       "id": "aliyun-qwen-elias",
       "name": "Elias",
+      "displayName": "爱明涟",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Elias",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["教育", "清晰"]
+      "tags": ["教育", "知识", "清晰", "条理", "女性", "治愈"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav",
+      "description": "将复杂知识通俗化的解惑者，声音清晰条理，兼具学科严谨与叙事温情。"
     },
     {
       "id": "aliyun-qwen-arthur",
       "name": "Arthur",
+      "displayName": "徐来顺",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Arthur",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["长者", "讲故事"]
+      "tags": ["乡土", "质朴", "故事", "慢节奏", "沧桑", "长者"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Arthur.wav",
+      "description": "被岁月沉淀的质朴之声，不疾不徐地讲述着村里的奇闻异事。"
     },
     {
       "id": "aliyun-qwen-nini",
       "name": "Nini",
+      "displayName": "爱云朵",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Nini",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["甜美", "年轻女性"]
+      "tags": ["撒娇", "软糯", "甜美", "甜蜜", "年轻女性", "萝莉音"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nini.wav",
+      "description": "糯米糍一样软又黏的嗓音，那一声\"哥哥\"甜到骨子里。"
     },
     {
       "id": "aliyun-qwen-ebona",
       "name": "Ebona",
+      "displayName": "爱青烛",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Ebona",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["黑暗", "神秘"]
+      "tags": ["神秘", "黑暗", "低语", "疗愈", "哥特", "气声"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ebona.wav",
+      "description": "伴随幽暗与恐惧的低语，如同生锈的钥匙，缓缓开启你内心深处。"
     },
     {
       "id": "aliyun-qwen-seren",
       "name": "Seren",
+      "displayName": "爱曦语",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Seren",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["舒缓", "助眠"]
+      "tags": ["舒缓", "助眠", "温柔", "治愈", "ASMR", "晚安"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Seren.wav",
+      "description": "温和舒缓的助眠师，用温柔的声线伴你安然入梦。"
     },
     {
       "id": "aliyun-qwen-pip",
       "name": "Pip",
+      "displayName": "小新",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Pip",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["儿童", "顽皮"]
+      "tags": ["顽皮", "活泼", "童真", "搞笑", "正太", "个性"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Pip.wav",
+      "description": "调皮捣蛋又充满童真的小新，声音里全是古灵精怪的快乐。"
     },
     {
       "id": "aliyun-qwen-stella-flash",
       "name": "Stella",
+      "displayName": "爱羽月",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Stella",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["动漫", "甜美"]
+      "tags": ["双重人格", "动漫", "元气", "甜美", "帅气", "战斗少女"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Stella.wav",
+      "description": "平时是甜美的迷糊少女，关键时刻能瞬间变身充满正义的战斗少女。"
     },
     {
       "id": "aliyun-qwen-bodega",
       "name": "Bodega",
+      "displayName": "博德加",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Bodega",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "es-ES", "ja-JP", "ko-KR"],
-      "tags": ["西班牙语", "热情"]
+      "tags": ["西班牙语", "热情", "大叔", "阳光", "活力"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bodega.wav",
+      "description": "热情洋溢的西班牙大叔，声音里满是阳光与拉丁式的活力。"
     },
     {
       "id": "aliyun-qwen-sonrisa",
       "name": "Sonrisa",
+      "displayName": "索尼莎",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Sonrisa",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "es-ES", "ja-JP", "ko-KR"],
-      "tags": ["西班牙语", "开朗"]
+      "tags": ["西班牙语", "热情", "开朗", "大姐姐", "活力"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sonrisa.wav",
+      "description": "热情开朗的拉美大姐，声音极具感染力，仿佛能驱散所有阴霾。"
     },
     {
       "id": "aliyun-qwen-alek",
       "name": "Alek",
+      "displayName": "阿塞克",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Alek",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ru-RU", "ja-JP", "ko-KR"],
-      "tags": ["俄语", "酷"]
+      "tags": ["俄语", "战斗民族", "硬朗", "冷酷", "低沉"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Alek.wav",
+      "description": "一开口就是典型的俄罗斯硬朗口音，自带战斗民族的冷峻气场。"
     },
     {
       "id": "aliyun-qwen-dolce",
       "name": "Dolce",
+      "displayName": "多尔切",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Dolce",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "it-IT", "ja-JP", "ko-KR"],
-      "tags": ["意大利语", "放松"]
+      "tags": ["意大利语", "慵懒", "浪漫", "磁性", "随性"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dolce.wav",
+      "description": "如同午后阳光般慵懒的意大利大叔，声音随性而充满浪漫。"
     },
     {
       "id": "aliyun-qwen-sohee",
       "name": "Sohee",
+      "displayName": "素熙",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Sohee",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ko-KR", "ja-JP"],
-      "tags": ["韩语", "开朗"]
+      "tags": ["韩语", "温柔", "开朗", "欧尼", "甜美", "情绪丰富"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sohee.wav",
+      "description": "温柔开朗的韩国欧尼，声音甜美，情绪表达丰富而真诚。"
     },
     {
       "id": "aliyun-qwen-onoanna",
       "name": "Ono Anna",
+      "displayName": "小野杏",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Ono Anna",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["日语", "调皮"]
+      "tags": ["日语", "鬼马", "活泼", "娇俏", "邻家", "青梅竹马"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ono+Anna.wav",
+      "description": "鬼灵精怪的日语青梅竹马，声音娇俏活泼，充满邻家少女感。"
     },
     {
       "id": "aliyun-qwen-lenn",
       "name": "Lenn",
+      "displayName": "莱恩",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Lenn",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "de-DE", "ja-JP", "ko-KR"],
-      "tags": ["德语", "年轻男性"]
+      "tags": ["德语", "理性", "叛逆", "青年", "冷静", "个性"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Lenn.wav",
+      "description": "理性是底色的德国青年，细节中藏着不羁的叛逆，声音冷静而独特。"
     },
     {
       "id": "aliyun-qwen-emilien",
       "name": "Emilien",
+      "displayName": "埃米尔安",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Emilien",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "fr-FR", "ja-JP", "ko-KR"],
-      "tags": ["法语", "浪漫"]
+      "tags": ["法语", "浪漫", "温柔", "大哥哥", "磁性", "优雅"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Emilien.wav",
+      "description": "浪漫的法国大哥哥，声音优雅温柔，充满了迷人的绅士风度。"
     },
     {
       "id": "aliyun-qwen-andre",
       "name": "Andre",
+      "displayName": "安德雷",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Andre",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "ja-JP", "ko-KR"],
-      "tags": ["深沉", "冷静"]
+      "tags": ["西班牙语", "稳重", "理性", "科学家", "丈夫", "成熟"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav",
+      "description": "稳重可靠的西班牙科学家，声音沉静理性，是值得信赖的伴侣与学者。"
     },
     {
       "id": "aliyun-qwen-radiogol",
       "name": "Radio Gol",
+      "displayName": "拉迪奥·戈尔",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Radio Gol",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN", "en-US", "es-ES", "ja-JP", "ko-KR"],
-      "tags": ["体育", "活力"]
+      "tags": ["体育", "解说", "激情", "诗人", "西班牙语", "活力"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Radio+Gol.wav",
+      "description": "赛场上的足球诗人，用充满激情的西班牙语为你解说每一场精彩对决。"
     },
     {
       "id": "aliyun-qwen-li",
       "name": "Li",
+      "displayName": "南京-老李",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Li",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "南京话"]
+      "tags": ["老师", "耐心", "沉稳", "温柔"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Li.wav",
+      "description": "语气温和的瑜伽老师，声音沉稳，极具耐心。"
     },
     {
       "id": "aliyun-qwen-marcus",
       "name": "Marcus",
+      "displayName": "陕西-秦川",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Marcus",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "陕西话"]
+      "tags": ["长者", "淳朴", "沉稳", "憨厚"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Marcus.wav",
+      "description": "心实声沉的老陕，话音里透着西北汉子的淳朴与沉稳。"
     },
     {
       "id": "aliyun-qwen-roy",
       "name": "Roy",
+      "displayName": "闽南-阿杰",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Roy",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "闽南话"]
+      "tags": ["台哥", "诙谐", "直爽", "活泼"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Roy.wav",
+      "description": "诙谐直爽的台湾哥仔，声音市井活泼，充满生活气息。"
     },
     {
       "id": "aliyun-qwen-peter",
       "name": "Peter",
+      "displayName": "天津-李彼得",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Peter",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "天津话"]
+      "tags": ["相声", "幽默", "捧哏", "诙谐"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Peter.wav",
+      "description": "天津相声专业捧哏，一开口就自带幽默效果。"
     },
     {
       "id": "aliyun-qwen-eric",
       "name": "Eric",
+      "displayName": "四川-程川",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Eric",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "四川话"]
+      "tags": ["成都", "个性", "洒脱", "风趣"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eric.wav",
+      "description": "跳脱市井的成都男子，声音里带着风趣与洒脱。"
     },
     {
       "id": "aliyun-qwen-rocky",
       "name": "Rocky",
+      "displayName": "粤语-阿强",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Rocky",
       "model": "qwen3-tts-flash",
       "gender": "male",
       "languages": ["zh-CN"],
-      "tags": ["方言", "粤语"]
+      "tags": ["广仔", "幽默", "风趣", "陪聊"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Rocky.wav",
+      "description": "幽默风趣的粤语阿强，是你的在线陪聊好朋友。"
     },
     {
       "id": "aliyun-qwen-kiki",
       "name": "Kiki",
+      "displayName": "粤语-阿清",
       "provider": "aliyun",
       "service": "qwen_http",
       "voiceId": "Kiki",
       "model": "qwen3-tts-flash",
       "gender": "female",
       "languages": ["zh-CN"],
-      "tags": ["方言", "粤语"]
+      "tags": ["港妹", "甜美", "闺蜜", "少女"],
+      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/KiKi.wav",
+      "description": "声音甜美的港妹闺蜜，亲切可爱，如同少女在耳边低语。"
     }
   ]
 }
-
