@@ -1,0 +1,33 @@
+# MiniMax TTS 音色配置
+# 提供商：MiniMax
+# 维护者：@admin
+# 最后更新：2026-03-08
+
+meta:
+  provider: minimax
+  service: minimax_tts
+  version: "1.0"
+  description: MiniMax TTS 服务音色
+
+voices:
+  - id: female-1
+    displayName: 中文女声1
+    name: 中文女声1
+    gender: female
+    languages: [zh-CN]
+    description: MiniMax 中文女声音色
+    tags: [基础, 女声, 标准]
+    ttsConfig:
+      voiceId: moss_audio_ce44fc67-7ce3-11f0-8de5-96e35d26fb85
+      model: speech-01-hd-preview
+
+  - id: female-2
+    displayName: 中文女声2
+    name: 中文女声2
+    gender: female
+    languages: [zh-CN]
+    description: MiniMax 中文女声音色
+    tags: [基础, 女声, 温柔]
+    ttsConfig:
+      voiceId: moss_audio_aaa1346a-7ce7-11f0-8e61-2e6e3c7ee85d
+      model: speech-01-hd-preview

@@ -59,7 +59,7 @@ class TtsServiceManager {
       }
 
       // 获取服务实例
-      const ttsService = this.factory.createService(provider, serviceType);
+      const ttsService = await this.factory.createService(provider, serviceType);
 
       // 执行合成
       const result = await ttsService.synthesize(text, options);
@@ -92,7 +92,7 @@ class TtsServiceManager {
    */
   async getVoices(provider, serviceType) {
     try {
-      const ttsService = this.factory.createService(provider, serviceType);
+      const ttsService = await this.factory.createService(provider, serviceType);
       const voices = await ttsService.getAvailableVoices();
 
       return voices;

@@ -3,11 +3,10 @@ const { v4: uuidv4 } = require('uuid');
 const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
 const config = require('../../../shared/config/config');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
 
 /**
  * Aliyun CosyVoice TTS服务
- * 继承自BaseTtsService，使用WebSocket连接
+ * 继承自BaseTtsService（v2.0 - 使用VoiceManager）
  */
 class CosyVoiceService extends BaseTtsService {
   constructor(config = {}) {
@@ -273,42 +272,6 @@ class CosyVoiceService extends BaseTtsService {
         reject(new Error(`WebSocket连接错误: ${error.message}`));
       });
     });
-  }
-
-  /**
-   * 获取可用音色列表
-   * @returns {Array} 音色列表
-   */
-  async getAvailableVoices() {
-    try {
-      // 确保注册中心已初始化
-      if (!voiceModelRegistry.isLoaded) {
-        await voiceModelRegistry.initialize();
-      }
-
-      // 获取CosyVoice的所有模型
-      const models = voiceModelRegistry.getModelsByProvider('aliyun');
-      const cosyVoiceModels = models.filter(model => model.service === 'cosyvoice');
-
-      return cosyVoiceModels.map(model => ({
-        id: model.voiceId,
-        systemId: model.id,
-        name: model.name,
-        language: model.languages && model.languages[0] || 'zh-CN',
-        gender: model.gender,
-        model: model.model,
-        _modelInfo: model
-      }));
-
-    } catch (error) {
-      console.error('从配置中心获取音色列表失败，使用备用数据:', error.message);
-
-      // 备用数据
-      return [
-        { id: 'longxiaochun_v2', name: '龙小淳', language: 'zh-CN', gender: 'female', model: 'cosyvoice-v2' },
-        { id: 'longcheng_v2', name: '龙橙', language: 'zh-CN', gender: 'male', model: 'cosyvoice-v2' }
-      ];
-    }
   }
 
   /**

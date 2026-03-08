@@ -10,7 +10,10 @@
     "test:qwen-tts": "node test/qwen-tts-test.js",
     "test:snpan": "node test/snpan-test.js",
     "generate:categories": "node src/modules/tts/config/generate-voice-categories.js",
-    "test:categories": "node tests/test-voice-categories.js"
+    "test:categories": "node tests/test-voice-categories.js",
+    "voices:build": "node voices/build.js",
+    "voices:validate": "node -e \"require('./voices/build.js')\"",
+    "voices:stats": "node -e \"const r = require('./src/modules/tts/config/VoiceModelRegistry').voiceModelRegistry; r.initialize().then(() => console.log(JSON.stringify(r.getStats(), null, 2)))\""
   },
   "keywords": [
     "node",
@@ -25,17 +28,19 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.12.2",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
+    "chokidar": "^5.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^4.18.2",
-    "joi": "^18.0.1",
-    "jsonwebtoken": "^9.0.2",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
     "uuid": "^9.0.0",
-    "ws": "^8.18.3"
+    "ws": "^8.19.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "js-yaml": "^4.1.1",
+    "nodemon": "^3.1.14"
   }
 }

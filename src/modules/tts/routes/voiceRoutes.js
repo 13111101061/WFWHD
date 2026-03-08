@@ -1,18 +1,33 @@
 const express = require('express');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
+const { voiceManager } = require('../core/VoiceManager');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
 const router = express.Router();
 
 /**
- * 声音模型查询路由
- * 提供统一的音色和模型查询API
+ * 声音模型查询路由 (v2.0)
+ * 使用 VoiceManager 统一管理音色配置
  */
 
 // 中间件：请求日志记录
 const requestLogger = (req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - IP: ${req.ip}`);
   next();
+};
+
+// 中间件：确保 VoiceManager 就绪
+const ensureVoiceManagerReady = async (req, res, next) => {
+  try {
+    await voiceManager.waitForReady(5000);
+    next();
+  } catch (error) {
+    res.status(503).json({
+      success: false,
+      error: 'VoiceManager not ready',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 };
 
 /**
@@ -22,9 +37,10 @@ const requestLogger = (req, res, next) => {
 router.get('/models',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
-      const models = voiceModelRegistry.getAllModels();
+      const models = voiceManager.getAll();
 
       res.json({
         success: true,
@@ -45,7 +61,7 @@ router.get('/models',
 );
 
 /**
- * 🆕 获取分类数据（前端专用）
+ * 获取分类数据（前端专用）
  * GET /api/tts/voices/categories
  * 支持内存缓存 + mtime驱动刷新 + ETag
  */
@@ -71,10 +87,6 @@ router.get('/categories',
 
       let didReadFile = false;
       let servedStaleCache = false;
-
-      // 缓存策略：
-      // 1. 如果缓存存在且文件未变化，直接使用缓存
-      // 2. 每5秒最多检查一次文件mtime（避免频繁stat）
 
       if (!categoriesCache.data) {
         try {
@@ -122,17 +134,15 @@ router.get('/categories',
         }
       }
 
-      // 设置响应头
       res.setHeader('ETag', categoriesCache.etag);
       res.setHeader('Last-Modified', new Date(categoriesCache.mtime).toUTCString());
-      res.setHeader('Cache-Control', 'public, max-age=300'); // 5分钟客户端缓存
+      res.setHeader('Cache-Control', 'public, max-age=300');
       if (servedStaleCache) {
         res.setHeader('X-Cache', 'STALE');
       } else {
         res.setHeader('X-Cache', didReadFile ? 'MISS' : 'HIT');
       }
 
-      // 检查客户端缓存
       if (req.headers['if-none-match'] === categoriesCache.etag) {
         return res.status(304).end();
       }
@@ -161,10 +171,15 @@ router.get('/categories',
 router.get('/providers/:provider',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
       const { provider } = req.params;
-      const models = voiceModelRegistry.getModelsByProvider(provider);
+      const { service } = req.query;
+
+      const models = service
+        ? voiceManager.getByProviderAndService(provider, service)
+        : voiceManager.getByProvider(provider);
 
       res.json({
         success: true,
@@ -194,10 +209,11 @@ router.get('/providers/:provider',
 router.get('/tags/:tag',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
       const { tag } = req.params;
-      const models = voiceModelRegistry.getModelsByTag(tag);
+      const models = voiceManager.getByTags([tag]);
 
       res.json({
         success: true,
@@ -227,9 +243,10 @@ router.get('/tags/:tag',
 router.get('/search',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
-      const { q } = req.query;
+      const { q, provider, limit = 50 } = req.query;
 
       if (!q) {
         return res.status(400).json({
@@ -240,7 +257,10 @@ router.get('/search',
         });
       }
 
-      const models = voiceModelRegistry.searchModels(q);
+      const models = voiceManager.search(q, {
+        provider,
+        limit: parseInt(limit)
+      });
 
       res.json({
         success: true,
@@ -270,13 +290,16 @@ router.get('/search',
 router.get('/providers',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
-      const providers = voiceModelRegistry.getProviders();
+      const providerStats = voiceManager.getProviderStats();
+      const providers = Object.keys(providerStats);
 
       res.json({
         success: true,
         data: providers,
+        stats: providerStats,
         count: providers.length,
         timestamp: new Date().toISOString()
       });
@@ -299,13 +322,16 @@ router.get('/providers',
 router.get('/tags',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
-      const tags = voiceModelRegistry.getTags();
+      const tagStats = voiceManager.getTagStats();
+      const tags = Object.keys(tagStats);
 
       res.json({
         success: true,
         data: tags,
+        stats: tagStats,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -327,10 +353,11 @@ router.get('/tags',
 router.get('/models/:id',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
       const { id } = req.params;
-      const model = voiceModelRegistry.getModel(id);
+      const model = voiceManager.getById(id);
 
       if (!model) {
         return res.status(404).json({
@@ -365,13 +392,15 @@ router.get('/models/:id',
 router.get('/stats',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
+  ensureVoiceManagerReady,
   async (req, res) => {
     try {
-      const stats = voiceModelRegistry.getStats();
+      const stats = voiceManager.getStats();
+      const health = voiceManager.getHealth();
 
       res.json({
         success: true,
-        data: stats,
+        data: { ...stats, health },
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -398,18 +427,60 @@ router.post('/reload',
   requestLogger,
   async (req, res) => {
     try {
-      await voiceModelRegistry.reload();
+      const success = await voiceManager.reload();
 
-      res.json({
-        success: true,
-        message: 'Voice model registry reloaded successfully',
-        timestamp: new Date().toISOString()
-      });
+      if (success) {
+        res.json({
+          success: true,
+          message: 'Voice configuration reloaded successfully',
+          stats: voiceManager.getStats(),
+          timestamp: new Date().toISOString()
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: 'Reload failed',
+          message: voiceManager.lastError?.message || 'Unknown error',
+          timestamp: new Date().toISOString()
+        });
+      }
     } catch (error) {
       console.error('重新加载配置失败:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to reload registry',
+        error: 'Failed to reload',
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+/**
+ * 获取 VoiceManager 健康状态
+ * GET /api/tts/voices/health
+ */
+router.get('/health',
+  unifiedAuth.createMiddleware({ service: 'tts' }),
+  requestLogger,
+  async (req, res) => {
+    try {
+      const health = voiceManager.getHealth();
+      const stats = voiceManager.getStats();
+
+      res.json({
+        success: true,
+        data: {
+          health,
+          stats
+        },
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('获取健康状态失败:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get health',
         message: error.message,
         timestamp: new Date().toISOString()
       });
@@ -432,6 +503,7 @@ router.use('*', (req, res) => {
       'GET /api/tts/voices/tags - 获取所有标签',
       'GET /api/tts/voices/models/:id - 获取模型详情',
       'GET /api/tts/voices/stats - 获取统计信息',
+      'GET /api/tts/voices/health - 获取健康状态',
       'POST /api/tts/voices/reload - 重新加载配置'
     ],
     timestamp: new Date().toISOString()

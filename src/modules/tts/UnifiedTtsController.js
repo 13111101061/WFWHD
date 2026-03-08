@@ -18,15 +18,42 @@ class UnifiedTtsController {
    */
   async synthesize(req, res) {
     try {
-      const { service, text, ...options } = req.body;
+      const { service, text, systemId, ...options } = req.body;
 
       // 验证必要参数
-      if (!service || !text) {
-        throw TtsException.BadRequest('Service and text parameters are required');
+      if (!text) {
+        throw TtsException.BadRequest('Text parameter is required');
       }
 
-      // 解析服务标识 (支持格式: "aliyun_cosyvoice", "aliyun_qwen_http", "tencent", "volcengine_http")
-      const { provider, serviceType } = this.parseServiceIdentifier(service);
+      let provider, serviceType;
+
+      // 如果提供了 systemId，则从VoiceManager解析
+      if (systemId) {
+        const { voiceManager } = require('./core/VoiceManager');
+        await voiceManager.waitForReady(5000);
+        const voice = voiceManager.getById(systemId);
+
+        if (!voice) {
+          throw TtsException.NotFound(`System ID not found: ${systemId}`);
+        }
+
+        provider = voice.provider;
+        serviceType = voice.service;
+
+        // 如果 options 中没有 voice，使用 voice 的 sourceId
+        if (!options.voice && voice.sourceId) {
+          options.voice = voice.sourceId;
+        }
+
+        console.log(`📌 使用 systemId: ${systemId} -> ${provider}/${serviceType}`);
+      } else if (service) {
+        // 解析服务标识 (支持格式: "aliyun_cosyvoice", "aliyun_qwen_http", "tencent", "volcengine_http")
+        const parsed = this.parseServiceIdentifier(service);
+        provider = parsed.provider;
+        serviceType = parsed.serviceType;
+      } else {
+        throw TtsException.BadRequest('Either service or systemId parameter is required');
+      }
 
       // 验证文本
       this.validateText(text);
@@ -43,11 +70,12 @@ class UnifiedTtsController {
       res.json({
         success: true,
         data: result,
-        service: service,
+        service: service || `${provider}_${serviceType}`,
         fromCache: (result && result.fromCache) || false,
         metadata: {
           provider: provider,
           serviceType: serviceType,
+          systemId: systemId || null,
           requestId: req.requestId || null
         },
         timestamp: new Date().toISOString()

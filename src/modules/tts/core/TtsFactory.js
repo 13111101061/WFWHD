@@ -1,19 +1,42 @@
 const BaseTtsService = require('./BaseTtsService');
 const config = require('../../../shared/config/config');
+const { voiceManager } = require('./VoiceManager');
 
 /**
- * TTS服务工厂类
- * 统一创建和管理各种TTS服务实例
+ * TTS服务工厂类（v2.0）
+ * 集成 VoiceManager 统一管理音色配置
  */
 class TtsFactory {
   constructor() {
     this.services = new Map();
     this.configs = this.loadConfigs();
+    this.initialized = false;
+  }
+
+  /**
+   * 初始化工厂（异步）
+   */
+  async initialize() {
+    if (this.initialized) return;
+    
+    // 初始化VoiceManager
+    await voiceManager.initialize();
+    this.initialized = true;
+    
+    console.log('✅ TtsFactory initialized with VoiceManager');
+  }
+
+  /**
+   * 确保已初始化
+   */
+  async ensureInitialized() {
+    if (!this.initialized) {
+      await this.initialize();
+    }
   }
 
   /**
    * 加载TTS服务配置
-   * @returns {Object} 配置对象
    */
   loadConfigs() {
     return {
@@ -64,11 +87,10 @@ class TtsFactory {
 
   /**
    * 创建TTS服务实例
-   * @param {string} provider - 服务提供商
-   * @param {string} service - 服务类型
-   * @returns {BaseTtsService} TTS服务实例
    */
-  createService(provider, service = null) {
+  async createService(provider, service = null) {
+    await this.ensureInitialized();
+    
     const key = service ? `${provider}_${service}` : provider;
 
     // 检查是否已创建实例
@@ -100,83 +122,56 @@ class TtsFactory {
     return serviceInstance;
   }
 
-  /**
-   * 创建阿里云服务
-   * @param {string} service - 服务类型
-   * @returns {BaseTtsService} 服务实例
-   */
   createAliyunService(service) {
-    const config = this.configs.aliyun[service];
-    if (!config) {
+    const serviceConfig = this.configs.aliyun[service];
+    if (!serviceConfig) {
       throw new Error(`Unsupported Aliyun service: ${service}`);
     }
 
     switch (service) {
       case 'cosyvoice':
-        return this.loadService('../services/cosyVoiceService', config);
+        return this.loadService('../services/cosyVoiceService', serviceConfig);
       case 'qwen_http':
-        return this.loadService('../services/qwenTtsHttpService', config);
+        return this.loadService('../services/qwenTtsHttpService', serviceConfig);
       case 'qwen_ws':
-        return this.loadService('../services/qwenTtsHttpService', config); // 暂时使用HTTP服务，后续可添加WebSocket服务
+        return this.loadService('../services/qwenTtsHttpService', serviceConfig);
       default:
         throw new Error(`Unknown Aliyun service: ${service}`);
     }
   }
 
-  /**
-   * 创建腾讯云服务
-   * @returns {BaseTtsService} 服务实例
-   */
   createTencentService() {
-    const config = this.configs.tencent;
-    return this.loadService('../services/tencentTtsService', config);
+    const serviceConfig = this.configs.tencent;
+    return this.loadService('../services/tencentTtsService', serviceConfig);
   }
 
-  /**
-   * 创建火山引擎服务
-   * @param {string} service - 服务类型
-   * @returns {BaseTtsService} 服务实例
-   */
   createVolcengineService(service) {
-    const config = this.configs.volcengine;
+    const serviceConfig = this.configs.volcengine;
 
     switch (service) {
       case 'volcengine_http':
-        return this.loadService('../services/volcengineTtsService', config);
+        return this.loadService('../services/volcengineTtsService', serviceConfig);
       case 'volcengine_ws':
-        return this.loadService('../services/volcengineTtsWsService', config);
+        return this.loadService('../services/volcengineTtsWsService', serviceConfig);
       default:
         throw new Error(`Unknown Volcengine service: ${service}`);
     }
   }
 
-  /**
-   * 创建MiniMax服务
-   * @returns {BaseTtsService} 服务实例
-   */
   createMinimaxService() {
-    const config = this.configs.minimax;
-    return this.loadService('../services/minimaxTtsService', config);
+    const serviceConfig = this.configs.minimax;
+    return this.loadService('../services/minimaxTtsService', serviceConfig);
   }
 
-  /**
-   * 动态加载服务类
-   * @param {string} servicePath - 服务文件路径
-   * @param {Object} config - 配置对象
-   * @returns {BaseTtsService} 服务实例
-   */
   loadService(servicePath, config) {
     try {
       const service = require(servicePath);
 
-      // 1. 如果导出的是实例 (Singleton pattern)
       if (typeof service === 'object') {
-        // 强制检查是否实现了 synthesize 方法
         if (typeof service.synthesize !== 'function') {
            throw new Error(`Service ${servicePath} must implement synthesize method`);
         }
         
-        // 注入配置 (如果实例允许)
         if (service.config) {
           service.config = { ...service.config, ...config };
         }
@@ -185,7 +180,6 @@ class TtsFactory {
         return service;
       }
 
-      // 2. 如果导出的是类 (Class pattern)
       if (typeof service === 'function' && service.prototype) {
         console.log(`✅ 加载服务类: ${servicePath}`);
         return new service(config);
@@ -200,78 +194,80 @@ class TtsFactory {
   }
 
   /**
-   * 获取所有可用的服务提供商
-   * @returns {Array} 服务提供商列表
+   * 获取音色列表（通过VoiceManager）
    */
+  async getVoices(provider, serviceType = null) {
+    await this.ensureInitialized();
+    
+    // 从VoiceManager获取
+    let voices = voiceManager.getByProvider(provider);
+    
+    if (serviceType) {
+      voices = voices.filter(v => v.service === serviceType);
+    }
+    
+    // 映射为兼容格式
+    return voices.map(v => ({
+      id: v.sourceId,
+      systemId: v.id,
+      name: v.displayName,
+      gender: v.gender,
+      language: v.languages?.[0] || 'zh-CN',
+      languages: v.languages,
+      tags: v.tags || [],
+      description: v.description,
+      ttsConfig: v.ttsConfig,
+      _modelInfo: v
+    }));
+  }
+
   getAvailableProviders() {
     return [
-      {
-        provider: 'aliyun',
-        services: ['cosyvoice', 'qwen_http', 'qwen_ws'],
-        description: '阿里云TTS服务'
-      },
-      {
-        provider: 'tencent',
-        services: ['tts'],
-        description: '腾讯云TTS服务'
-      },
-      {
-        provider: 'volcengine',
-        services: ['volcengine_http', 'volcengine_ws'],
-        description: '火山引擎TTS服务'
-      },
-      {
-        provider: 'minimax',
-        services: ['minimax_tts'],
-        description: 'MiniMax TTS服务'
-      }
+      { provider: 'aliyun', services: ['cosyvoice', 'qwen_http', 'qwen_ws'], description: '阿里云TTS服务' },
+      { provider: 'tencent', services: ['tts'], description: '腾讯云TTS服务' },
+      { provider: 'volcengine', services: ['volcengine_http', 'volcengine_ws'], description: '火山引擎TTS服务' },
+      { provider: 'minimax', services: ['minimax_tts'], description: 'MiniMax TTS服务' }
     ];
   }
 
-  /**
-   * 检查服务是否可用
-   * @param {string} provider - 服务提供商
-   * @param {string} service - 服务类型
-   * @returns {boolean} 是否可用
-   */
-  isServiceAvailable(provider, service = null) {
+  async isServiceAvailable(provider, service = null) {
     try {
-      this.createService(provider, service);
+      await this.createService(provider, service);
       return true;
     } catch (error) {
       return false;
     }
   }
 
-  /**
-   * 获取服务健康状态
-   * @returns {Object} 健康状态
-   */
-  getHealthStatus() {
+  async getHealthStatus() {
+    await this.ensureInitialized();
+    
+    const vmHealth = voiceManager.getHealth();
     const providers = this.getAvailableProviders();
     const health = {
-      overall: 'healthy',
+      overall: vmHealth.status === 'healthy' ? 'healthy' : 'degraded',
+      voiceManager: vmHealth,
       services: {},
       timestamp: new Date().toISOString()
     };
 
-    for (const provider of providers) {
-      health.services[provider.provider] = {
+    for (const p of providers) {
+      health.services[p.provider] = {
         status: 'unknown',
         services: {}
       };
 
-      for (const service of provider.services) {
+      for (const service of p.services) {
         try {
-          const serviceInstance = this.createService(provider.provider, service);
-          const status = serviceInstance.getStatus();
-          health.services[provider.provider].services[service] = {
+          const instance = await this.createService(p.provider, service);
+          const status = instance.getStatus ? instance.getStatus() : { status: 'active' };
+          health.services[p.provider].services[service] = {
             status: 'healthy',
-            status: status.status,
+            ...status,
             lastCheck: new Date().toISOString()
           };
         } catch (error) {
-          health.services[provider.provider].services[service] = {
+          health.services[p.provider].services[service] = {
             status: 'unhealthy',
             error: error.message,
             lastCheck: new Date().toISOString()
@@ -284,28 +280,24 @@ class TtsFactory {
     return health;
   }
 
-  /**
-   * 清理服务缓存
-   */
   clearCache() {
     this.services.clear();
     console.log('TTS service cache cleared');
   }
 
-  /**
-   * 获取服务统计信息
-   * @returns {Object} 统计信息
-   */
-  getStats() {
+  async getStats() {
+    await this.ensureInitialized();
+    
     return {
       cachedServices: this.services.size,
       availableProviders: this.getAvailableProviders().length,
+      voiceManager: voiceManager.getStats(),
       lastHealthCheck: new Date().toISOString()
     };
   }
 }
 
-// 导出单例实例
+// 导出单例实例（延迟初始化）
 const ttsFactory = new TtsFactory();
 
 module.exports = {

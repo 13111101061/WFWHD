@@ -1,11 +1,10 @@
 const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
 const config = require('../../../shared/config/config');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
 
 /**
  * 阿里云千问TTS HTTP服务
- * 继承自BaseTtsService
+ * 继承自BaseTtsService（v2.0 - 使用VoiceManager）
  */
 class QwenTtsHttpService extends BaseTtsService {
   constructor(config = {}) {
@@ -179,27 +178,10 @@ class QwenTtsHttpService extends BaseTtsService {
    * @returns {Array} 硬编码音色列表
    */
   getHardcodedVoices() {
-    // 注意：此方法仅作为降级方案
-    // 正常情况下应使用从 BaseTtsService 继承的 getAvailableVoices() 方法
-    // 该方法会从 VoiceModelRegistry 获取完整的千问HTTP音色
     return [
-      { id: 'Chelsie', name: 'Chelsie', language: 'zh-CN', gender: 'female' },
-      { id: 'Cherry', name: 'Cherry', language: 'zh-CN', gender: 'female' },
-      { id: 'Ethan', name: 'Ethan', language: 'zh-CN', gender: 'male' },
-      { id: 'Serena', name: 'Serena', language: 'zh-CN', gender: 'female' }
+      { id: 'Cherry', name: 'Cherry', language: 'zh-CN', gender: 'female' }
     ];
   }
-
-  /**
-   * 获取可用音色列表（已弃用 - 硬编码版本）
-   * @deprecated 请使用继承自 BaseTtsService 的 getAvailableVoices() 方法
-   * 该方法会从 VoiceModelRegistry 获取完整的千问HTTP音色
-   *
-   * 原硬编码列表已移至 getHardcodedVoices() 作为降级方案
-   */
-  // getAvailableVoices() {
-  //   return [ /* 硬编码列表已移至 getHardcodedVoices() */ ];
-  // }
 
   /**
    * 获取支持的模型列表

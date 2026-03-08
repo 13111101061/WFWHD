@@ -1,0 +1,176 @@
+# 腾讯云 TTS 音色配置
+# 提供商：腾讯云 (Tencent Cloud)
+# 维护者：@admin
+# 最后更新：2026-03-08
+
+meta:
+  provider: tencent
+  service: tts
+  version: "1.0"
+  description: 腾讯云 TTS 服务音色
+
+voices:
+  - id: qinqin
+    displayName: 亲亲
+    name: 亲亲
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 标准]
+    ttsConfig:
+      voiceType: 101001
+      model: 1
+
+  - id: yaya
+    displayName: 鸭鸭
+    name: 鸭鸭
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 可爱]
+    ttsConfig:
+      voiceType: 101002
+      model: 1
+
+  - id: yuanyuan
+    displayName: 圆圆
+    name: 圆圆
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 亲切]
+    ttsConfig:
+      voiceType: 101003
+      model: 1
+
+  - id: xiaoguo
+    displayName: 小郭
+    name: 小郭
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 标准]
+    ttsConfig:
+      voiceType: 101004
+      model: 1
+
+  - id: xiaohe
+    displayName: 小何
+    name: 小何
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 温和]
+    ttsConfig:
+      voiceType: 101005
+      model: 1
+
+  - id: xiaoling
+    displayName: 小玲
+    name: 小玲
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 清脆]
+    ttsConfig:
+      voiceType: 101006
+      model: 1
+
+  - id: xiaolu
+    displayName: 小露
+    name: 小露
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 甜美]
+    ttsConfig:
+      voiceType: 101007
+      model: 1
+
+  - id: xiaoqian
+    displayName: 小倩
+    name: 小倩
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 温柔]
+    ttsConfig:
+      voiceType: 101008
+      model: 1
+
+  - id: xiaorong
+    displayName: 小蓉
+    name: 小蓉
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 知性]
+    ttsConfig:
+      voiceType: 101009
+      model: 1
+
+  - id: xiaosong
+    displayName: 小宋
+    name: 小宋
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 沉稳]
+    ttsConfig:
+      voiceType: 101010
+      model: 1
+
+  - id: xiaotang
+    displayName: 小唐
+    name: 小唐
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 活力]
+    ttsConfig:
+      voiceType: 101011
+      model: 1
+
+  - id: xiaowang
+    displayName: 小王
+    name: 小王
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 标准]
+    ttsConfig:
+      voiceType: 101012
+      model: 1
+
+  - id: xiaowei
+    displayName: 小魏
+    name: 小魏
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 温和]
+    ttsConfig:
+      voiceType: 101013
+      model: 1
+
+  - id: xiaowen
+    displayName: 小文
+    name: 小文
+    gender: male
+    languages: [zh-CN]
+    description: 腾讯云基础男声音色
+    tags: [基础, 男声, 文雅]
+    ttsConfig:
+      voiceType: 101014
+      model: 1
+
+  - id: xiaoxin
+    displayName: 小欣
+    name: 小欣
+    gender: female
+    languages: [zh-CN]
+    description: 腾讯云基础女声音色
+    tags: [基础, 女声, 欢快]
+    ttsConfig:
+      voiceType: 101015
+      model: 1

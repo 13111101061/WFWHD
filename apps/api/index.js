@@ -4,6 +4,7 @@ const path = require('path');
 const { unifiedAuth } = require('../../src/core/middleware/apiKeyMiddleware');
 const { presets } = require('../../src/shared/middleware/apiStatsMiddleware');
 const config = require('../../src/shared/config/config');
+const { ttsFactory } = require('../../src/modules/tts/core/TtsFactory');
 require('dotenv').config();
 
 // 验证配置（在应用启动前检查关键配置）
@@ -219,9 +220,21 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Initialize TTS Factory (with VoiceManager)
+async function initializeServices() {
+  try {
+    await ttsFactory.initialize();
+    console.log('✅ TTS Factory initialized with VoiceManager');
+  } catch (error) {
+    console.error('❌ TTS Factory initialization failed:', error.message);
+    // Continue starting server - services will use fallback
+  }
+}
+
 // Start server
-app.listen(PORT, () => {
-  console.log(`TTS microservice node running on port ${PORT}`);
+initializeServices().then(() => {
+  app.listen(PORT, () => {
+    console.log(`TTS microservice node running on port ${PORT}`);
   console.log(`Service URL: http://localhost:${PORT}`);
   console.log(`API base: http://localhost:${PORT}/api`);
   console.log(`Admin UI: http://localhost:${PORT}/admin`);
@@ -237,7 +250,11 @@ app.listen(PORT, () => {
   }
 
   console.log('Auth system: unified API keys, monitoring/auditing, rate limiting, service-level permissions');
-  console.log('Tip: test auth system with `node tests/test-new-auth.js`');
+    console.log('Tip: test auth system with `node tests/test-new-auth.js`');
+  });
+}).catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
 
 module.exports = app;

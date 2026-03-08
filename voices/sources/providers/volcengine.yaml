@@ -1,0 +1,66 @@
+# 火山引擎 TTS 音色配置
+# 提供商：火山引擎 (Volcengine)
+# 维护者：@admin
+# 最后更新：2026-03-08
+
+meta:
+  provider: volcengine
+  service: volcengine_http
+  version: "1.0"
+  description: 火山引擎 TTS HTTP 服务音色
+
+voices:
+  - id: bv001_streaming
+    displayName: 通用女声
+    name: BV001_streaming
+    gender: female
+    languages: [zh-CN]
+    description: 火山引擎通用女声音色
+    tags: [基础, 女声, 标准]
+    ttsConfig:
+      voiceType: BV001_streaming
+      cluster: volcano_tts
+
+  - id: bv002_streaming
+    displayName: 通用男声
+    name: BV002_streaming
+    gender: male
+    languages: [zh-CN]
+    description: 火山引擎通用男声音色
+    tags: [基础, 男声, 标准]
+    ttsConfig:
+      voiceType: BV002_streaming
+      cluster: volcano_tts
+
+  - id: bv032_streaming
+    displayName: 甜美女声
+    name: BV032_streaming
+    gender: female
+    languages: [zh-CN]
+    description: 甜美风格的女声音色
+    tags: [甜美, 女声, 温柔]
+    ttsConfig:
+      voiceType: BV032_streaming
+      cluster: volcano_tts
+
+  - id: bv033_streaming
+    displayName: 沉稳男声
+    name: BV033_streaming
+    gender: male
+    languages: [zh-CN]
+    description: 沉稳风格的男声音色
+    tags: [沉稳, 男声, 成熟]
+    ttsConfig:
+      voiceType: BV033_streaming
+      cluster: volcano_tts
+
+  - id: bv034_streaming
+    displayName: 活力男声
+    name: BV034_streaming
+    gender: male
+    languages: [zh-CN]
+    description: 充满活力的男声音色
+    tags: [活力, 男声, 阳光]
+    ttsConfig:
+      voiceType: BV034_streaming
+      cluster: volcano_tts

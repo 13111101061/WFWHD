@@ -1,11 +1,10 @@
 const axios = require('axios');
 const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
 
 /**
- * MiniMax TTS服务类（重构版）
- * 继承自BaseTtsService，提供统一的接口
+ * MiniMax TTS服务类
+ * 继承自BaseTtsService（v2.0 - 使用VoiceManager）
  */
 class MinimaxTtsService extends BaseTtsService {
   constructor(config = {}) {
@@ -162,51 +161,13 @@ class MinimaxTtsService extends BaseTtsService {
    * @returns {Array} 硬编码音色列表
    */
   getHardcodedVoices() {
-    // 注意：此方法仅作为降级方案
-    // 正常情况下应使用从 BaseTtsService 继承的 getAvailableVoices() 方法
-    // 该方法会从 VoiceModelRegistry 获取完整的MiniMax音色
     return [
-      // 中文音色
       {
         id: 'moss_audio_ce44fc67-7ce3-11f0-8de5-96e35d26fb85',
         systemId: 'minimax-female-1',
         name: '中文女声1',
         gender: 'female',
-        language: 'zh-CN',
-        type: 'system'
-      },
-      {
-        id: 'moss_audio_aaa1346a-7ce7-11f0-8e61-2e6e3c7ee85d',
-        systemId: 'minimax-female-2',
-        name: '中文女声2',
-        gender: 'female',
-        language: 'zh-CN',
-        type: 'system'
-      },
-      {
-        id: 'male-qn-qingse',
-        systemId: 'minimax-male-1',
-        name: '男声-青涩',
-        gender: 'male',
-        language: 'zh-CN',
-        type: 'system'
-      },
-      // 英文音色
-      {
-        id: 'English_Graceful_Lady',
-        systemId: 'minimax-female-en-1',
-        name: '优雅女士',
-        gender: 'female',
-        language: 'en-US',
-        type: 'system'
-      },
-      {
-        id: 'English_Insightful_Speaker',
-        systemId: 'minimax-male-en-1',
-        name: '睿智演讲者',
-        gender: 'male',
-        language: 'en-US',
-        type: 'system'
+        language: 'zh-CN'
       }
     ];
   }
@@ -214,7 +175,7 @@ class MinimaxTtsService extends BaseTtsService {
   /**
    * 获取可用音色列表（已弃用 - 硬编码版本）
    * @deprecated 请使用继承自 BaseTtsService 的 getAvailableVoices() 方法
-   * 该方法会从 VoiceModelRegistry 获取完整的MiniMax音色
+   * 该方法会从 VoiceManager 获取完整的MiniMax音色
    *
    * 原硬编码列表已移至 getHardcodedVoices() 作为降级方案
    */

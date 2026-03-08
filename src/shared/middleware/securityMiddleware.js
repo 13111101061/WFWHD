@@ -133,8 +133,18 @@ const validateTtsParams = (req, res, next) => {
     errors.push('service字段必须是字符串');
   }
 
-  if (body.voice && typeof body.voice !== 'string') {
-    errors.push('voice字段必须是字符串');
+  // voice 参数支持字符串或数字类型（不同提供商使用不同格式）
+  // 阿里云、火山引擎、MiniMax 使用字符串
+  // 腾讯云使用数字类型
+  if (body.voice !== undefined && body.voice !== null) {
+    const voiceType = typeof body.voice;
+    if (voiceType !== 'string' && voiceType !== 'number') {
+      errors.push('voice字段必须是字符串或数字类型');
+    }
+    // 如果是数字，验证是否为有效整数
+    if (voiceType === 'number' && !Number.isInteger(body.voice)) {
+      errors.push('voice字段为数字时必须是整数');
+    }
   }
 
   if (body.speed !== undefined) {

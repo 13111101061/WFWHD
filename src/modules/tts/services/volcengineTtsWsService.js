@@ -3,7 +3,11 @@ const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
 const config = require('../../../shared/config/config');
 const zlib = require('zlib');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
+const util = require('util');
+
+// 将同步压缩函数转换为异步版本，避免阻塞 Event Loop
+const gzipAsync = util.promisify(zlib.gzip);
+const gunzipAsync = util.promisify(zlib.gunzip);
 
 /**
  * 火山引擎TTS WebSocket服务
@@ -89,7 +93,7 @@ class VolcengineTtsWsService extends BaseTtsService {
         let timeoutId = null;
 
         // 连接打开时发送初始化消息
-        ws.on('open', () => {
+        ws.on('open', async () => {
           console.log('WebSocket连接已建立');
 
           // 设置超时
@@ -125,15 +129,22 @@ class VolcengineTtsWsService extends BaseTtsService {
             }
           };
 
-          // 构造二进制消息（使用辅助函数）
-          const message = buildBinaryMessage(requestJson);
-          ws.send(message);
+          try {
+            // 构造二进制消息（异步，非阻塞）
+            const message = await buildBinaryMessage(requestJson);
+            ws.send(message);
+          } catch (error) {
+            console.error('构造消息失败:', error);
+            clearTimeout(timeoutId);
+            ws.close();
+            reject(new Error(`构造消息失败: ${error.message}`));
+          }
         });
 
         // 接收消息
-        ws.on('message', (data) => {
+        ws.on('message', async (data) => {
           try {
-            const result = parseResponse(data);
+            const result = await parseResponse(data);
 
             if (result.isAudio) {
               // 收到音频数据
@@ -244,30 +255,11 @@ class VolcengineTtsWsService extends BaseTtsService {
    * @returns {Array} 硬编码音色列表
    */
   getHardcodedVoices() {
-    // 注意：此方法仅作为降级方案
-    // 正常情况下应使用从 BaseTtsService 继承的 getAvailableVoices() 方法
-    // 该方法会从 VoiceModelRegistry 获取完整的火山引擎WebSocket音色
     return [
-      // 基础音色
-      { id: 'BV001_streaming', name: '通用女声', gender: '女', language: '中文' },
-      { id: 'BV002_streaming', name: '通用男声', gender: '男', language: '中文' },
-      { id: 'BV032_streaming', name: '甜美女声', gender: '女', language: '中文' },
-      { id: 'BV033_streaming', name: '沉稳男声', gender: '男', language: '中文' },
-      { id: 'BV034_streaming', name: '活力男声', gender: '男', language: '中文' },
-      // 可以继续添加更多音色...
+      { id: 'BV001_streaming', name: '通用女声', gender: 'female', language: 'zh-CN' },
+      { id: 'BV002_streaming', name: '通用男声', gender: 'male', language: 'zh-CN' }
     ];
   }
-
-  /**
-   * 获取可用音色列表（已弃用 - 硬编码版本）
-   * @deprecated 请使用继承自 BaseTtsService 的 getAvailableVoices() 方法
-   * 该方法会从 VoiceModelRegistry 获取完整的火山引擎WebSocket音色
-   *
-   * 原硬编码列表已移至 getHardcodedVoices() 作为降级方案
-   */
-  // getAvailableVoices() {
-  //   return [ /* 硬编码列表已移至 getHardcodedVoices() */ ];
-  // }
 
   /**
    * 获取支持的模型列表
@@ -281,11 +273,12 @@ class VolcengineTtsWsService extends BaseTtsService {
 // ============== 二进制协议辅助函数 ==============
 
 /**
- * 构造二进制消息
+ * 构造二进制消息（异步版本）
+ * 使用异步 gzip 避免 Event Loop 阻塞
  * @param {Object} requestJson - 请求数据
- * @returns {Buffer} 二进制消息
+ * @returns {Promise<Buffer>} 二进制消息
  */
-function buildBinaryMessage(requestJson) {
+async function buildBinaryMessage(requestJson) {
   // version: b0001 (4 bits)
   // header size: b0001 (4 bits)
   // message type: b0001 (Full client request) (4bits)
@@ -295,9 +288,9 @@ function buildBinaryMessage(requestJson) {
   // reserved data: 0x00 (1 byte)
   const defaultHeader = Buffer.from([0x11, 0x10, 0x11, 0x00]);
 
-  // 序列化并压缩payload
+  // 序列化并异步压缩 payload（非阻塞）
   let payloadBytes = Buffer.from(JSON.stringify(requestJson), 'utf8');
-  payloadBytes = zlib.gzipSync(payloadBytes);
+  payloadBytes = await gzipAsync(payloadBytes);
 
   // 构造完整消息
   const message = Buffer.alloc(4 + 4 + payloadBytes.length);
@@ -309,11 +302,12 @@ function buildBinaryMessage(requestJson) {
 }
 
 /**
- * 解析响应
+ * 解析响应（异步版本）
+ * 使用异步 gunzip 避免 Event Loop 阻塞
  * @param {Buffer} data - 接收的数据
- * @returns {Object} 解析结果
+ * @returns {Promise<Object>} 解析结果
  */
-function parseResponse(data) {
+async function parseResponse(data) {
   try {
     // 解析header
     const protocolVersion = data[0] >> 4;
@@ -328,9 +322,9 @@ function parseResponse(data) {
     const payloadSize = data.readUInt32BE(4);
     let payload = data.slice(headerEnd, headerEnd + payloadSize);
 
-    // 如果有压缩，解压缩
+    // 如果有压缩，异步解压缩（非阻塞）
     if (messageCompression === 1) { // gzip
-      payload = zlib.gunzipSync(payload);
+      payload = await gunzipAsync(payload);
     }
 
     // 根据消息类型处理

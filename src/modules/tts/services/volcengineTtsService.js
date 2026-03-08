@@ -2,11 +2,10 @@ const https = require('https');
 const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
 const config = require('../../../shared/config/config');
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
 
 /**
  * 火山引擎TTS服务 - HTTP API实现
- * 继承自BaseTtsService
+ * 继承自BaseTtsService（v2.0 - 使用VoiceManager）
  */
 class VolcengineTtsService extends BaseTtsService {
   constructor(config = {}) {
@@ -199,33 +198,16 @@ class VolcengineTtsService extends BaseTtsService {
   }
 
   /**
-   * 获取硬编码音色列表（降级方案）
-   * 保留作为备用数据，当音色工厂不可用时使用
-   * @returns {Array} 硬编码音色列表
+   * 获取硬编码音色列表（紧急降级方案）
+   * 仅在 VoiceManager 完全不可用时使用
+   * @returns {Array} 精简的备用音色列表
    */
   getHardcodedVoices() {
-    // 注意：此方法仅作为降级方案
-    // 正常情况下应使用从 BaseTtsService 继承的 getAvailableVoices() 方法
-    // 该方法会从 VoiceModelRegistry 获取完整的5个火山引擎HTTP音色
     return [
-      { id: 'BV001_streaming', name: '通用女声', gender: '女', language: '中文' },
-      { id: 'BV002_streaming', name: '通用男声', gender: '男', language: '中文' },
-      { id: 'BV032_streaming', name: '甜美女声', gender: '女', language: '中文' },
-      { id: 'BV033_streaming', name: '沉稳男声', gender: '男', language: '中文' },
-      { id: 'BV034_streaming', name: '活力男声', gender: '男', language: '中文' }
+      { id: 'BV001_streaming', name: '通用女声', gender: 'female', language: 'zh-CN' },
+      { id: 'BV002_streaming', name: '通用男声', gender: 'male', language: 'zh-CN' }
     ];
   }
-
-  /**
-   * 获取可用音色列表（已弃用 - 硬编码版本）
-   * @deprecated 请使用继承自 BaseTtsService 的 getAvailableVoices() 方法
-   * 该方法会从 VoiceModelRegistry 获取完整的5个火山引擎HTTP音色
-   *
-   * 原硬编码列表已移至 getHardcodedVoices() 作为降级方案
-   */
-  // getAvailableVoices() {
-  //   return [ /* 硬编码列表已移至 getHardcodedVoices() */ ];
-  // }
 
   /**
    * 获取支持的模型列表

@@ -1,8 +1,7 @@
 const express = require('express');
 const UnifiedTtsController = require('../../../src/modules/tts/UnifiedTtsController');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
-const { voiceModelRegistry } = require('../../../src/modules/tts/config/VoiceModelRegistry');
-require('../../../src/modules/tts/config/voice-hot-reload');
+const { voiceManager } = require('../../../src/modules/tts/core/VoiceManager');
 const voiceRoutes = require('../../../src/modules/tts/routes/voiceRoutes');
 const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
 const { validateTtsParams, securityLogger } = require('../../../src/shared/middleware/securityMiddleware');
@@ -13,9 +12,9 @@ const { validateTtsParams, securityLogger } = require('../../../src/shared/middl
  */
 const router = express.Router();
 
-// 初始化模型注册中心
-voiceModelRegistry.initialize().catch(error => {
-  console.error('Failed to initialize voice model registry:', error);
+// 初始化 VoiceManager（v2.0 - 替代 VoiceModelRegistry）
+voiceManager.initialize().catch(error => {
+  console.error('Failed to initialize VoiceManager:', error);
 });
 
 // 创建TTS控制器实例

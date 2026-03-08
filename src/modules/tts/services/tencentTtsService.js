@@ -3,11 +3,10 @@ const crypto = require("crypto");
 const BaseTtsService = require('../core/BaseTtsService');
 const TtsException = require('../core/TtsException');
 const config = require("../../../shared/config/config");
-const { voiceModelRegistry } = require('../config/VoiceModelRegistry');
 
 /**
  * 腾讯云TTS服务
- * 继承自BaseTtsService，使用TC3-HMAC-SHA256签名算法
+ * 继承自BaseTtsService（v2.0 - 使用VoiceManager）
  */
 class TencentTtsService extends BaseTtsService {
   constructor(config = {}) {
@@ -269,50 +268,17 @@ class TencentTtsService extends BaseTtsService {
   }
 
   /**
-   * 获取硬编码音色列表（降级方案）
-   * 保留作为备用数据，当音色工厂不可用时使用
-   * @returns {Array} 硬编码音色列表
+   * 获取硬编码音色列表（紧急降级方案）
+   * 仅在 VoiceManager 完全不可用时使用
+   * @returns {Array} 精简的备用音色列表
    */
   getHardcodedVoices() {
-    // 注意：此方法仅作为降级方案
-    // 正常情况下应使用从 BaseTtsService 继承的 getAvailableVoices() 方法
-    // 该方法会从 VoiceModelRegistry 获取完整的83个音色
+    // 精简的备用列表，确保基本功能可用
     return [
-      // 基础音色（部分示例）
-      { id: 101001, name: '亲亲', gender: '女', language: '中文' },
-      { id: 101002, name: '鸭鸭', gender: '女', language: '中文' },
-      { id: 101003, name: '圆圆', gender: '女', language: '中文' },
-      { id: 101004, name: '小郭', gender: '男', language: '中文' },
-      { id: 101005, name: '小何', gender: '男', language: '中文' },
-      { id: 101006, name: '小玲', gender: '女', language: '中文' },
-      { id: 101007, name: '小露', gender: '女', language: '中文' },
-      { id: 101008, name: '小倩', gender: '女', language: '中文' },
-      { id: 101009, name: '小蓉', gender: '女', language: '中文' },
-      { id: 101010, name: '小宋', gender: '男', language: '中文' },
-      { id: 101011, name: '小唐', gender: '男', language: '中文' },
-      { id: 101012, name: '小王', gender: '男', language: '中文' },
-      { id: 101013, name: '小魏', gender: '男', language: '中文' },
-      { id: 101014, name: '小文', gender: '男', language: '中文' },
-      { id: 101015, name: '小欣', gender: '女', language: '中文' },
-      { id: 101016, name: '小颜', gender: '女', language: '中文' },
-      { id: 101017, name: '小包', gender: '男', language: '中文' },
-      { id: 101018, name: '小蔡', gender: '男', language: '中文' },
-      { id: 101019, name: '小岑', gender: '女', language: '中文' },
-      { id: 101020, name: '小戴', gender: '男', language: '中文' },
-      { id: 101070, name: '翻译腔男声', gender: '男', language: '中文', type: '特色' }
+      { id: 101001, name: '亲亲', gender: 'female', language: 'zh-CN' },
+      { id: 101004, name: '小郭', gender: 'male', language: 'zh-CN' }
     ];
   }
-
-  /**
-   * 获取可用音色列表（已弃用 - 硬编码版本）
-   * @deprecated 请使用继承自 BaseTtsService 的 getAvailableVoices() 方法
-   * 该方法会从 VoiceModelRegistry 获取完整的83个腾讯云音色
-   *
-   * 原硬编码列表已移至 getHardcodedVoices() 作为降级方案
-   */
-  // getAvailableVoices() {
-  //   return [ /* 硬编码列表已移至 getHardcodedVoices() */ ];
-  // }
 
   /**
    * 获取支持的模型列表
