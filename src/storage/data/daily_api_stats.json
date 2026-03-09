@@ -102,12 +102,12 @@
       }
     },
     "2026-03-08": {
-      "totalCalls": 66,
+      "totalCalls": 68,
       "endpoints": {
         "GET /api/tts/voices/models": 4,
         "GET /api/tts/voices/providers/aliyun": 4,
         "GET /api/tts/voices/providers/volcengine": 4,
-        "POST /api/tts/synthesize": 28,
+        "POST /api/tts/synthesize": 29,
         "GET /api/tts/voices/categories": 4,
         "GET /api/tts/voices/providers/minimax": 4,
         "GET /api/tts/voices/providers/tencent": 4,
@@ -116,7 +116,8 @@
         "GET /api/tts/synthesize": 1,
         "GET /hybridaction/zybTrackerStatisticsAction": 2,
         "GET /": 1,
-        "GET /@vite/client": 1
+        "GET /@vite/client": 1,
+        "GET /api/public/info": 1
       }
     }
   }

@@ -1,0 +1,648 @@
+# 阿里云千问 TTS 音色配置
+# 提供商：阿里云 (Aliyun DashScope)
+# 服务：qwen_http (千问TTS HTTP接口)
+# 最后更新：2026-03-08
+
+meta:
+  provider: aliyun
+  service: qwen_http
+  version: "1.0"
+  description: 阿里云千问TTS服务音色 - 49个精选音色
+
+voices:
+  - id: cherry
+    displayName: 爱千月
+    name: Cherry
+    gender: female
+    languages: [zh-CN, en-US]
+    description: 阳光积极的邻家姐姐，用亲切自然的话语予人最贴心的治愈。
+    tags: [舒缓, 亲切, 自然, 治愈, 温柔, 温暖]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/cherry.wav
+    ttsConfig:
+      voiceName: Cherry
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: ethan
+    displayName: 爱晨曦
+    name: Ethan
+    gender: male
+    languages: [zh-CN, en-US]
+    description: 充满朝气与活力的青年之声，温暖有力，尽显北方口音的爽朗与可靠。
+    tags: [阳光, 温暖, 活力, 朝气, 磁性, 可靠]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/ethan.wav
+    ttsConfig:
+      voiceName: Ethan
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: chelsie
+    displayName: 爱千雪
+    name: Chelsie
+    gender: female
+    languages: [zh-CN, en-US]
+    description: 甜美软萌的二次元虚拟女友，声音亲密无间，带着一丝娇憨与心动。
+    tags: [二次元, 软萌, 甜美, 娇憨, 亲密, 心动]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/chelsie.wav
+    ttsConfig:
+      voiceName: Chelsie
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: serena
+    displayName: 爱苏瑶
+    name: Serena
+    gender: female
+    languages: [zh-CN, en-US]
+    description: 温柔而充满阳光的声音，如同明亮清泉，带来清澈亲切的听觉体验。
+    tags: [阳光, 明亮, 亲切, 清澈, 活泼, 温柔]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/serena.wav
+    ttsConfig:
+      voiceName: Serena
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: dylan
+    displayName: 北京-晓东
+    name: Dylan
+    gender: male
+    languages: [zh-CN]
+    description: 从北京胡同里长大的少年，充满活力，口音地道。
+    tags: [少年, 活力, 地道, 胡同]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav
+    ttsConfig:
+      voiceName: Dylan
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: jada
+    displayName: 上海-阿珍
+    name: Jada
+    gender: female
+    languages: [zh-CN]
+    description: 风风火火的沪上阿姐，做事干练，性格爽朗。
+    tags: [阿姐, 干练, 活泼, 爽朗]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Jada.wav
+    ttsConfig:
+      voiceName: Jada
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: sunny
+    displayName: 四川-晴儿
+    name: Sunny
+    gender: female
+    languages: [zh-CN]
+    description: 甜到心里的川妹子，声音活泼娇媚，感染力十足。
+    tags: [川妹子, 甜美, 活泼, 娇媚]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Sunny.wav
+    ttsConfig:
+      voiceName: Sunny
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: momo
+    displayName: 爱伏兔
+    name: Momo
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 古灵精怪的开心果，声音多变搞怪，擅长用撒娇和俏皮逗你开心。
+    tags: [搞怪, 撒娇, 活泼, 俏皮, 灵动, 元气少女]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Momo.wav
+    ttsConfig:
+      voiceName: Momo
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: vivian
+    displayName: 爱十一
+    name: Vivian
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 外表帅气、拽拽的傲娇少女，偶尔的可爱小暴躁下藏着一颗柔软的心。
+    tags: [傲娇, 帅气, 个性, 小暴躁, 叛逆, 反差萌]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Vivian.wav
+    ttsConfig:
+      voiceName: Vivian
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: moon
+    displayName: 爱月白
+    name: Moon
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 率性帅气的清冷少年音，语调从容洒脱，如月光般皎洁而有磁性。
+    tags: [清冷, 帅气, 洒脱, 磁性, 冷静, 少年感]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Moon.wav
+    ttsConfig:
+      voiceName: Moon
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: maia
+    displayName: 爱七月
+    name: Maia
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 知性与温柔并存的御姐，如月光般优雅迷人。
+    tags: [知性, 温柔, 御姐, 气质, 陪伴, 成熟]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Maia.wav
+    ttsConfig:
+      voiceName: Maia
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: kai
+    displayName: 凯
+    name: Kai
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 声线低沉磁性，如同专业的音乐评述人，冷静而富有深度。
+    tags: [低沉, 磁性, 专业, 评述, 冷静, 深度]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Kai.wav
+    ttsConfig:
+      voiceName: Kai
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: nofish
+    displayName: 不爱吃鱼
+    name: Nofish
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 不会翘舌的清新少年音，自然率性，如同文艺范的设计师。
+    tags: [清新, 文艺, 少年音, 平舌, 自然, 个性]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Nofish.wav
+    ttsConfig:
+      voiceName: Nofish
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: bella
+    displayName: 爱晴宝
+    name: Bella
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 奶萌俏皮的小萝莉，声音里带着不打醉拳的狡黠与活泼。
+    tags: [萝莉, 奶萌, 俏皮, 活泼, 酒鬼, 个性]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav
+    ttsConfig:
+      voiceName: Bella
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: jennifer
+    displayName: 詹妮弗
+    name: Jennifer
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 品牌级英语广告女声，质感优雅，尽显高级与专业。
+    tags: [英语, 专业, 高级, 优雅, 成熟, 广告]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav
+    ttsConfig:
+      voiceName: Jennifer
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: ryan
+    displayName: 斯威特
+    name: Ryan
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 戏感炸裂的英语电影男声，节奏与张力十足，极具沉浸感。
+    tags: [英语, 电影感, 张力, 情感丰富, 沉浸, 演技派]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Ryan.wav
+    ttsConfig:
+      voiceName: Ryan
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: katerina
+    displayName: 卡捷琳娜
+    name: Katerina
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 韵律十足的英语御姐音，成熟优雅，气场全开。
+    tags: [英语, 御姐, 韵律, 成熟, 优雅, 气场]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Katerina.wav
+    ttsConfig:
+      voiceName: Katerina
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: aiden
+    displayName: 艾登
+    name: Aiden
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 精通美语的腼腆大男孩，声音干净，带着邻家般的阳光感。
+    tags: [英语, 青年, 腼腆, 干净, 阳光, 邻家]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Aiden.wav
+    ttsConfig:
+      voiceName: Aiden
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: eldric-sage
+    displayName: 沧明子
+    name: Eldric Sage
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 沉稳睿智的老者，声音历经沧桑，心明如镜，充满故事感。
+    tags: [长者, 睿智, 沉稳, 沧桑, 故事感, 哲学]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Eldric+Sage.wav
+    ttsConfig:
+      voiceName: Eldric Sage
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: mia
+    displayName: 爱念棠
+    name: Mia
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 温顺乖巧的邻家小妹，声音甜美软糯，治愈力十足。
+    tags: [乖巧, 温顺, 甜美, 软糯, 年轻女性, 治愈]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Mia.wav
+    ttsConfig:
+      voiceName: Mia
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: mochi
+    displayName: 爱星冉
+    name: Mochi
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 聪明伶俐的小大人，童真未泯，声音清秀又透着一丝早慧。
+    tags: [正太, 聪明, 小大人, 童真, 清秀, 早慧]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Mochi.wav
+    ttsConfig:
+      voiceName: Mochi
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: bellona
+    displayName: 爱铮莺
+    name: Bellona
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 声音洪亮清晰的江湖说书人，节奏感强，字正腔圆，一听就让人热血沸腾。
+    tags: [洪亮, 清晰, 戏剧性, 说书人, 江湖, 热血]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Bellona.wav
+    ttsConfig:
+      voiceName: Bellona
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: vincent
+    displayName: 田叔
+    name: Vincent
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 一口独特的沙哑烟嗓，是道尽江湖豪情与千军万马的传奇说书人。
+    tags: [沙哑, 烟嗓, 说书人, 沧桑, 豪情, 故事]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Vincent.wav
+    ttsConfig:
+      voiceName: Vincent
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: bunny
+    displayName: 爱芽芽
+    name: Bunny
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 萌属性爆棚的小萝莉音，甜美可爱，让人瞬间心化。
+    tags: [萝莉, 萌, 甜美, 软糯, 可爱, 儿童]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Bunny.wav
+    ttsConfig:
+      voiceName: Bunny
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: neil
+    displayName: 阿明远
+    name: Neil
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 字正腔圆的专业新闻主持人，语调平直客观，极具权威感。
+    tags: [专业, 新闻, 客观, 字正腔圆, 权威, 沉稳]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Neil.wav
+    ttsConfig:
+      voiceName: Neil
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: elias
+    displayName: 爱明涟
+    name: Elias
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 将复杂知识通俗化的解惑者，声音清晰条理，兼具学科严谨与叙事温情。
+    tags: [教育, 知识, 清晰, 条理, 女性, 治愈]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav
+    ttsConfig:
+      voiceName: Elias
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: arthur
+    displayName: 徐来顺
+    name: Arthur
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 被岁月沉淀的质朴之声，不疾不徐地讲述着村里的奇闻异事。
+    tags: [乡土, 质朴, 故事, 慢节奏, 沧桑, 长者]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Arthur.wav
+    ttsConfig:
+      voiceName: Arthur
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: nini
+    displayName: 爱云朵
+    name: Nini
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 糯米糍一样软又黏的嗓音，那一声"哥哥"甜到骨子里。
+    tags: [撒娇, 软糯, 甜美, 甜蜜, 年轻女性, 萝莉音]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Nini.wav
+    ttsConfig:
+      voiceName: Nini
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: ebona
+    displayName: 爱青烛
+    name: Ebona
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 伴随幽暗与恐惧的低语，如同生锈的钥匙，缓缓开启你内心深处。
+    tags: [神秘, 黑暗, 低语, 疗愈, 哥特, 气声]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Ebona.wav
+    ttsConfig:
+      voiceName: Ebona
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: seren
+    displayName: 爱曦语
+    name: Seren
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 温和舒缓的助眠师，用温柔的声线伴你安然入梦。
+    tags: [舒缓, 助眠, 温柔, 治愈, ASMR, 晚安]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Seren.wav
+    ttsConfig:
+      voiceName: Seren
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: pip
+    displayName: 小新
+    name: Pip
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 调皮捣蛋又充满童真的小新，声音里全是古灵精怪的快乐。
+    tags: [顽皮, 活泼, 童真, 搞笑, 正太, 个性]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Pip.wav
+    ttsConfig:
+      voiceName: Pip
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: stella
+    displayName: 爱羽月
+    name: Stella
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 平时是甜美的迷糊少女，关键时刻能瞬间变身充满正义的战斗少女。
+    tags: [双重人格, 动漫, 元气, 甜美, 帅气, 战斗少女]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Stella.wav
+    ttsConfig:
+      voiceName: Stella
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: bodega
+    displayName: 博德加
+    name: Bodega
+    gender: male
+    languages: [zh-CN, en-US, es-ES, ja-JP, ko-KR]
+    description: 热情洋溢的西班牙大叔，声音里满是阳光与拉丁式的活力。
+    tags: [西班牙语, 热情, 大叔, 阳光, 活力]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Bodega.wav
+    ttsConfig:
+      voiceName: Bodega
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: sonrisa
+    displayName: 索尼莎
+    name: Sonrisa
+    gender: female
+    languages: [zh-CN, en-US, es-ES, ja-JP, ko-KR]
+    description: 热情开朗的拉美大姐，声音极具感染力，仿佛能驱散所有阴霾。
+    tags: [西班牙语, 热情, 开朗, 大姐姐, 活力]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Sonrisa.wav
+    ttsConfig:
+      voiceName: Sonrisa
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: alek
+    displayName: 阿塞克
+    name: Alek
+    gender: male
+    languages: [zh-CN, en-US, ru-RU, ja-JP, ko-KR]
+    description: 一开口就是典型的俄罗斯硬朗口音，自带战斗民族的冷峻气场。
+    tags: [俄语, 战斗民族, 硬朗, 冷酷, 低沉]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Alek.wav
+    ttsConfig:
+      voiceName: Alek
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: dolce
+    displayName: 多尔切
+    name: Dolce
+    gender: male
+    languages: [zh-CN, en-US, it-IT, ja-JP, ko-KR]
+    description: 如同午后阳光般慵懒的意大利大叔，声音随性而充满浪漫。
+    tags: [意大利语, 慵懒, 浪漫, 磁性, 随性]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Dolce.wav
+    ttsConfig:
+      voiceName: Dolce
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: sohee
+    displayName: 素熙
+    name: Sohee
+    gender: female
+    languages: [zh-CN, en-US, ko-KR, ja-JP]
+    description: 温柔开朗的韩国欧尼，声音甜美，情绪表达丰富而真诚。
+    tags: [韩语, 温柔, 开朗, 欧尼, 甜美, 情绪丰富]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Sohee.wav
+    ttsConfig:
+      voiceName: Sohee
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: ono-anna
+    displayName: 小野杏
+    name: Ono Anna
+    gender: female
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 鬼灵精怪的日语青梅竹马，声音娇俏活泼，充满邻家少女感。
+    tags: [日语, 鬼马, 活泼, 娇俏, 邻家, 青梅竹马]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Ono+Anna.wav
+    ttsConfig:
+      voiceName: Ono Anna
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: lenn
+    displayName: 莱恩
+    name: Lenn
+    gender: male
+    languages: [zh-CN, en-US, de-DE, ja-JP, ko-KR]
+    description: 理性是底色的德国青年，细节中藏着不羁的叛逆，声音冷静而独特。
+    tags: [德语, 理性, 叛逆, 青年, 冷静, 个性]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Lenn.wav
+    ttsConfig:
+      voiceName: Lenn
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: emilien
+    displayName: 埃米尔安
+    name: Emilien
+    gender: male
+    languages: [zh-CN, en-US, fr-FR, ja-JP, ko-KR]
+    description: 浪漫的法国大哥哥，声音优雅温柔，充满了迷人的绅士风度。
+    tags: [法语, 浪漫, 温柔, 大哥哥, 磁性, 优雅]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Emilien.wav
+    ttsConfig:
+      voiceName: Emilien
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: andre
+    displayName: 安德雷
+    name: Andre
+    gender: male
+    languages: [zh-CN, en-US, ja-JP, ko-KR]
+    description: 稳重可靠的西班牙科学家，声音沉静理性，是值得信赖的伴侣与学者。
+    tags: [西班牙语, 稳重, 理性, 科学家, 丈夫, 成熟]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav
+    ttsConfig:
+      voiceName: Andre
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: radio-gol
+    displayName: 拉迪奥·戈尔
+    name: Radio Gol
+    gender: male
+    languages: [zh-CN, en-US, es-ES, ja-JP, ko-KR]
+    description: 赛场上的足球诗人，用充满激情的西班牙语为你解说每一场精彩对决。
+    tags: [体育, 解说, 激情, 诗人, 西班牙语, 活力]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Radio+Gol.wav
+    ttsConfig:
+      voiceName: Radio Gol
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: li
+    displayName: 南京-老李
+    name: Li
+    gender: male
+    languages: [zh-CN]
+    description: 语气温和的瑜伽老师，声音沉稳，极具耐心。
+    tags: [老师, 耐心, 沉稳, 温柔]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Li.wav
+    ttsConfig:
+      voiceName: Li
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: marcus
+    displayName: 陕西-秦川
+    name: Marcus
+    gender: male
+    languages: [zh-CN]
+    description: 心实声沉的老陕，话音里透着西北汉子的淳朴与沉稳。
+    tags: [长者, 淳朴, 沉稳, 憨厚]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Marcus.wav
+    ttsConfig:
+      voiceName: Marcus
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: roy
+    displayName: 闽南-阿杰
+    name: Roy
+    gender: male
+    languages: [zh-CN]
+    description: 诙谐直爽的台湾哥仔，声音市井活泼，充满生活气息。
+    tags: [台哥, 诙谐, 直爽, 活泼]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Roy.wav
+    ttsConfig:
+      voiceName: Roy
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: peter
+    displayName: 天津-李彼得
+    name: Peter
+    gender: male
+    languages: [zh-CN]
+    description: 天津相声专业捧哏，一开口就自带幽默效果。
+    tags: [相声, 幽默, 捧哏, 诙谐]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Peter.wav
+    ttsConfig:
+      voiceName: Peter
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: eric
+    displayName: 四川-程川
+    name: Eric
+    gender: male
+    languages: [zh-CN]
+    description: 跳脱市井的成都男子，声音里带着风趣与洒脱。
+    tags: [成都, 个性, 洒脱, 风趣]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Eric.wav
+    ttsConfig:
+      voiceName: Eric
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: rocky
+    displayName: 粤语-阿强
+    name: Rocky
+    gender: male
+    languages: [zh-CN]
+    description: 幽默风趣的粤语阿强，是你的在线陪聊好朋友。
+    tags: [广仔, 幽默, 风趣, 陪聊]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/Rocky.wav
+    ttsConfig:
+      voiceName: Rocky
+      model: qwen3-tts-flash
+      sampleRate: 24000
+
+  - id: kiki
+    displayName: 粤语-阿清
+    name: Kiki
+    gender: female
+    languages: [zh-CN]
+    description: 声音甜美的港妹闺蜜，亲切可爱，如同少女在耳边低语。
+    tags: [港妹, 甜美, 闺蜜, 少女]
+    preview: http://bf.9p.pw/YP-WJ/QWEN-LA/KiKi.wav
+    ttsConfig:
+      voiceName: Kiki
+      model: qwen3-tts-flash
+      sampleRate: 24000

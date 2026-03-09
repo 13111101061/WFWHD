@@ -15,8 +15,7 @@ const crypto = require('crypto');
 // 配置
 const CONFIG = {
   sourceDir: path.join(__dirname, 'sources', 'providers'),
-  outputDir: path.join(__dirname, 'dist'),
-  existingMappingPath: path.join(__dirname, '..', 'src', 'modules', 'tts', 'config', 'voiceIdMapping.json')
+  outputDir: path.join(__dirname, 'dist')
 };
 
 /**
@@ -64,43 +63,8 @@ async function build() {
       }
     }
 
-    // 4. 合并现有的 voiceIdMapping.json (阿里云 Qwen)
-    try {
-      const existingData = await fs.readFile(CONFIG.existingMappingPath, 'utf8');
-      const existingMapping = JSON.parse(existingData);
-
-      if (existingMapping.voices && Array.isArray(existingMapping.voices)) {
-        // 转换为新的格式
-        const convertedVoices = existingMapping.voices.map(v => ({
-          id: v.id,
-          provider: v.provider,
-          service: v.service,
-          sourceId: v.voiceId, // 原始 voiceId
-          displayName: v.displayName || v.name,
-          name: v.name,
-          gender: v.gender,
-          languages: v.languages,
-          description: v.description || '',
-          tags: v.tags || [],
-          preview: v.preview,
-          ttsConfig: {
-            voiceName: v.voiceId,
-            model: v.model || 'qwen3-tts-flash',
-            sampleRate: 24000
-          }
-        }));
-
-        allVoices.push(...convertedVoices);
-        sources.push({
-          file: 'voiceIdMapping.json (已存在)',
-          count: convertedVoices.length,
-          provider: 'aliyun'
-        });
-        console.log(`✅ voiceIdMapping.json: ${convertedVoices.length} 个音色 (aliyun)`);
-      }
-    } catch (error) {
-      console.log(`⚠️  未找到或无法读取现有的 voiceIdMapping.json: ${error.message}`);
-    }
+    // 注意: 阿里云 Qwen 音色已迁移到 voices/sources/providers/qwen.yaml
+    // 旧的 voiceIdMapping.json 不再使用
 
     // 5. 检查错误
     if (errors.length > 0) {
