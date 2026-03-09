@@ -119,6 +119,12 @@
         "GET /@vite/client": 1,
         "GET /api/public/info": 1
       }
+    },
+    "2026-03-09": {
+      "totalCalls": 4,
+      "endpoints": {
+        "POST /api/tts/synthesize": 4
+      }
     }
   }
 }

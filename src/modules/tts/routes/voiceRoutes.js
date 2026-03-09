@@ -35,7 +35,6 @@ const ensureVoiceManagerReady = async (req, res, next) => {
  * GET /api/tts/voices/models
  */
 router.get('/models',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -75,7 +74,6 @@ let categoriesCache = {
 };
 
 router.get('/categories',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   async (req, res) => {
     try {
@@ -169,7 +167,6 @@ router.get('/categories',
  * GET /api/tts/voices/providers/:provider
  */
 router.get('/providers/:provider',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -207,7 +204,6 @@ router.get('/providers/:provider',
  * GET /api/tts/voices/tags/:tag
  */
 router.get('/tags/:tag',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -241,7 +237,6 @@ router.get('/tags/:tag',
  * GET /api/tts/voices/search?q=keyword
  */
 router.get('/search',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -288,7 +283,6 @@ router.get('/search',
  * GET /api/tts/voices/providers
  */
 router.get('/providers',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -320,7 +314,6 @@ router.get('/providers',
  * GET /api/tts/voices/tags
  */
 router.get('/tags',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -351,7 +344,6 @@ router.get('/tags',
  * GET /api/tts/voices/models/:id
  */
 router.get('/models/:id',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -390,7 +382,6 @@ router.get('/models/:id',
  * GET /api/tts/voices/stats
  */
 router.get('/stats',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   ensureVoiceManagerReady,
   async (req, res) => {
@@ -461,7 +452,6 @@ router.post('/reload',
  * GET /api/tts/voices/health
  */
 router.get('/health',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   async (req, res) => {
     try {
