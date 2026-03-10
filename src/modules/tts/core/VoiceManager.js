@@ -1,6 +1,18 @@
 /**
  * VoiceManager - 音色管理器（v2.0）
- * 替代 VoiceModelRegistry，支持热重载和分层索引
+ *
+ * @deprecated 此类已废弃，请使用 VoiceRegistry
+ *
+ * 迁移指南:
+ * - 旧: const { voiceManager } = require('./core/VoiceManager');
+ * - 新: const { voiceRegistry } = require('./core/VoiceRegistry');
+ *
+ * VoiceRegistry 提供更简洁的API：
+ * - 查询: get(id), getByProvider(provider), getAll()
+ * - 管理: add(voice), remove(id), update(id, data)
+ * - 持久化: save(), reload()
+ *
+ * 此文件将在下一版本删除
  */
 
 const fs = require('fs').promises;

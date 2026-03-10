@@ -1,3 +1,20 @@
+/**
+ * UnifiedTtsController - 统一TTS控制器
+ *
+ * @deprecated 此控制器已废弃，请使用 TtsHttpAdapter
+ *
+ * 迁移指南:
+ * - 旧: const controller = new UnifiedTtsController();
+ *       router.post('/synthesize', controller.synthesize.bind(controller));
+ *
+ * - 新: const httpAdapter = container.get('ttsHttpAdapter');
+ *       router.post('/synthesize', (req, res) => httpAdapter.synthesize(req, res));
+ *
+ * 参考: docs/architecture/ADR-006-tts-module-refactoring.md
+ *
+ * 此文件将在下一版本删除
+ */
+
 const { ttsServiceManager } = require('./core/TtsServiceManager');
 const TtsException = require('./core/TtsException');
 const path = require('path');
