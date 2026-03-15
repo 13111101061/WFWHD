@@ -39,6 +39,7 @@
     "joi": "^18.0.2",
     "jsonwebtoken": "^9.0.3",
     "redis": "^5.11.0",
+    "tencentcloud-sdk-nodejs-tts": "^4.1.182",
     "uuid": "^9.0.0",
     "ws": "^8.19.0"
   },

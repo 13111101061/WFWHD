@@ -4,7 +4,7 @@ const path = require('path');
 const { unifiedAuth } = require('../../src/core/middleware/apiKeyMiddleware');
 const { presets } = require('../../src/shared/middleware/apiStatsMiddleware');
 const config = require('../../src/shared/config/config');
-const { ttsFactory } = require('../../src/modules/tts/core/TtsFactory');
+const credentials = require('../../src/modules/credentials');
 require('dotenv').config();
 
 // 验证配置（在应用启动前检查关键配置）
@@ -16,6 +16,12 @@ try {
     process.exit(1); // 生产环境配置错误则退出
   }
 }
+
+// 显示凭证配置状态
+console.log('[Startup] 凭证配置状态:');
+credentials.listProviders().forEach(p => {
+  console.log(`  ${p.name}: ${p.configured ? '✅' : '❌'}`);
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,8 +73,10 @@ app.get('/api/public/info', (req, res) => {
 
 // TTS routes
 app.use('/api/tts', require('./routes/ttsRoutes'));
-// Voice models
-app.use('/api/voice-models', require('../../src/modules/tts/routes/voiceRoutes'));
+// Voice models (音色管理)
+app.use('/api/voices', require('../../src/modules/tts/routes/voiceManageRoutes'));
+// Credentials (凭证管理)
+app.use('/api/credentials', require('../../src/modules/credentials/routes/credentialsRoutes'));
 // Audio storage
 app.use('/api/audio', require('./routes/audioRoutes'));
 // Monitoring
@@ -220,14 +228,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Initialize TTS Factory (with VoiceManager)
+// Initialize services
 async function initializeServices() {
   try {
-    await ttsFactory.initialize();
-    console.log('✅ TTS Factory initialized with VoiceManager');
+    // 新架构：VoiceRegistry 自动初始化
+    const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+    const stats = voiceRegistry.getStats();
+    console.log(`✅ VoiceRegistry initialized: ${stats.totalVoices} voices, ${stats.providers} providers`);
   } catch (error) {
-    console.error('❌ TTS Factory initialization failed:', error.message);
-    // Continue starting server - services will use fallback
+    console.error('❌ Service initialization failed:', error.message);
   }
 }
 

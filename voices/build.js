@@ -54,9 +54,14 @@ async function build() {
         sources.push({
           file,
           count: result.voices.length,
-          provider: result.provider
+          provider: result.provider,
+          enabled: result.enabled
         });
-        console.log(`✅ ${file}: ${result.voices.length} 个音色 (${result.provider})`);
+        if (result.enabled === false) {
+          console.log(`⏸️  ${file}: 服务商已禁用 (${result.provider})`);
+        } else {
+          console.log(`✅ ${file}: ${result.voices.length} 个音色 (${result.provider})`);
+        }
       } catch (error) {
         errors.push({ file, error: error.message });
         console.error(`❌ ${file}: ${error.message}`);
@@ -87,12 +92,19 @@ async function build() {
     }
 
     // 7. 生成聚合文件
+    const enabledProviders = sources.filter(s => s.enabled !== false).map(s => s.provider);
+    const disabledProviders = sources.filter(s => s.enabled === false).map(s => s.provider);
+
     const aggregated = {
       _meta: {
-        version: '2.0',
+        version: '2.1',
         generatedAt: new Date().toISOString(),
         totalVoices: allVoices.length,
         sources: sources,
+        providers: {
+          enabled: enabledProviders,
+          disabled: disabledProviders
+        },
         buildTime: Date.now() - startTime
       },
       voices: allVoices
@@ -133,8 +145,14 @@ async function processYamlFile(filePath) {
     throw new Error('YAML 文件必须包含 meta 和 voices 字段');
   }
 
-  const { provider, service } = data.meta;
+  const { provider, service, enabled = true } = data.meta;
   const voices = [];
+
+  // 如果服务商被禁用，跳过音色加载但记录元信息
+  if (enabled === false) {
+    console.log(`   ⏸️  服务商已禁用，跳过音色加载`);
+    return { voices: [], provider, enabled: false };
+  }
 
   for (const v of data.voices) {
     // 验证必要字段
@@ -162,7 +180,7 @@ async function processYamlFile(filePath) {
     });
   }
 
-  return { voices, provider };
+  return { voices, provider, enabled: true };
 }
 
 /**

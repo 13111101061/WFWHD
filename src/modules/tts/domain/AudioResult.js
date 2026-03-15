@@ -61,7 +61,7 @@ class AudioResult {
   static fromServiceResult(serviceResult, context = {}) {
     return new AudioResult({
       text: serviceResult.text || context.text,
-      audioUrl: serviceResult.audioUrl,
+      audioUrl: serviceResult.url || serviceResult.audioUrl,
       filePath: serviceResult.filePath,
       fileName: serviceResult.fileName,
       provider: context.provider || serviceResult.provider,
@@ -69,7 +69,7 @@ class AudioResult {
       voice: serviceResult.voice,
       model: serviceResult.model,
       duration: serviceResult.duration,
-      fileSize: serviceResult.fileSize,
+      fileSize: serviceResult.size || serviceResult.fileSize,
       format: serviceResult.format || 'mp3',
       sampleRate: serviceResult.sampleRate || 32000,
       traceId: serviceResult.traceId,

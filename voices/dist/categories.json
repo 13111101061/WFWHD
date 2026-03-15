@@ -1,12 +1,15 @@
 {
   "_meta": {
-    "generatedAt": "2026-03-09T02:29:23.899Z",
-    "totalVoices": 71
+    "generatedAt": "2026-03-13T05:22:23.161Z",
+    "totalVoices": 72
   },
   "byProvider": {
     "minimax": [
       "minimax-minimax_tts-female-1",
       "minimax-minimax_tts-female-2"
+    ],
+    "moss": [
+      "moss-tts-ashui"
     ],
     "aliyun": [
       "aliyun-qwen_http-cherry",
@@ -88,6 +91,7 @@
     "female": [
       "minimax-minimax_tts-female-1",
       "minimax-minimax_tts-female-2",
+      "moss-tts-ashui",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-chelsie",
       "aliyun-qwen_http-serena",
@@ -165,6 +169,7 @@
     "zh-CN": [
       "minimax-minimax_tts-female-1",
       "minimax-minimax_tts-female-2",
+      "moss-tts-ashui",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-chelsie",
@@ -393,6 +398,7 @@
     "女声": [
       "minimax-minimax_tts-female-1",
       "minimax-minimax_tts-female-2",
+      "moss-tts-ashui",
       "tencent-tts-qinqin",
       "tencent-tts-yaya",
       "tencent-tts-yuanyuan",
@@ -423,6 +429,12 @@
       "aliyun-qwen_http-li",
       "tencent-tts-xiaoqian",
       "volcengine-volcengine_http-bv032_streaming"
+    ],
+    "松弛": [
+      "moss-tts-ashui"
+    ],
+    "耐听": [
+      "moss-tts-ashui"
     ],
     "舒缓": [
       "aliyun-qwen_http-cherry",

@@ -8,6 +8,7 @@ meta:
   service: qwen_http
   version: "1.0"
   description: 阿里云千问TTS服务音色 - 49个精选音色
+  enabled: true              # 服务商开关：true启用，false禁用
 
 voices:
   - id: cherry

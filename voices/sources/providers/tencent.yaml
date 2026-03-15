@@ -8,6 +8,7 @@ meta:
   service: tts
   version: "1.0"
   description: 腾讯云 TTS 服务音色
+  enabled: false              # 服务商开关：true启用，false禁用
 
 voices:
   - id: qinqin

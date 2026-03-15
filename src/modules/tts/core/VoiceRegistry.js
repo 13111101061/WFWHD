@@ -35,6 +35,9 @@ class VoiceRegistry {
     this.providerIndex = new Map();
     this.serviceIndex = new Map();
 
+    // 服务商状态
+    this.providerStatus = new Map();  // provider -> { enabled, service }
+
     // 状态
     this.isReady = false;
     this.lastUpdated = null;
@@ -193,7 +196,11 @@ class VoiceRegistry {
   getStats() {
     const providers = {};
     for (const [provider, ids] of this.providerIndex) {
-      providers[provider] = ids.size;
+      const status = this.providerStatus.get(provider);
+      providers[provider] = {
+        count: ids.size,
+        enabled: status?.enabled !== false
+      };
     }
 
     return {
@@ -204,6 +211,32 @@ class VoiceRegistry {
       lastUpdated: this.lastUpdated,
       storage: this.redisClient ? 'redis' : 'file'
     };
+  }
+
+  /**
+   * 检查服务商是否启用
+   */
+  isProviderEnabled(provider) {
+    const status = this.providerStatus.get(provider);
+    return status?.enabled !== false;
+  }
+
+  /**
+   * 获取所有启用的服务商
+   */
+  getEnabledProviders() {
+    return Array.from(this.providerStatus.entries())
+      .filter(([_, status]) => status.enabled !== false)
+      .map(([provider, _]) => provider);
+  }
+
+  /**
+   * 获取所有禁用的服务商
+   */
+  getDisabledProviders() {
+    return Array.from(this.providerStatus.entries())
+      .filter(([_, status]) => status.enabled === false)
+      .map(([provider, status]) => ({ provider, ...status }));
   }
 
   // ==================== 私有方法 ====================
@@ -248,10 +281,31 @@ class VoiceRegistry {
     }
   }
 
-  _buildIndex(voices) {
+  _buildIndex(voices, meta = {}) {
     this.voices.clear();
     this.providerIndex.clear();
     this.serviceIndex.clear();
+    this.providerStatus.clear();
+
+    // 从meta中读取服务商状态
+    if (meta.providers) {
+      for (const provider of meta.providers.enabled || []) {
+        this.providerStatus.set(provider, { enabled: true });
+      }
+      for (const item of meta.providers.disabled || []) {
+        const provider = typeof item === 'string' ? item : item.provider;
+        this.providerStatus.set(provider, { enabled: false });
+      }
+    }
+
+    // 从sources中读取状态（备用）
+    if (meta.sources) {
+      for (const source of meta.sources) {
+        if (source.provider && !this.providerStatus.has(source.provider)) {
+          this.providerStatus.set(source.provider, { enabled: source.enabled !== false });
+        }
+      }
+    }
 
     for (const voice of voices) {
       if (!voice.id || !voice.provider) continue;
@@ -337,10 +391,9 @@ class VoiceRegistry {
     try {
       const raw = await fs.readFile(this.configPath, 'utf8');
       const data = JSON.parse(raw);
-      this._buildIndex(data.voices || []);
+      this._buildIndex(data.voices || [], data._meta || {});
     } catch (e) {
       console.warn('[VoiceRegistry] Load from file failed:', e.message);
-      // 文件不存在时初始化空索引
       this._buildIndex([]);
     }
   }

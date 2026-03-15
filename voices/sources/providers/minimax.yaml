@@ -8,6 +8,7 @@ meta:
   service: minimax_tts
   version: "1.0"
   description: MiniMax TTS 服务音色
+  enabled: false            # 服务商开关：true启用，false禁用
 
 voices:
   - id: female-1

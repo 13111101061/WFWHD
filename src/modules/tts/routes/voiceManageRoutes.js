@@ -88,13 +88,43 @@ router.get('/:id', (req, res) => {
 });
 
 /**
- * GET /api/voices/stats
+ * GET /api/voices/stats/overview
  * 统计信息
  */
 router.get('/stats/overview', (req, res) => {
   res.json({
     success: true,
     data: voiceRegistry.getStats()
+  });
+});
+
+/**
+ * GET /api/voices/providers/status
+ * 服务商状态
+ */
+router.get('/providers/status', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      enabled: voiceRegistry.getEnabledProviders(),
+      disabled: voiceRegistry.getDisabledProviders(),
+      all: voiceRegistry.getStats().providers
+    }
+  });
+});
+
+/**
+ * GET /api/voices/providers/:provider/enabled
+ * 检查服务商是否启用
+ */
+router.get('/providers/:provider/enabled', (req, res) => {
+  const enabled = voiceRegistry.isProviderEnabled(req.params.provider);
+  res.json({
+    success: true,
+    data: {
+      provider: req.params.provider,
+      enabled
+    }
   });
 });
 

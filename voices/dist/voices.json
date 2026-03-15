@@ -1,31 +1,51 @@
 {
   "_meta": {
-    "version": "2.0",
-    "generatedAt": "2026-03-09T02:29:23.898Z",
-    "totalVoices": 71,
+    "version": "2.1",
+    "generatedAt": "2026-03-13T05:22:23.159Z",
+    "totalVoices": 72,
     "sources": [
       {
         "file": "minimax.yaml",
         "count": 2,
-        "provider": "minimax"
+        "provider": "minimax",
+        "enabled": true
+      },
+      {
+        "file": "moss.yaml",
+        "count": 1,
+        "provider": "moss",
+        "enabled": true
       },
       {
         "file": "qwen.yaml",
         "count": 49,
-        "provider": "aliyun"
+        "provider": "aliyun",
+        "enabled": true
       },
       {
         "file": "tencent.yaml",
         "count": 15,
-        "provider": "tencent"
+        "provider": "tencent",
+        "enabled": true
       },
       {
         "file": "volcengine.yaml",
         "count": 5,
-        "provider": "volcengine"
+        "provider": "volcengine",
+        "enabled": true
       }
     ],
-    "buildTime": 14
+    "providers": {
+      "enabled": [
+        "minimax",
+        "moss",
+        "aliyun",
+        "tencent",
+        "volcengine"
+      ],
+      "disabled": []
+    },
+    "buildTime": 9
   },
   "voices": [
     {
@@ -70,6 +90,33 @@
       "ttsConfig": {
         "voiceId": "moss_audio_aaa1346a-7ce7-11f0-8e61-2e6e3c7ee85d",
         "model": "speech-01-hd-preview"
+      }
+    },
+    {
+      "id": "moss-tts-ashui",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "ashui",
+      "displayName": "阿树",
+      "name": "阿树",
+      "gender": "female",
+      "languages": [
+        "zh-CN"
+      ],
+      "description": "冬天清晨的灰白天空，风很冷，但阳光迟早会出来。",
+      "tags": [
+        "松弛",
+        "耐听",
+        "女声"
+      ],
+      "ttsConfig": {
+        "sourceId": "2001257729754140672",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
       }
     },
     {

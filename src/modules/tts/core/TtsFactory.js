@@ -1,4 +1,17 @@
-const BaseTtsService = require('./BaseTtsService');
+/**
+ * TtsFactory - TTS服务工厂
+ *
+ * @deprecated 此类已废弃，请使用 adapters/providers 注册中心
+ *
+ * 迁移指南:
+ * - 旧: const { ttsFactory } = require('./core/TtsFactory');
+ *       const service = await ttsFactory.createService('aliyun', 'qwen_http');
+ *
+ * - 新: const providers = require('./adapters/providers');
+ *       const adapter = providers.createProvider('aliyun_qwen_http');
+ *
+ * 此文件将在下一版本删除
+ */
 const config = require('../../../shared/config/config');
 const { voiceManager } = require('./VoiceManager');
 

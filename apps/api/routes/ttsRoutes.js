@@ -1,246 +1,320 @@
-const express = require('express');
-const UnifiedTtsController = require('../../../src/modules/tts/UnifiedTtsController');
-const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
-const { voiceManager } = require('../../../src/modules/tts/core/VoiceManager');
-const voiceRoutes = require('../../../src/modules/tts/routes/voiceRoutes');
-const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
-const { validateTtsParams, securityLogger } = require('../../../src/shared/middleware/securityMiddleware');
-
 /**
- * TTS统一路由
- * 提供简洁、统一的API接口，自动路由到相应的TTS服务
+ * TTS 统一路由 (新架构)
+ *
+ * 使用新的适配器架构和凭证模块
  */
+
+const express = require('express');
 const router = express.Router();
 
-// 初始化 VoiceManager（v2.0 - 替代 VoiceModelRegistry）
-voiceManager.initialize().catch(error => {
-  console.error('Failed to initialize VoiceManager:', error);
-});
+const { createProvider, getRegisteredProviders } = require('../../../src/modules/tts/adapters/providers');
+const { voiceRegistry } = require('../../../src/modules/tts/core/VoiceRegistry');
+const credentials = require('../../../src/modules/credentials');
+const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
 
-// 创建TTS控制器实例
-const ttsController = new UnifiedTtsController();
+// ==================== 中间件 ====================
 
-// 请求日志中间件
 const requestLogger = (req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
 };
 
+// ==================== 主要接口 ====================
+
 /**
- * 统一TTS合成接口
  * POST /api/tts/synthesize
- * Body: {
- *   service: "aliyun_cosyvoice" | "aliyun_qwen_http" | "tencent" | "volcengine_http" | "volcengine_ws" | "minimax",
- *   text: "要转换的文本",
- *   voice: "音色ID",
- *   speed: 1.0,
- *   pitch: 1.0,
- *   volume: 5,
- *   format: "mp3",
- *   sample_rate: 22050
- * }
+ * 统一语音合成接口
  */
 router.post('/synthesize',
   unifiedAuth.createMiddleware({ service: 'tts' }),
-  securityLogger,
-  validateTtsParams,
-  createUnifiedTtsMiddleware(),
-  ttsController.synthesize.bind(ttsController)
+  requestLogger,
+  async (req, res) => {
+    try {
+      const { text, service = 'aliyun_qwen_http', voice, model, speed, pitch, format, sampleRate } = req.body;
+
+      // 参数校验
+      if (!text) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required parameter: text'
+        });
+      }
+
+      if (typeof text !== 'string' || text.trim().length === 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'Text must be a non-empty string'
+        });
+      }
+
+      if (text.length > 10000) {
+        return res.status(400).json({
+          success: false,
+          error: 'Text length must not exceed 10000 characters'
+        });
+      }
+
+      // 检查服务商凭证
+      const providerKey = service.split('_')[0];
+      if (!credentials.isConfigured(providerKey)) {
+        return res.status(503).json({
+          success: false,
+          error: `Provider not configured: ${providerKey}`,
+          hint: 'Please check API key configuration'
+        });
+      }
+
+      // 获取音色配置
+      let voiceConfig = null;
+      if (voice) {
+        voiceConfig = voiceRegistry.get(voice);
+      }
+
+      // 创建适配器
+      const adapter = createProvider(service);
+
+      // 合成选项
+      const options = {
+        voice: voiceConfig?.sourceId || voiceConfig?.ttsConfig?.voiceName || voice || 'Cherry',
+        model: model || voiceConfig?.ttsConfig?.model,
+        speed: speed || 1.0,
+        pitch: pitch || 1.0,
+        format: format || 'wav',
+        sampleRate: sampleRate || voiceConfig?.ttsConfig?.sampleRate || 24000
+      };
+
+      // 执行合成
+      const result = await adapter.synthesizeAndSave(text, options);
+
+      res.json({
+        success: true,
+        data: {
+          audioUrl: result.url,
+          format: result.format,
+          size: result.size,
+          isRemote: result.isRemote,
+          provider: service,
+          voice: options.voice
+        },
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error('TTS Error:', error.message);
+
+      const statusCode = error.code === 'CONFIG_ERROR' ? 503 :
+                         error.code === 'VALIDATION_ERROR' ? 400 : 500;
+
+      res.status(statusCode).json({
+        success: false,
+        error: error.message,
+        code: error.code
+      });
+    }
+  }
 );
 
 /**
- * 获取音色列表接口
- * GET /api/tts/voices?service=aliyun_cosyvoice
- * 可选参数：service - 指定服务，不提供则返回所有服务的音色
+ * GET /api/tts/voices
+ * 获取音色列表
  */
 router.get('/voices',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
-  ttsController.getVoices.bind(ttsController)
+  (req, res) => {
+    try {
+      const { provider, service, gender, tags } = req.query;
+
+      let voices = voiceRegistry.getAll();
+
+      if (provider && service) {
+        voices = voiceRegistry.getByProviderAndService(provider, service);
+      } else if (provider) {
+        voices = voiceRegistry.getByProvider(provider);
+      }
+
+      if (gender) {
+        voices = voices.filter(v => v.gender === gender);
+      }
+
+      if (tags) {
+        const tagList = tags.split(',').map(t => t.trim());
+        voices = voices.filter(v =>
+          v.tags && tagList.some(t => v.tags.includes(t))
+        );
+      }
+
+      res.json({
+        success: true,
+        data: voices,
+        count: voices.length,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
 );
 
-router.use('/voices', voiceRoutes);
-
 /**
- * 获取服务提供商列表
  * GET /api/tts/providers
+ * 获取服务商状态
  */
 router.get('/providers',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
-  ttsController.getProviders.bind(ttsController)
+  (req, res) => {
+    try {
+      const providers = credentials.listProviders();
+
+      res.json({
+        success: true,
+        data: providers,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  }
 );
 
 /**
- * 服务健康检查
  * GET /api/tts/health
+ * 健康检查
  */
 router.get('/health',
   unifiedAuth.createMiddleware({ service: 'tts' }),
-  requestLogger,
-  ttsController.getHealthStatus.bind(ttsController)
+  (req, res) => {
+    res.json({
+      success: true,
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      providers: credentials.listConfigured()
+    });
+  }
 );
 
 /**
- * 服务状态和统计信息
  * GET /api/tts/stats
+ * 统计信息
  */
 router.get('/stats',
   unifiedAuth.createMiddleware({ service: 'tts' }),
   requestLogger,
   (req, res) => {
     try {
-      const stats = ttsController.getStats();
+      const stats = voiceRegistry.getStats();
+
       res.json({
         success: true,
         data: stats,
         timestamp: new Date().toISOString()
       });
+
     } catch (error) {
       res.status(500).json({
         success: false,
-        error: 'Failed to get statistics',
-        message: error.message,
-        timestamp: new Date().toISOString()
+        error: error.message
       });
     }
   }
 );
 
-/**
- * 清理缓存接口
- * POST /api/tts/clear-cache
- */
-router.post('/clear-cache',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  requestLogger,
-  (req, res) => {
-    try {
-      const result = ttsController.clearCache();
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Failed to clear cache',
-        message: error.message,
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
+// ==================== 服务专用快捷路由 ====================
 
-/**
- * 重置统计信息接口
- * POST /api/tts/reset-stats
- */
-router.post('/reset-stats',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  requestLogger,
-  (req, res) => {
-    try {
-      const result = ttsController.resetStats();
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Failed to reset statistics',
-        message: error.message,
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
-
-/**
- * 批量文本转语音接口
- * POST /api/tts/batch
- * Body: {
- *   service: "aliyun_cosyvoice",
- *   texts: ["文本1", "文本2", "文本3"],
- *   options: { voice: "xxx", speed: 1.0 }
- * }
- */
-router.post('/batch',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  securityLogger,
-  validateTtsParams,
-  createUnifiedTtsMiddleware(),
-  ttsController.batchSynthesize.bind(ttsController)
-);
-
-/**
- * 服务专用路由 - 为特定服务提供快捷访问
- */
-
-// 服务专用路由 - 使用统一中间件，自动设置服务类型
-const createServiceRoute = (serviceName, serviceType) => {
+const createServiceRoute = (serviceType) => {
   return [
     unifiedAuth.createMiddleware({ service: 'tts' }),
-    securityLogger,
-    validateTtsParams,
-    createUnifiedTtsMiddleware(),
-    (req, res, next) => {
-      req.body.service = serviceType;
-      next();
-    },
-    ttsController.synthesize.bind(ttsController)
+    requestLogger,
+    async (req, res) => {
+      try {
+        const { text, voice, model, speed, pitch, format, sampleRate } = req.body;
+
+        if (!text) {
+          return res.status(400).json({
+            success: false,
+            error: 'Missing required parameter: text'
+          });
+        }
+
+        const providerKey = serviceType.split('_')[0];
+        if (!credentials.isConfigured(providerKey)) {
+          return res.status(503).json({
+            success: false,
+            error: `Provider not configured: ${providerKey}`
+          });
+        }
+
+        const adapter = createProvider(serviceType);
+        const result = await adapter.synthesizeAndSave(text, {
+          voice: voice || 'Cherry',
+          model,
+          speed: speed || 1.0,
+          pitch: pitch || 1.0,
+          format: format || 'wav',
+          sampleRate
+        });
+
+        res.json({
+          success: true,
+          data: {
+            audioUrl: result.url,
+            format: result.format,
+            isRemote: result.isRemote,
+            provider: serviceType
+          },
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    }
   ];
 };
 
-// 阿里云CosyVoice专用路由
-router.post('/aliyun/cosyvoice', ...createServiceRoute('aliyun_cosyvoice', 'aliyun_cosyvoice'));
+// 阿里云快捷路由
+router.post('/aliyun/cosyvoice', ...createServiceRoute('aliyun_cosyvoice'));
+router.post('/aliyun/qwen', ...createServiceRoute('aliyun_qwen_http'));
 
-// 阿里云Qwen专用路由
-router.post('/aliyun/qwen', ...createServiceRoute('aliyun_qwen', 'aliyun_qwen_http'));
+// 腾讯云快捷路由
+router.post('/tencent', ...createServiceRoute('tencent'));
 
-// 腾讯云TTS专用路由
-router.post('/tencent', ...createServiceRoute('tencent', 'tencent'));
+// 火山引擎快捷路由
+router.post('/volcengine/http', ...createServiceRoute('volcengine_http'));
 
-// 火山引擎HTTP专用路由
-router.post('/volcengine/http', ...createServiceRoute('volcengine_http', 'volcengine_http'));
+// MiniMax快捷路由
+router.post('/minimax', ...createServiceRoute('minimax'));
 
-// 火山引擎WebSocket专用路由
-router.post('/volcengine/websocket', ...createServiceRoute('volcengine_ws', 'volcengine_ws'));
+// ==================== 404处理 ====================
 
-// MiniMax专用路由
-router.post('/minimax', ...createServiceRoute('minimax', 'minimax'));
-
-// 404处理 - 未定义的TTS路由
 router.use('*', (req, res) => {
   res.status(404).json({
     success: false,
     error: 'TTS endpoint not found',
-    message: `The requested TTS endpoint ${req.method} ${req.originalUrl} is not available`,
     availableEndpoints: [
-      'POST /api/tts/synthesize - 统一TTS合成接口',
+      'POST /api/tts/synthesize - 统一TTS合成',
       'GET /api/tts/voices - 获取音色列表',
-      'GET /api/tts/providers - 获取服务提供商列表',
-      'GET /api/tts/health - 服务健康检查',
-      'GET /api/tts/stats - 服务统计信息',
-      'POST /api/tts/clear-cache - 清理缓存',
-      'POST /api/tts/reset-stats - 重置统计信息',
-      'POST /api/tts/batch - 批量文本转语音',
+      'GET /api/tts/providers - 获取服务商状态',
+      'GET /api/tts/health - 健康检查',
+      'GET /api/tts/stats - 统计信息',
       'POST /api/tts/aliyun/cosyvoice - 阿里云CosyVoice',
       'POST /api/tts/aliyun/qwen - 阿里云Qwen',
-      'POST /api/tts/tencent - 腾讯云TTS',
-      'POST /api/tts/volcengine/http - 火山引擎HTTP',
-      'POST /api/tts/volcengine/websocket - 火山引擎WebSocket',
-      'POST /api/tts/minimax - MiniMax TTS'
-    ],
-    timestamp: new Date().toISOString()
-  });
-});
-
-// 错误处理中间件
-router.use((error, req, res, next) => {
-  console.error(`[TTS Route Error] ${req.method} ${req.path}:`, error);
-
-  res.status(error.status || 500).json({
-    success: false,
-    error: error.message || 'Internal server error',
-    code: error.code || 'INTERNAL_ERROR',
-    requestId: req.requestId,
-    timestamp: new Date().toISOString()
+      'POST /api/tts/tencent - 腾讯云',
+      'POST /api/tts/volcengine/http - 火山引擎',
+      'POST /api/tts/minimax - MiniMax'
+    ]
   });
 });
 

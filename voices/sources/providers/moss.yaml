@@ -1,0 +1,31 @@
+# MOSS-TTS 音色配置
+# 提供商：MOSS-TTS
+# 维护者：@admin
+# 最后更新：2026-03-13
+
+meta:
+  provider: moss
+  service: tts
+  version: "1.0"
+  description: MOSS-TTS 高性能语音合成服务
+  enabled: true
+  features:
+    - token级时长控制
+    - 多语言支持
+    - 音色克隆
+
+voices:
+  - id: ashui
+    displayName: 阿树
+    name: 阿树
+    gender: female
+    languages: [zh-CN]
+    description: 冬天清晨的灰白天空，风很冷，但阳光迟早会出来。
+    tags: [松弛, 耐听, 女声]
+    ttsConfig:
+      sourceId: "2001257729754140672"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25

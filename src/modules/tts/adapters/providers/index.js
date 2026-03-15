@@ -1,93 +1,111 @@
 /**
- * TTS Providers - 提供者适配器索引
+ * TTS Providers - 服务商适配器注册中心
  *
- * 统一导出所有TTS提供者适配器
+ * 统一管理所有TTS服务商适配器
+ * 凭证由 credentials 模块统一管理
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
-
-// 动态加载各提供商适配器
-let AliyunCosyVoiceAdapter, AliyunQwenAdapter;
-let TencentTtsAdapter;
-let VolcengineTtsAdapter;
-let MinimaxTtsAdapter;
-
-try {
-  AliyunCosyVoiceAdapter = require('./AliyunCosyVoiceAdapter');
-} catch (e) { /* 模块可能尚未迁移 */ }
-
-try {
-  TencentTtsAdapter = require('./TencentTtsAdapter');
-} catch (e) { /* 模块可能尚未迁移 */ }
-
-try {
-  VolcengineTtsAdapter = require('./VolcengineTtsAdapter');
-} catch (e) { /* 模块可能尚未迁移 */ }
-
-try {
-  MinimaxTtsAdapter = require('./MinimaxTtsAdapter');
-} catch (e) { /* 模块可能尚未迁移 */ }
+const AliyunCosyVoiceAdapter = require('./AliyunCosyVoiceAdapter');
+const AliyunQwenAdapter = require('./AliyunQwenAdapter');
+const TencentTtsAdapter = require('./TencentTtsAdapter');
+const VolcengineTtsAdapter = require('./VolcengineTtsAdapter');
+const MinimaxTtsAdapter = require('./MinimaxTtsAdapter');
+const MossTtsAdapter = require('./MossTtsAdapter');
 
 /**
- * 创建适配器实例
- * @param {string} provider - 提供商标识
- * @param {string} serviceType - 服务类型
- * @param {Object} config - 配置
- * @returns {BaseTtsAdapter}
+ * 服务商适配器映射
+ * key 格式: provider_service
  */
-function createAdapter(provider, serviceType, config = {}) {
-  const key = serviceType ? `${provider}_${serviceType}` : provider;
+const adapters = {
+  // 阿里云
+  aliyun_cosyvoice: { Adapter: AliyunCosyVoiceAdapter, provider: 'aliyun', service: 'cosyvoice' },
+  aliyun_qwen_http: { Adapter: AliyunQwenAdapter, provider: 'aliyun', service: 'qwen_http' },
+  aliyun_qwen: { Adapter: AliyunQwenAdapter, provider: 'aliyun', service: 'qwen_http' },
 
-  switch (key) {
-    case 'aliyun_cosyvoice':
-    case 'aliyun_cosy':
-      if (AliyunCosyVoiceAdapter) {
-        return new AliyunCosyVoiceAdapter(config);
-      }
-      break;
+  // 腾讯云
+  tencent: { Adapter: TencentTtsAdapter, provider: 'tencent', service: 'tts' },
+  tencent_tts: { Adapter: TencentTtsAdapter, provider: 'tencent', service: 'tts' },
 
-    case 'aliyun_qwen':
-    case 'aliyun_qwen_http':
-      if (AliyunQwenAdapter) {
-        return new AliyunQwenAdapter(config);
-      }
-      break;
+  // 火山引擎
+  volcengine: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'http' },
+  volcengine_http: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'http' },
 
-    case 'tencent':
-      if (TencentTtsAdapter) {
-        return new TencentTtsAdapter(config);
-      }
-      break;
+  // MiniMax
+  minimax: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'tts' },
+  minimax_tts: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'tts' },
 
-    case 'volcengine':
-    case 'volcengine_http':
-      if (VolcengineTtsAdapter) {
-        return new VolcengineTtsAdapter(config);
-      }
-      break;
+  // MOSS-TTS
+  moss: { Adapter: MossTtsAdapter, provider: 'moss', service: 'tts' },
+  moss_tts: { Adapter: MossTtsAdapter, provider: 'moss', service: 'tts' }
+};
 
-    case 'minimax':
-      if (MinimaxTtsAdapter) {
-        return new MinimaxTtsAdapter(config);
-      }
-      break;
+/**
+ * 创建服务商适配器实例
+ * @param {string} key - 适配器标识
+ * @param {Object} customConfig - 自定义配置
+ */
+function createProvider(key, customConfig = {}) {
+  const entry = adapters[key];
 
-    default:
-      throw new Error(`Unknown TTS provider: ${key}`);
+  if (!entry) {
+    throw new Error(`Unknown TTS provider: ${key}`);
   }
 
-  // 如果没有找到适配器，返回基础适配器
-  console.warn(`Adapter for ${key} not found, using BaseTtsAdapter`);
-  return new BaseTtsAdapter({ provider, serviceType, ...config });
+  return new entry.Adapter({
+    provider: entry.provider,
+    serviceType: entry.service,
+    ...customConfig
+  });
+}
+
+/**
+ * 获取所有已注册的适配器
+ */
+function getRegisteredProviders() {
+  return Object.keys(adapters);
+}
+
+/**
+ * 检查适配器是否已注册
+ */
+function hasProvider(key) {
+  return key in adapters;
+}
+
+/**
+ * 获取适配器信息
+ */
+function getAdapterInfo(key) {
+  const entry = adapters[key];
+  if (!entry) return null;
+
+  return {
+    key,
+    provider: entry.provider,
+    service: entry.service,
+    adapterName: entry.Adapter.name
+  };
 }
 
 module.exports = {
+  // 基类
   BaseTtsAdapter,
-  createAdapter,
 
-  // 各提供商适配器（可能为 undefined，取决于迁移状态）
+  // 具体适配器
   AliyunCosyVoiceAdapter,
+  AliyunQwenAdapter,
   TencentTtsAdapter,
   VolcengineTtsAdapter,
-  MinimaxTtsAdapter
+  MinimaxTtsAdapter,
+  MossTtsAdapter,
+
+  // 工厂方法
+  createProvider,
+  getRegisteredProviders,
+  hasProvider,
+  getAdapterInfo,
+
+  // 适配器映射
+  adapters
 };
