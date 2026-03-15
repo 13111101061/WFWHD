@@ -1,5 +1,9 @@
 /**
  * MinimaxTtsAdapter - MiniMax TTS适配器
+ *
+ * 支持凭证池化：
+ * - 请求时选择最佳账号
+ * - 报告成功/失败用于健康追踪
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
@@ -8,10 +12,11 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
     super({
       provider: 'minimax',
-      serviceType: 'tts',
+      serviceType: 'minimax_tts',
       ...config
     });
 
+    // 初始化时获取凭证（向后兼容）
     const creds = this._getCredentials();
     this.apiKey = config.apiKey || creds?.apiKey;
     this.groupId = config.groupId || creds?.groupId;
@@ -19,18 +24,23 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
   }
 
   async synthesize(text, options = {}) {
-    if (!this.apiKey) {
-      throw this._error('CONFIG_ERROR', 'MiniMax API密钥未配置');
-    }
-
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    return this._retry(async () => {
+    // 请求时获取凭证（支持池化选择和健康追踪）
+    const creds = this._getCredentials();
+    const apiKey = creds?.apiKey || this.apiKey;
+    const groupId = creds?.groupId || this.groupId;
+
+    if (!apiKey) {
+      throw this._error('CONFIG_ERROR', 'MiniMax API密钥未配置');
+    }
+
+    try {
       const response = await fetch(this.endpoint, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -48,13 +58,20 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
 
       const audio = Buffer.from(await response.arrayBuffer());
 
+      // 报告成功
+      this._reportSuccess();
+
       return {
         audio,
         format: params.format || 'mp3',
         provider: this.provider,
         serviceType: this.serviceType
       };
-    });
+    } catch (error) {
+      // 报告失败
+      this._reportFailure(error);
+      throw error;
+    }
   }
 
   getFallbackVoices() {

@@ -28,12 +28,16 @@ const adapters = {
   tencent_tts: { Adapter: TencentTtsAdapter, provider: 'tencent', service: 'tts' },
 
   // 火山引擎
-  volcengine: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'http' },
-  volcengine_http: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'http' },
+  // canonical key: volcengine_http (与 YAML/voices.json 保持一致)
+  volcengine: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
+  volcengine_http: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
+  // 兼容别名: http (旧版调用)
+  volcengine_http_legacy: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
 
   // MiniMax
-  minimax: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'tts' },
-  minimax_tts: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'tts' },
+  // canonical key: minimax_tts (与 YAML/voices.json 保持一致)
+  minimax: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'minimax_tts' },
+  minimax_tts: { Adapter: MinimaxTtsAdapter, provider: 'minimax', service: 'minimax_tts' },
 
   // MOSS-TTS
   moss: { Adapter: MossTtsAdapter, provider: 'moss', service: 'tts' },

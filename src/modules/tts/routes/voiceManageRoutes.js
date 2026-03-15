@@ -15,6 +15,15 @@ const express = require('express');
 const router = express.Router();
 
 const { voiceRegistry } = require('../core/VoiceRegistry');
+const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
+
+// Management endpoints must be authenticated.
+router.use(unifiedAuth.createMiddleware({
+  required: true,
+  permissions: ['admin.access'],
+  rateLimitTier: 'admin',
+  metadata: { service: 'voice-management' }
+}));
 
 // ==================== 查询 ====================
 

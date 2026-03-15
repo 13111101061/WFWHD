@@ -1,5 +1,9 @@
 /**
  * AliyunCosyVoiceAdapter - 阿里云CosyVoice适配器
+ *
+ * 支持凭证池化：
+ * - 请求时选择最佳账号
+ * - 报告成功/失败用于健康追踪
  */
 
 const WebSocket = require('ws');
@@ -14,6 +18,7 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
       ...config
     });
 
+    // 初始化时获取凭证（向后兼容）
     const creds = this._getCredentials();
     const serviceConfig = this._getServiceConfig();
     this.apiKey = config.apiKey || creds?.apiKey;
@@ -21,26 +26,39 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
   }
 
   async synthesize(text, options = {}) {
-    if (!this.apiKey) {
-      throw this._error('CONFIG_ERROR', 'CosyVoice API密钥未配置');
-    }
-
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    return this._retry(async () => {
-      return this._callWebSocket(text, params);
-    });
+    // 请求时获取凭证（支持池化选择和健康追踪）
+    const creds = this._getCredentials();
+    const apiKey = creds?.apiKey || this.apiKey;
+
+    if (!apiKey) {
+      throw this._error('CONFIG_ERROR', 'CosyVoice API密钥未配置');
+    }
+
+    try {
+      const result = await this._callWebSocket(text, params, apiKey);
+
+      // 报告成功
+      this._reportSuccess();
+
+      return result;
+    } catch (error) {
+      // 报告失败
+      this._reportFailure(error);
+      throw error;
+    }
   }
 
-  _callWebSocket(text, params) {
+  _callWebSocket(text, params, apiKey) {
     return new Promise((resolve, reject) => {
       const taskId = uuidv4();
       const audioBuffers = [];
 
       const ws = new WebSocket(this.endpoint, {
         headers: {
-          'Authorization': `bearer ${this.apiKey}`
+          'Authorization': `bearer ${apiKey}`
         }
       });
 

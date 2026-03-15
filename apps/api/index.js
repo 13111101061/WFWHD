@@ -231,8 +231,10 @@ app.use((err, req, res, next) => {
 // Initialize services
 async function initializeServices() {
   try {
-    // 新架构：VoiceRegistry 自动初始化
+    // 初始化 VoiceRegistry（必须先调用 initialize）
     const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+    await voiceRegistry.initialize();
+
     const stats = voiceRegistry.getStats();
     console.log(`✅ VoiceRegistry initialized: ${stats.totalVoices} voices, ${stats.providers} providers`);
   } catch (error) {

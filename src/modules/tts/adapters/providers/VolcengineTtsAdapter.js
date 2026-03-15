@@ -1,5 +1,9 @@
 /**
  * VolcengineTtsAdapter - 火山引擎TTS适配器
+ *
+ * 支持凭证池化：
+ * - 请求时选择最佳账号
+ * - 报告成功/失败用于健康追踪
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
@@ -8,10 +12,11 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
     super({
       provider: 'volcengine',
-      serviceType: 'http',
+      serviceType: 'volcengine_http',
       ...config
     });
 
+    // 初始化时获取凭证（向后兼容）
     const creds = this._getCredentials();
     this.appId = config.appId || creds?.appId;
     this.token = config.token || creds?.token;
@@ -19,15 +24,20 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
   }
 
   async synthesize(text, options = {}) {
-    if (!this.appId || !this.token) {
-      throw this._error('CONFIG_ERROR', '火山引擎TTS配置不完整');
-    }
-
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    return this._retry(async () => {
-      const response = await fetch(`${this.endpoint}?appid=${this.appId}&token=${this.token}`, {
+    // 请求时获取凭证（支持池化选择和健康追踪）
+    const creds = this._getCredentials();
+    const appId = creds?.appId || this.appId;
+    const token = creds?.token || this.token;
+
+    if (!appId || !token) {
+      throw this._error('CONFIG_ERROR', '火山引擎TTS配置不完整');
+    }
+
+    try {
+      const response = await fetch(`${this.endpoint}?appid=${appId}&token=${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,13 +63,20 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
       const result = await response.json();
       const audio = Buffer.from(result.data, 'base64');
 
+      // 报告成功
+      this._reportSuccess();
+
       return {
         audio,
         format: params.format || 'mp3',
         provider: this.provider,
         serviceType: this.serviceType
       };
-    });
+    } catch (error) {
+      // 报告失败
+      this._reportFailure(error);
+      throw error;
+    }
   }
 
   getFallbackVoices() {

@@ -8,7 +8,7 @@ meta:
   service: volcengine_http
   version: "1.0"
   description: 火山引擎 TTS HTTP 服务音色
-  enabled:false              # 服务商开关：true启用，false禁用
+  enabled: false             # 服务商开关：true启用，false禁用
 
 voices:
   - id: bv001_streaming

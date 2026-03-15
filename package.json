@@ -8,9 +8,13 @@
     "start:v2": "node apps/api/index.v2.js",
     "dev": "nodemon apps/api/index.js",
     "dev:v2": "nodemon apps/api/index.v2.js",
+    "test": "mocha 'tests/**/*.test.js' --timeout 10000",
     "test:tts": "node test/test-tts.js",
     "test:qwen-tts": "node test/qwen-tts-test.js",
     "test:snpan": "node test/snpan-test.js",
+    "test:cred": "mocha 'tests/unit/Credential*.test.js' 'tests/integration/credential-pool.test.js' --timeout 10000",
+    "test:cred:unit": "mocha 'tests/unit/Credential*.test.js' --timeout 10000",
+    "test:cred:int": "mocha 'tests/integration/credential-pool.test.js' --timeout 10000",
     "generate:categories": "node src/modules/tts/config/generate-voice-categories.js",
     "test:categories": "node tests/test-voice-categories.js",
     "voices:build": "node voices/build.js",
@@ -45,6 +49,7 @@
   },
   "devDependencies": {
     "js-yaml": "^4.1.1",
+    "mocha": "^10.7.3",
     "nodemon": "^3.1.14"
   }
 }

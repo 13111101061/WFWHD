@@ -1,8 +1,11 @@
 /**
  * MossTtsAdapter - MOSS-TTS 服务商适配器
  *
- * 实现与 MOSS-TTS API 的对接
  * API 文档: https://studio.mosi.cn/api/v1/audio/speech
+ *
+ * 支持凭证池化：
+ * - 请求时选择最佳账号
+ * - 报告成功/失败用于健康追踪
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
@@ -28,35 +31,37 @@ class MossTtsAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 获取凭证
+    // 初始化时获取凭证（向后兼容）
     const creds = this._getCredentials();
     const serviceConfig = this._getServiceConfig();
 
     this.apiKey = config.apiKey || creds?.apiKey;
-    // 更新为正确的 API 端点
     this.endpoint = config.endpoint || serviceConfig?.endpoint || 'https://studio.mosi.cn/api/v1/audio/speech';
   }
 
   /**
    * 执行TTS合成
-   * @param {string} text - 要合成的文本
-   * @param {Object} options - 合成选项
-   * @returns {Promise<{audio?: Buffer, audioUrl?: string, format: string}>}
    */
   async synthesize(text, options = {}) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 检查凭证
-    if (!this.apiKey) {
+    // 请求时获取凭证（支持池化选择和健康追踪）
+    const creds = this._getCredentials();
+    const apiKey = creds?.apiKey || this.apiKey;
+
+    if (!apiKey) {
       throw this._error('MISSING_API_KEY', 'MOSS-TTS API Key 未配置');
     }
 
-    return this._retry(async () => {
-      const result = await this._callApi(text, params);
+    try {
+      const result = await this._callApi(text, params, apiKey);
 
       // 解码 Base64 音频数据
       const audio = Buffer.from(result.audio_data, 'base64');
+
+      // 报告成功
+      this._reportSuccess();
 
       return {
         audio,
@@ -66,18 +71,19 @@ class MossTtsAdapter extends BaseTtsAdapter {
         duration: result.duration_s,
         usage: result.usage
       };
-    });
+    } catch (error) {
+      // 报告失败
+      this._reportFailure(error);
+      throw error;
+    }
   }
 
   /**
    * 调用 MOSS-TTS API
-   * @param {string} text - 文本
-   * @param {Object} params - 参数
-   * @returns {Promise<Object>}
    */
-  async _callApi(text, params) {
+  async _callApi(text, params, apiKey) {
     const headers = {
-      'Authorization': `Bearer ${this.apiKey}`,
+      'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     };
 
@@ -134,7 +140,6 @@ class MossTtsAdapter extends BaseTtsAdapter {
 
   /**
    * 处理 API 错误
-   * @param {Response} response
    */
   async _handleError(response) {
     let errorMessage = `HTTP ${response.status}`;
@@ -161,8 +166,6 @@ class MossTtsAdapter extends BaseTtsAdapter {
 
   /**
    * 验证选项参数
-   * @param {Object} options
-   * @returns {Object}
    */
   validateOptions(options) {
     const base = super.validateOptions(options);

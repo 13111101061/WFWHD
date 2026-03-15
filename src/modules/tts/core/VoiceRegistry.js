@@ -138,8 +138,16 @@ class VoiceRegistry {
       throw new Error(`Voice not found: ${id}`);
     }
 
+    // 1. 先移除旧索引（使用旧的 provider/service）
+    this._removeFromIndexes(existing);
+
+    // 2. 更新数据
     const updated = { ...existing, ...updates, id };
     this.voices.set(id, updated);
+
+    // 3. 重建新索引（使用新的 provider/service）
+    this._updateIndexes(updated);
+
     this.lastUpdated = new Date();
 
     return updated;
@@ -343,19 +351,29 @@ class VoiceRegistry {
 
   async _loadFromRedis() {
     try {
-      // 使用KEYS命令获取所有voice keys（简单直接）
-      const keys = await this.redisClient.keys(this.redisPrefix + '*');
+      // 1. 加载 meta 数据
+      let meta = {};
+      const metaData = await this.redisClient.get(this.redisPrefix + '_meta');
+      if (metaData) {
+        meta = JSON.parse(metaData);
+      }
 
-      // 批量获取
+      // 2. 加载 voices 数据
+      const keys = await this.redisClient.keys(this.redisPrefix + '*');
       const voices = [];
+
       for (const key of keys) {
+        // 跳过 meta key
+        if (key === this.redisPrefix + '_meta') continue;
+
         const data = await this.redisClient.get(key);
         if (data) {
           voices.push(JSON.parse(data));
         }
       }
 
-      this._buildIndex(voices);
+      // 3. 构建索引（传递 meta）
+      this._buildIndex(voices, meta);
 
     } catch (e) {
       console.error('[VoiceRegistry] Load from Redis failed:', e.message);
@@ -371,13 +389,40 @@ class VoiceRegistry {
         await this.redisClient.del(keys);
       }
 
-      // 写入新数据
+      // 写入 voices 数据
       for (const [id, voice] of this.voices) {
         await this.redisClient.set(
           this.redisPrefix + id,
           JSON.stringify(voice)
         );
       }
+
+      // 写入 meta 数据（providers 状态）
+      const enabledProviders = [];
+      const disabledProviders = [];
+
+      for (const [provider, status] of this.providerStatus) {
+        if (status.enabled !== false) {
+          enabledProviders.push(provider);
+        } else {
+          disabledProviders.push(provider);
+        }
+      }
+
+      const meta = {
+        version: '3.0',
+        savedAt: new Date().toISOString(),
+        totalVoices: this.voices.size,
+        providers: {
+          enabled: enabledProviders,
+          disabled: disabledProviders
+        }
+      };
+
+      await this.redisClient.set(
+        this.redisPrefix + '_meta',
+        JSON.stringify(meta)
+      );
 
     } catch (e) {
       console.error('[VoiceRegistry] Save to Redis failed:', e.message);
@@ -399,11 +444,34 @@ class VoiceRegistry {
   }
 
   async _saveToFile() {
+    // 构建 providers 元数据
+    const enabledProviders = [];
+    const disabledProviders = [];
+
+    for (const [provider, status] of this.providerStatus) {
+      if (status.enabled !== false) {
+        enabledProviders.push(provider);
+      } else {
+        disabledProviders.push(provider);
+      }
+    }
+
     const data = {
       _meta: {
         version: '3.0',
         savedAt: new Date().toISOString(),
-        totalVoices: this.voices.size
+        totalVoices: this.voices.size,
+        // 保留 providers 状态
+        providers: {
+          enabled: enabledProviders,
+          disabled: disabledProviders
+        },
+        // 保留 sources 信息（基于当前索引重建）
+        sources: Array.from(this.providerIndex.keys()).map(provider => ({
+          provider,
+          count: this.providerIndex.get(provider).size,
+          enabled: this.isProviderEnabled(provider)
+        }))
       },
       voices: this.getAll()
     };

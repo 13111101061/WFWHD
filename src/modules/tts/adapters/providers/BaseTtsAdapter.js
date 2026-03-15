@@ -3,6 +3,10 @@
  *
  * 所有TTS服务商适配器都应继承此类
  * 实现 ITtsProvider 端口接口
+ *
+ * 支持凭证池化模式：
+ * - 自动选择最佳账号
+ * - 报告成功/失败用于健康追踪
  */
 
 const { audioStorageManager } = require('../../../../shared/utils/audioStorage');
@@ -26,12 +30,33 @@ class BaseTtsAdapter {
     this.audioStorage = audioStorageManager;
     this.provider = config.provider || 'unknown';
     this.serviceType = config.serviceType || 'default';
+
+    // 当前使用的账号ID（用于报告健康状态）
+    this._currentAccountId = null;
   }
 
   /**
-   * 获取服务商凭证
+   * 获取服务商凭证（支持池化选择）
+   * @param {Object} context - 选择上下文
+   * @returns {Object} - 凭证对象
    */
-  _getCredentials() {
+  _getCredentials(context = {}) {
+    // 优先使用池化选择
+    if (credentials.selectCredentials) {
+      const result = credentials.selectCredentials(
+        this.provider,
+        this.serviceType,
+        context
+      );
+
+      if (result) {
+        this._currentAccountId = result.accountId;
+        return result.credentials;
+      }
+    }
+
+    // 回退到旧接口
+    this._currentAccountId = null;
     return credentials.getCredentials(this.provider);
   }
 
@@ -57,10 +82,31 @@ class BaseTtsAdapter {
   }
 
   /**
- * 执行TTS合成（子类必须实现）
- * 返回 { audio: Buffer, format: string }
- */
-async synthesize(text, options = {}) {
+   * 报告凭证使用成功
+   * 应在成功完成 API 调用后调用
+   */
+  _reportSuccess() {
+    if (this._currentAccountId && credentials.reportSuccess) {
+      credentials.reportSuccess(this.provider, this._currentAccountId, this.serviceType);
+    }
+  }
+
+  /**
+   * 报告凭证使用失败
+   * 应在 API 调用失败后调用
+   * @param {Error} error - 错误对象
+   */
+  _reportFailure(error) {
+    if (this._currentAccountId && credentials.reportFailure) {
+      credentials.reportFailure(this.provider, this._currentAccountId, this.serviceType, error);
+    }
+  }
+
+  /**
+   * 执行TTS合成（子类必须实现）
+   * 返回 { audio: Buffer, format: string }
+   */
+  async synthesize(text, options = {}) {
     throw new Error(`synthesize() must be implemented by ${this.constructor.name}`);
   }
 

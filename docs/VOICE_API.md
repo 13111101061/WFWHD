@@ -396,18 +396,41 @@ POST /api/tts/voices/reload
 
 ---
 
-## 音色对象结构
+## 音色 DTO 结构
+
+音色数据采用 **Profile/Runtime 分层架构**，详细文档见 [VOICE_DTO.md](./VOICE_DTO.md)。
+
+### Display DTO（列表展示用）
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | id | string | 全局唯一ID，格式：`${provider}-${service}-${voiceId}` |
-| provider | string | 提供商（aliyun/tencent/volcengine/minimax） |
-| service | string | 服务类型（qwen_http/cosyvoice等） |
-| name | string | 音色名称 |
+| provider | string | 服务商（aliyun/tencent/volcengine/minimax/moss） |
+| service | string | 服务类型（qwen_http/cosyvoice/tts/http/ws/tts） |
+| displayName | string | 展示名称（中文） |
+| name | string | 音色名称（英文标识） |
 | gender | string | 性别：`female` / `male` |
-| tags | string[] | 标签列表 |
-| languages | string[] | 支持语言 |
+| languages | string[] | 支持语言列表 |
 | description | string | 音色描述 |
+| tags | string[] | 标签列表 |
+| preview | string | 预览音频URL |
+| status | string | 状态：`active` / `inactive` / `deprecated` |
+
+> **注意**：Display DTO 不包含 `runtime` 配置，适用于列表展示场景。
+
+### Detail DTO（详情查看用）
+
+Detail DTO 在 Display DTO 基础上增加：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| profile | Object | 展示信息（同 Display DTO 字段） |
+| runtime | Object | 运行时配置（voice/model/sampleRate等） |
+| metadata | Object | 元数据 |
+| createdAt | string | 创建时间 |
+| updatedAt | string | 更新时间 |
+
+详细字段定义和示例见 [VOICE_DTO.md](./VOICE_DTO.md)。
 
 ---
 
@@ -422,6 +445,7 @@ POST /api/tts/voices/reload
 
 ## 相关文档
 
+- [VOICE_DTO.md](./VOICE_DTO.md) - 音色 DTO 结构详解（Display DTO / Detail DTO）
 - [音色库快速参考指南](./音色库快速参考指南.md)
 - [音色工厂模块详细说明](./音色工厂模块详细说明.md)
 - [FRONTEND_GUIDE.md](./FRONTEND_GUIDE.md)

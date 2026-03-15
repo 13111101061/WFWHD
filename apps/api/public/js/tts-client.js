@@ -165,8 +165,8 @@ class TTSClient {
    */
   async synthesize(text, options = {}) {
     const defaultOptions = {
-      service: 'aliyun_cosyvoice',
-      voice: 'longxiaochun_v2',
+      service: 'aliyun_qwen_http',
+      voice: 'aliyun-qwen_http-cherry',
       speed: 1.0,
       pitch: 1.0,
       volume: 5
@@ -201,10 +201,10 @@ class TTSClient {
    */
   async batchSynthesize(texts, options = {}) {
     const requestParams = {
-      service: options.service || 'aliyun_cosyvoice',
+      service: options.service || 'aliyun_qwen_http',
       texts: texts,
       options: {
-        voice: options.voice || 'longxiaochun_v2',
+        voice: options.voice || 'aliyun-qwen_http-cherry',
         speed: options.speed || 1.0,
         pitch: options.pitch || 1.0
       }

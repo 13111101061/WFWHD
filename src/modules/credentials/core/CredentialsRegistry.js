@@ -2,22 +2,111 @@
  * CredentialsRegistry - 凭证注册表
  *
  * 按服务商维度管理 API Key
- * 一个服务商可以有多个服务/接口
+ * 支持单账号模式（.env）和多账号池化模式（YAML）
  */
 
 // 确保环境变量已加载
 require('dotenv').config();
 
+const { CredentialPool, HealthStatus, SelectionStrategy } = require('./CredentialPool');
+const { loadAllProviders, hasYamlConfig, createDefaultAccount } = require('../config/loader');
+
 class CredentialsRegistry {
   constructor(options = {}) {
-    this.providers = new Map();  // 服务商信息
+    this.providers = new Map();  // 服务商信息（旧格式，向后兼容）
     this.services = new Map();   // 服务映射到服务商
+    this.pools = new Map();      // CredentialPool 实例
 
-    this._loadDefaults();
+    // 检测运行模式
+    this.poolMode = false;
 
+    // 先尝试加载 YAML 配置
+    this._loadYamlConfig();
+
+    // 如果没有 YAML 配置，加载 .env 默认配置
+    if (!this.poolMode) {
+      this._loadDefaults();
+    }
+
+    // 加载额外的 providers（从 options）
     if (options.providers) {
       Object.entries(options.providers).forEach(([key, config]) => {
         this.registerProvider(key, config);
+      });
+    }
+  }
+
+  /**
+   * 加载 YAML 配置（池化模式）
+   */
+  _loadYamlConfig() {
+    if (!hasYamlConfig()) {
+      return;
+    }
+
+    const providers = loadAllProviders();
+
+    if (providers.size === 0) {
+      return;
+    }
+
+    this.poolMode = true;
+
+    for (const [key, config] of providers) {
+      // 创建 CredentialPool
+      const pool = new CredentialPool(config);
+      this.pools.set(key, pool);
+
+      // 同时存储旧格式（向后兼容）
+      this.providers.set(key, {
+        key,
+        name: config.name,
+        description: config.description,
+        credentials: pool.getFirstValidCredentials(),
+        requiredFields: config.requiredFields,
+        services: this._extractServices(config.accounts)
+      });
+
+      // 建立服务映射
+      this._buildServiceMappings(key, this.providers.get(key).services);
+    }
+  }
+
+  /**
+   * 从账号中提取服务列表
+   * @param {Array<Object>} accounts
+   * @returns {Object}
+   */
+  _extractServices(accounts) {
+    const services = {};
+    const seen = new Set();
+
+    for (const account of accounts) {
+      for (const serviceKey of account.services || []) {
+        if (!seen.has(serviceKey)) {
+          services[serviceKey] = {
+            name: serviceKey,
+            description: `Service: ${serviceKey}`
+          };
+          seen.add(serviceKey);
+        }
+      }
+    }
+
+    return services;
+  }
+
+  /**
+   * 建立服务映射
+   * @param {string} providerKey
+   * @param {Object} services
+   */
+  _buildServiceMappings(providerKey, services) {
+    for (const serviceKey of Object.keys(services)) {
+      this.services.set(`${providerKey}.${serviceKey}`, {
+        providerKey,
+        serviceKey,
+        ...services[serviceKey]
       });
     }
   }
@@ -35,7 +124,7 @@ class CredentialsRegistry {
   }
 
   /**
-   * 加载默认服务商配置
+   * 加载默认服务商配置（.env 模式）
    */
   _loadDefaults() {
     // ==================== 阿里云 ====================
@@ -96,13 +185,15 @@ class CredentialsRegistry {
       },
       requiredFields: ['appId', 'token'],
       services: {
-        'http': {
+        'volcengine_http': {
           name: 'HTTP',
-          description: '火山引擎 TTS (HTTP)'
+          description: '火山引擎 TTS (HTTP)',
+          aliases: ['http']
         },
-        'ws': {
+        'volcengine_ws': {
           name: 'WebSocket',
-          description: '火山引擎 TTS (WebSocket)'
+          description: '火山引擎 TTS (WebSocket)',
+          aliases: ['ws']
         }
       }
     });
@@ -117,9 +208,10 @@ class CredentialsRegistry {
       },
       requiredFields: ['apiKey'],
       services: {
-        'tts': {
+        'minimax_tts': {
           name: 'TTS',
-          description: 'MiniMax TTS'
+          description: 'MiniMax TTS',
+          aliases: ['tts']
         }
       }
     });
@@ -146,11 +238,6 @@ class CredentialsRegistry {
    * 注册服务商
    * @param {string} providerKey - 服务商标识
    * @param {Object} config - 配置
-   * @param {string} config.name - 服务商名称
-   * @param {string} config.description - 描述
-   * @param {Object} config.credentials - 凭证
-   * @param {string[]} config.requiredFields - 必填字段
-   * @param {Object} config.services - 服务列表
    */
   registerProvider(providerKey, config) {
     const { name, description, credentials, requiredFields, services } = config;
@@ -165,17 +252,44 @@ class CredentialsRegistry {
       services: services || {}
     });
 
-    // 建立服务 -> 服务商的映射
+    // 建立服务 -> 服务商的映射（包含 alias 支持）
     if (services) {
       Object.keys(services).forEach(serviceKey => {
+        const serviceConfig = services[serviceKey];
+
+        // 注册 canonical key
         this.services.set(`${providerKey}.${serviceKey}`, {
           providerKey,
           serviceKey,
-          ...services[serviceKey]
+          canonicalKey: serviceKey,
+          ...serviceConfig
         });
+
+        // 注册 alias
+        if (serviceConfig.aliases && Array.isArray(serviceConfig.aliases)) {
+          serviceConfig.aliases.forEach(alias => {
+            this.services.set(`${providerKey}.${alias}`, {
+              providerKey,
+              serviceKey: alias,
+              canonicalKey: serviceKey,
+              isAlias: true,
+              ...serviceConfig
+            });
+          });
+        }
       });
     }
+
+    // 如果没有 pool，为 .env 模式创建默认 pool
+    if (!this.pools.has(providerKey) && credentials) {
+      const poolConfig = createDefaultAccount(providerKey, credentials, services);
+      if (poolConfig) {
+        this.pools.set(providerKey, new CredentialPool(poolConfig));
+      }
+    }
   }
+
+  // ==================== 现有接口（保持兼容） ====================
 
   /**
    * 获取服务商凭证
@@ -240,6 +354,7 @@ class CredentialsRegistry {
         name: provider.name,
         description: provider.description,
         configured,
+        poolMode: this.pools.has(key),
         services: serviceList.map(s => ({
           key: s,
           name: provider.services[s].name,
@@ -299,6 +414,190 @@ class CredentialsRegistry {
       results.push(this.validate(key));
     }
     return results;
+  }
+
+  /**
+   * 获取所有服务商详情
+   */
+  listAll() {
+    const result = [];
+    for (const [key, provider] of this.providers) {
+      const validation = this.validate(key);
+
+      result.push({
+        key,
+        name: provider.name,
+        description: provider.description,
+        configured: validation.valid,
+        missing: validation.missing,
+        services: Object.keys(provider.services)
+      });
+    }
+    return result;
+  }
+
+  // ==================== 新增：池化接口 ====================
+
+  /**
+   * 选择凭证（池化模式）
+   * 同步选择最佳账号，支持健康检查和熔断
+   *
+   * @param {string} providerKey - 服务商标识
+   * @param {string} serviceKey - 服务标识
+   * @param {Object} context - 选择上下文
+   * @returns {Object|null} - { credentials, accountId, account }
+   */
+  selectCredentials(providerKey, serviceKey, context = {}) {
+    const pool = this.pools.get(providerKey);
+    if (!pool) {
+      // 回退到旧接口
+      const credentials = this.getCredentials(providerKey);
+      if (credentials) {
+        return {
+          credentials,
+          accountId: 'default',
+          account: { id: 'default', name: '默认账号' }
+        };
+      }
+      return null;
+    }
+
+    return pool.selectCredentials(serviceKey, context);
+  }
+
+  /**
+   * 报告成功
+   * @param {string} providerKey
+   * @param {string} accountId
+   * @param {string} serviceKey
+   */
+  reportSuccess(providerKey, accountId, serviceKey) {
+    const pool = this.pools.get(providerKey);
+    if (pool) {
+      pool.reportSuccess(accountId, serviceKey);
+    }
+  }
+
+  /**
+   * 报告失败
+   * @param {string} providerKey
+   * @param {string} accountId
+   * @param {string} serviceKey
+   * @param {Error} error
+   */
+  reportFailure(providerKey, accountId, serviceKey, error) {
+    const pool = this.pools.get(providerKey);
+    if (pool) {
+      pool.reportFailure(accountId, serviceKey, error);
+    }
+  }
+
+  /**
+   * 获取服务商账号列表
+   * @param {string} providerKey
+   * @returns {Array<Object>}
+   */
+  getProviderAccounts(providerKey) {
+    const pool = this.pools.get(providerKey);
+    if (!pool) {
+      return [];
+    }
+    return pool.getAccountsWithHealth();
+  }
+
+  /**
+   * 获取单个账号（公开信息，不含凭证）
+   * @param {string} providerKey
+   * @param {string} accountId
+   * @returns {Object|null}
+   */
+  getAccount(providerKey, accountId) {
+    const pool = this.pools.get(providerKey);
+    if (!pool) {
+      return null;
+    }
+    return pool.getAccountPublic(accountId);
+  }
+
+  /**
+   * 获取账号凭证（内部使用）
+   * 仅用于凭证选择，不对外暴露
+   * @param {string} providerKey
+   * @param {string} accountId
+   * @returns {Object|null}
+   */
+  _getAccountCredentials(providerKey, accountId) {
+    const pool = this.pools.get(providerKey);
+    if (!pool) {
+      return null;
+    }
+    const account = pool.getAccount(accountId);
+    return account?.credentials || null;
+  }
+
+  /**
+   * 启用账号
+   * @param {string} providerKey
+   * @param {string} accountId
+   */
+  enableAccount(providerKey, accountId) {
+    const pool = this.pools.get(providerKey);
+    if (pool) {
+      pool.enableAccount(accountId);
+    }
+  }
+
+  /**
+   * 禁用账号
+   * @param {string} providerKey
+   * @param {string} accountId
+   */
+  disableAccount(providerKey, accountId) {
+    const pool = this.pools.get(providerKey);
+    if (pool) {
+      pool.disableAccount(accountId);
+    }
+  }
+
+  /**
+   * 重置账号熔断状态
+   * @param {string} providerKey
+   * @param {string} accountId
+   */
+  resetCircuit(providerKey, accountId) {
+    const pool = this.pools.get(providerKey);
+    if (pool) {
+      pool.resetCircuit(accountId);
+    }
+  }
+
+  /**
+   * 获取健康状态
+   * @param {string} providerKey
+   * @returns {Object|null}
+   */
+  getHealthStatus(providerKey) {
+    const pool = this.pools.get(providerKey);
+    if (!pool) {
+      return null;
+    }
+    return pool.getHealthStatus();
+  }
+
+  /**
+   * 检查是否为池化模式
+   * @returns {boolean}
+   */
+  isPoolMode() {
+    return this.poolMode;
+  }
+
+  /**
+   * 获取所有 pool
+   * @returns {Map<string, CredentialPool>}
+   */
+  getPools() {
+    return this.pools;
   }
 }
 

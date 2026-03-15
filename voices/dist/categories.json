@@ -1,13 +1,9 @@
 {
   "_meta": {
-    "generatedAt": "2026-03-13T05:22:23.161Z",
-    "totalVoices": 72
+    "generatedAt": "2026-03-15T08:36:55.243Z",
+    "totalVoices": 50
   },
   "byProvider": {
-    "minimax": [
-      "minimax-minimax_tts-female-1",
-      "minimax-minimax_tts-female-2"
-    ],
     "moss": [
       "moss-tts-ashui"
     ],
@@ -61,36 +57,10 @@
       "aliyun-qwen_http-eric",
       "aliyun-qwen_http-rocky",
       "aliyun-qwen_http-kiki"
-    ],
-    "tencent": [
-      "tencent-tts-qinqin",
-      "tencent-tts-yaya",
-      "tencent-tts-yuanyuan",
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaoling",
-      "tencent-tts-xiaolu",
-      "tencent-tts-xiaoqian",
-      "tencent-tts-xiaorong",
-      "tencent-tts-xiaosong",
-      "tencent-tts-xiaotang",
-      "tencent-tts-xiaowang",
-      "tencent-tts-xiaowei",
-      "tencent-tts-xiaowen",
-      "tencent-tts-xiaoxin"
-    ],
-    "volcengine": [
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv002_streaming",
-      "volcengine-volcengine_http-bv032_streaming",
-      "volcengine-volcengine_http-bv033_streaming",
-      "volcengine-volcengine_http-bv034_streaming"
     ]
   },
   "byGender": {
     "female": [
-      "minimax-minimax_tts-female-1",
-      "minimax-minimax_tts-female-2",
       "moss-tts-ashui",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-chelsie",
@@ -113,17 +83,7 @@
       "aliyun-qwen_http-sonrisa",
       "aliyun-qwen_http-sohee",
       "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-kiki",
-      "tencent-tts-qinqin",
-      "tencent-tts-yaya",
-      "tencent-tts-yuanyuan",
-      "tencent-tts-xiaoling",
-      "tencent-tts-xiaolu",
-      "tencent-tts-xiaoqian",
-      "tencent-tts-xiaorong",
-      "tencent-tts-xiaoxin",
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv032_streaming"
+      "aliyun-qwen_http-kiki"
     ],
     "male": [
       "aliyun-qwen_http-ethan",
@@ -152,23 +112,11 @@
       "aliyun-qwen_http-roy",
       "aliyun-qwen_http-peter",
       "aliyun-qwen_http-eric",
-      "aliyun-qwen_http-rocky",
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaosong",
-      "tencent-tts-xiaotang",
-      "tencent-tts-xiaowang",
-      "tencent-tts-xiaowei",
-      "tencent-tts-xiaowen",
-      "volcengine-volcengine_http-bv002_streaming",
-      "volcengine-volcengine_http-bv033_streaming",
-      "volcengine-volcengine_http-bv034_streaming"
+      "aliyun-qwen_http-rocky"
     ]
   },
   "byLanguage": {
     "zh-CN": [
-      "minimax-minimax_tts-female-1",
-      "minimax-minimax_tts-female-2",
       "moss-tts-ashui",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan",
@@ -218,27 +166,7 @@
       "aliyun-qwen_http-peter",
       "aliyun-qwen_http-eric",
       "aliyun-qwen_http-rocky",
-      "aliyun-qwen_http-kiki",
-      "tencent-tts-qinqin",
-      "tencent-tts-yaya",
-      "tencent-tts-yuanyuan",
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaoling",
-      "tencent-tts-xiaolu",
-      "tencent-tts-xiaoqian",
-      "tencent-tts-xiaorong",
-      "tencent-tts-xiaosong",
-      "tencent-tts-xiaotang",
-      "tencent-tts-xiaowang",
-      "tencent-tts-xiaowei",
-      "tencent-tts-xiaowen",
-      "tencent-tts-xiaoxin",
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv002_streaming",
-      "volcengine-volcengine_http-bv032_streaming",
-      "volcengine-volcengine_http-bv033_streaming",
-      "volcengine-volcengine_http-bv034_streaming"
+      "aliyun-qwen_http-kiki"
     ],
     "en-US": [
       "aliyun-qwen_http-cherry",
@@ -374,66 +302,13 @@
     ]
   },
   "byTag": {
-    "基础": [
-      "minimax-minimax_tts-female-1",
-      "minimax-minimax_tts-female-2",
-      "tencent-tts-qinqin",
-      "tencent-tts-yaya",
-      "tencent-tts-yuanyuan",
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaoling",
-      "tencent-tts-xiaolu",
-      "tencent-tts-xiaoqian",
-      "tencent-tts-xiaorong",
-      "tencent-tts-xiaosong",
-      "tencent-tts-xiaotang",
-      "tencent-tts-xiaowang",
-      "tencent-tts-xiaowei",
-      "tencent-tts-xiaowen",
-      "tencent-tts-xiaoxin",
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv002_streaming"
-    ],
-    "女声": [
-      "minimax-minimax_tts-female-1",
-      "minimax-minimax_tts-female-2",
-      "moss-tts-ashui",
-      "tencent-tts-qinqin",
-      "tencent-tts-yaya",
-      "tencent-tts-yuanyuan",
-      "tencent-tts-xiaoling",
-      "tencent-tts-xiaolu",
-      "tencent-tts-xiaoqian",
-      "tencent-tts-xiaorong",
-      "tencent-tts-xiaoxin",
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv032_streaming"
-    ],
-    "标准": [
-      "minimax-minimax_tts-female-1",
-      "tencent-tts-qinqin",
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaowang",
-      "volcengine-volcengine_http-bv001_streaming",
-      "volcengine-volcengine_http-bv002_streaming"
-    ],
-    "温柔": [
-      "minimax-minimax_tts-female-2",
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-li",
-      "tencent-tts-xiaoqian",
-      "volcengine-volcengine_http-bv032_streaming"
-    ],
     "松弛": [
       "moss-tts-ashui"
     ],
     "耐听": [
+      "moss-tts-ashui"
+    ],
+    "女声": [
       "moss-tts-ashui"
     ],
     "舒缓": [
@@ -442,8 +317,7 @@
     ],
     "亲切": [
       "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-serena",
-      "tencent-tts-yuanyuan"
+      "aliyun-qwen_http-serena"
     ],
     "自然": [
       "aliyun-qwen_http-cherry",
@@ -455,6 +329,15 @@
       "aliyun-qwen_http-elias",
       "aliyun-qwen_http-seren"
     ],
+    "温柔": [
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-seren",
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-emilien",
+      "aliyun-qwen_http-li"
+    ],
     "温暖": [
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan"
@@ -463,17 +346,14 @@
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-serena",
       "aliyun-qwen_http-aiden",
-      "aliyun-qwen_http-bodega",
-      "volcengine-volcengine_http-bv034_streaming"
+      "aliyun-qwen_http-bodega"
     ],
     "活力": [
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-dylan",
       "aliyun-qwen_http-bodega",
       "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-radio-gol",
-      "tencent-tts-xiaotang",
-      "volcengine-volcengine_http-bv034_streaming"
+      "aliyun-qwen_http-radio-gol"
     ],
     "朝气": [
       "aliyun-qwen_http-ethan"
@@ -502,9 +382,7 @@
       "aliyun-qwen_http-nini",
       "aliyun-qwen_http-stella",
       "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-kiki",
-      "tencent-tts-xiaolu",
-      "volcengine-volcengine_http-bv032_streaming"
+      "aliyun-qwen_http-kiki"
     ],
     "娇憨": [
       "aliyun-qwen_http-chelsie"
@@ -614,8 +492,7 @@
       "aliyun-qwen_http-moon"
     ],
     "知性": [
-      "aliyun-qwen_http-maia",
-      "tencent-tts-xiaorong"
+      "aliyun-qwen_http-maia"
     ],
     "御姐": [
       "aliyun-qwen_http-maia",
@@ -631,8 +508,7 @@
       "aliyun-qwen_http-maia",
       "aliyun-qwen_http-jennifer",
       "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-andre",
-      "volcengine-volcengine_http-bv033_streaming"
+      "aliyun-qwen_http-andre"
     ],
     "低沉": [
       "aliyun-qwen_http-kai",
@@ -735,9 +611,7 @@
       "aliyun-qwen_http-eldric-sage",
       "aliyun-qwen_http-neil",
       "aliyun-qwen_http-li",
-      "aliyun-qwen_http-marcus",
-      "tencent-tts-xiaosong",
-      "volcengine-volcengine_http-bv033_streaming"
+      "aliyun-qwen_http-marcus"
     ],
     "沧桑": [
       "aliyun-qwen_http-eldric-sage",
@@ -822,8 +696,7 @@
       "aliyun-qwen_http-bunny"
     ],
     "可爱": [
-      "aliyun-qwen_http-bunny",
-      "tencent-tts-yaya"
+      "aliyun-qwen_http-bunny"
     ],
     "儿童": [
       "aliyun-qwen_http-bunny"
@@ -1065,31 +938,6 @@
     ],
     "少女": [
       "aliyun-qwen_http-kiki"
-    ],
-    "男声": [
-      "tencent-tts-xiaoguo",
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaosong",
-      "tencent-tts-xiaotang",
-      "tencent-tts-xiaowang",
-      "tencent-tts-xiaowei",
-      "tencent-tts-xiaowen",
-      "volcengine-volcengine_http-bv002_streaming",
-      "volcengine-volcengine_http-bv033_streaming",
-      "volcengine-volcengine_http-bv034_streaming"
-    ],
-    "温和": [
-      "tencent-tts-xiaohe",
-      "tencent-tts-xiaowei"
-    ],
-    "清脆": [
-      "tencent-tts-xiaoling"
-    ],
-    "文雅": [
-      "tencent-tts-xiaowen"
-    ],
-    "欢快": [
-      "tencent-tts-xiaoxin"
     ]
   }
 }

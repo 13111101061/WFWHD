@@ -28,6 +28,9 @@ class AudioStorageManager {
     // 确保路径是绝对路径
     this.baseDir = path.resolve(this.options.baseDir);
 
+    // 定时器引用（用于关闭）
+    this.cleanupTimer = null;
+
     // 初始化
     this.initialize();
   }
@@ -385,13 +388,25 @@ class AudioStorageManager {
       const delay = nextCleanup - now;
       console.log(`⏰ 下次文件清理时间: ${nextCleanup.toISOString()}`);
 
-      setTimeout(async () => {
+      this.cleanupTimer = setTimeout(async () => {
         await this.cleanupExpiredFiles();
         scheduleNextCleanup(); // 安排下次清理
       }, delay);
     };
 
     scheduleNextCleanup();
+  }
+
+  /**
+   * 停止定时清理任务
+   * 用于测试环境或服务关闭时释放资源
+   */
+  stopCleanup() {
+    if (this.cleanupTimer) {
+      clearTimeout(this.cleanupTimer);
+      this.cleanupTimer = null;
+      console.log('🛑 音频清理定时器已停止');
+    }
   }
 
   /**
