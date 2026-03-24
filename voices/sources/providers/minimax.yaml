@@ -15,7 +15,7 @@ voices:
     displayName: 中文女声1
     name: 中文女声1
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: MiniMax 中文女声音色
     tags: [基础, 女声, 标准]
     ttsConfig:
@@ -26,7 +26,7 @@ voices:
     displayName: 中文女声2
     name: 中文女声2
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: MiniMax 中文女声音色
     tags: [基础, 女声, 温柔]
     ttsConfig:

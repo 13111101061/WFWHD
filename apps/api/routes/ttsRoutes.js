@@ -212,6 +212,19 @@ router.get('/catalog',
   }
 );
 
+/**
+ * GET /api/tts/frontend
+ * 前端展示专用接口（精简版）
+ * 只返回7个展示字段：id, displayName, gender, languages, tags, description, preview
+ */
+router.get('/frontend',
+  requestLogger,
+  (req, res) => {
+    const result = TtsQueryService.getFrontendVoices();
+    res.json(result);
+  }
+);
+
 // ==================== 快捷路由 ====================
 
 /**

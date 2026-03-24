@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const { unifiedAuth } = require('../../src/core/middleware/apiKeyMiddleware');
 const { presets } = require('../../src/shared/middleware/apiStatsMiddleware');
 const config = require('../../src/shared/config/config');
@@ -34,17 +33,19 @@ app.disable('x-powered-by');
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
   .split(',')
   .map(s => s.trim());
-app.use(cors({ origin: allowedOrigins }));
+
+// 开发环境使用宽松的 CORS 配置
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' ? allowedOrigins : true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+};
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(presets.full());
 
-// Static assets
-const PUBLIC_DIR = path.join(__dirname, 'public');
-const AUDIO_DIR =
-  process.env.AUDIO_DIR || path.join(__dirname, '..', '..', 'src', 'storage', 'uploads', 'audio');
-app.use(express.static(PUBLIC_DIR));
-app.use('/audio', express.static(AUDIO_DIR));
 
 // Health check (no auth)
 app.get('/health', (req, res) => {
@@ -187,18 +188,6 @@ app.get(
   }
 );
 
-// Static pages
-app.get('/', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
-});
-
-app.get('/demo', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'demo.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'admin.html'));
-});
 
 // Critical env validation in production
 if (process.env.NODE_ENV === 'production') {
@@ -245,13 +234,9 @@ async function initializeServices() {
 // Start server
 initializeServices().then(() => {
   app.listen(PORT, () => {
-    console.log(`TTS microservice node running on port ${PORT}`);
-  console.log(`Service URL: http://localhost:${PORT}`);
+    console.log(`TTS microservice running on port ${PORT}`);
   console.log(`API base: http://localhost:${PORT}/api`);
-  console.log(`Admin UI: http://localhost:${PORT}/admin`);
-  console.log(`Demo page: http://localhost:${PORT}/demo`);
   console.log(`Health: http://localhost:${PORT}/health`);
-  console.log(`Public info: http://localhost:${PORT}/api/public/info`);
 
   if (process.env.API_KEYS) {
     const keyCount = process.env.API_KEYS.split(',').length;

@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": "2.1",
-    "generatedAt": "2026-03-15T08:36:55.241Z",
+    "generatedAt": "2026-03-22T08:33:18.435Z",
     "totalVoices": 50,
     "sources": [
       {
@@ -46,7 +46,7 @@
         "volcengine"
       ]
     },
-    "buildTime": 10
+    "buildTime": 13
   },
   "voices": [
     {
@@ -58,7 +58,7 @@
       "name": "阿树",
       "gender": "female",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "冬天清晨的灰白天空，风很冷，但阳光迟早会出来。",
       "tags": [
@@ -85,8 +85,7 @@
       "name": "Cherry",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US"
+        "中文"
       ],
       "description": "阳光积极的邻家姐姐，用亲切自然的话语予人最贴心的治愈。",
       "tags": [
@@ -113,8 +112,7 @@
       "name": "Ethan",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US"
+        "中文"
       ],
       "description": "充满朝气与活力的青年之声，温暖有力，尽显北方口音的爽朗与可靠。",
       "tags": [
@@ -141,8 +139,7 @@
       "name": "Chelsie",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US"
+        "中文"
       ],
       "description": "甜美软萌的二次元虚拟女友，声音亲密无间，带着一丝娇憨与心动。",
       "tags": [
@@ -169,8 +166,7 @@
       "name": "Serena",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US"
+        "中文"
       ],
       "description": "温柔而充满阳光的声音，如同明亮清泉，带来清澈亲切的听觉体验。",
       "tags": [
@@ -197,14 +193,16 @@
       "name": "Dylan",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "从北京胡同里长大的少年，充满活力，口音地道。",
       "tags": [
         "少年",
         "活力",
-        "地道",
-        "胡同"
+        "京腔",
+        "爽朗",
+        "利落",
+        "干脆"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav",
       "ttsConfig": {
@@ -222,7 +220,7 @@
       "name": "Jada",
       "gender": "female",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "风风火火的沪上阿姐，做事干练，性格爽朗。",
       "tags": [
@@ -247,7 +245,7 @@
       "name": "Sunny",
       "gender": "female",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "甜到心里的川妹子，声音活泼娇媚，感染力十足。",
       "tags": [
@@ -272,10 +270,7 @@
       "name": "Momo",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "古灵精怪的开心果，声音多变搞怪，擅长用撒娇和俏皮逗你开心。",
       "tags": [
@@ -302,10 +297,7 @@
       "name": "Vivian",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "外表帅气、拽拽的傲娇少女，偶尔的可爱小暴躁下藏着一颗柔软的心。",
       "tags": [
@@ -332,10 +324,7 @@
       "name": "Moon",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "率性帅气的清冷少年音，语调从容洒脱，如月光般皎洁而有磁性。",
       "tags": [
@@ -362,10 +351,7 @@
       "name": "Maia",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "知性与温柔并存的御姐，如月光般优雅迷人。",
       "tags": [
@@ -392,10 +378,7 @@
       "name": "Kai",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "声线低沉磁性，如同专业的音乐评述人，冷静而富有深度。",
       "tags": [
@@ -422,10 +405,7 @@
       "name": "Nofish",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "不会翘舌的清新少年音，自然率性，如同文艺范的设计师。",
       "tags": [
@@ -452,10 +432,7 @@
       "name": "Bella",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "奶萌俏皮的小萝莉，声音里带着不打醉拳的狡黠与活泼。",
       "tags": [
@@ -463,8 +440,8 @@
         "奶萌",
         "俏皮",
         "活泼",
-        "酒鬼",
-        "个性"
+        "娇憨",
+        "醉意"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav",
       "ttsConfig": {
@@ -482,10 +459,7 @@
       "name": "Jennifer",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "英语"
       ],
       "description": "品牌级英语广告女声，质感优雅，尽显高级与专业。",
       "tags": [
@@ -493,8 +467,8 @@
         "专业",
         "高级",
         "优雅",
-        "成熟",
-        "广告"
+        "大气",
+        "质感"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav",
       "ttsConfig": {
@@ -512,10 +486,7 @@
       "name": "Ryan",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "英语"
       ],
       "description": "戏感炸裂的英语电影男声，节奏与张力十足，极具沉浸感。",
       "tags": [
@@ -542,10 +513,7 @@
       "name": "Katerina",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "英语"
       ],
       "description": "韵律十足的英语御姐音，成熟优雅，气场全开。",
       "tags": [
@@ -572,10 +540,7 @@
       "name": "Aiden",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "英语"
       ],
       "description": "精通美语的腼腆大男孩，声音干净，带着邻家般的阳光感。",
       "tags": [
@@ -602,10 +567,7 @@
       "name": "Eldric Sage",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "沉稳睿智的老者，声音历经沧桑，心明如镜，充满故事感。",
       "tags": [
@@ -632,10 +594,7 @@
       "name": "Mia",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "温顺乖巧的邻家小妹，声音甜美软糯，治愈力十足。",
       "tags": [
@@ -662,10 +621,7 @@
       "name": "Mochi",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "聪明伶俐的小大人，童真未泯，声音清秀又透着一丝早慧。",
       "tags": [
@@ -692,10 +648,7 @@
       "name": "Bellona",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "声音洪亮清晰的江湖说书人，节奏感强，字正腔圆，一听就让人热血沸腾。",
       "tags": [
@@ -722,10 +675,7 @@
       "name": "Vincent",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "一口独特的沙哑烟嗓，是道尽江湖豪情与千军万马的传奇说书人。",
       "tags": [
@@ -752,10 +702,7 @@
       "name": "Bunny",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "萌属性爆棚的小萝莉音，甜美可爱，让人瞬间心化。",
       "tags": [
@@ -782,10 +729,7 @@
       "name": "Neil",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "字正腔圆的专业新闻主持人，语调平直客观，极具权威感。",
       "tags": [
@@ -812,10 +756,7 @@
       "name": "Elias",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "将复杂知识通俗化的解惑者，声音清晰条理，兼具学科严谨与叙事温情。",
       "tags": [
@@ -823,7 +764,7 @@
         "知识",
         "清晰",
         "条理",
-        "女性",
+        "温润",
         "治愈"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav",
@@ -842,10 +783,7 @@
       "name": "Arthur",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "被岁月沉淀的质朴之声，不疾不徐地讲述着村里的奇闻异事。",
       "tags": [
@@ -872,10 +810,7 @@
       "name": "Nini",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "糯米糍一样软又黏的嗓音，那一声\"哥哥\"甜到骨子里。",
       "tags": [
@@ -902,10 +837,7 @@
       "name": "Ebona",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "伴随幽暗与恐惧的低语，如同生锈的钥匙，缓缓开启你内心深处。",
       "tags": [
@@ -932,10 +864,7 @@
       "name": "Seren",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "温和舒缓的助眠师，用温柔的声线伴你安然入梦。",
       "tags": [
@@ -962,10 +891,7 @@
       "name": "Pip",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "调皮捣蛋又充满童真的小新，声音里全是古灵精怪的快乐。",
       "tags": [
@@ -992,10 +918,7 @@
       "name": "Stella",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "中文"
       ],
       "description": "平时是甜美的迷糊少女，关键时刻能瞬间变身充满正义的战斗少女。",
       "tags": [
@@ -1022,11 +945,7 @@
       "name": "Bodega",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "es-ES",
-        "ja-JP",
-        "ko-KR"
+        "西班牙语"
       ],
       "description": "热情洋溢的西班牙大叔，声音里满是阳光与拉丁式的活力。",
       "tags": [
@@ -1052,11 +971,7 @@
       "name": "Sonrisa",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "es-ES",
-        "ja-JP",
-        "ko-KR"
+        "西班牙语"
       ],
       "description": "热情开朗的拉美大姐，声音极具感染力，仿佛能驱散所有阴霾。",
       "tags": [
@@ -1082,11 +997,7 @@
       "name": "Alek",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ru-RU",
-        "ja-JP",
-        "ko-KR"
+        "俄语"
       ],
       "description": "一开口就是典型的俄罗斯硬朗口音，自带战斗民族的冷峻气场。",
       "tags": [
@@ -1112,11 +1023,7 @@
       "name": "Dolce",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "it-IT",
-        "ja-JP",
-        "ko-KR"
+        "意大利语"
       ],
       "description": "如同午后阳光般慵懒的意大利大叔，声音随性而充满浪漫。",
       "tags": [
@@ -1142,10 +1049,7 @@
       "name": "Sohee",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ko-KR",
-        "ja-JP"
+        "韩语"
       ],
       "description": "温柔开朗的韩国欧尼，声音甜美，情绪表达丰富而真诚。",
       "tags": [
@@ -1172,10 +1076,7 @@
       "name": "Ono Anna",
       "gender": "female",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "日语"
       ],
       "description": "鬼灵精怪的日语青梅竹马，声音娇俏活泼，充满邻家少女感。",
       "tags": [
@@ -1202,11 +1103,7 @@
       "name": "Lenn",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "de-DE",
-        "ja-JP",
-        "ko-KR"
+        "德语"
       ],
       "description": "理性是底色的德国青年，细节中藏着不羁的叛逆，声音冷静而独特。",
       "tags": [
@@ -1233,11 +1130,7 @@
       "name": "Emilien",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "fr-FR",
-        "ja-JP",
-        "ko-KR"
+        "法语"
       ],
       "description": "浪漫的法国大哥哥，声音优雅温柔，充满了迷人的绅士风度。",
       "tags": [
@@ -1264,10 +1157,7 @@
       "name": "Andre",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "ja-JP",
-        "ko-KR"
+        "西班牙语"
       ],
       "description": "稳重可靠的西班牙科学家，声音沉静理性，是值得信赖的伴侣与学者。",
       "tags": [
@@ -1275,8 +1165,8 @@
         "稳重",
         "理性",
         "科学家",
-        "丈夫",
-        "成熟"
+        "温暖",
+        "低沉"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav",
       "ttsConfig": {
@@ -1294,11 +1184,7 @@
       "name": "Radio Gol",
       "gender": "male",
       "languages": [
-        "zh-CN",
-        "en-US",
-        "es-ES",
-        "ja-JP",
-        "ko-KR"
+        "西班牙语"
       ],
       "description": "赛场上的足球诗人，用充满激情的西班牙语为你解说每一场精彩对决。",
       "tags": [
@@ -1325,7 +1211,7 @@
       "name": "Li",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "语气温和的瑜伽老师，声音沉稳，极具耐心。",
       "tags": [
@@ -1350,7 +1236,7 @@
       "name": "Marcus",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "心实声沉的老陕，话音里透着西北汉子的淳朴与沉稳。",
       "tags": [
@@ -1375,7 +1261,7 @@
       "name": "Roy",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "诙谐直爽的台湾哥仔，声音市井活泼，充满生活气息。",
       "tags": [
@@ -1400,7 +1286,7 @@
       "name": "Peter",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "天津相声专业捧哏，一开口就自带幽默效果。",
       "tags": [
@@ -1425,7 +1311,7 @@
       "name": "Eric",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "跳脱市井的成都男子，声音里带着风趣与洒脱。",
       "tags": [
@@ -1450,7 +1336,7 @@
       "name": "Rocky",
       "gender": "male",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "幽默风趣的粤语阿强，是你的在线陪聊好朋友。",
       "tags": [
@@ -1475,7 +1361,7 @@
       "name": "Kiki",
       "gender": "female",
       "languages": [
-        "zh-CN"
+        "中文"
       ],
       "description": "声音甜美的港妹闺蜜，亲切可爱，如同少女在耳边低语。",
       "tags": [

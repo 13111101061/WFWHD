@@ -19,7 +19,7 @@ voices:
     displayName: 阿树
     name: 阿树
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 冬天清晨的灰白天空，风很冷，但阳光迟早会出来。
     tags: [松弛, 耐听, 女声]
     ttsConfig:

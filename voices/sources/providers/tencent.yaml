@@ -15,7 +15,7 @@ voices:
     displayName: 亲亲
     name: 亲亲
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 标准]
     ttsConfig:
@@ -26,7 +26,7 @@ voices:
     displayName: 鸭鸭
     name: 鸭鸭
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 可爱]
     ttsConfig:
@@ -37,7 +37,7 @@ voices:
     displayName: 圆圆
     name: 圆圆
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 亲切]
     ttsConfig:
@@ -48,7 +48,7 @@ voices:
     displayName: 小郭
     name: 小郭
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 标准]
     ttsConfig:
@@ -59,7 +59,7 @@ voices:
     displayName: 小何
     name: 小何
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 温和]
     ttsConfig:
@@ -70,7 +70,7 @@ voices:
     displayName: 小玲
     name: 小玲
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 清脆]
     ttsConfig:
@@ -81,7 +81,7 @@ voices:
     displayName: 小露
     name: 小露
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 甜美]
     ttsConfig:
@@ -92,7 +92,7 @@ voices:
     displayName: 小倩
     name: 小倩
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 温柔]
     ttsConfig:
@@ -103,7 +103,7 @@ voices:
     displayName: 小蓉
     name: 小蓉
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 知性]
     ttsConfig:
@@ -114,7 +114,7 @@ voices:
     displayName: 小宋
     name: 小宋
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 沉稳]
     ttsConfig:
@@ -125,7 +125,7 @@ voices:
     displayName: 小唐
     name: 小唐
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 活力]
     ttsConfig:
@@ -136,7 +136,7 @@ voices:
     displayName: 小王
     name: 小王
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 标准]
     ttsConfig:
@@ -147,7 +147,7 @@ voices:
     displayName: 小魏
     name: 小魏
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 温和]
     ttsConfig:
@@ -158,7 +158,7 @@ voices:
     displayName: 小文
     name: 小文
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础男声音色
     tags: [基础, 男声, 文雅]
     ttsConfig:
@@ -169,7 +169,7 @@ voices:
     displayName: 小欣
     name: 小欣
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 腾讯云基础女声音色
     tags: [基础, 女声, 欢快]
     ttsConfig:

@@ -252,6 +252,50 @@ const TtsQueryService = {
       data: filters,
       timestamp: new Date().toISOString()
     };
+  },
+
+  /**
+   * 获取前端展示专用数据（精简版）
+   * 只返回7个展示字段：id, displayName, gender, languages, tags, description, preview
+   */
+  getFrontendVoices() {
+    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+
+    // 只返回前端需要的7个展示字段
+    const voices = items.map(item => ({
+      id: item.id,
+      displayName: item.displayName || item.name || item.id,
+      gender: item.gender || 'unknown',
+      languages: item.languages || [],
+      tags: item.tags || [],
+      description: item.description || '',
+      preview: item.preview || ''
+    }));
+
+    // 构建筛选选项
+    const genders = new Set();
+    const languages = new Set();
+    const tags = new Set();
+
+    voices.forEach(v => {
+      if (v.gender) genders.add(v.gender);
+      v.languages.forEach(lang => languages.add(lang));
+      v.tags.forEach(tag => tags.add(tag));
+    });
+
+    return {
+      success: true,
+      data: {
+        voices,
+        filters: {
+          genders: Array.from(genders).sort(),
+          languages: Array.from(languages).sort(),
+          tags: Array.from(tags).sort()
+        },
+        total: voices.length
+      },
+      timestamp: new Date().toISOString()
+    };
   }
 };
 

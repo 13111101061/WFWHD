@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 342,
+  "totalCalls": 371,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -79,16 +79,16 @@
       "lastCalled": "2025-09-22T09:32:02.076Z"
     },
     "GET /": {
-      "totalCalls": 18,
-      "lastCalled": "2026-03-08T12:58:43.803Z"
+      "totalCalls": 20,
+      "lastCalled": "2026-03-17T00:39:59.219Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 19,
-      "lastCalled": "2026-03-08T10:51:58.957Z"
+      "totalCalls": 25,
+      "lastCalled": "2026-03-23T11:22:33.145Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
-      "totalCalls": 20,
-      "lastCalled": "2026-03-08T10:47:07.729Z"
+      "totalCalls": 30,
+      "lastCalled": "2026-03-17T01:18:17.767Z"
     },
     "GET /api/tts/voices/models": {
       "totalCalls": 10,
@@ -147,8 +147,8 @@
       "lastCalled": "2025-10-31T14:58:30.683Z"
     },
     "GET /api/public/info": {
-      "totalCalls": 5,
-      "lastCalled": "2026-03-08T16:16:45.035Z"
+      "totalCalls": 6,
+      "lastCalled": "2026-03-16T18:02:19.077Z"
     },
     "POST /api/tts": {
       "totalCalls": 8,
@@ -167,12 +167,12 @@
       "lastCalled": "2025-11-01T09:52:16.891Z"
     },
     "GET /admin": {
-      "totalCalls": 1,
-      "lastCalled": "2026-01-09T07:10:37.557Z"
+      "totalCalls": 2,
+      "lastCalled": "2026-03-17T00:40:47.453Z"
     },
     "GET /login": {
-      "totalCalls": 1,
-      "lastCalled": "2026-01-09T07:10:40.895Z"
+      "totalCalls": 2,
+      "lastCalled": "2026-03-17T00:40:51.777Z"
     },
     "GET /api/tts/voices/categories": {
       "totalCalls": 20,
@@ -209,7 +209,23 @@
     "GET /api/tts/synthesize": {
       "totalCalls": 1,
       "lastCalled": "2026-03-08T10:47:07.552Z"
+    },
+    "GET /api/voices": {
+      "totalCalls": 2,
+      "lastCalled": "2026-03-16T18:02:07.393Z"
+    },
+    "GET /api": {
+      "totalCalls": 2,
+      "lastCalled": "2026-03-17T01:18:17.574Z"
+    },
+    "HEAD /api/tts/voices": {
+      "totalCalls": 3,
+      "lastCalled": "2026-03-17T11:49:15.927Z"
+    },
+    "GET /api/tts/frontend": {
+      "totalCalls": 1,
+      "lastCalled": "2026-03-23T11:02:02.355Z"
     }
   },
-  "lastUpdated": "2026-03-09T04:48:29.486Z"
+  "lastUpdated": "2026-03-23T11:22:33.145Z"
 }

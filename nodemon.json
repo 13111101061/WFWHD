@@ -1,0 +1,12 @@
+{
+  "watch": ["apps", "src", "credentials"],
+  "ignore": [
+    "src/storage/data/*",
+    "src/storage/uploads/*",
+    "node_modules",
+    "*.test.js",
+    "tests/*"
+  ],
+  "ext": "js,json,yaml",
+  "delay": 1000
+}

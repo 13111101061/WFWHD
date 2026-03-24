@@ -15,7 +15,7 @@ voices:
     displayName: 通用女声
     name: BV001_streaming
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 火山引擎通用女声音色
     tags: [基础, 女声, 标准]
     ttsConfig:
@@ -26,7 +26,7 @@ voices:
     displayName: 通用男声
     name: BV002_streaming
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 火山引擎通用男声音色
     tags: [基础, 男声, 标准]
     ttsConfig:
@@ -37,7 +37,7 @@ voices:
     displayName: 甜美女声
     name: BV032_streaming
     gender: female
-    languages: [zh-CN]
+    languages: [中文]
     description: 甜美风格的女声音色
     tags: [甜美, 女声, 温柔]
     ttsConfig:
@@ -48,7 +48,7 @@ voices:
     displayName: 沉稳男声
     name: BV033_streaming
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 沉稳风格的男声音色
     tags: [沉稳, 男声, 成熟]
     ttsConfig:
@@ -59,7 +59,7 @@ voices:
     displayName: 活力男声
     name: BV034_streaming
     gender: male
-    languages: [zh-CN]
+    languages: [中文]
     description: 充满活力的男声音色
     tags: [活力, 男声, 阳光]
     ttsConfig:

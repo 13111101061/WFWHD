@@ -125,6 +125,34 @@
       "endpoints": {
         "POST /api/tts/synthesize": 4
       }
+    },
+    "2026-03-16": {
+      "totalCalls": 8,
+      "endpoints": {
+        "GET /api/voices": 2,
+        "GET /": 1,
+        "GET /api/public/info": 1,
+        "GET /api/tts/voices": 4
+      }
+    },
+    "2026-03-17": {
+      "totalCalls": 19,
+      "endpoints": {
+        "GET /": 1,
+        "GET /hybridaction/zybTrackerStatisticsAction": 10,
+        "GET /admin": 1,
+        "GET /login": 1,
+        "GET /api": 2,
+        "GET /api/tts/voices": 1,
+        "HEAD /api/tts/voices": 3
+      }
+    },
+    "2026-03-23": {
+      "totalCalls": 2,
+      "endpoints": {
+        "GET /api/tts/frontend": 1,
+        "GET /api/tts/voices": 1
+      }
     }
   }
 }
