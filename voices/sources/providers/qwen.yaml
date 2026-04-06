@@ -194,7 +194,7 @@ voices:
       sampleRate: 24000
 
   - id: jennifer
-    displayName: 詹妮弗
+    displayName: Jennifer
     name: Jennifer
     gender: female
     languages: [英语]
@@ -207,7 +207,7 @@ voices:
       sampleRate: 24000
 
   - id: ryan
-    displayName: 斯威特
+    displayName: Ryan
     name: Ryan
     gender: male
     languages: [英语]
@@ -220,7 +220,7 @@ voices:
       sampleRate: 24000
 
   - id: katerina
-    displayName: 卡捷琳娜
+    displayName: Katerina
     name: Katerina
     gender: female
     languages: [英语]
@@ -233,7 +233,7 @@ voices:
       sampleRate: 24000
 
   - id: aiden
-    displayName: 艾登
+    displayName: Aiden
     name: Aiden
     gender: male
     languages: [英语]
@@ -428,7 +428,7 @@ voices:
       sampleRate: 24000
 
   - id: bodega
-    displayName: 博德加
+    displayName: Bodega
     name: Bodega
     gender: male
     languages: [西班牙语]
@@ -441,7 +441,7 @@ voices:
       sampleRate: 24000
 
   - id: sonrisa
-    displayName: 索尼莎
+    displayName: Sonrisa
     name: Sonrisa
     gender: female
     languages: [西班牙语]
@@ -454,7 +454,7 @@ voices:
       sampleRate: 24000
 
   - id: alek
-    displayName: 阿塞克
+    displayName: Alek
     name: Alek
     gender: male
     languages: [俄语]
@@ -467,7 +467,7 @@ voices:
       sampleRate: 24000
 
   - id: dolce
-    displayName: 多尔切
+    displayName: Dolce
     name: Dolce
     gender: male
     languages: [意大利语]
@@ -480,7 +480,7 @@ voices:
       sampleRate: 24000
 
   - id: sohee
-    displayName: 素熙
+    displayName: Sohee
     name: Sohee
     gender: female
     languages: [韩语]
@@ -493,7 +493,7 @@ voices:
       sampleRate: 24000
 
   - id: ono-anna
-    displayName: 小野杏
+    displayName: Ono Anna
     name: Ono Anna
     gender: female
     languages: [日语]
@@ -506,7 +506,7 @@ voices:
       sampleRate: 24000
 
   - id: lenn
-    displayName: 莱恩
+    displayName: Lenn
     name: Lenn
     gender: male
     languages: [德语]
@@ -519,7 +519,7 @@ voices:
       sampleRate: 24000
 
   - id: emilien
-    displayName: 埃米尔安
+    displayName: Emilien
     name: Emilien
     gender: male
     languages: [法语]
@@ -532,7 +532,7 @@ voices:
       sampleRate: 24000
 
   - id: andre
-    displayName: 安德雷
+    displayName: Andre
     name: Andre
     gender: male
     languages: [西班牙语]
@@ -545,7 +545,7 @@ voices:
       sampleRate: 24000
 
   - id: radio-gol
-    displayName: 拉迪奥·戈尔
+    displayName: Radio Gol
     name: Radio Gol
     gender: male
     languages: [西班牙语]

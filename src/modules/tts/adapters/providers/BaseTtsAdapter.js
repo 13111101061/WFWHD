@@ -1,24 +1,8 @@
-/**
- * BaseTtsAdapter - TTS服务商适配器基类
- *
- * 所有TTS服务商适配器都应继承此类
- * 实现 ITtsProvider 端口接口
- *
- * 支持凭证池化模式：
- * - 自动选择最佳账号
- * - 报告成功/失败用于健康追踪
- */
-
 const { audioStorageManager } = require('../../../../shared/utils/audioStorage');
 const { voiceRegistry } = require('../../core/VoiceRegistry');
 const credentials = require('../../../credentials');
 
 class BaseTtsAdapter {
-  /**
-   * @param {Object} config
-   * @param {string} config.provider - 提供商标识
-   * @param {string} config.serviceType - 服务类型
-   */
   constructor(config = {}) {
     this.config = {
       timeout: 30000,
@@ -30,107 +14,78 @@ class BaseTtsAdapter {
     this.audioStorage = audioStorageManager;
     this.provider = config.provider || 'unknown';
     this.serviceType = config.serviceType || 'default';
-
-    // 当前使用的账号ID（用于报告健康状态）
     this._currentAccountId = null;
   }
 
-  /**
-   * 获取服务商凭证（支持池化选择）
-   * @param {Object} context - 选择上下文
-   * @returns {Object} - 凭证对象
-   */
   _getCredentials(context = {}) {
-    // 优先使用池化选择
     if (credentials.selectCredentials) {
       const result = credentials.selectCredentials(
         this.provider,
         this.serviceType,
         context
       );
-
       if (result) {
         this._currentAccountId = result.accountId;
         return result.credentials;
       }
     }
 
-    // 回退到旧接口
     this._currentAccountId = null;
     return credentials.getCredentials(this.provider);
   }
 
-  /**
-   * 获取服务配置
-   */
   _getServiceConfig() {
     return credentials.getServiceConfig(this.provider, this.serviceType);
   }
 
-  /**
-   * 检查凭证是否已配置
-   */
   _hasCredentials() {
     return credentials.isConfigured(this.provider);
   }
 
-  /**
-   * 检查服务是否可用
-   */
   _isServiceAvailable() {
     return credentials.isServiceAvailable(this.provider, this.serviceType);
   }
 
-  /**
-   * 报告凭证使用成功
-   * 应在成功完成 API 调用后调用
-   */
   _reportSuccess() {
     if (this._currentAccountId && credentials.reportSuccess) {
       credentials.reportSuccess(this.provider, this._currentAccountId, this.serviceType);
     }
   }
 
-  /**
-   * 报告凭证使用失败
-   * 应在 API 调用失败后调用
-   * @param {Error} error - 错误对象
-   */
   _reportFailure(error) {
     if (this._currentAccountId && credentials.reportFailure) {
       credentials.reportFailure(this.provider, this._currentAccountId, this.serviceType, error);
     }
   }
 
-  /**
-   * 执行TTS合成（子类必须实现）
-   * 返回 { audio: Buffer, format: string }
-   */
   async synthesize(text, options = {}) {
     throw new Error(`synthesize() must be implemented by ${this.constructor.name}`);
   }
 
-  /**
-   * 合成并保存（返回URL）
-   * @param {string} text
-   * @param {Object} options
-   * @returns {Promise<{url: string, format: string, size: number}>}
-   */
+  _extractResultMetadata(result = {}) {
+    const excluded = new Set(['audio', 'audioUrl', 'format', 'provider', 'serviceType']);
+    return Object.entries(result).reduce((acc, [key, value]) => {
+      if (!excluded.has(key) && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+  }
+
   async synthesizeAndSave(text, options = {}) {
     const result = await this.synthesize(text, options);
+    const metadata = this._extractResultMetadata(result);
 
-    // URL模式：API已返回音频URL，无需保存
     if (result.audioUrl) {
       return {
         url: result.audioUrl,
         format: result.format,
-        size: 0, // 云端文件，无法获取大小
-        audioId: result.audioId,
-        isRemote: true // 标记为远程URL
+        size: 0,
+        isRemote: true,
+        ...metadata
       };
     }
 
-    // 二进制模式：保存到本地文件
     const saved = await this.audioStorage.saveAudioFile(result.audio, {
       extension: result.format || 'mp3',
       metadata: {
@@ -145,33 +100,21 @@ class BaseTtsAdapter {
       format: result.format,
       size: saved.size,
       filePath: saved.filePath,
-      isRemote: false // 标记为本地URL
+      isRemote: false,
+      ...metadata
     };
   }
 
-  /**
-   * 获取可用音色列表
-   */
   async getAvailableVoices() {
     const voices = voiceRegistry.getByProviderAndService(this.provider, this.serviceType);
-
-    if (voices.length === 0) {
-      return this.getFallbackVoices();
-    }
-
+    if (voices.length === 0) return this.getFallbackVoices();
     return voices.map(v => this._mapVoice(v));
   }
 
-  /**
-   * 备用音色列表（子类可覆盖）
-   */
   getFallbackVoices() {
     return [];
   }
 
-  /**
-   * 获取服务状态
-   */
   getStatus() {
     return {
       provider: this.provider,
@@ -181,9 +124,6 @@ class BaseTtsAdapter {
     };
   }
 
-  /**
-   * 验证文本
-   */
   validateText(text) {
     if (!text || typeof text !== 'string') {
       const error = new Error('Text must be a non-empty string');
@@ -202,9 +142,6 @@ class BaseTtsAdapter {
     }
   }
 
-  /**
-   * 验证选项（子类可覆盖）
-   */
   validateOptions(options) {
     return {
       voice: options.voice || 'default',
@@ -217,9 +154,6 @@ class BaseTtsAdapter {
     };
   }
 
-  /**
-   * 映射音色格式
-   */
   _mapVoice(v) {
     return {
       id: v.sourceId || v.id,
@@ -234,9 +168,6 @@ class BaseTtsAdapter {
     };
   }
 
-  /**
-   * 创建错误
-   */
   _error(code, message) {
     const error = new Error(message);
     error.code = code;
@@ -245,20 +176,13 @@ class BaseTtsAdapter {
     return error;
   }
 
-  /**
-   * 延迟
-   */
   _delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  /**
-   * 带重试的执行
-   */
   async _retry(fn, maxRetries = this.config.maxRetries) {
     let lastError;
-
-    for (let i = 0; i < maxRetries; i++) {
+    for (let i = 0; i < maxRetries; i += 1) {
       try {
         return await fn();
       } catch (error) {
@@ -268,7 +192,6 @@ class BaseTtsAdapter {
         }
       }
     }
-
     throw lastError;
   }
 }

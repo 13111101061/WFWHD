@@ -1,22 +1,3 @@
-/**
- * SynthesisResultDto - 合成结果输出 DTO
- *
- * 用于 /api/tts/synthesize 接口返回
- * 统一合成结果格式
- */
-
-/**
- * 构建合成成功响应
- * @param {Object} params
- * @param {string} params.audioUrl - 音频 URL
- * @param {string} params.format - 音频格式
- * @param {number} [params.size] - 文件大小
- * @param {boolean} [params.isRemote] - 是否远程 URL
- * @param {string} params.provider - 服务商
- * @param {string} params.voice - 使用的音色
- * @param {number} [params.duration] - 音频时长（秒）
- * @returns {Object}
- */
 function buildSynthesisSuccessResponse(params) {
   const {
     audioUrl,
@@ -25,7 +6,9 @@ function buildSynthesisSuccessResponse(params) {
     isRemote,
     provider,
     voice,
-    duration
+    duration,
+    usage,
+    metadata
   } = params;
 
   const data = {
@@ -36,13 +19,11 @@ function buildSynthesisSuccessResponse(params) {
     isRemote: isRemote !== undefined ? isRemote : false
   };
 
-  // 可选字段
-  if (size !== undefined) {
-    data.size = size;
-  }
-
-  if (duration !== undefined) {
-    data.duration = duration;
+  if (size !== undefined) data.size = size;
+  if (duration !== undefined) data.duration = duration;
+  if (usage !== undefined) data.usage = usage;
+  if (metadata && typeof metadata === 'object' && Object.keys(metadata).length > 0) {
+    data.metadata = metadata;
   }
 
   return {
@@ -52,15 +33,6 @@ function buildSynthesisSuccessResponse(params) {
   };
 }
 
-/**
- * 构建合成失败响应
- * @param {Object} params
- * @param {string} params.error - 错误信息
- * @param {string} [params.code] - 错误码
- * @param {string} [params.provider] - 服务商
- * @param {string} [params.hint] - 提示信息
- * @returns {Object}
- */
 function buildSynthesisErrorResponse(params) {
   const { error, code, provider, hint } = params;
 
@@ -69,31 +41,14 @@ function buildSynthesisErrorResponse(params) {
     error
   };
 
-  if (code) {
-    response.code = code;
-  }
-
-  if (provider) {
-    response.provider = provider;
-  }
-
-  if (hint) {
-    response.hint = hint;
-  }
+  if (code) response.code = code;
+  if (provider) response.provider = provider;
+  if (hint) response.hint = hint;
 
   response.timestamp = new Date().toISOString();
-
   return response;
 }
 
-/**
- * 从 adapter 结果构建响应
- * @param {Object} result - adapter.synthesizeAndSave() 返回的结果
- * @param {Object} context - 上下文信息
- * @param {string} context.provider - 服务商
- * @param {string} context.voice - 音色
- * @returns {Object}
- */
 function buildResponseFromResult(result, context) {
   return buildSynthesisSuccessResponse({
     audioUrl: result.url,
@@ -105,11 +60,6 @@ function buildResponseFromResult(result, context) {
   });
 }
 
-/**
- * 根据错误类型确定 HTTP 状态码
- * @param {Error} error
- * @returns {number}
- */
 function getErrorStatusCode(error) {
   switch (error.code) {
     case 'VALIDATION_ERROR':
@@ -121,6 +71,8 @@ function getErrorStatusCode(error) {
       return 400;
     case 'PROVIDER_ERROR':
       return 502;
+    case 'TIMEOUT_ERROR':
+      return 504;
     default:
       return 500;
   }

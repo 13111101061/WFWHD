@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "version": "2.1",
-    "generatedAt": "2026-03-22T08:33:18.435Z",
-    "totalVoices": 50,
+    "version": "2.2",
+    "generatedAt": "2026-03-29T10:07:25.829Z",
+    "totalVoices": 58,
     "sources": [
       {
         "file": "minimax.yaml",
@@ -12,7 +12,7 @@
       },
       {
         "file": "moss.yaml",
-        "count": 1,
+        "count": 9,
         "provider": "moss",
         "enabled": true
       },
@@ -50,6 +50,86 @@
   },
   "voices": [
     {
+      "id": "moss-tts-beijingnan",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "beijingnan",
+      "displayName": "北京男声",
+      "name": "清朗男生",
+      "gender": "male",
+      "languages": [
+        "中文"
+      ],
+      "description": "普通话标准，带轻微北京口音，发音清晰自然，语气松弛有亲和力。",
+      "tags": [
+        "清晰",
+        "自然",
+        "松弛",
+        "亲和"
+      ],
+      "runtime": {
+        "voiceId": "2020008594694475776",
+        "voice": "2020008594694475776",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2020008594694475776",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-taiwannv",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "taiwannv",
+      "displayName": "台湾女声",
+      "name": "温柔女生",
+      "gender": "female",
+      "languages": [
+        "中文"
+      ],
+      "description": "台湾口音柔和细腻，语气温柔平稳，情绪收敛但有温度。",
+      "tags": [
+        "温柔",
+        "治愈",
+        "柔和",
+        "细腻"
+      ],
+      "runtime": {
+        "voiceId": "2020009311371005952",
+        "voice": "2020009311371005952",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2020009311371005952",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
       "id": "moss-tts-ashui",
       "provider": "moss",
       "service": "tts",
@@ -64,10 +144,263 @@
       "tags": [
         "松弛",
         "耐听",
-        "女声"
+        "治愈",
+        "温暖"
       ],
+      "runtime": {
+        "voiceId": "2001257729754140672",
+        "voice": "2001257729754140672",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
       "ttsConfig": {
         "sourceId": "2001257729754140672",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-zhouzhou",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "zhouzhou",
+      "displayName": "周周",
+      "name": "周周",
+      "gender": "female",
+      "languages": [
+        "中文"
+      ],
+      "description": "薄雾里的风、旧磁带、夜里低声自言自语。",
+      "tags": [
+        "独白",
+        "讲述",
+        "低沉",
+        "氛围"
+      ],
+      "runtime": {
+        "voiceId": "2001286865130360832",
+        "voice": "2001286865130360832",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2001286865130360832",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-ziqi",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "ziqi",
+      "displayName": "子琪",
+      "name": "子琪",
+      "gender": "female",
+      "languages": [
+        "中文"
+      ],
+      "description": "雨后未干的水泥地，空气里有点凉，音量不大，却带着倔强的边角。",
+      "tags": [
+        "轻快",
+        "元气",
+        "倔强",
+        "清新"
+      ],
+      "runtime": {
+        "voiceId": "2001898421836845056",
+        "voice": "2001898421836845056",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2001898421836845056",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-xiaoman",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "xiaoman",
+      "displayName": "小满",
+      "name": "小满",
+      "gender": "female",
+      "languages": [
+        "中文"
+      ],
+      "description": "音色清透偏高，带自然甜感，节奏轻快但不浮，语气坚定、有朝气。",
+      "tags": [
+        "轻快",
+        "明亮",
+        "坚定",
+        "朝气"
+      ],
+      "runtime": {
+        "voiceId": "2001910895478837248",
+        "voice": "2001910895478837248",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2001910895478837248",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-chengshu",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "chengshu",
+      "displayName": "程述",
+      "name": "程述",
+      "gender": "male",
+      "languages": [
+        "中文"
+      ],
+      "description": "中低音偏中，发音清晰标准，语速自然不过快，语气沉稳但不老成，带轻微电台感与亲和力。",
+      "tags": [
+        "播客",
+        "理性",
+        "沉稳",
+        "亲和"
+      ],
+      "runtime": {
+        "voiceId": "2001931510222950400",
+        "voice": "2001931510222950400",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2001931510222950400",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-aning",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "aning",
+      "displayName": "阿宁",
+      "name": "阿宁",
+      "gender": "female",
+      "languages": [
+        "中文"
+      ],
+      "description": "声音柔和而稳定，不催促、不打断，给人被照顾的安心感。",
+      "tags": [
+        "温柔",
+        "稳定",
+        "安心",
+        "柔和"
+      ],
+      "runtime": {
+        "voiceId": "2002941772480647168",
+        "voice": "2002941772480647168",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2002941772480647168",
+        "model": "moss-tts",
+        "samplingParams": {
+          "temperature": 1.7,
+          "top_p": 0.8,
+          "top_k": 25
+        }
+      }
+    },
+    {
+      "id": "moss-tts-liangzi",
+      "provider": "moss",
+      "service": "tts",
+      "sourceId": "liangzi",
+      "displayName": "梁子",
+      "name": "梁子",
+      "gender": "male",
+      "languages": [
+        "中文"
+      ],
+      "description": "咬字清晰，但又语气放松，不会给人太多的听感压力。",
+      "tags": [
+        "新闻",
+        "专业",
+        "清晰",
+        "放松"
+      ],
+      "runtime": {
+        "voiceId": "2002991117984862208",
+        "voice": "2002991117984862208",
+        "model": "moss-tts",
+        "providerOptions": {
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
+      },
+      "ttsConfig": {
+        "sourceId": "2002991117984862208",
         "model": "moss-tts",
         "samplingParams": {
           "temperature": 1.7,
@@ -97,6 +430,13 @@
         "温暖"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/cherry.wav",
+      "runtime": {
+        "voiceId": "Cherry",
+        "voice": "Cherry",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Cherry",
         "model": "qwen3-tts-flash",
@@ -124,6 +464,13 @@
         "可靠"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/ethan.wav",
+      "runtime": {
+        "voiceId": "Ethan",
+        "voice": "Ethan",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Ethan",
         "model": "qwen3-tts-flash",
@@ -151,6 +498,13 @@
         "心动"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/chelsie.wav",
+      "runtime": {
+        "voiceId": "Chelsie",
+        "voice": "Chelsie",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Chelsie",
         "model": "qwen3-tts-flash",
@@ -178,6 +532,13 @@
         "温柔"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/serena.wav",
+      "runtime": {
+        "voiceId": "Serena",
+        "voice": "Serena",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Serena",
         "model": "qwen3-tts-flash",
@@ -205,6 +566,13 @@
         "干脆"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav",
+      "runtime": {
+        "voiceId": "Dylan",
+        "voice": "Dylan",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Dylan",
         "model": "qwen3-tts-flash",
@@ -230,6 +598,13 @@
         "爽朗"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jada.wav",
+      "runtime": {
+        "voiceId": "Jada",
+        "voice": "Jada",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Jada",
         "model": "qwen3-tts-flash",
@@ -255,6 +630,13 @@
         "娇媚"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sunny.wav",
+      "runtime": {
+        "voiceId": "Sunny",
+        "voice": "Sunny",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Sunny",
         "model": "qwen3-tts-flash",
@@ -282,6 +664,13 @@
         "元气少女"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Momo.wav",
+      "runtime": {
+        "voiceId": "Momo",
+        "voice": "Momo",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Momo",
         "model": "qwen3-tts-flash",
@@ -309,6 +698,13 @@
         "反差萌"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vivian.wav",
+      "runtime": {
+        "voiceId": "Vivian",
+        "voice": "Vivian",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Vivian",
         "model": "qwen3-tts-flash",
@@ -336,6 +732,13 @@
         "少年感"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Moon.wav",
+      "runtime": {
+        "voiceId": "Moon",
+        "voice": "Moon",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Moon",
         "model": "qwen3-tts-flash",
@@ -363,6 +766,13 @@
         "成熟"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Maia.wav",
+      "runtime": {
+        "voiceId": "Maia",
+        "voice": "Maia",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Maia",
         "model": "qwen3-tts-flash",
@@ -390,6 +800,13 @@
         "深度"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Kai.wav",
+      "runtime": {
+        "voiceId": "Kai",
+        "voice": "Kai",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Kai",
         "model": "qwen3-tts-flash",
@@ -417,6 +834,13 @@
         "个性"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nofish.wav",
+      "runtime": {
+        "voiceId": "Nofish",
+        "voice": "Nofish",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Nofish",
         "model": "qwen3-tts-flash",
@@ -444,6 +868,13 @@
         "醉意"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav",
+      "runtime": {
+        "voiceId": "Bella",
+        "voice": "Bella",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Bella",
         "model": "qwen3-tts-flash",
@@ -455,7 +886,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "jennifer",
-      "displayName": "詹妮弗",
+      "displayName": "Jennifer",
       "name": "Jennifer",
       "gender": "female",
       "languages": [
@@ -471,6 +902,13 @@
         "质感"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav",
+      "runtime": {
+        "voiceId": "Jennifer",
+        "voice": "Jennifer",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Jennifer",
         "model": "qwen3-tts-flash",
@@ -482,7 +920,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "ryan",
-      "displayName": "斯威特",
+      "displayName": "Ryan",
       "name": "Ryan",
       "gender": "male",
       "languages": [
@@ -498,6 +936,13 @@
         "演技派"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ryan.wav",
+      "runtime": {
+        "voiceId": "Ryan",
+        "voice": "Ryan",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Ryan",
         "model": "qwen3-tts-flash",
@@ -509,7 +954,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "katerina",
-      "displayName": "卡捷琳娜",
+      "displayName": "Katerina",
       "name": "Katerina",
       "gender": "female",
       "languages": [
@@ -525,6 +970,13 @@
         "气场"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Katerina.wav",
+      "runtime": {
+        "voiceId": "Katerina",
+        "voice": "Katerina",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Katerina",
         "model": "qwen3-tts-flash",
@@ -536,7 +988,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "aiden",
-      "displayName": "艾登",
+      "displayName": "Aiden",
       "name": "Aiden",
       "gender": "male",
       "languages": [
@@ -552,6 +1004,13 @@
         "邻家"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Aiden.wav",
+      "runtime": {
+        "voiceId": "Aiden",
+        "voice": "Aiden",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Aiden",
         "model": "qwen3-tts-flash",
@@ -579,6 +1038,13 @@
         "哲学"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eldric+Sage.wav",
+      "runtime": {
+        "voiceId": "Eldric Sage",
+        "voice": "Eldric Sage",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Eldric Sage",
         "model": "qwen3-tts-flash",
@@ -606,6 +1072,13 @@
         "治愈"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mia.wav",
+      "runtime": {
+        "voiceId": "Mia",
+        "voice": "Mia",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Mia",
         "model": "qwen3-tts-flash",
@@ -633,6 +1106,13 @@
         "早慧"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mochi.wav",
+      "runtime": {
+        "voiceId": "Mochi",
+        "voice": "Mochi",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Mochi",
         "model": "qwen3-tts-flash",
@@ -660,6 +1140,13 @@
         "热血"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bellona.wav",
+      "runtime": {
+        "voiceId": "Bellona",
+        "voice": "Bellona",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Bellona",
         "model": "qwen3-tts-flash",
@@ -687,6 +1174,13 @@
         "故事"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vincent.wav",
+      "runtime": {
+        "voiceId": "Vincent",
+        "voice": "Vincent",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Vincent",
         "model": "qwen3-tts-flash",
@@ -714,6 +1208,13 @@
         "儿童"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bunny.wav",
+      "runtime": {
+        "voiceId": "Bunny",
+        "voice": "Bunny",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Bunny",
         "model": "qwen3-tts-flash",
@@ -741,6 +1242,13 @@
         "沉稳"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Neil.wav",
+      "runtime": {
+        "voiceId": "Neil",
+        "voice": "Neil",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Neil",
         "model": "qwen3-tts-flash",
@@ -768,6 +1276,13 @@
         "治愈"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav",
+      "runtime": {
+        "voiceId": "Elias",
+        "voice": "Elias",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Elias",
         "model": "qwen3-tts-flash",
@@ -795,6 +1310,13 @@
         "长者"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Arthur.wav",
+      "runtime": {
+        "voiceId": "Arthur",
+        "voice": "Arthur",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Arthur",
         "model": "qwen3-tts-flash",
@@ -822,6 +1344,13 @@
         "萝莉音"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nini.wav",
+      "runtime": {
+        "voiceId": "Nini",
+        "voice": "Nini",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Nini",
         "model": "qwen3-tts-flash",
@@ -849,6 +1378,13 @@
         "气声"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ebona.wav",
+      "runtime": {
+        "voiceId": "Ebona",
+        "voice": "Ebona",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Ebona",
         "model": "qwen3-tts-flash",
@@ -876,6 +1412,13 @@
         "晚安"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Seren.wav",
+      "runtime": {
+        "voiceId": "Seren",
+        "voice": "Seren",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Seren",
         "model": "qwen3-tts-flash",
@@ -903,6 +1446,13 @@
         "个性"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Pip.wav",
+      "runtime": {
+        "voiceId": "Pip",
+        "voice": "Pip",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Pip",
         "model": "qwen3-tts-flash",
@@ -930,6 +1480,13 @@
         "战斗少女"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Stella.wav",
+      "runtime": {
+        "voiceId": "Stella",
+        "voice": "Stella",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Stella",
         "model": "qwen3-tts-flash",
@@ -941,7 +1498,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "bodega",
-      "displayName": "博德加",
+      "displayName": "Bodega",
       "name": "Bodega",
       "gender": "male",
       "languages": [
@@ -956,6 +1513,13 @@
         "活力"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bodega.wav",
+      "runtime": {
+        "voiceId": "Bodega",
+        "voice": "Bodega",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Bodega",
         "model": "qwen3-tts-flash",
@@ -967,7 +1531,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "sonrisa",
-      "displayName": "索尼莎",
+      "displayName": "Sonrisa",
       "name": "Sonrisa",
       "gender": "female",
       "languages": [
@@ -982,6 +1546,13 @@
         "活力"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sonrisa.wav",
+      "runtime": {
+        "voiceId": "Sonrisa",
+        "voice": "Sonrisa",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Sonrisa",
         "model": "qwen3-tts-flash",
@@ -993,7 +1564,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "alek",
-      "displayName": "阿塞克",
+      "displayName": "Alek",
       "name": "Alek",
       "gender": "male",
       "languages": [
@@ -1008,6 +1579,13 @@
         "低沉"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Alek.wav",
+      "runtime": {
+        "voiceId": "Alek",
+        "voice": "Alek",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Alek",
         "model": "qwen3-tts-flash",
@@ -1019,7 +1597,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "dolce",
-      "displayName": "多尔切",
+      "displayName": "Dolce",
       "name": "Dolce",
       "gender": "male",
       "languages": [
@@ -1034,6 +1612,13 @@
         "随性"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dolce.wav",
+      "runtime": {
+        "voiceId": "Dolce",
+        "voice": "Dolce",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Dolce",
         "model": "qwen3-tts-flash",
@@ -1045,7 +1630,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "sohee",
-      "displayName": "素熙",
+      "displayName": "Sohee",
       "name": "Sohee",
       "gender": "female",
       "languages": [
@@ -1061,6 +1646,13 @@
         "情绪丰富"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sohee.wav",
+      "runtime": {
+        "voiceId": "Sohee",
+        "voice": "Sohee",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Sohee",
         "model": "qwen3-tts-flash",
@@ -1072,7 +1664,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "ono-anna",
-      "displayName": "小野杏",
+      "displayName": "Ono Anna",
       "name": "Ono Anna",
       "gender": "female",
       "languages": [
@@ -1088,6 +1680,13 @@
         "青梅竹马"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ono+Anna.wav",
+      "runtime": {
+        "voiceId": "Ono Anna",
+        "voice": "Ono Anna",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Ono Anna",
         "model": "qwen3-tts-flash",
@@ -1099,7 +1698,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "lenn",
-      "displayName": "莱恩",
+      "displayName": "Lenn",
       "name": "Lenn",
       "gender": "male",
       "languages": [
@@ -1115,6 +1714,13 @@
         "个性"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Lenn.wav",
+      "runtime": {
+        "voiceId": "Lenn",
+        "voice": "Lenn",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Lenn",
         "model": "qwen3-tts-flash",
@@ -1126,7 +1732,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "emilien",
-      "displayName": "埃米尔安",
+      "displayName": "Emilien",
       "name": "Emilien",
       "gender": "male",
       "languages": [
@@ -1142,6 +1748,13 @@
         "优雅"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Emilien.wav",
+      "runtime": {
+        "voiceId": "Emilien",
+        "voice": "Emilien",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Emilien",
         "model": "qwen3-tts-flash",
@@ -1153,7 +1766,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "andre",
-      "displayName": "安德雷",
+      "displayName": "Andre",
       "name": "Andre",
       "gender": "male",
       "languages": [
@@ -1169,6 +1782,13 @@
         "低沉"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav",
+      "runtime": {
+        "voiceId": "Andre",
+        "voice": "Andre",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Andre",
         "model": "qwen3-tts-flash",
@@ -1180,7 +1800,7 @@
       "provider": "aliyun",
       "service": "qwen_http",
       "sourceId": "radio-gol",
-      "displayName": "拉迪奥·戈尔",
+      "displayName": "Radio Gol",
       "name": "Radio Gol",
       "gender": "male",
       "languages": [
@@ -1196,6 +1816,13 @@
         "活力"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Radio+Gol.wav",
+      "runtime": {
+        "voiceId": "Radio Gol",
+        "voice": "Radio Gol",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Radio Gol",
         "model": "qwen3-tts-flash",
@@ -1221,6 +1848,13 @@
         "温柔"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Li.wav",
+      "runtime": {
+        "voiceId": "Li",
+        "voice": "Li",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Li",
         "model": "qwen3-tts-flash",
@@ -1246,6 +1880,13 @@
         "憨厚"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Marcus.wav",
+      "runtime": {
+        "voiceId": "Marcus",
+        "voice": "Marcus",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Marcus",
         "model": "qwen3-tts-flash",
@@ -1271,6 +1912,13 @@
         "活泼"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Roy.wav",
+      "runtime": {
+        "voiceId": "Roy",
+        "voice": "Roy",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Roy",
         "model": "qwen3-tts-flash",
@@ -1296,6 +1944,13 @@
         "诙谐"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Peter.wav",
+      "runtime": {
+        "voiceId": "Peter",
+        "voice": "Peter",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Peter",
         "model": "qwen3-tts-flash",
@@ -1321,6 +1976,13 @@
         "风趣"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eric.wav",
+      "runtime": {
+        "voiceId": "Eric",
+        "voice": "Eric",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Eric",
         "model": "qwen3-tts-flash",
@@ -1346,6 +2008,13 @@
         "陪聊"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Rocky.wav",
+      "runtime": {
+        "voiceId": "Rocky",
+        "voice": "Rocky",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Rocky",
         "model": "qwen3-tts-flash",
@@ -1371,6 +2040,13 @@
         "少女"
       ],
       "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/KiKi.wav",
+      "runtime": {
+        "voiceId": "Kiki",
+        "voice": "Kiki",
+        "model": "qwen3-tts-flash",
+        "sampleRate": 24000,
+        "providerOptions": {}
+      },
       "ttsConfig": {
         "voiceName": "Kiki",
         "model": "qwen3-tts-flash",

@@ -1,5 +1,5 @@
 /**
- * 生成懒加载图片画廊 - 优化版
+ * 生成瀑布流画廊 - 真正的往下追加
  */
 
 const {
@@ -10,8 +10,8 @@ const {
 const fs = require('fs');
 
 const config = {
-  apiEndpoint: 'http://zj.9p.pw',  // S3 API 端点
-  imageDomains: ['http://zj.9p.pw', 'http://tp.9p.pw'],  // 图片访问域名（轮询）
+  apiEndpoint: 'http://zj.9p.pw',
+  imageDomains: ['http://zj.9p.pw', 'http://zj.wwww.love'],
   accessKey: 'lplj2ZZVOPFArOOSdBot',
   secretKey: 'u3O6pLuO1vZ6TQDRzs6RzCZMRiyzMbZlbcodPtpK',
   region: 'auto'
@@ -35,7 +35,7 @@ async function generateGallery() {
   console.log('获取文件列表...');
 
   const listResult = await s3Client.send(
-    new ListObjectsV2Command({ Bucket: bucketName, Prefix: prefix, MaxKeys: 100 })
+    new ListObjectsV2Command({ Bucket: bucketName, Prefix: prefix, MaxKeys: 500 })
   );
 
   const files = (listResult.Contents || [])
@@ -59,84 +59,130 @@ async function generateGallery() {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #111;
+      background: #0a0a0a;
       color: #eee;
     }
     .header {
       position: sticky;
       top: 0;
-      background: rgba(17,17,17,0.95);
+      background: rgba(10,10,10,0.95);
       backdrop-filter: blur(10px);
-      padding: 15px 20px;
-      border-bottom: 1px solid #333;
+      padding: 12px 20px;
+      border-bottom: 1px solid #222;
       z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .header h1 { font-size: 18px; }
-    .stats { font-size: 13px; color: #888; }
-    .stats span { margin-left: 15px; }
-    .stats strong { color: #fff; }
+    .header h1 { font-size: 16px; font-weight: 500; }
+    .stats { font-size: 12px; color: #666; }
+    .stats span { margin-left: 12px; }
+    .stats strong { color: #aaa; }
+
     .gallery {
-      column-count: 6;
-      column-gap: 10px;
-      padding: 10px;
-    }
-    @media (max-width: 1400px) { .gallery { column-count: 5; } }
-    @media (max-width: 1000px) { .gallery { column-count: 4; } }
-    @media (max-width: 700px) { .gallery { column-count: 3; } }
-    @media (max-width: 500px) { .gallery { column-count: 2; } }
-    .item {
-      break-inside: avoid;
-      margin-bottom: 10px;
       position: relative;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #1a1a1a;
+      padding: 8px;
     }
-    .item .img-wrap {
-      min-height: 100px;
+
+    .column {
+      position: absolute;
+      top: 8px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #1e1e1e;
+      flex-direction: column;
+      gap: 8px;
     }
+
+    .item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #151515;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: itemIn 0.4s ease forwards;
+    }
+    @keyframes itemIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .item img {
       width: 100%;
       display: block;
       opacity: 0;
-      transition: opacity 0.3s;
+      filter: blur(8px);
+      transition: opacity 0.5s ease, filter 0.5s ease;
     }
     .item img.loaded {
       opacity: 1;
+      filter: blur(0);
     }
-    .item .loading-text {
-      color: #444;
-      font-size: 12px;
-      padding: 30px;
+
+    .item .placeholder {
+      min-height: 80px;
+      background: linear-gradient(135deg, #1a1a1a, #222, #1a1a1a);
+      background-size: 200% 200%;
+      animation: pulse 1.5s ease infinite;
     }
+    @keyframes pulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     .item .overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 30px 8px 8px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      padding: 20px 6px 6px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
       opacity: 0;
       transition: opacity 0.2s;
     }
     .item:hover .overlay { opacity: 1; }
     .item .name {
-      font-size: 11px;
+      font-size: 9px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .item .meta {
-      font-size: 10px;
-      color: #888;
-      margin-top: 2px;
+      font-size: 8px;
+      color: #666;
+      margin-top: 1px;
+    }
+    .item .domain {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .item:hover .domain { opacity: 1; }
+
+    .loader {
+      text-align: center;
+      padding: 30px;
+      color: #444;
+      font-size: 12px;
+    }
+    .loader .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #222;
+      border-top-color: #555;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -145,22 +191,82 @@ async function generateGallery() {
     <h1>OSS 图片画廊</h1>
     <div class="stats">
       <span>总数: <strong id="total">${images.length}</strong></span>
-      <span>已加载: <strong id="loaded">0</strong></span>
-      <span>失败: <strong id="failed">0</strong></span>
+      <span>显示: <strong id="shown">0</strong></span>
+      <span>加载: <strong id="loaded">0</strong></span>
     </div>
   </div>
   <div class="gallery" id="gallery"></div>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div>滚动加载更多</div>
+  </div>
 
   <script>
-    const images = ${JSON.stringify(images)};
-    let loaded = 0, failed = 0;
+    const allImages = ${JSON.stringify(images)};
+    const BATCH_SIZE = 12;
+    const GAP = 8;
+    let currentIndex = 0;
+    let loadedCount = 0;
     const gallery = document.getElementById('gallery');
+    const loader = document.getElementById('loader');
 
-    const observer = new IntersectionObserver((entries) => {
+    // 列信息
+    let columnCount = 6;
+    let columns = [];
+    let columnHeights = [];
+
+    function initColumns() {
+      const width = window.innerWidth;
+      if (width > 1400) columnCount = 6;
+      else if (width > 1000) columnCount = 5;
+      else if (width > 700) columnCount = 4;
+      else if (width > 500) columnCount = 3;
+      else columnCount = 2;
+
+      const containerWidth = gallery.clientWidth - GAP * 2;
+      const colWidth = (containerWidth - GAP * (columnCount - 1)) / columnCount;
+
+      // 清空重建
+      gallery.innerHTML = '';
+      columns = [];
+      columnHeights = [];
+
+      for (let i = 0; i < columnCount; i++) {
+        const col = document.createElement('div');
+        col.className = 'column';
+        col.style.width = colWidth + 'px';
+        col.style.left = (GAP + i * (colWidth + GAP)) + 'px';
+        gallery.appendChild(col);
+        columns.push(col);
+        columnHeights.push(0);
+      }
+    }
+
+    function findShortestColumn() {
+      let minIdx = 0;
+      let minH = columnHeights[0];
+      for (let i = 1; i < columnHeights.length; i++) {
+        if (columnHeights[i] < minH) {
+          minH = columnHeights[i];
+          minIdx = i;
+        }
+      }
+      return minIdx;
+    }
+
+    const imgObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           loadImage(entry.target);
-          observer.unobserve(entry.target);
+          imgObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '100px' });
+
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && currentIndex < allImages.length) {
+          loadBatch();
         }
       });
     }, { rootMargin: '200px' });
@@ -171,41 +277,82 @@ async function generateGallery() {
 
       img.onload = () => {
         img.classList.add('loaded');
-        item.querySelector('.loading-text').style.display = 'none';
-        loaded++;
+        item.querySelector('.placeholder').style.display = 'none';
+        loadedCount++;
         updateStats();
       };
 
       img.onerror = () => {
-        item.querySelector('.loading-text').textContent = '加载失败';
-        item.querySelector('.loading-text').style.color = '#f44336';
-        failed++;
-        updateStats();
+        item.querySelector('.placeholder').innerHTML = '<div style="padding:20px;color:#444;text-align:center;">失败</div>';
       };
 
       img.src = src;
     }
 
-    function updateStats() {
-      document.getElementById('loaded').textContent = loaded;
-      document.getElementById('failed').textContent = failed;
+    function loadBatch() {
+      const end = Math.min(currentIndex + BATCH_SIZE, allImages.length);
+      const domainNames = ['zj.9p.pw', 'zj.wwww.love'];
+
+      for (let i = currentIndex; i < end; i++) {
+        const imgData = allImages[i];
+        const domainIdx = i % 2;
+        const colIdx = findShortestColumn();
+
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.style.animationDelay = \`\${(i - currentIndex) * 30}ms\`;
+
+        item.innerHTML = \`
+          <div class="placeholder"></div>
+          <img data-src="\${imgData.url}" alt="">
+          <div class="overlay">
+            <div class="name">\${imgData.name}</div>
+            <div class="meta">\${imgData.size}</div>
+          </div>
+          <div class="domain">\${domainNames[domainIdx]}</div>
+        \`;
+
+        columns[colIdx].appendChild(item);
+        imgObserver.observe(item);
+      }
+
+      currentIndex = end;
+      updateStats();
+
+      // 更新列高度
+      setTimeout(() => {
+        columns.forEach((col, i) => {
+          columnHeights[i] = col.offsetHeight;
+        });
+        const maxH = Math.max(...columnHeights);
+        gallery.style.height = (maxH + GAP) + 'px';
+      }, 100);
+
+      if (currentIndex >= allImages.length) {
+        loader.innerHTML = '<div style="color:#555;">已全部加载</div>';
+      }
     }
 
-    images.forEach((img, i) => {
-      const item = document.createElement('div');
-      item.className = 'item';
-      item.innerHTML = \`
-        <div class="img-wrap">
-          <span class="loading-text">...</span>
-          <img data-src="\${img.url}" alt="">
-        </div>
-        <div class="overlay">
-          <div class="name">\${img.name}</div>
-          <div class="meta">\${img.size}</div>
-        </div>
-      \`;
-      gallery.appendChild(item);
-      observer.observe(item);
+    function updateStats() {
+      document.getElementById('shown').textContent = currentIndex;
+      document.getElementById('loaded').textContent = loadedCount;
+    }
+
+    // 初始化
+    initColumns();
+    loadBatch();
+    scrollObserver.observe(loader);
+
+    // 窗口resize时重新布局
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        currentIndex = 0;
+        loadedCount = 0;
+        initColumns();
+        loadBatch();
+      }, 200);
     });
   </script>
 </body>

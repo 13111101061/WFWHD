@@ -15,15 +15,144 @@ meta:
     - 音色克隆
 
 voices:
+  # ========== 北京男声 ==========
+  - id: beijingnan
+    displayName: 北京男声
+    name: 清朗男生
+    gender: male
+    languages: [中文]
+    description: 普通话标准，带轻微北京口音，发音清晰自然，语气松弛有亲和力。
+    tags: [清晰, 自然, 松弛, 亲和]
+    ttsConfig:
+      sourceId: "2020008594694475776"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 台湾女声 ==========
+  - id: taiwannv
+    displayName: 台湾女声
+    name: 温柔女生
+    gender: female
+    languages: [中文]
+    description: 台湾口音柔和细腻，语气温柔平稳，情绪收敛但有温度。
+    tags: [温柔, 治愈, 柔和, 细腻]
+    ttsConfig:
+      sourceId: "2020009311371005952"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 阿树 ==========
   - id: ashui
     displayName: 阿树
     name: 阿树
     gender: female
     languages: [中文]
     description: 冬天清晨的灰白天空，风很冷，但阳光迟早会出来。
-    tags: [松弛, 耐听, 女声]
+    tags: [松弛, 耐听, 治愈, 温暖]
     ttsConfig:
       sourceId: "2001257729754140672"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 周周 ==========
+  - id: zhouzhou
+    displayName: 周周
+    name: 周周
+    gender: female
+    languages: [中文]
+    description: 薄雾里的风、旧磁带、夜里低声自言自语。
+    tags: [独白, 讲述, 低沉, 氛围]
+    ttsConfig:
+      sourceId: "2001286865130360832"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 子琪 ==========
+  - id: ziqi
+    displayName: 子琪
+    name: 子琪
+    gender: female
+    languages: [中文]
+    description: 雨后未干的水泥地，空气里有点凉，音量不大，却带着倔强的边角。
+    tags: [轻快, 元气, 倔强, 清新]
+    ttsConfig:
+      sourceId: "2001898421836845056"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 小满 ==========
+  - id: xiaoman
+    displayName: 小满
+    name: 小满
+    gender: female
+    languages: [中文]
+    description: 音色清透偏高，带自然甜感，节奏轻快但不浮，语气坚定、有朝气。
+    tags: [轻快, 明亮, 坚定, 朝气]
+    ttsConfig:
+      sourceId: "2001910895478837248"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 程述 ==========
+  - id: chengshu
+    displayName: 程述
+    name: 程述
+    gender: male
+    languages: [中文]
+    description: 中低音偏中，发音清晰标准，语速自然不过快，语气沉稳但不老成，带轻微电台感与亲和力。
+    tags: [播客, 理性, 沉稳, 亲和]
+    ttsConfig:
+      sourceId: "2001931510222950400"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 阿宁 ==========
+  - id: aning
+    displayName: 阿宁
+    name: 阿宁
+    gender: female
+    languages: [中文]
+    description: 声音柔和而稳定，不催促、不打断，给人被照顾的安心感。
+    tags: [温柔, 稳定, 安心, 柔和]
+    ttsConfig:
+      sourceId: "2002941772480647168"
+      model: moss-tts
+      samplingParams:
+        temperature: 1.7
+        top_p: 0.8
+        top_k: 25
+
+  # ========== 梁子 ==========
+  - id: liangzi
+    displayName: 梁子
+    name: 梁子
+    gender: male
+    languages: [中文]
+    description: 咬字清晰，但又语气放松，不会给人太多的听感压力。
+    tags: [新闻, 专业, 清晰, 放松]
+    ttsConfig:
+      sourceId: "2002991117984862208"
       model: moss-tts
       samplingParams:
         temperature: 1.7

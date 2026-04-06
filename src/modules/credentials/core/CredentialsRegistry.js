@@ -325,7 +325,7 @@ class CredentialsRegistry {
    */
   hasProvider(providerKey) {
     const provider = this.providers.get(providerKey);
-    if (!provider) return false;
+    if (!provider || !provider.credentials) return false;
 
     return provider.requiredFields.every(field => {
       const value = provider.credentials[field];

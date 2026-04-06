@@ -1,61 +1,65 @@
-/**
- * VoiceResolver - 参数解析器
- *
- * 职责：
- * - 解析 service（支持 alias）
- * - 解析 voiceId
- * - 合并默认值
- * - 生成 provider 运行参数
- *
- * 约束：
- * - alias 解析只在这里做
- * - 默认值只在这里和 ttsDefaults.js 中取
- * - route 不得再写硬编码默认值
- * - 优先使用 voice.runtime，ttsConfig 作为兼容
- */
-
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
 const { VoiceCatalog } = require('../catalog/VoiceCatalog');
 const ttsDefaults = require('../config/ttsDefaults');
 
+const RESERVED_REQUEST_KEYS = new Set(['text', 'service', 'voice', 'voiceId', 'options']);
+
+function pickFirst(...values) {
+  for (const value of values) {
+    if (value !== undefined && value !== null && value !== '') {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function extractTopLevelOptions(request = {}) {
+  return Object.entries(request).reduce((acc, [key, value]) => {
+    if (!RESERVED_REQUEST_KEYS.has(key) && value !== undefined) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
+
 const VoiceResolver = {
   /**
-   * 解析合成请求参数
-   *
-   * @param {Object} request - 原始请求
-   * @param {string} request.service - 服务标识（可以是 canonical key 或 alias）
-   * @param {string} [request.voiceId] - 音色ID（系统ID）
-   * @param {Object} [request.options] - 覆盖选项
-   * @returns {Object} 解析结果
-   *
-   * @example
-   * // 输入
-   * {
-   *   service: 'aliyun_qwen_http',
-   *   voiceId: 'aliyun-qwen_http-cherry',
-   *   options: { speed: 1.1, format: 'wav' }
-   * }
-   *
-   * // 输出
-   * {
-   *   providerKey: 'aliyun',
-   *   serviceKey: 'qwen_http',
-   *   adapterKey: 'aliyun_qwen_http',
-   *   voiceConfig: { ... },
-   *   runtimeOptions: {
-   *     voice: 'Cherry',
-   *     model: 'qwen3-tts-flash',
-   *     sampleRate: 24000,
-   *     speed: 1.1,
-   *     pitch: 1.0,
-   *     format: 'wav'
-   *   }
-   * }
+   * Normalize request shape to a single internal contract.
+   * Supports:
+   * - voice -> voiceId compatibility
+   * - legacy top-level options (model/speed/...)
+   * - options object (preferred)
    */
-  resolve(request) {
-    const { service, voiceId, options = {} } = request;
+  normalizeRequest(request = {}) {
+    const topLevelOptions = extractTopLevelOptions(request);
+    const nestedOptions = request.options && typeof request.options === 'object'
+      ? request.options
+      : {};
 
-    // 1. 解析 service 为 canonical key
+    const normalizedOptions = {
+      ...topLevelOptions,
+      ...nestedOptions
+    };
+
+    const voiceId = pickFirst(
+      request.voiceId,
+      request.voice,
+      normalizedOptions.voiceId,
+      normalizedOptions.voice
+    );
+
+    return {
+      text: request.text,
+      service: request.service || ttsDefaults.defaultService,
+      voiceId,
+      options: normalizedOptions
+    };
+  },
+
+  resolve(request) {
+    const normalized = this.normalizeRequest(request);
+    const { service, voiceId, options = {} } = normalized;
+
     const canonicalKey = ProviderCatalog.resolveCanonicalKey(service);
     if (!canonicalKey) {
       const error = new Error(`Unknown service: ${service}`);
@@ -63,7 +67,6 @@ const VoiceResolver = {
       throw error;
     }
 
-    // 2. 获取 provider 配置
     const providerConfig = ProviderCatalog.get(canonicalKey);
     if (!providerConfig) {
       const error = new Error(`Provider config not found: ${canonicalKey}`);
@@ -71,21 +74,10 @@ const VoiceResolver = {
       throw error;
     }
 
-    // 3. 获取默认值
     const defaults = ttsDefaults.getDefaults(canonicalKey);
-
-    // 4. 解析音色配置（通过 VoiceCatalog，不直接访问 voiceRegistry）
-    let effectiveVoiceId = voiceId;
-
-    // 如果没有指定 voiceId，使用服务默认音色
-    if (!effectiveVoiceId) {
-      effectiveVoiceId = ttsDefaults.getDefaultVoiceId(canonicalKey);
-    }
-
-    // 通过 VoiceCatalog 获取运行时配置（已分离 profile/runtime）
+    let effectiveVoiceId = voiceId || ttsDefaults.getDefaultVoiceId(canonicalKey);
     const voiceRuntime = effectiveVoiceId ? VoiceCatalog.getRuntime(effectiveVoiceId) : null;
 
-    // 5. 构建运行时选项
     const runtimeOptions = this._buildRuntimeOptions({
       defaults,
       voiceRuntime,
@@ -103,12 +95,33 @@ const VoiceResolver = {
     };
   },
 
-  /**
-   * 构建运行时选项
-   * @private
-   */
-  _buildRuntimeOptions({ defaults, voiceRuntime, options, providerConfig }) {
-    // 基础选项：默认值
+  _normalizeVoiceRuntime(voiceRuntime) {
+    if (!voiceRuntime) return {};
+
+    const normalized = { ...voiceRuntime };
+    const providerOptions =
+      voiceRuntime.providerOptions && typeof voiceRuntime.providerOptions === 'object'
+        ? voiceRuntime.providerOptions
+        : {};
+
+    // Flatten provider options so existing adapters can consume them without refactor.
+    for (const [key, value] of Object.entries(providerOptions)) {
+      if (normalized[key] === undefined) {
+        normalized[key] = value;
+      }
+    }
+
+    if (!normalized.voiceId && normalized.voice) {
+      normalized.voiceId = normalized.voice;
+    }
+    if (!normalized.voice && normalized.voiceId) {
+      normalized.voice = normalized.voiceId;
+    }
+
+    return normalized;
+  },
+
+  _buildRuntimeOptions({ defaults, voiceRuntime, options }) {
     const baseOptions = {
       speed: defaults.speed,
       pitch: defaults.pitch,
@@ -117,28 +130,31 @@ const VoiceResolver = {
       sampleRate: defaults.sampleRate
     };
 
-    // 合并：默认值 < 音色运行时配置 < 用户选项
+    const normalizedRuntime = this._normalizeVoiceRuntime(voiceRuntime);
+
     const merged = {
       ...baseOptions,
-      ...(voiceRuntime || {}),  // VoiceCatalog.getRuntime() 已完成 runtime/ttsConfig 合并
+      ...normalizedRuntime,
       ...options
     };
 
-    // 确保必要字段
+    if (!merged.voice && merged.voiceId) {
+      merged.voice = merged.voiceId;
+    }
+    if (!merged.voiceId && merged.voice) {
+      merged.voiceId = merged.voice;
+    }
+
     if (!merged.voice) {
       merged.voice = 'default';
+      merged.voiceId = merged.voiceId || 'default';
     }
 
     return merged;
   },
 
-  /**
-   * 验证文本参数
-   * @param {string} text
-   * @throws {Error}
-   */
   validateText(text) {
-    const { minLength, maxLength } = ttsDefaults.textLimits;
+    const { maxLength } = ttsDefaults.textLimits;
 
     if (!text) {
       const error = new Error('Missing required parameter: text');
@@ -159,11 +175,6 @@ const VoiceResolver = {
     }
   },
 
-  /**
-   * 获取服务的默认值（便捷方法）
-   * @param {string} service
-   * @returns {Object}
-   */
   getDefaults(service) {
     const canonicalKey = ProviderCatalog.resolveCanonicalKey(service);
     return canonicalKey ? ttsDefaults.getDefaults(canonicalKey) : { ...ttsDefaults.common };

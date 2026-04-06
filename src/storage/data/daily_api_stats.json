@@ -153,6 +153,37 @@
         "GET /api/tts/frontend": 1,
         "GET /api/tts/voices": 1
       }
+    },
+    "2026-03-24": {
+      "totalCalls": 38,
+      "endpoints": {
+        "GET /": 29,
+        "GET /api": 2,
+        "GET /hybridaction/zybTrackerStatisticsAction": 4,
+        "GET /api/tts/frontend": 3
+      }
+    },
+    "2026-03-25": {
+      "totalCalls": 14,
+      "endpoints": {
+        "GET /api/tts/frontend": 14
+      }
+    },
+    "2026-03-31": {
+      "totalCalls": 3,
+      "endpoints": {
+        "POST /api/tts/synthesize": 3
+      }
+    },
+    "2026-04-01": {
+      "totalCalls": 7,
+      "endpoints": {
+        "POST /api/tts/synthesize": 3,
+        "GET /api/credentials/providers": 1,
+        "GET /api/credentials/health": 1,
+        "GET /api/credentials/status": 1,
+        "GET /api/credentials/providers/moss/health": 1
+      }
     }
   }
 }

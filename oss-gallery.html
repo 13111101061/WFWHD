@@ -8,84 +8,130 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #111;
+      background: #0a0a0a;
       color: #eee;
     }
     .header {
       position: sticky;
       top: 0;
-      background: rgba(17,17,17,0.95);
+      background: rgba(10,10,10,0.95);
       backdrop-filter: blur(10px);
-      padding: 15px 20px;
-      border-bottom: 1px solid #333;
+      padding: 12px 20px;
+      border-bottom: 1px solid #222;
       z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .header h1 { font-size: 18px; }
-    .stats { font-size: 13px; color: #888; }
-    .stats span { margin-left: 15px; }
-    .stats strong { color: #fff; }
+    .header h1 { font-size: 16px; font-weight: 500; }
+    .stats { font-size: 12px; color: #666; }
+    .stats span { margin-left: 12px; }
+    .stats strong { color: #aaa; }
+
     .gallery {
-      column-count: 6;
-      column-gap: 10px;
-      padding: 10px;
-    }
-    @media (max-width: 1400px) { .gallery { column-count: 5; } }
-    @media (max-width: 1000px) { .gallery { column-count: 4; } }
-    @media (max-width: 700px) { .gallery { column-count: 3; } }
-    @media (max-width: 500px) { .gallery { column-count: 2; } }
-    .item {
-      break-inside: avoid;
-      margin-bottom: 10px;
       position: relative;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #1a1a1a;
+      padding: 8px;
     }
-    .item .img-wrap {
-      min-height: 100px;
+
+    .column {
+      position: absolute;
+      top: 8px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #1e1e1e;
+      flex-direction: column;
+      gap: 8px;
     }
+
+    .item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #151515;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: itemIn 0.4s ease forwards;
+    }
+    @keyframes itemIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .item img {
       width: 100%;
       display: block;
       opacity: 0;
-      transition: opacity 0.3s;
+      filter: blur(8px);
+      transition: opacity 0.5s ease, filter 0.5s ease;
     }
     .item img.loaded {
       opacity: 1;
+      filter: blur(0);
     }
-    .item .loading-text {
-      color: #444;
-      font-size: 12px;
-      padding: 30px;
+
+    .item .placeholder {
+      min-height: 80px;
+      background: linear-gradient(135deg, #1a1a1a, #222, #1a1a1a);
+      background-size: 200% 200%;
+      animation: pulse 1.5s ease infinite;
     }
+    @keyframes pulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     .item .overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 30px 8px 8px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      padding: 20px 6px 6px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
       opacity: 0;
       transition: opacity 0.2s;
     }
     .item:hover .overlay { opacity: 1; }
     .item .name {
-      font-size: 11px;
+      font-size: 9px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .item .meta {
-      font-size: 10px;
-      color: #888;
-      margin-top: 2px;
+      font-size: 8px;
+      color: #666;
+      margin-top: 1px;
+    }
+    .item .domain {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .item:hover .domain { opacity: 1; }
+
+    .loader {
+      text-align: center;
+      padding: 30px;
+      color: #444;
+      font-size: 12px;
+    }
+    .loader .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #222;
+      border-top-color: #555;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -94,22 +140,82 @@
     <h1>OSS 图片画廊</h1>
     <div class="stats">
       <span>总数: <strong id="total">74</strong></span>
-      <span>已加载: <strong id="loaded">0</strong></span>
-      <span>失败: <strong id="failed">0</strong></span>
+      <span>显示: <strong id="shown">0</strong></span>
+      <span>加载: <strong id="loaded">0</strong></span>
     </div>
   </div>
   <div class="gallery" id="gallery"></div>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div>滚动加载更多</div>
+  </div>
 
   <script>
-    const images = [{"url":"http://zj.9p.pw/tkkk/2/02efae71-0c77-4d27-889d-c96a6790eba5.avif","name":"02efae71-0c77-4d27-889d-c96a6790eba5.avif","size":"303.57 KB"},{"url":"http://tp.9p.pw/tkkk/2/1033bb55-49ff-4c3b-a3a6-6bdf26d85776.avif","name":"1033bb55-49ff-4c3b-a3a6-6bdf26d85776.avif","size":"268.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/139db25a-e905-4c55-8635-b79257a54f27.avif","name":"139db25a-e905-4c55-8635-b79257a54f27.avif","size":"260.63 KB"},{"url":"http://tp.9p.pw/tkkk/2/1a8e0c421910f2795fff2fcc555f6409e6192f4d339eff0700df5e38c326995b.avif","name":"1a8e0c421910f2795fff2fcc555f6409e6192f4d339eff0700df5e38c326995b.avif","size":"627.14 KB"},{"url":"http://zj.9p.pw/tkkk/2/1b6753ce3b53c46279738581847e2e6134ed3c24a9bddf383c29441ea8a371d6.avif","name":"1b6753ce3b53c46279738581847e2e6134ed3c24a9bddf383c29441ea8a371d6.avif","size":"278.84 KB"},{"url":"http://tp.9p.pw/tkkk/2/1c6f4d20-498f-4321-b6dc-4cea05893f7c.avif","name":"1c6f4d20-498f-4321-b6dc-4cea05893f7c.avif","size":"273.98 KB"},{"url":"http://zj.9p.pw/tkkk/2/1e3beaf7-9920-4c32-b335-68a5caff3e40.avif","name":"1e3beaf7-9920-4c32-b335-68a5caff3e40.avif","size":"295.26 KB"},{"url":"http://tp.9p.pw/tkkk/2/1eb3b3231b54e0be7c8bdbc62ad81138c4203da4cfb514604379a750f06bcf06.avif","name":"1eb3b3231b54e0be7c8bdbc62ad81138c4203da4cfb514604379a750f06bcf06.avif","size":"319.77 KB"},{"url":"http://zj.9p.pw/tkkk/2/336324491-d1eb32a0efb5610c88db68ca03d86f7658f1eace2b7248f59f291b0e944a2cdb.avif","name":"336324491-d1eb32a0efb5610c88db68ca03d86f7658f1eace2b7248f59f291b0e944a2cdb.avif","size":"114.29 KB"},{"url":"http://tp.9p.pw/tkkk/2/3b2f7027-effb-471b-ae54-c36aaf397fe7.avif","name":"3b2f7027-effb-471b-ae54-c36aaf397fe7.avif","size":"234.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/3b3e78ea-b822-440d-880f-ced7cbd54d52.avif","name":"3b3e78ea-b822-440d-880f-ced7cbd54d52.avif","size":"136.99 KB"},{"url":"http://tp.9p.pw/tkkk/2/43390569e7e83b20b99a8fd21e050b047df3e1deffad12433aceecdeaedcb44a.avif","name":"43390569e7e83b20b99a8fd21e050b047df3e1deffad12433aceecdeaedcb44a.avif","size":"300.44 KB"},{"url":"http://zj.9p.pw/tkkk/2/49538ce50c2898fdd49c592a9650ffdb85f2cafe29f6754e0ac3280d568bca9f.avif","name":"49538ce50c2898fdd49c592a9650ffdb85f2cafe29f6754e0ac3280d568bca9f.avif","size":"320.21 KB"},{"url":"http://tp.9p.pw/tkkk/2/497468170-bf2ca1b3035ea7f27b2ee8802bb96884b2381f97ffb849896c9de71e14314c67.avif","name":"497468170-bf2ca1b3035ea7f27b2ee8802bb96884b2381f97ffb849896c9de71e14314c67.avif","size":"215.03 KB"},{"url":"http://zj.9p.pw/tkkk/2/528114c6-58e5-4b0b-84bd-2dc2b4067c86.avif","name":"528114c6-58e5-4b0b-84bd-2dc2b4067c86.avif","size":"314.11 KB"},{"url":"http://tp.9p.pw/tkkk/2/564005746-78c64597b0a5c98d95eb744563b3cf0afb76b22e272cc79935c9e3d103b87d4f.avif","name":"564005746-78c64597b0a5c98d95eb744563b3cf0afb76b22e272cc79935c9e3d103b87d4f.avif","size":"220.27 KB"},{"url":"http://zj.9p.pw/tkkk/2/565219819-8189dd2f9aba12029c39a755cedbd97eba08c2d39b51c199a6c4402e9feb48e6.avif","name":"565219819-8189dd2f9aba12029c39a755cedbd97eba08c2d39b51c199a6c4402e9feb48e6.avif","size":"127.05 KB"},{"url":"http://tp.9p.pw/tkkk/2/574155358-7933d262f8f543fb75c2c888891310dad72591d1385236646093df7de81a94fa.avif","name":"574155358-7933d262f8f543fb75c2c888891310dad72591d1385236646093df7de81a94fa.avif","size":"182.37 KB"},{"url":"http://zj.9p.pw/tkkk/2/584946581-8f406aae9ed0cf6879b65d26b6be9bb827451f4aa82c1abb8f00cd2c7c17e463.avif","name":"584946581-8f406aae9ed0cf6879b65d26b6be9bb827451f4aa82c1abb8f00cd2c7c17e463.avif","size":"173.23 KB"},{"url":"http://tp.9p.pw/tkkk/2/585608982-4a65dad8bccb652ca760724c0e37ada9938265546721e9156a6c2d0f12204c8b.avif","name":"585608982-4a65dad8bccb652ca760724c0e37ada9938265546721e9156a6c2d0f12204c8b.avif","size":"236.86 KB"},{"url":"http://zj.9p.pw/tkkk/2/585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36(1).avif","name":"585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36(1).avif","size":"253 KB"},{"url":"http://tp.9p.pw/tkkk/2/585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36.avif","name":"585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36.avif","size":"253 KB"},{"url":"http://zj.9p.pw/tkkk/2/586961061-f122d80eb6797a306de14c3c12b7f1aae52c11030f78d124a82c555dc1836639.avif","name":"586961061-f122d80eb6797a306de14c3c12b7f1aae52c11030f78d124a82c555dc1836639.avif","size":"236.67 KB"},{"url":"http://tp.9p.pw/tkkk/2/587130766-b9c1a7880719b8b1e6d491bf320b8b43adffc6b4d554c41aa2eb4b1d67a3fc9f.avif","name":"587130766-b9c1a7880719b8b1e6d491bf320b8b43adffc6b4d554c41aa2eb4b1d67a3fc9f.avif","size":"219.07 KB"},{"url":"http://zj.9p.pw/tkkk/2/588243758-c8fb1a9791fac41d854c44d3546f7f2506f456d9c2f13687cb96a6d89310e553.avif","name":"588243758-c8fb1a9791fac41d854c44d3546f7f2506f456d9c2f13687cb96a6d89310e553.avif","size":"299.51 KB"},{"url":"http://tp.9p.pw/tkkk/2/588279290-751d5bb5028120fdfc9a61c372e90455b08594cc70220d8d77fd5cefd52bae5d.avif","name":"588279290-751d5bb5028120fdfc9a61c372e90455b08594cc70220d8d77fd5cefd52bae5d.avif","size":"296.44 KB"},{"url":"http://zj.9p.pw/tkkk/2/588286047-1dd40780ae95846557e5e7dee0a684314409af49082bbb1da272d3e72bb9c445.avif","name":"588286047-1dd40780ae95846557e5e7dee0a684314409af49082bbb1da272d3e72bb9c445.avif","size":"344.48 KB"},{"url":"http://tp.9p.pw/tkkk/2/588588037-793fd2debe05ab14d3db332ba3e472e4e7a1e59820cc14b0c1ea76d839958e8a.avif","name":"588588037-793fd2debe05ab14d3db332ba3e472e4e7a1e59820cc14b0c1ea76d839958e8a.avif","size":"236.93 KB"},{"url":"http://zj.9p.pw/tkkk/2/591944462-eff3e31023cf2e1906bf4156222a54fbc0897791ed892f7ab975ebcfe4f75271.avif","name":"591944462-eff3e31023cf2e1906bf4156222a54fbc0897791ed892f7ab975ebcfe4f75271.avif","size":"298.15 KB"},{"url":"http://tp.9p.pw/tkkk/2/594890804-c7f63dd3567be960c8a662ca3dea4c8c4c234aacd171951cc5d0e48c8b7a2cd1.avif","name":"594890804-c7f63dd3567be960c8a662ca3dea4c8c4c234aacd171951cc5d0e48c8b7a2cd1.avif","size":"188.07 KB"},{"url":"http://zj.9p.pw/tkkk/2/595604439-bc0bdf4d8696081e045d315719cf801390050e0efd97569a7345e3f3902d4ea8.avif","name":"595604439-bc0bdf4d8696081e045d315719cf801390050e0efd97569a7345e3f3902d4ea8.avif","size":"185.24 KB"},{"url":"http://tp.9p.pw/tkkk/2/597782644-c0f34a55e8ae945e6a1e26a232678a4134d931ec72a5c28d5f9f789deb5a4a65.avif","name":"597782644-c0f34a55e8ae945e6a1e26a232678a4134d931ec72a5c28d5f9f789deb5a4a65.avif","size":"51.33 KB"},{"url":"http://zj.9p.pw/tkkk/2/5bbb817804d914bff1733416973c0283439f722d4dbe1a031cdb30c9b882bd4a.avif","name":"5bbb817804d914bff1733416973c0283439f722d4dbe1a031cdb30c9b882bd4a.avif","size":"327.91 KB"},{"url":"http://tp.9p.pw/tkkk/2/5ef9e563841a0141a6d281f9b45b968c979420b32699185a7b0f860f6f673556.avif","name":"5ef9e563841a0141a6d281f9b45b968c979420b32699185a7b0f860f6f673556.avif","size":"608.31 KB"},{"url":"http://zj.9p.pw/tkkk/2/5fc1e33a07b27f5a188a2935dabcff9d6bb8546c088b5192eb86a246298e0cdc.avif","name":"5fc1e33a07b27f5a188a2935dabcff9d6bb8546c088b5192eb86a246298e0cdc.avif","size":"346.32 KB"},{"url":"http://tp.9p.pw/tkkk/2/604210845-e33c2744d50b5f6985e7cfb594fb91c1e9382838551cb666c4d249ece0cc5bdf.avif","name":"604210845-e33c2744d50b5f6985e7cfb594fb91c1e9382838551cb666c4d249ece0cc5bdf.avif","size":"328.58 KB"},{"url":"http://zj.9p.pw/tkkk/2/616244758-8373a4798c76cce22e847236006fd61dba0aeaf59601068a8875a83354f433df.avif","name":"616244758-8373a4798c76cce22e847236006fd61dba0aeaf59601068a8875a83354f433df.avif","size":"209.88 KB"},{"url":"http://tp.9p.pw/tkkk/2/641160844-fe275bcc9802b65f958018333c7c761f5a1f3b295d784732006c5dff57f89d8c.avif","name":"641160844-fe275bcc9802b65f958018333c7c761f5a1f3b295d784732006c5dff57f89d8c.avif","size":"254.58 KB"},{"url":"http://zj.9p.pw/tkkk/2/655209948-d170bba281b568b15528f6beca2d2cae9a195006ee1b9ee0316b6abcfb33146f.avif","name":"655209948-d170bba281b568b15528f6beca2d2cae9a195006ee1b9ee0316b6abcfb33146f.avif","size":"482.21 KB"},{"url":"http://tp.9p.pw/tkkk/2/6c8b70ab7e116051793540960937dc2be6d4d313361f64a5eb343627260d7e04.avif","name":"6c8b70ab7e116051793540960937dc2be6d4d313361f64a5eb343627260d7e04.avif","size":"324.38 KB"},{"url":"http://zj.9p.pw/tkkk/2/757d2d9e-05df-4748-976a-6f9e0d5b35b6.avif","name":"757d2d9e-05df-4748-976a-6f9e0d5b35b6.avif","size":"134.92 KB"},{"url":"http://tp.9p.pw/tkkk/2/77c0d91b-e4eb-4345-b869-6755b7fd3143.avif","name":"77c0d91b-e4eb-4345-b869-6755b7fd3143.avif","size":"294.09 KB"},{"url":"http://zj.9p.pw/tkkk/2/7943074c-603e-455b-b928-b5f026d36992.avif","name":"7943074c-603e-455b-b928-b5f026d36992.avif","size":"311.64 KB"},{"url":"http://tp.9p.pw/tkkk/2/820c8abf0ce682147f792f9770596eb1ed889c9db3e814966ca22418ae401262.avif","name":"820c8abf0ce682147f792f9770596eb1ed889c9db3e814966ca22418ae401262.avif","size":"268.1 KB"},{"url":"http://zj.9p.pw/tkkk/2/8901713b-84f3-443c-8df7-a615fcd2ddc7.avif","name":"8901713b-84f3-443c-8df7-a615fcd2ddc7.avif","size":"171.9 KB"},{"url":"http://tp.9p.pw/tkkk/2/8e4fb1b2-fcee-44bc-8b42-73991b272b2b.avif","name":"8e4fb1b2-fcee-44bc-8b42-73991b272b2b.avif","size":"293.61 KB"},{"url":"http://zj.9p.pw/tkkk/2/942560ef-a5a3-4b63-a2ca-8fc181768036.avif","name":"942560ef-a5a3-4b63-a2ca-8fc181768036.avif","size":"362.54 KB"},{"url":"http://tp.9p.pw/tkkk/2/a59753f0-5d7d-490e-a9f5-707e5887484c.avif","name":"a59753f0-5d7d-490e-a9f5-707e5887484c.avif","size":"312.51 KB"},{"url":"http://zj.9p.pw/tkkk/2/a5dafa1a-2e70-4534-a57a-34f6b8d897b5.avif","name":"a5dafa1a-2e70-4534-a57a-34f6b8d897b5.avif","size":"303.2 KB"},{"url":"http://tp.9p.pw/tkkk/2/a77d150e1979ec57f14459f5a37db54accecd9de59007fbffd63a05a4089d7da.avif","name":"a77d150e1979ec57f14459f5a37db54accecd9de59007fbffd63a05a4089d7da.avif","size":"289.93 KB"},{"url":"http://zj.9p.pw/tkkk/2/ab7dc228-7021-4a64-8ef6-d180862eeacf.avif","name":"ab7dc228-7021-4a64-8ef6-d180862eeacf.avif","size":"386.87 KB"},{"url":"http://tp.9p.pw/tkkk/2/ad59b39fae590a979b3d3b4a7df0ef44717e672dfb537c8ab3603c4baffb1735.avif","name":"ad59b39fae590a979b3d3b4a7df0ef44717e672dfb537c8ab3603c4baffb1735.avif","size":"325.3 KB"},{"url":"http://zj.9p.pw/tkkk/2/af9c2721efa452b894f6cd4c52991c3e392be5c56c32bb95b1857f20fab3a1b5.avif","name":"af9c2721efa452b894f6cd4c52991c3e392be5c56c32bb95b1857f20fab3a1b5.avif","size":"273.14 KB"},{"url":"http://tp.9p.pw/tkkk/2/b7960a8531f365136f5a3bc2e30f1b7d7b9918164978ec358995b91d50001e60.avif","name":"b7960a8531f365136f5a3bc2e30f1b7d7b9918164978ec358995b91d50001e60.avif","size":"239.26 KB"},{"url":"http://zj.9p.pw/tkkk/2/befc8f64-0f17-466d-897a-e23812cb30fa.avif","name":"befc8f64-0f17-466d-897a-e23812cb30fa.avif","size":"303.62 KB"},{"url":"http://tp.9p.pw/tkkk/2/bfb4ecf49ec10d2de1fd9223e1da0b4e7f8085d8e661f592cbc33a5c159e48d3.avif","name":"bfb4ecf49ec10d2de1fd9223e1da0b4e7f8085d8e661f592cbc33a5c159e48d3.avif","size":"285 KB"},{"url":"http://zj.9p.pw/tkkk/2/c2642b98-90fd-4082-b47c-7a9d02fab553.avif","name":"c2642b98-90fd-4082-b47c-7a9d02fab553.avif","size":"204.43 KB"},{"url":"http://tp.9p.pw/tkkk/2/c33a2630-955a-48ad-88b4-d1ee32ff2006.avif","name":"c33a2630-955a-48ad-88b4-d1ee32ff2006.avif","size":"436.12 KB"},{"url":"http://zj.9p.pw/tkkk/2/c4c90207263289203a2ee0c535a26c2d4daf0b8e46fceeafa58f44282c261c27.avif","name":"c4c90207263289203a2ee0c535a26c2d4daf0b8e46fceeafa58f44282c261c27.avif","size":"222.49 KB"},{"url":"http://tp.9p.pw/tkkk/2/c6bf1616b4efd4948db73a3ba3169eeb4135dd0528aecc23a2d598e53d857912.avif","name":"c6bf1616b4efd4948db73a3ba3169eeb4135dd0528aecc23a2d598e53d857912.avif","size":"271.52 KB"},{"url":"http://zj.9p.pw/tkkk/2/c951c24c-2b7a-4f78-a7cb-e833a819e7ac.avif","name":"c951c24c-2b7a-4f78-a7cb-e833a819e7ac.avif","size":"247.85 KB"},{"url":"http://tp.9p.pw/tkkk/2/cf5a6459c4cd602b8148268102e0e9195883fcb22b03ca50eb6576afcb0519e3.avif","name":"cf5a6459c4cd602b8148268102e0e9195883fcb22b03ca50eb6576afcb0519e3.avif","size":"639.82 KB"},{"url":"http://zj.9p.pw/tkkk/2/d94a9e0a-8368-4f34-be53-8595a0b4ae64.avif","name":"d94a9e0a-8368-4f34-be53-8595a0b4ae64.avif","size":"195.14 KB"},{"url":"http://tp.9p.pw/tkkk/2/db3cb7ec69405fe1059bfabc8b1372533c6479cca16da81292365bfc202cde48.avif","name":"db3cb7ec69405fe1059bfabc8b1372533c6479cca16da81292365bfc202cde48.avif","size":"301.73 KB"},{"url":"http://zj.9p.pw/tkkk/2/de41b9f6-78e3-40c8-8322-808a112ddd0b.avif","name":"de41b9f6-78e3-40c8-8322-808a112ddd0b.avif","size":"278.21 KB"},{"url":"http://tp.9p.pw/tkkk/2/df9576465de14caa3763e3f0876a8677ffab440ef4f54ca89b4e5118b036e98e.avif","name":"df9576465de14caa3763e3f0876a8677ffab440ef4f54ca89b4e5118b036e98e.avif","size":"269.66 KB"},{"url":"http://zj.9p.pw/tkkk/2/e2f310cc-1674-4894-9f78-02efed95dfec.avif","name":"e2f310cc-1674-4894-9f78-02efed95dfec.avif","size":"299.18 KB"},{"url":"http://tp.9p.pw/tkkk/2/e47f3c17-e1dd-49a3-a365-c455c7029bcc.avif","name":"e47f3c17-e1dd-49a3-a365-c455c7029bcc.avif","size":"286.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/e5c2195f6b504ab951dd1543c0d68a69df4e557bc6667c0203c0c098b3bc464e.avif","name":"e5c2195f6b504ab951dd1543c0d68a69df4e557bc6667c0203c0c098b3bc464e.avif","size":"374.2 KB"},{"url":"http://tp.9p.pw/tkkk/2/ea82c6bed83cdf2fc30fe40450f0542b9460f325d72c6bf3420bd0f3c03bfdb9.avif","name":"ea82c6bed83cdf2fc30fe40450f0542b9460f325d72c6bf3420bd0f3c03bfdb9.avif","size":"376.67 KB"},{"url":"http://zj.9p.pw/tkkk/2/eb22ba52d2833821ab70ff376f7b759d56da5ec8f7928a27e7d4a89169124344.avif","name":"eb22ba52d2833821ab70ff376f7b759d56da5ec8f7928a27e7d4a89169124344.avif","size":"270.46 KB"},{"url":"http://tp.9p.pw/tkkk/2/ec3d8526-0947-4b41-9377-e3bc7dff3233.avif","name":"ec3d8526-0947-4b41-9377-e3bc7dff3233.avif","size":"441.85 KB"},{"url":"http://zj.9p.pw/tkkk/2/f214faa72667bbce7473e9caf56de638396e760ba6f11d1406202a5a643e3843.avif","name":"f214faa72667bbce7473e9caf56de638396e760ba6f11d1406202a5a643e3843.avif","size":"222.42 KB"},{"url":"http://tp.9p.pw/tkkk/2/fa04a57bbb8f9866e9b15276e4f7cf16ce14f2ea644f9c2a799f7409c864047d.avif","name":"fa04a57bbb8f9866e9b15276e4f7cf16ce14f2ea644f9c2a799f7409c864047d.avif","size":"258.56 KB"}];
-    let loaded = 0, failed = 0;
+    const allImages = [{"url":"http://zj.9p.pw/tkkk/2/02efae71-0c77-4d27-889d-c96a6790eba5.avif","name":"02efae71-0c77-4d27-889d-c96a6790eba5.avif","size":"303.57 KB"},{"url":"http://zj.wwww.love/tkkk/2/1033bb55-49ff-4c3b-a3a6-6bdf26d85776.avif","name":"1033bb55-49ff-4c3b-a3a6-6bdf26d85776.avif","size":"268.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/139db25a-e905-4c55-8635-b79257a54f27.avif","name":"139db25a-e905-4c55-8635-b79257a54f27.avif","size":"260.63 KB"},{"url":"http://zj.wwww.love/tkkk/2/1a8e0c421910f2795fff2fcc555f6409e6192f4d339eff0700df5e38c326995b.avif","name":"1a8e0c421910f2795fff2fcc555f6409e6192f4d339eff0700df5e38c326995b.avif","size":"627.14 KB"},{"url":"http://zj.9p.pw/tkkk/2/1b6753ce3b53c46279738581847e2e6134ed3c24a9bddf383c29441ea8a371d6.avif","name":"1b6753ce3b53c46279738581847e2e6134ed3c24a9bddf383c29441ea8a371d6.avif","size":"278.84 KB"},{"url":"http://zj.wwww.love/tkkk/2/1c6f4d20-498f-4321-b6dc-4cea05893f7c.avif","name":"1c6f4d20-498f-4321-b6dc-4cea05893f7c.avif","size":"273.98 KB"},{"url":"http://zj.9p.pw/tkkk/2/1e3beaf7-9920-4c32-b335-68a5caff3e40.avif","name":"1e3beaf7-9920-4c32-b335-68a5caff3e40.avif","size":"295.26 KB"},{"url":"http://zj.wwww.love/tkkk/2/1eb3b3231b54e0be7c8bdbc62ad81138c4203da4cfb514604379a750f06bcf06.avif","name":"1eb3b3231b54e0be7c8bdbc62ad81138c4203da4cfb514604379a750f06bcf06.avif","size":"319.77 KB"},{"url":"http://zj.9p.pw/tkkk/2/336324491-d1eb32a0efb5610c88db68ca03d86f7658f1eace2b7248f59f291b0e944a2cdb.avif","name":"336324491-d1eb32a0efb5610c88db68ca03d86f7658f1eace2b7248f59f291b0e944a2cdb.avif","size":"114.29 KB"},{"url":"http://zj.wwww.love/tkkk/2/3b2f7027-effb-471b-ae54-c36aaf397fe7.avif","name":"3b2f7027-effb-471b-ae54-c36aaf397fe7.avif","size":"234.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/3b3e78ea-b822-440d-880f-ced7cbd54d52.avif","name":"3b3e78ea-b822-440d-880f-ced7cbd54d52.avif","size":"136.99 KB"},{"url":"http://zj.wwww.love/tkkk/2/43390569e7e83b20b99a8fd21e050b047df3e1deffad12433aceecdeaedcb44a.avif","name":"43390569e7e83b20b99a8fd21e050b047df3e1deffad12433aceecdeaedcb44a.avif","size":"300.44 KB"},{"url":"http://zj.9p.pw/tkkk/2/49538ce50c2898fdd49c592a9650ffdb85f2cafe29f6754e0ac3280d568bca9f.avif","name":"49538ce50c2898fdd49c592a9650ffdb85f2cafe29f6754e0ac3280d568bca9f.avif","size":"320.21 KB"},{"url":"http://zj.wwww.love/tkkk/2/497468170-bf2ca1b3035ea7f27b2ee8802bb96884b2381f97ffb849896c9de71e14314c67.avif","name":"497468170-bf2ca1b3035ea7f27b2ee8802bb96884b2381f97ffb849896c9de71e14314c67.avif","size":"215.03 KB"},{"url":"http://zj.9p.pw/tkkk/2/528114c6-58e5-4b0b-84bd-2dc2b4067c86.avif","name":"528114c6-58e5-4b0b-84bd-2dc2b4067c86.avif","size":"314.11 KB"},{"url":"http://zj.wwww.love/tkkk/2/564005746-78c64597b0a5c98d95eb744563b3cf0afb76b22e272cc79935c9e3d103b87d4f.avif","name":"564005746-78c64597b0a5c98d95eb744563b3cf0afb76b22e272cc79935c9e3d103b87d4f.avif","size":"220.27 KB"},{"url":"http://zj.9p.pw/tkkk/2/565219819-8189dd2f9aba12029c39a755cedbd97eba08c2d39b51c199a6c4402e9feb48e6.avif","name":"565219819-8189dd2f9aba12029c39a755cedbd97eba08c2d39b51c199a6c4402e9feb48e6.avif","size":"127.05 KB"},{"url":"http://zj.wwww.love/tkkk/2/574155358-7933d262f8f543fb75c2c888891310dad72591d1385236646093df7de81a94fa.avif","name":"574155358-7933d262f8f543fb75c2c888891310dad72591d1385236646093df7de81a94fa.avif","size":"182.37 KB"},{"url":"http://zj.9p.pw/tkkk/2/584946581-8f406aae9ed0cf6879b65d26b6be9bb827451f4aa82c1abb8f00cd2c7c17e463.avif","name":"584946581-8f406aae9ed0cf6879b65d26b6be9bb827451f4aa82c1abb8f00cd2c7c17e463.avif","size":"173.23 KB"},{"url":"http://zj.wwww.love/tkkk/2/585608982-4a65dad8bccb652ca760724c0e37ada9938265546721e9156a6c2d0f12204c8b.avif","name":"585608982-4a65dad8bccb652ca760724c0e37ada9938265546721e9156a6c2d0f12204c8b.avif","size":"236.86 KB"},{"url":"http://zj.9p.pw/tkkk/2/585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36(1).avif","name":"585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36(1).avif","size":"253 KB"},{"url":"http://zj.wwww.love/tkkk/2/585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36.avif","name":"585667265-5fd2581641a39444154c289c596687135d2853229737c0074f7b41c0abd2bc36.avif","size":"253 KB"},{"url":"http://zj.9p.pw/tkkk/2/586961061-f122d80eb6797a306de14c3c12b7f1aae52c11030f78d124a82c555dc1836639.avif","name":"586961061-f122d80eb6797a306de14c3c12b7f1aae52c11030f78d124a82c555dc1836639.avif","size":"236.67 KB"},{"url":"http://zj.wwww.love/tkkk/2/587130766-b9c1a7880719b8b1e6d491bf320b8b43adffc6b4d554c41aa2eb4b1d67a3fc9f.avif","name":"587130766-b9c1a7880719b8b1e6d491bf320b8b43adffc6b4d554c41aa2eb4b1d67a3fc9f.avif","size":"219.07 KB"},{"url":"http://zj.9p.pw/tkkk/2/588243758-c8fb1a9791fac41d854c44d3546f7f2506f456d9c2f13687cb96a6d89310e553.avif","name":"588243758-c8fb1a9791fac41d854c44d3546f7f2506f456d9c2f13687cb96a6d89310e553.avif","size":"299.51 KB"},{"url":"http://zj.wwww.love/tkkk/2/588279290-751d5bb5028120fdfc9a61c372e90455b08594cc70220d8d77fd5cefd52bae5d.avif","name":"588279290-751d5bb5028120fdfc9a61c372e90455b08594cc70220d8d77fd5cefd52bae5d.avif","size":"296.44 KB"},{"url":"http://zj.9p.pw/tkkk/2/588286047-1dd40780ae95846557e5e7dee0a684314409af49082bbb1da272d3e72bb9c445.avif","name":"588286047-1dd40780ae95846557e5e7dee0a684314409af49082bbb1da272d3e72bb9c445.avif","size":"344.48 KB"},{"url":"http://zj.wwww.love/tkkk/2/588588037-793fd2debe05ab14d3db332ba3e472e4e7a1e59820cc14b0c1ea76d839958e8a.avif","name":"588588037-793fd2debe05ab14d3db332ba3e472e4e7a1e59820cc14b0c1ea76d839958e8a.avif","size":"236.93 KB"},{"url":"http://zj.9p.pw/tkkk/2/591944462-eff3e31023cf2e1906bf4156222a54fbc0897791ed892f7ab975ebcfe4f75271.avif","name":"591944462-eff3e31023cf2e1906bf4156222a54fbc0897791ed892f7ab975ebcfe4f75271.avif","size":"298.15 KB"},{"url":"http://zj.wwww.love/tkkk/2/594890804-c7f63dd3567be960c8a662ca3dea4c8c4c234aacd171951cc5d0e48c8b7a2cd1.avif","name":"594890804-c7f63dd3567be960c8a662ca3dea4c8c4c234aacd171951cc5d0e48c8b7a2cd1.avif","size":"188.07 KB"},{"url":"http://zj.9p.pw/tkkk/2/595604439-bc0bdf4d8696081e045d315719cf801390050e0efd97569a7345e3f3902d4ea8.avif","name":"595604439-bc0bdf4d8696081e045d315719cf801390050e0efd97569a7345e3f3902d4ea8.avif","size":"185.24 KB"},{"url":"http://zj.wwww.love/tkkk/2/597782644-c0f34a55e8ae945e6a1e26a232678a4134d931ec72a5c28d5f9f789deb5a4a65.avif","name":"597782644-c0f34a55e8ae945e6a1e26a232678a4134d931ec72a5c28d5f9f789deb5a4a65.avif","size":"51.33 KB"},{"url":"http://zj.9p.pw/tkkk/2/5bbb817804d914bff1733416973c0283439f722d4dbe1a031cdb30c9b882bd4a.avif","name":"5bbb817804d914bff1733416973c0283439f722d4dbe1a031cdb30c9b882bd4a.avif","size":"327.91 KB"},{"url":"http://zj.wwww.love/tkkk/2/5ef9e563841a0141a6d281f9b45b968c979420b32699185a7b0f860f6f673556.avif","name":"5ef9e563841a0141a6d281f9b45b968c979420b32699185a7b0f860f6f673556.avif","size":"608.31 KB"},{"url":"http://zj.9p.pw/tkkk/2/5fc1e33a07b27f5a188a2935dabcff9d6bb8546c088b5192eb86a246298e0cdc.avif","name":"5fc1e33a07b27f5a188a2935dabcff9d6bb8546c088b5192eb86a246298e0cdc.avif","size":"346.32 KB"},{"url":"http://zj.wwww.love/tkkk/2/604210845-e33c2744d50b5f6985e7cfb594fb91c1e9382838551cb666c4d249ece0cc5bdf.avif","name":"604210845-e33c2744d50b5f6985e7cfb594fb91c1e9382838551cb666c4d249ece0cc5bdf.avif","size":"328.58 KB"},{"url":"http://zj.9p.pw/tkkk/2/616244758-8373a4798c76cce22e847236006fd61dba0aeaf59601068a8875a83354f433df.avif","name":"616244758-8373a4798c76cce22e847236006fd61dba0aeaf59601068a8875a83354f433df.avif","size":"209.88 KB"},{"url":"http://zj.wwww.love/tkkk/2/641160844-fe275bcc9802b65f958018333c7c761f5a1f3b295d784732006c5dff57f89d8c.avif","name":"641160844-fe275bcc9802b65f958018333c7c761f5a1f3b295d784732006c5dff57f89d8c.avif","size":"254.58 KB"},{"url":"http://zj.9p.pw/tkkk/2/655209948-d170bba281b568b15528f6beca2d2cae9a195006ee1b9ee0316b6abcfb33146f.avif","name":"655209948-d170bba281b568b15528f6beca2d2cae9a195006ee1b9ee0316b6abcfb33146f.avif","size":"482.21 KB"},{"url":"http://zj.wwww.love/tkkk/2/6c8b70ab7e116051793540960937dc2be6d4d313361f64a5eb343627260d7e04.avif","name":"6c8b70ab7e116051793540960937dc2be6d4d313361f64a5eb343627260d7e04.avif","size":"324.38 KB"},{"url":"http://zj.9p.pw/tkkk/2/757d2d9e-05df-4748-976a-6f9e0d5b35b6.avif","name":"757d2d9e-05df-4748-976a-6f9e0d5b35b6.avif","size":"134.92 KB"},{"url":"http://zj.wwww.love/tkkk/2/77c0d91b-e4eb-4345-b869-6755b7fd3143.avif","name":"77c0d91b-e4eb-4345-b869-6755b7fd3143.avif","size":"294.09 KB"},{"url":"http://zj.9p.pw/tkkk/2/7943074c-603e-455b-b928-b5f026d36992.avif","name":"7943074c-603e-455b-b928-b5f026d36992.avif","size":"311.64 KB"},{"url":"http://zj.wwww.love/tkkk/2/820c8abf0ce682147f792f9770596eb1ed889c9db3e814966ca22418ae401262.avif","name":"820c8abf0ce682147f792f9770596eb1ed889c9db3e814966ca22418ae401262.avif","size":"268.1 KB"},{"url":"http://zj.9p.pw/tkkk/2/8901713b-84f3-443c-8df7-a615fcd2ddc7.avif","name":"8901713b-84f3-443c-8df7-a615fcd2ddc7.avif","size":"171.9 KB"},{"url":"http://zj.wwww.love/tkkk/2/8e4fb1b2-fcee-44bc-8b42-73991b272b2b.avif","name":"8e4fb1b2-fcee-44bc-8b42-73991b272b2b.avif","size":"293.61 KB"},{"url":"http://zj.9p.pw/tkkk/2/942560ef-a5a3-4b63-a2ca-8fc181768036.avif","name":"942560ef-a5a3-4b63-a2ca-8fc181768036.avif","size":"362.54 KB"},{"url":"http://zj.wwww.love/tkkk/2/a59753f0-5d7d-490e-a9f5-707e5887484c.avif","name":"a59753f0-5d7d-490e-a9f5-707e5887484c.avif","size":"312.51 KB"},{"url":"http://zj.9p.pw/tkkk/2/a5dafa1a-2e70-4534-a57a-34f6b8d897b5.avif","name":"a5dafa1a-2e70-4534-a57a-34f6b8d897b5.avif","size":"303.2 KB"},{"url":"http://zj.wwww.love/tkkk/2/a77d150e1979ec57f14459f5a37db54accecd9de59007fbffd63a05a4089d7da.avif","name":"a77d150e1979ec57f14459f5a37db54accecd9de59007fbffd63a05a4089d7da.avif","size":"289.93 KB"},{"url":"http://zj.9p.pw/tkkk/2/ab7dc228-7021-4a64-8ef6-d180862eeacf.avif","name":"ab7dc228-7021-4a64-8ef6-d180862eeacf.avif","size":"386.87 KB"},{"url":"http://zj.wwww.love/tkkk/2/ad59b39fae590a979b3d3b4a7df0ef44717e672dfb537c8ab3603c4baffb1735.avif","name":"ad59b39fae590a979b3d3b4a7df0ef44717e672dfb537c8ab3603c4baffb1735.avif","size":"325.3 KB"},{"url":"http://zj.9p.pw/tkkk/2/af9c2721efa452b894f6cd4c52991c3e392be5c56c32bb95b1857f20fab3a1b5.avif","name":"af9c2721efa452b894f6cd4c52991c3e392be5c56c32bb95b1857f20fab3a1b5.avif","size":"273.14 KB"},{"url":"http://zj.wwww.love/tkkk/2/b7960a8531f365136f5a3bc2e30f1b7d7b9918164978ec358995b91d50001e60.avif","name":"b7960a8531f365136f5a3bc2e30f1b7d7b9918164978ec358995b91d50001e60.avif","size":"239.26 KB"},{"url":"http://zj.9p.pw/tkkk/2/befc8f64-0f17-466d-897a-e23812cb30fa.avif","name":"befc8f64-0f17-466d-897a-e23812cb30fa.avif","size":"303.62 KB"},{"url":"http://zj.wwww.love/tkkk/2/bfb4ecf49ec10d2de1fd9223e1da0b4e7f8085d8e661f592cbc33a5c159e48d3.avif","name":"bfb4ecf49ec10d2de1fd9223e1da0b4e7f8085d8e661f592cbc33a5c159e48d3.avif","size":"285 KB"},{"url":"http://zj.9p.pw/tkkk/2/c2642b98-90fd-4082-b47c-7a9d02fab553.avif","name":"c2642b98-90fd-4082-b47c-7a9d02fab553.avif","size":"204.43 KB"},{"url":"http://zj.wwww.love/tkkk/2/c33a2630-955a-48ad-88b4-d1ee32ff2006.avif","name":"c33a2630-955a-48ad-88b4-d1ee32ff2006.avif","size":"436.12 KB"},{"url":"http://zj.9p.pw/tkkk/2/c4c90207263289203a2ee0c535a26c2d4daf0b8e46fceeafa58f44282c261c27.avif","name":"c4c90207263289203a2ee0c535a26c2d4daf0b8e46fceeafa58f44282c261c27.avif","size":"222.49 KB"},{"url":"http://zj.wwww.love/tkkk/2/c6bf1616b4efd4948db73a3ba3169eeb4135dd0528aecc23a2d598e53d857912.avif","name":"c6bf1616b4efd4948db73a3ba3169eeb4135dd0528aecc23a2d598e53d857912.avif","size":"271.52 KB"},{"url":"http://zj.9p.pw/tkkk/2/c951c24c-2b7a-4f78-a7cb-e833a819e7ac.avif","name":"c951c24c-2b7a-4f78-a7cb-e833a819e7ac.avif","size":"247.85 KB"},{"url":"http://zj.wwww.love/tkkk/2/cf5a6459c4cd602b8148268102e0e9195883fcb22b03ca50eb6576afcb0519e3.avif","name":"cf5a6459c4cd602b8148268102e0e9195883fcb22b03ca50eb6576afcb0519e3.avif","size":"639.82 KB"},{"url":"http://zj.9p.pw/tkkk/2/d94a9e0a-8368-4f34-be53-8595a0b4ae64.avif","name":"d94a9e0a-8368-4f34-be53-8595a0b4ae64.avif","size":"195.14 KB"},{"url":"http://zj.wwww.love/tkkk/2/db3cb7ec69405fe1059bfabc8b1372533c6479cca16da81292365bfc202cde48.avif","name":"db3cb7ec69405fe1059bfabc8b1372533c6479cca16da81292365bfc202cde48.avif","size":"301.73 KB"},{"url":"http://zj.9p.pw/tkkk/2/de41b9f6-78e3-40c8-8322-808a112ddd0b.avif","name":"de41b9f6-78e3-40c8-8322-808a112ddd0b.avif","size":"278.21 KB"},{"url":"http://zj.wwww.love/tkkk/2/df9576465de14caa3763e3f0876a8677ffab440ef4f54ca89b4e5118b036e98e.avif","name":"df9576465de14caa3763e3f0876a8677ffab440ef4f54ca89b4e5118b036e98e.avif","size":"269.66 KB"},{"url":"http://zj.9p.pw/tkkk/2/e2f310cc-1674-4894-9f78-02efed95dfec.avif","name":"e2f310cc-1674-4894-9f78-02efed95dfec.avif","size":"299.18 KB"},{"url":"http://zj.wwww.love/tkkk/2/e47f3c17-e1dd-49a3-a365-c455c7029bcc.avif","name":"e47f3c17-e1dd-49a3-a365-c455c7029bcc.avif","size":"286.11 KB"},{"url":"http://zj.9p.pw/tkkk/2/e5c2195f6b504ab951dd1543c0d68a69df4e557bc6667c0203c0c098b3bc464e.avif","name":"e5c2195f6b504ab951dd1543c0d68a69df4e557bc6667c0203c0c098b3bc464e.avif","size":"374.2 KB"},{"url":"http://zj.wwww.love/tkkk/2/ea82c6bed83cdf2fc30fe40450f0542b9460f325d72c6bf3420bd0f3c03bfdb9.avif","name":"ea82c6bed83cdf2fc30fe40450f0542b9460f325d72c6bf3420bd0f3c03bfdb9.avif","size":"376.67 KB"},{"url":"http://zj.9p.pw/tkkk/2/eb22ba52d2833821ab70ff376f7b759d56da5ec8f7928a27e7d4a89169124344.avif","name":"eb22ba52d2833821ab70ff376f7b759d56da5ec8f7928a27e7d4a89169124344.avif","size":"270.46 KB"},{"url":"http://zj.wwww.love/tkkk/2/ec3d8526-0947-4b41-9377-e3bc7dff3233.avif","name":"ec3d8526-0947-4b41-9377-e3bc7dff3233.avif","size":"441.85 KB"},{"url":"http://zj.9p.pw/tkkk/2/f214faa72667bbce7473e9caf56de638396e760ba6f11d1406202a5a643e3843.avif","name":"f214faa72667bbce7473e9caf56de638396e760ba6f11d1406202a5a643e3843.avif","size":"222.42 KB"},{"url":"http://zj.wwww.love/tkkk/2/fa04a57bbb8f9866e9b15276e4f7cf16ce14f2ea644f9c2a799f7409c864047d.avif","name":"fa04a57bbb8f9866e9b15276e4f7cf16ce14f2ea644f9c2a799f7409c864047d.avif","size":"258.56 KB"}];
+    const BATCH_SIZE = 12;
+    const GAP = 8;
+    let currentIndex = 0;
+    let loadedCount = 0;
     const gallery = document.getElementById('gallery');
+    const loader = document.getElementById('loader');
 
-    const observer = new IntersectionObserver((entries) => {
+    // 列信息
+    let columnCount = 6;
+    let columns = [];
+    let columnHeights = [];
+
+    function initColumns() {
+      const width = window.innerWidth;
+      if (width > 1400) columnCount = 6;
+      else if (width > 1000) columnCount = 5;
+      else if (width > 700) columnCount = 4;
+      else if (width > 500) columnCount = 3;
+      else columnCount = 2;
+
+      const containerWidth = gallery.clientWidth - GAP * 2;
+      const colWidth = (containerWidth - GAP * (columnCount - 1)) / columnCount;
+
+      // 清空重建
+      gallery.innerHTML = '';
+      columns = [];
+      columnHeights = [];
+
+      for (let i = 0; i < columnCount; i++) {
+        const col = document.createElement('div');
+        col.className = 'column';
+        col.style.width = colWidth + 'px';
+        col.style.left = (GAP + i * (colWidth + GAP)) + 'px';
+        gallery.appendChild(col);
+        columns.push(col);
+        columnHeights.push(0);
+      }
+    }
+
+    function findShortestColumn() {
+      let minIdx = 0;
+      let minH = columnHeights[0];
+      for (let i = 1; i < columnHeights.length; i++) {
+        if (columnHeights[i] < minH) {
+          minH = columnHeights[i];
+          minIdx = i;
+        }
+      }
+      return minIdx;
+    }
+
+    const imgObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           loadImage(entry.target);
-          observer.unobserve(entry.target);
+          imgObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '100px' });
+
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && currentIndex < allImages.length) {
+          loadBatch();
         }
       });
     }, { rootMargin: '200px' });
@@ -120,41 +226,82 @@
 
       img.onload = () => {
         img.classList.add('loaded');
-        item.querySelector('.loading-text').style.display = 'none';
-        loaded++;
+        item.querySelector('.placeholder').style.display = 'none';
+        loadedCount++;
         updateStats();
       };
 
       img.onerror = () => {
-        item.querySelector('.loading-text').textContent = '加载失败';
-        item.querySelector('.loading-text').style.color = '#f44336';
-        failed++;
-        updateStats();
+        item.querySelector('.placeholder').innerHTML = '<div style="padding:20px;color:#444;text-align:center;">失败</div>';
       };
 
       img.src = src;
     }
 
-    function updateStats() {
-      document.getElementById('loaded').textContent = loaded;
-      document.getElementById('failed').textContent = failed;
+    function loadBatch() {
+      const end = Math.min(currentIndex + BATCH_SIZE, allImages.length);
+      const domainNames = ['zj.9p.pw', 'zj.wwww.love'];
+
+      for (let i = currentIndex; i < end; i++) {
+        const imgData = allImages[i];
+        const domainIdx = i % 2;
+        const colIdx = findShortestColumn();
+
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.style.animationDelay = `${(i - currentIndex) * 30}ms`;
+
+        item.innerHTML = `
+          <div class="placeholder"></div>
+          <img data-src="${imgData.url}" alt="">
+          <div class="overlay">
+            <div class="name">${imgData.name}</div>
+            <div class="meta">${imgData.size}</div>
+          </div>
+          <div class="domain">${domainNames[domainIdx]}</div>
+        `;
+
+        columns[colIdx].appendChild(item);
+        imgObserver.observe(item);
+      }
+
+      currentIndex = end;
+      updateStats();
+
+      // 更新列高度
+      setTimeout(() => {
+        columns.forEach((col, i) => {
+          columnHeights[i] = col.offsetHeight;
+        });
+        const maxH = Math.max(...columnHeights);
+        gallery.style.height = (maxH + GAP) + 'px';
+      }, 100);
+
+      if (currentIndex >= allImages.length) {
+        loader.innerHTML = '<div style="color:#555;">已全部加载</div>';
+      }
     }
 
-    images.forEach((img, i) => {
-      const item = document.createElement('div');
-      item.className = 'item';
-      item.innerHTML = `
-        <div class="img-wrap">
-          <span class="loading-text">...</span>
-          <img data-src="${img.url}" alt="">
-        </div>
-        <div class="overlay">
-          <div class="name">${img.name}</div>
-          <div class="meta">${img.size}</div>
-        </div>
-      `;
-      gallery.appendChild(item);
-      observer.observe(item);
+    function updateStats() {
+      document.getElementById('shown').textContent = currentIndex;
+      document.getElementById('loaded').textContent = loadedCount;
+    }
+
+    // 初始化
+    initColumns();
+    loadBatch();
+    scrollObserver.observe(loader);
+
+    // 窗口resize时重新布局
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        currentIndex = 0;
+        loadedCount = 0;
+        initColumns();
+        loadBatch();
+      }, 200);
     });
   </script>
 </body>

@@ -1,11 +1,19 @@
 {
   "_meta": {
-    "generatedAt": "2026-03-22T08:33:18.438Z",
-    "totalVoices": 50
+    "generatedAt": "2026-03-29T10:07:25.833Z",
+    "totalVoices": 58
   },
   "byProvider": {
     "moss": [
-      "moss-tts-ashui"
+      "moss-tts-beijingnan",
+      "moss-tts-taiwannv",
+      "moss-tts-ashui",
+      "moss-tts-zhouzhou",
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "moss-tts-chengshu",
+      "moss-tts-aning",
+      "moss-tts-liangzi"
     ],
     "aliyun": [
       "aliyun-qwen_http-cherry",
@@ -61,7 +69,12 @@
   },
   "byGender": {
     "female": [
+      "moss-tts-taiwannv",
       "moss-tts-ashui",
+      "moss-tts-zhouzhou",
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "moss-tts-aning",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-chelsie",
       "aliyun-qwen_http-serena",
@@ -86,6 +99,9 @@
       "aliyun-qwen_http-kiki"
     ],
     "male": [
+      "moss-tts-beijingnan",
+      "moss-tts-chengshu",
+      "moss-tts-liangzi",
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-dylan",
       "aliyun-qwen_http-moon",
@@ -117,7 +133,15 @@
   },
   "byLanguage": {
     "中文": [
+      "moss-tts-beijingnan",
+      "moss-tts-taiwannv",
       "moss-tts-ashui",
+      "moss-tts-zhouzhou",
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "moss-tts-chengshu",
+      "moss-tts-aning",
+      "moss-tts-liangzi",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-chelsie",
@@ -186,34 +210,28 @@
     ]
   },
   "byTag": {
-    "松弛": [
-      "moss-tts-ashui"
-    ],
-    "耐听": [
-      "moss-tts-ashui"
-    ],
-    "女声": [
-      "moss-tts-ashui"
-    ],
-    "舒缓": [
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-seren"
-    ],
-    "亲切": [
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-serena"
+    "清晰": [
+      "moss-tts-beijingnan",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-bellona",
+      "aliyun-qwen_http-elias"
     ],
     "自然": [
+      "moss-tts-beijingnan",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-nofish"
     ],
-    "治愈": [
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-seren"
+    "松弛": [
+      "moss-tts-beijingnan",
+      "moss-tts-ashui"
+    ],
+    "亲和": [
+      "moss-tts-beijingnan",
+      "moss-tts-chengshu"
     ],
     "温柔": [
+      "moss-tts-taiwannv",
+      "moss-tts-aning",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-serena",
       "aliyun-qwen_http-maia",
@@ -222,10 +240,112 @@
       "aliyun-qwen_http-emilien",
       "aliyun-qwen_http-li"
     ],
+    "治愈": [
+      "moss-tts-taiwannv",
+      "moss-tts-ashui",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-elias",
+      "aliyun-qwen_http-seren"
+    ],
+    "柔和": [
+      "moss-tts-taiwannv",
+      "moss-tts-aning"
+    ],
+    "细腻": [
+      "moss-tts-taiwannv"
+    ],
+    "耐听": [
+      "moss-tts-ashui"
+    ],
     "温暖": [
+      "moss-tts-ashui",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-andre"
+    ],
+    "独白": [
+      "moss-tts-zhouzhou"
+    ],
+    "讲述": [
+      "moss-tts-zhouzhou"
+    ],
+    "低沉": [
+      "moss-tts-zhouzhou",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-alek",
+      "aliyun-qwen_http-andre"
+    ],
+    "氛围": [
+      "moss-tts-zhouzhou"
+    ],
+    "轻快": [
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman"
+    ],
+    "元气": [
+      "moss-tts-ziqi",
+      "aliyun-qwen_http-stella"
+    ],
+    "倔强": [
+      "moss-tts-ziqi"
+    ],
+    "清新": [
+      "moss-tts-ziqi",
+      "aliyun-qwen_http-nofish"
+    ],
+    "明亮": [
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-serena"
+    ],
+    "坚定": [
+      "moss-tts-xiaoman"
+    ],
+    "朝气": [
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-ethan"
+    ],
+    "播客": [
+      "moss-tts-chengshu"
+    ],
+    "理性": [
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-lenn",
+      "aliyun-qwen_http-andre"
+    ],
+    "沉稳": [
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-eldric-sage",
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-li",
+      "aliyun-qwen_http-marcus"
+    ],
+    "稳定": [
+      "moss-tts-aning"
+    ],
+    "安心": [
+      "moss-tts-aning"
+    ],
+    "新闻": [
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-neil"
+    ],
+    "专业": [
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-jennifer",
+      "aliyun-qwen_http-neil"
+    ],
+    "放松": [
+      "moss-tts-liangzi"
+    ],
+    "舒缓": [
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-seren"
+    ],
+    "亲切": [
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-serena"
     ],
     "阳光": [
       "aliyun-qwen_http-ethan",
@@ -239,9 +359,6 @@
       "aliyun-qwen_http-bodega",
       "aliyun-qwen_http-sonrisa",
       "aliyun-qwen_http-radio-gol"
-    ],
-    "朝气": [
-      "aliyun-qwen_http-ethan"
     ],
     "磁性": [
       "aliyun-qwen_http-ethan",
@@ -278,9 +395,6 @@
     ],
     "心动": [
       "aliyun-qwen_http-chelsie"
-    ],
-    "明亮": [
-      "aliyun-qwen_http-serena"
     ],
     "清澈": [
       "aliyun-qwen_http-serena"
@@ -397,24 +511,11 @@
       "aliyun-qwen_http-maia",
       "aliyun-qwen_http-katerina"
     ],
-    "低沉": [
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-alek",
-      "aliyun-qwen_http-andre"
-    ],
-    "专业": [
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-neil"
-    ],
     "评述": [
       "aliyun-qwen_http-kai"
     ],
     "深度": [
       "aliyun-qwen_http-kai"
-    ],
-    "清新": [
-      "aliyun-qwen_http-nofish"
     ],
     "文艺": [
       "aliyun-qwen_http-nofish"
@@ -498,12 +599,6 @@
     "睿智": [
       "aliyun-qwen_http-eldric-sage"
     ],
-    "沉稳": [
-      "aliyun-qwen_http-eldric-sage",
-      "aliyun-qwen_http-neil",
-      "aliyun-qwen_http-li",
-      "aliyun-qwen_http-marcus"
-    ],
     "沧桑": [
       "aliyun-qwen_http-eldric-sage",
       "aliyun-qwen_http-vincent",
@@ -553,10 +648,6 @@
     "洪亮": [
       "aliyun-qwen_http-bellona"
     ],
-    "清晰": [
-      "aliyun-qwen_http-bellona",
-      "aliyun-qwen_http-elias"
-    ],
     "戏剧性": [
       "aliyun-qwen_http-bellona"
     ],
@@ -591,9 +682,6 @@
     ],
     "儿童": [
       "aliyun-qwen_http-bunny"
-    ],
-    "新闻": [
-      "aliyun-qwen_http-neil"
     ],
     "客观": [
       "aliyun-qwen_http-neil"
@@ -670,9 +758,6 @@
     "动漫": [
       "aliyun-qwen_http-stella"
     ],
-    "元气": [
-      "aliyun-qwen_http-stella"
-    ],
     "战斗少女": [
       "aliyun-qwen_http-stella"
     ],
@@ -744,10 +829,6 @@
     ],
     "德语": [
       "aliyun-qwen_http-lenn"
-    ],
-    "理性": [
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-andre"
     ],
     "法语": [
       "aliyun-qwen_http-emilien"

@@ -36,7 +36,12 @@ const mockRawVoice = {
   // 兼容旧的 ttsConfig
   ttsConfig: {
     voiceId: 'old-voice-id',
-    model: 'old-model'
+    model: 'old-model',
+    samplingParams: {
+      temperature: 1.7,
+      top_p: 0.8,
+      top_k: 25
+    }
   },
   metadata: {
     registeredAt: '2024-01-01T00:00:00Z',
@@ -75,6 +80,12 @@ const voiceWithOnlyTtsConfig = {
 };
 const catalogVoice2 = toCatalogVoice(voiceWithOnlyTtsConfig);
 assert.strictEqual(catalogVoice2.runtime.voice, 'fallback-voice', 'runtime.voice 应该回退到 ttsConfig.voiceId');
+console.log('✅ 通过\n');
+
+// 测试 3.1: providerOptions 保留服务商特有字段
+console.log('测试 3.1: 保留 providerOptions');
+assert.ok(catalogVoice.runtime.providerOptions, 'runtime 应包含 providerOptions');
+assert.ok(catalogVoice.runtime.providerOptions.samplingParams, 'samplingParams 不应丢失');
 console.log('✅ 通过\n');
 
 // 测试 4: 空输入

@@ -1,168 +1,119 @@
 #!/usr/bin/env node
 /**
- * 音色配置构建脚本
- * 将 YAML 源文件转换为 JSON 运行时文件
+ * Build voice configs:
+ * - Read YAML provider files under voices/sources/providers
+ * - Emit voices/dist/voices.json and voices/dist/categories.json
  *
- * 使用方式:
- *   node voices/build.js [--watch]
+ * Runtime normalization:
+ * - Canonical runtime schema is generated for each voice
+ * - Legacy ttsConfig is kept for backward compatibility
  */
 
 const fs = require('fs').promises;
 const path = require('path');
 const yaml = require('js-yaml');
-const crypto = require('crypto');
 
-// 配置
 const CONFIG = {
   sourceDir: path.join(__dirname, 'sources', 'providers'),
   outputDir: path.join(__dirname, 'dist')
 };
 
-/**
- * 主构建函数
- */
-async function build() {
-  console.log('🔨 开始构建音色配置...\n');
-  const startTime = Date.now();
-
-  try {
-    // 1. 确保输出目录存在
-    await fs.mkdir(CONFIG.outputDir, { recursive: true });
-
-    // 2. 读取所有 YAML 源文件
-    const files = await fs.readdir(CONFIG.sourceDir);
-    const yamlFiles = files.filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
-
-    if (yamlFiles.length === 0) {
-      console.warn('⚠️  未找到 YAML 源文件');
-      return;
+function pickFirst(...values) {
+  for (const value of values) {
+    if (value !== undefined && value !== null && value !== '') {
+      return value;
     }
-
-    console.log(`📁 找到 ${yamlFiles.length} 个源文件:`);
-    yamlFiles.forEach(f => console.log(`   - ${f}`));
-    console.log('');
-
-    // 3. 处理每个文件
-    const allVoices = [];
-    const sources = [];
-    const errors = [];
-
-    for (const file of yamlFiles) {
-      try {
-        const result = await processYamlFile(path.join(CONFIG.sourceDir, file));
-        allVoices.push(...result.voices);
-        sources.push({
-          file,
-          count: result.voices.length,
-          provider: result.provider,
-          enabled: result.enabled
-        });
-        if (result.enabled === false) {
-          console.log(`⏸️  ${file}: 服务商已禁用 (${result.provider})`);
-        } else {
-          console.log(`✅ ${file}: ${result.voices.length} 个音色 (${result.provider})`);
-        }
-      } catch (error) {
-        errors.push({ file, error: error.message });
-        console.error(`❌ ${file}: ${error.message}`);
-      }
-    }
-
-    // 注意: 阿里云 Qwen 音色已迁移到 voices/sources/providers/qwen.yaml
-    // 旧的 voiceIdMapping.json 不再使用
-
-    // 5. 检查错误
-    if (errors.length > 0) {
-      console.error('\n❌ 构建过程中出现错误:');
-      errors.forEach(e => console.error(`   ${e.file}: ${e.error}`));
-    }
-
-    // 6. 唯一性检查
-    const idSet = new Set();
-    const duplicates = [];
-    for (const voice of allVoices) {
-      if (idSet.has(voice.id)) {
-        duplicates.push(voice.id);
-      }
-      idSet.add(voice.id);
-    }
-
-    if (duplicates.length > 0) {
-      console.error('\n❌ 发现重复的音色 ID:', duplicates.join(', '));
-    }
-
-    // 7. 生成聚合文件
-    const enabledProviders = sources.filter(s => s.enabled !== false).map(s => s.provider);
-    const disabledProviders = sources.filter(s => s.enabled === false).map(s => s.provider);
-
-    const aggregated = {
-      _meta: {
-        version: '2.1',
-        generatedAt: new Date().toISOString(),
-        totalVoices: allVoices.length,
-        sources: sources,
-        providers: {
-          enabled: enabledProviders,
-          disabled: disabledProviders
-        },
-        buildTime: Date.now() - startTime
-      },
-      voices: allVoices
-    };
-
-    await fs.writeFile(
-      path.join(CONFIG.outputDir, 'voices.json'),
-      JSON.stringify(aggregated, null, 2),
-      'utf8'
-    );
-
-    // 8. 生成分类索引
-    await generateCategories(allVoices);
-
-    // 9. 输出摘要
-    console.log('\n📊 构建摘要:');
-    console.log(`   总音色数: ${allVoices.length}`);
-    console.log(`   提供商: ${[...new Set(allVoices.map(v => v.provider))].join(', ')}`);
-    console.log(`   构建时间: ${Date.now() - startTime}ms`);
-    console.log(`\n✅ 构建完成！输出文件:`);
-    console.log(`   ${path.join(CONFIG.outputDir, 'voices.json')}`);
-    console.log(`   ${path.join(CONFIG.outputDir, 'categories.json')}`);
-
-  } catch (error) {
-    console.error('❌ 构建失败:', error);
-    process.exit(1);
   }
+  return undefined;
 }
 
-/**
- * 处理单个 YAML 文件
- */
+function omit(obj = {}, keys = []) {
+  const keySet = new Set(keys);
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (!keySet.has(key) && value !== undefined) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
+
+function normalizeRuntime({ ttsConfig = {}, runtime = {}, fallbackVoiceId }) {
+  const legacyVoiceId = pickFirst(
+    ttsConfig.voiceId,
+    ttsConfig.voiceName,
+    ttsConfig.sourceId,
+    fallbackVoiceId
+  );
+
+  const voiceId = pickFirst(runtime.voiceId, runtime.voice, legacyVoiceId);
+
+  const legacyProviderOptions = omit(ttsConfig, [
+    'voiceId',
+    'voiceName',
+    'sourceId',
+    'model',
+    'sampleRate',
+    'cluster',
+    'voiceType'
+  ]);
+
+  const runtimeProviderOptions =
+    runtime.providerOptions && typeof runtime.providerOptions === 'object'
+      ? runtime.providerOptions
+      : {};
+
+  const runtimeExtras = omit(runtime, [
+    'voice',
+    'voiceId',
+    'model',
+    'sampleRate',
+    'cluster',
+    'voiceType',
+    'providerOptions'
+  ]);
+
+  return {
+    voiceId,
+    // Compatibility alias
+    voice: pickFirst(runtime.voice, voiceId),
+    model: pickFirst(runtime.model, ttsConfig.model),
+    sampleRate: pickFirst(runtime.sampleRate, ttsConfig.sampleRate),
+    cluster: pickFirst(runtime.cluster, ttsConfig.cluster),
+    voiceType: pickFirst(runtime.voiceType, ttsConfig.voiceType),
+    providerOptions: {
+      ...legacyProviderOptions,
+      ...runtimeProviderOptions
+    },
+    ...runtimeExtras
+  };
+}
+
 async function processYamlFile(filePath) {
   const content = await fs.readFile(filePath, 'utf8');
   const data = yaml.load(content);
 
   if (!data.meta || !data.voices) {
-    throw new Error('YAML 文件必须包含 meta 和 voices 字段');
+    throw new Error('YAML file must contain meta and voices');
   }
 
   const { provider, service, enabled = true } = data.meta;
   const voices = [];
 
-  // 如果服务商被禁用，跳过音色加载但记录元信息
   if (enabled === false) {
-    console.log(`   ⏸️  服务商已禁用，跳过音色加载`);
     return { voices: [], provider, enabled: false };
   }
 
   for (const v of data.voices) {
-    // 验证必要字段
     if (!v.id || !v.displayName || !v.gender) {
-      console.warn(`   ⚠️  跳过无效音色: ${JSON.stringify(v)}`);
       continue;
     }
 
-    // 生成全局唯一 ID
     const globalId = `${provider}-${service || 'tts'}-${v.id}`;
+    const runtime = normalizeRuntime({
+      ttsConfig: v.ttsConfig || {},
+      runtime: v.runtime || {},
+      fallbackVoiceId: v.id
+    });
 
     voices.push({
       id: globalId,
@@ -176,6 +127,8 @@ async function processYamlFile(filePath) {
       description: v.description || '',
       tags: v.tags || [],
       preview: v.preview,
+      runtime,
+      // Keep old field for compatibility; migration can remove this in a future major version.
       ttsConfig: v.ttsConfig || {}
     });
   }
@@ -183,9 +136,6 @@ async function processYamlFile(filePath) {
   return { voices, provider, enabled: true };
 }
 
-/**
- * 生成分类索引
- */
 async function generateCategories(voices) {
   const categories = {
     _meta: {
@@ -202,20 +152,17 @@ async function generateCategories(voices) {
   };
 
   for (const voice of voices) {
-    // 按提供商分组
     if (!categories.byProvider[voice.provider]) {
       categories.byProvider[voice.provider] = [];
     }
     categories.byProvider[voice.provider].push(voice.id);
 
-    // 按性别分组
     if (voice.gender === 'female') {
       categories.byGender.female.push(voice.id);
     } else if (voice.gender === 'male') {
       categories.byGender.male.push(voice.id);
     }
 
-    // 按语言分组
     for (const lang of voice.languages || []) {
       if (!categories.byLanguage[lang]) {
         categories.byLanguage[lang] = [];
@@ -223,7 +170,6 @@ async function generateCategories(voices) {
       categories.byLanguage[lang].push(voice.id);
     }
 
-    // 按标签分组
     for (const tag of voice.tags || []) {
       if (!categories.byTag[tag]) {
         categories.byTag[tag] = [];
@@ -239,5 +185,87 @@ async function generateCategories(voices) {
   );
 }
 
-// 执行构建
+async function build() {
+  const startTime = Date.now();
+  console.log('Building voice config...');
+
+  try {
+    await fs.mkdir(CONFIG.outputDir, { recursive: true });
+
+    const files = await fs.readdir(CONFIG.sourceDir);
+    const yamlFiles = files.filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+    if (yamlFiles.length === 0) {
+      console.warn('No YAML source files found');
+      return;
+    }
+
+    const allVoices = [];
+    const sources = [];
+    const errors = [];
+
+    for (const file of yamlFiles) {
+      try {
+        const result = await processYamlFile(path.join(CONFIG.sourceDir, file));
+        allVoices.push(...result.voices);
+        sources.push({
+          file,
+          count: result.voices.length,
+          provider: result.provider,
+          enabled: result.enabled
+        });
+      } catch (error) {
+        errors.push({ file, error: error.message });
+      }
+    }
+
+    if (errors.length > 0) {
+      console.error('Build errors:');
+      errors.forEach(e => console.error(`- ${e.file}: ${e.error}`));
+    }
+
+    const idSet = new Set();
+    const duplicates = [];
+    for (const voice of allVoices) {
+      if (idSet.has(voice.id)) {
+        duplicates.push(voice.id);
+      }
+      idSet.add(voice.id);
+    }
+    if (duplicates.length > 0) {
+      console.error(`Duplicate voice ids: ${duplicates.join(', ')}`);
+    }
+
+    const enabledProviders = sources.filter(s => s.enabled !== false).map(s => s.provider);
+    const disabledProviders = sources.filter(s => s.enabled === false).map(s => s.provider);
+
+    const aggregated = {
+      _meta: {
+        version: '2.2',
+        generatedAt: new Date().toISOString(),
+        totalVoices: allVoices.length,
+        sources,
+        providers: {
+          enabled: enabledProviders,
+          disabled: disabledProviders
+        },
+        buildTime: Date.now() - startTime
+      },
+      voices: allVoices
+    };
+
+    await fs.writeFile(
+      path.join(CONFIG.outputDir, 'voices.json'),
+      JSON.stringify(aggregated, null, 2),
+      'utf8'
+    );
+
+    await generateCategories(allVoices);
+
+    console.log(`Build done: ${allVoices.length} voices in ${Date.now() - startTime}ms`);
+  } catch (error) {
+    console.error('Build failed:', error);
+    process.exit(1);
+  }
+}
+
 build();

@@ -1,29 +1,104 @@
 /**
- * VoiceCatalog - 音色目录层
+ * VoiceCatalog
  *
- * 职责：
- * - 作为 VoiceRegistry 和 TtsQueryService 之间的稳定接口
- * - 将原始音色数据转换为稳定的目录对象（profile + runtime 分离）
- * - 提供目录查询的统一入口
- *
- * 设计原则：
- * - TtsQueryService 不直接访问 voiceRegistry 原始结构
- * - 所有音色数据通过此层转换为稳定的 catalog object
- * - profile/runtime 分层在此完成
+ * Responsibilities:
+ * - Convert raw voice records from VoiceRegistry into stable catalog objects
+ * - Separate profile (display) and runtime (execution) concerns
+ * - Provide a single query facade for voice metadata
  */
 
 const { voiceRegistry } = require('../core/VoiceRegistry');
-const { ProviderCatalog } = require('./ProviderCatalog');
+
+function pickFirst(...values) {
+  for (const value of values) {
+    if (value !== undefined && value !== null && value !== '') {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function omit(obj = {}, keys = []) {
+  const keySet = new Set(keys);
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (!keySet.has(key) && value !== undefined) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {});
+}
 
 /**
- * 将原始音色转换为目录对象（profile/runtime 分离）
- * @param {Object} rawVoice - Registry 中的原始音色
- * @returns {Object} 目录对象
+ * Normalize runtime fields to a canonical schema:
+ * - voiceId: provider-side voice identifier
+ * - model, sampleRate, cluster, voiceType: common execution fields
+ * - providerOptions: provider-specific runtime fields
+ *
+ * Backward compatibility:
+ * - keep runtime.voice alias (same as voiceId when needed)
+ * - keep _raw.ttsConfig in catalog object
+ */
+function normalizeRuntime(rawVoice = {}) {
+  const legacy = rawVoice.ttsConfig || {};
+  const rawRuntime = rawVoice.runtime || {};
+
+  const fallbackVoiceId = pickFirst(
+    legacy.voiceId,
+    legacy.voiceName,
+    legacy.sourceId,
+    rawVoice.sourceId
+  );
+
+  const voiceId = pickFirst(
+    rawRuntime.voiceId,
+    rawRuntime.voice,
+    fallbackVoiceId
+  );
+
+  const legacyProviderOptions = omit(legacy, [
+    'voiceId',
+    'voiceName',
+    'sourceId',
+    'model',
+    'sampleRate',
+    'cluster',
+    'voiceType'
+  ]);
+
+  const runtimeProviderOptions = rawRuntime.providerOptions || {};
+
+  const runtimeExtras = omit(rawRuntime, [
+    'voice',
+    'voiceId',
+    'model',
+    'sampleRate',
+    'cluster',
+    'voiceType',
+    'providerOptions'
+  ]);
+
+  return {
+    voiceId,
+    model: pickFirst(rawRuntime.model, legacy.model),
+    sampleRate: pickFirst(rawRuntime.sampleRate, legacy.sampleRate),
+    cluster: pickFirst(rawRuntime.cluster, legacy.cluster),
+    voiceType: pickFirst(rawRuntime.voiceType, legacy.voiceType),
+    providerOptions: {
+      ...legacyProviderOptions,
+      ...runtimeProviderOptions
+    },
+    ...runtimeExtras,
+    // Compatibility alias
+    voice: pickFirst(rawRuntime.voice, voiceId)
+  };
+}
+
+/**
+ * Convert raw voice from registry to catalog object (profile/runtime split)
  */
 function toCatalogVoice(rawVoice) {
   if (!rawVoice) return null;
 
-  // Profile 层：展示信息（稳定，面向用户）
   const profile = {
     id: rawVoice.id,
     provider: rawVoice.provider,
@@ -40,23 +115,11 @@ function toCatalogVoice(rawVoice) {
     status: rawVoice.status || 'active'
   };
 
-  // Runtime 层：运行时配置（执行时使用）
-  // 优先使用 runtime 字段，兼容 ttsConfig
-  const runtime = {
-    voice: rawVoice.runtime?.voice ||
-           rawVoice.ttsConfig?.voiceId ||
-           rawVoice.ttsConfig?.voiceName ||
-           rawVoice.sourceId,
-    model: rawVoice.runtime?.model || rawVoice.ttsConfig?.model,
-    sampleRate: rawVoice.runtime?.sampleRate || rawVoice.ttsConfig?.sampleRate,
-    cluster: rawVoice.runtime?.cluster || rawVoice.ttsConfig?.cluster,
-    voiceType: rawVoice.runtime?.voiceType || rawVoice.ttsConfig?.voiceType
-  };
+  const runtime = normalizeRuntime(rawVoice);
 
   return {
     profile,
     runtime,
-    // 原始字段保留（仅供兼容，不推荐直接使用）
     _raw: {
       ttsConfig: rawVoice.ttsConfig,
       metadata: rawVoice.metadata
@@ -65,9 +128,7 @@ function toCatalogVoice(rawVoice) {
 }
 
 /**
- * 将目录对象转换为展示用 DTO（隐藏 runtime 详情）
- * @param {Object} catalogVoice - 目录对象
- * @returns {Object} 展示用 DTO
+ * Display DTO without runtime internals
  */
 function toDisplayDto(catalogVoice) {
   if (!catalogVoice) return null;
@@ -89,9 +150,7 @@ function toDisplayDto(catalogVoice) {
 }
 
 /**
- * 将目录对象转换为详情 DTO（包含 profile/runtime 分层）
- * @param {Object} catalogVoice - 目录对象
- * @returns {Object} 详情 DTO
+ * Detail DTO with profile/runtime split
  */
 function toDetailDto(catalogVoice) {
   if (!catalogVoice) return null;
@@ -108,50 +167,26 @@ function toDetailDto(catalogVoice) {
 }
 
 const VoiceCatalog = {
-  /**
-   * 获取单个音色的目录对象
-   * @param {string} voiceId - 音色 ID
-   * @returns {Object|null} 目录对象
-   */
   get(voiceId) {
     const raw = voiceRegistry.get(voiceId);
     return toCatalogVoice(raw);
   },
 
-  /**
-   * 获取单个音色的运行时配置
-   * @param {string} voiceId - 音色 ID
-   * @returns {Object|null} 运行时配置
-   */
   getRuntime(voiceId) {
     const catalog = this.get(voiceId);
     return catalog?.runtime || null;
   },
 
-  /**
-   * 获取单个音色的展示信息
-   * @param {string} voiceId - 音色 ID
-   * @returns {Object|null} 展示 DTO
-   */
   getDisplay(voiceId) {
     const catalog = this.get(voiceId);
     return toDisplayDto(catalog);
   },
 
-  /**
-   * 获取单个音色的详情信息（包含 profile/runtime 分层）
-   * @param {string} voiceId - 音色 ID
-   * @returns {Object|null} 详情 DTO
-   */
   getDetail(voiceId) {
     const catalog = this.get(voiceId);
     return toDetailDto(catalog);
   },
 
-  /**
-   * 获取所有音色的展示列表
-   * @returns {Object[]} 展示 DTO 数组
-   */
   getAllDisplay() {
     const rawVoices = voiceRegistry.getAll();
     return rawVoices
@@ -160,11 +195,6 @@ const VoiceCatalog = {
       .map(toDisplayDto);
   },
 
-  /**
-   * 按服务商获取音色展示列表
-   * @param {string} provider - 服务商标识
-   * @returns {Object[]} 展示 DTO 数组
-   */
   getByProvider(provider) {
     const rawVoices = voiceRegistry.getByProvider(provider);
     return rawVoices
@@ -173,12 +203,6 @@ const VoiceCatalog = {
       .map(toDisplayDto);
   },
 
-  /**
-   * 按服务商和服务获取音色展示列表
-   * @param {string} provider - 服务商标识
-   * @param {string} service - 服务标识
-   * @returns {Object[]} 展示 DTO 数组
-   */
   getByProviderAndService(provider, service) {
     const rawVoices = voiceRegistry.getByProviderAndService(provider, service);
     return rawVoices
@@ -187,20 +211,9 @@ const VoiceCatalog = {
       .map(toDisplayDto);
   },
 
-  /**
-   * 查询音色列表（支持过滤）
-   * @param {Object} filters - 过滤条件
-   * @param {string} [filters.provider] - 服务商
-   * @param {string} [filters.service] - 服务
-   * @param {string} [filters.gender] - 性别
-   * @param {string} [filters.tags] - 标签（逗号分隔）
-   * @param {string} [filters.language] - 语言
-   * @returns {Object[]} 展示 DTO 数组
-   */
   query(filters = {}) {
     const { provider, service, gender, tags, language } = filters;
 
-    // 先按 provider/service 过滤
     let rawVoices;
     if (provider && service) {
       rawVoices = voiceRegistry.getByProviderAndService(provider, service);
@@ -210,16 +223,12 @@ const VoiceCatalog = {
       rawVoices = voiceRegistry.getAll();
     }
 
-    // 转换为目录对象
     let catalogVoices = rawVoices
       .map(v => toCatalogVoice(v))
       .filter(Boolean);
 
-    // 应用其他过滤
     if (gender) {
-      catalogVoices = catalogVoices.filter(v =>
-        v.profile.gender === gender
-      );
+      catalogVoices = catalogVoices.filter(v => v.profile.gender === gender);
     }
 
     if (tags) {
@@ -238,10 +247,6 @@ const VoiceCatalog = {
     return catalogVoices.map(toDisplayDto);
   },
 
-  /**
-   * 获取筛选元数据
-   * @returns {Object} 筛选器元数据
-   */
   getFiltersMeta() {
     const rawVoices = voiceRegistry.getAll();
     const catalogVoices = rawVoices.map(v => toCatalogVoice(v)).filter(Boolean);
@@ -274,10 +279,6 @@ const VoiceCatalog = {
     };
   },
 
-  /**
-   * 获取统计信息
-   * @returns {Object} 统计数据
-   */
   getStats() {
     const registryStats = voiceRegistry.getStats();
 
