@@ -1,10 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const { unifiedAuth } = require('../../src/core/middleware/apiKeyMiddleware');
 const { presets } = require('../../src/shared/middleware/apiStatsMiddleware');
 const config = require('../../src/shared/config/config');
 const credentials = require('../../src/modules/credentials');
-require('dotenv').config();
 
 // 验证配置（在应用启动前检查关键配置）
 try {
@@ -72,7 +73,20 @@ app.get('/api/public/info', (req, res) => {
   });
 });
 
-// TTS routes
+// TTS routes (使用合并后的完整版路由)
+const serviceContainer = require('../../src/config/ServiceContainer');
+
+// 初始化ServiceContainer并挂载TTS路由
+async function initializeTTSModule() {
+  try {
+    await serviceContainer.initialize();
+    console.log('✅ TTS ServiceContainer initialized');
+  } catch (error) {
+    console.error('❌ TTS ServiceContainer initialization failed:', error.message);
+  }
+}
+
+initializeTTSModule();
 app.use('/api/tts', require('./routes/ttsRoutes'));
 // Voice models (音色管理)
 app.use('/api/voices', require('../../src/modules/tts/routes/voiceManageRoutes'));

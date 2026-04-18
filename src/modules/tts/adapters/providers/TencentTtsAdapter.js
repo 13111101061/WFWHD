@@ -34,7 +34,7 @@ class TencentTtsAdapter extends BaseTtsAdapter {
         profile: { httpProfile: { endpoint: 'tts.tencentcloudapi.com' } }
       });
     } catch (e) {
-      throw this._error('DEPENDENCY_ERROR', '腾讯云SDK未安装: npm install tencentcloud-sdk-nodejs-tts');
+      throw this._error('CONFIG_ERROR', '腾讯云SDK未安装: npm install tencentcloud-sdk-nodejs-tts');
     }
   }
 

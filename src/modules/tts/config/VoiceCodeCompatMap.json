@@ -1,0 +1,531 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2026-04-17T09:18:47.646Z",
+  "description": "legacy system_id -> voice_code 兼容映射 (v2.0 格式)",
+  "legacyToVoiceCode": {
+    "moss-tts-beijingnan": "001000010000007",
+    "beijingnan": "001000010000007",
+    "moss-tts-taiwannv": "001000020000006",
+    "taiwannv": "001000020000006",
+    "moss-tts-ashui": "001000030000005",
+    "ashui": "001000030000005",
+    "moss-tts-zhouzhou": "001000040000004",
+    "zhouzhou": "001000040000004",
+    "moss-tts-ziqi": "001000050000003",
+    "ziqi": "001000050000003",
+    "moss-tts-xiaoman": "001000060000002",
+    "xiaoman": "001000060000002",
+    "moss-tts-chengshu": "001000070000001",
+    "chengshu": "001000070000001",
+    "moss-tts-aning": "001000080000000",
+    "aning": "001000080000000",
+    "moss-tts-liangzi": "001000090000009",
+    "liangzi": "001000090000009",
+    "aliyun-qwen_http-cherry": "002000010000005",
+    "cherry": "002000010000005",
+    "aliyun-qwen_http-ethan": "002000020000004",
+    "ethan": "002000020000004",
+    "aliyun-qwen_http-chelsie": "002000030000003",
+    "chelsie": "002000030000003",
+    "aliyun-qwen_http-serena": "002000040000002",
+    "serena": "002000040000002",
+    "aliyun-qwen_http-dylan": "002000050000001",
+    "dylan": "002000050000001",
+    "aliyun-qwen_http-jada": "002000060000000",
+    "jada": "002000060000000",
+    "aliyun-qwen_http-sunny": "002000070000009",
+    "sunny": "002000070000009",
+    "aliyun-qwen_http-momo": "002000080000008",
+    "momo": "002000080000008",
+    "aliyun-qwen_http-vivian": "002000090000007",
+    "vivian": "002000090000007",
+    "aliyun-qwen_http-moon": "002000100000004",
+    "moon": "002000100000004",
+    "aliyun-qwen_http-maia": "002000110000003",
+    "maia": "002000110000003",
+    "aliyun-qwen_http-kai": "002000120000002",
+    "kai": "002000120000002",
+    "aliyun-qwen_http-nofish": "002000130000001",
+    "nofish": "002000130000001",
+    "aliyun-qwen_http-bella": "002000140000000",
+    "bella": "002000140000000",
+    "aliyun-qwen_http-jennifer": "002000150000009",
+    "jennifer": "002000150000009",
+    "aliyun-qwen_http-ryan": "002000160000008",
+    "ryan": "002000160000008",
+    "aliyun-qwen_http-katerina": "002000170000007",
+    "katerina": "002000170000007",
+    "aliyun-qwen_http-aiden": "002000180000006",
+    "aiden": "002000180000006",
+    "aliyun-qwen_http-eldric-sage": "002000190000005",
+    "eldric-sage": "002000190000005",
+    "aliyun-qwen_http-mia": "002000200000002",
+    "mia": "002000200000002",
+    "aliyun-qwen_http-mochi": "002000210000001",
+    "mochi": "002000210000001",
+    "aliyun-qwen_http-bellona": "002000220000000",
+    "bellona": "002000220000000",
+    "aliyun-qwen_http-vincent": "002000230000009",
+    "vincent": "002000230000009",
+    "aliyun-qwen_http-bunny": "002000240000008",
+    "bunny": "002000240000008",
+    "aliyun-qwen_http-neil": "002000250000007",
+    "neil": "002000250000007",
+    "aliyun-qwen_http-elias": "002000260000006",
+    "elias": "002000260000006",
+    "aliyun-qwen_http-arthur": "002000270000005",
+    "arthur": "002000270000005",
+    "aliyun-qwen_http-nini": "002000280000004",
+    "nini": "002000280000004",
+    "aliyun-qwen_http-ebona": "002000290000003",
+    "ebona": "002000290000003",
+    "aliyun-qwen_http-seren": "002000300000000",
+    "seren": "002000300000000",
+    "aliyun-qwen_http-pip": "002000310000009",
+    "pip": "002000310000009",
+    "aliyun-qwen_http-stella": "002000320000008",
+    "stella": "002000320000008",
+    "aliyun-qwen_http-bodega": "002000330000007",
+    "bodega": "002000330000007",
+    "aliyun-qwen_http-sonrisa": "002000340000006",
+    "sonrisa": "002000340000006",
+    "aliyun-qwen_http-alek": "002000350000005",
+    "alek": "002000350000005",
+    "aliyun-qwen_http-dolce": "002000360000004",
+    "dolce": "002000360000004",
+    "aliyun-qwen_http-sohee": "002000370000003",
+    "sohee": "002000370000003",
+    "aliyun-qwen_http-ono-anna": "002000380000002",
+    "ono-anna": "002000380000002",
+    "aliyun-qwen_http-lenn": "002000390000001",
+    "lenn": "002000390000001",
+    "aliyun-qwen_http-emilien": "002000400000008",
+    "emilien": "002000400000008",
+    "aliyun-qwen_http-andre": "002000410000007",
+    "andre": "002000410000007",
+    "aliyun-qwen_http-radio-gol": "002000420000006",
+    "radio-gol": "002000420000006",
+    "aliyun-qwen_http-li": "002000430000005",
+    "li": "002000430000005",
+    "aliyun-qwen_http-marcus": "002000440000004",
+    "marcus": "002000440000004",
+    "aliyun-qwen_http-roy": "002000450000003",
+    "roy": "002000450000003",
+    "aliyun-qwen_http-peter": "002000460000002",
+    "peter": "002000460000002",
+    "aliyun-qwen_http-eric": "002000470000001",
+    "eric": "002000470000001",
+    "aliyun-qwen_http-rocky": "002000480000000",
+    "rocky": "002000480000000",
+    "aliyun-qwen_http-kiki": "002000490000009",
+    "kiki": "002000490000009"
+  },
+  "voiceCodeIndex": {
+    "001000010000007": {
+      "id": "moss-tts-beijingnan",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "北京男声",
+      "providerVoiceId": "2020008594694475776"
+    },
+    "001000020000006": {
+      "id": "moss-tts-taiwannv",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "台湾女声",
+      "providerVoiceId": "2020009311371005952"
+    },
+    "001000030000005": {
+      "id": "moss-tts-ashui",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "阿树",
+      "providerVoiceId": "2001257729754140672"
+    },
+    "001000040000004": {
+      "id": "moss-tts-zhouzhou",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "周周",
+      "providerVoiceId": "2001286865130360832"
+    },
+    "001000050000003": {
+      "id": "moss-tts-ziqi",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "子琪",
+      "providerVoiceId": "2001898421836845056"
+    },
+    "001000060000002": {
+      "id": "moss-tts-xiaoman",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "小满",
+      "providerVoiceId": "2001910895478837248"
+    },
+    "001000070000001": {
+      "id": "moss-tts-chengshu",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "程述",
+      "providerVoiceId": "2001931510222950400"
+    },
+    "001000080000000": {
+      "id": "moss-tts-aning",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "阿宁",
+      "providerVoiceId": "2002941772480647168"
+    },
+    "001000090000009": {
+      "id": "moss-tts-liangzi",
+      "provider": "moss",
+      "service": "tts",
+      "displayName": "梁子",
+      "providerVoiceId": "2002991117984862208"
+    },
+    "002000010000005": {
+      "id": "aliyun-qwen_http-cherry",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱千月",
+      "providerVoiceId": "Cherry"
+    },
+    "002000020000004": {
+      "id": "aliyun-qwen_http-ethan",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱晨曦",
+      "providerVoiceId": "Ethan"
+    },
+    "002000030000003": {
+      "id": "aliyun-qwen_http-chelsie",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱千雪",
+      "providerVoiceId": "Chelsie"
+    },
+    "002000040000002": {
+      "id": "aliyun-qwen_http-serena",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱苏瑶",
+      "providerVoiceId": "Serena"
+    },
+    "002000050000001": {
+      "id": "aliyun-qwen_http-dylan",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "北京-晓东",
+      "providerVoiceId": "Dylan"
+    },
+    "002000060000000": {
+      "id": "aliyun-qwen_http-jada",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "上海-阿珍",
+      "providerVoiceId": "Jada"
+    },
+    "002000070000009": {
+      "id": "aliyun-qwen_http-sunny",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "四川-晴儿",
+      "providerVoiceId": "Sunny"
+    },
+    "002000080000008": {
+      "id": "aliyun-qwen_http-momo",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱伏兔",
+      "providerVoiceId": "Momo"
+    },
+    "002000090000007": {
+      "id": "aliyun-qwen_http-vivian",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱十一",
+      "providerVoiceId": "Vivian"
+    },
+    "002000100000004": {
+      "id": "aliyun-qwen_http-moon",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱月白",
+      "providerVoiceId": "Moon"
+    },
+    "002000110000003": {
+      "id": "aliyun-qwen_http-maia",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱七月",
+      "providerVoiceId": "Maia"
+    },
+    "002000120000002": {
+      "id": "aliyun-qwen_http-kai",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "凯",
+      "providerVoiceId": "Kai"
+    },
+    "002000130000001": {
+      "id": "aliyun-qwen_http-nofish",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "不爱吃鱼",
+      "providerVoiceId": "Nofish"
+    },
+    "002000140000000": {
+      "id": "aliyun-qwen_http-bella",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱晴宝",
+      "providerVoiceId": "Bella"
+    },
+    "002000150000009": {
+      "id": "aliyun-qwen_http-jennifer",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Jennifer",
+      "providerVoiceId": "Jennifer"
+    },
+    "002000160000008": {
+      "id": "aliyun-qwen_http-ryan",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Ryan",
+      "providerVoiceId": "Ryan"
+    },
+    "002000170000007": {
+      "id": "aliyun-qwen_http-katerina",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Katerina",
+      "providerVoiceId": "Katerina"
+    },
+    "002000180000006": {
+      "id": "aliyun-qwen_http-aiden",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Aiden",
+      "providerVoiceId": "Aiden"
+    },
+    "002000190000005": {
+      "id": "aliyun-qwen_http-eldric-sage",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "沧明子",
+      "providerVoiceId": "Eldric Sage"
+    },
+    "002000200000002": {
+      "id": "aliyun-qwen_http-mia",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱念棠",
+      "providerVoiceId": "Mia"
+    },
+    "002000210000001": {
+      "id": "aliyun-qwen_http-mochi",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱星冉",
+      "providerVoiceId": "Mochi"
+    },
+    "002000220000000": {
+      "id": "aliyun-qwen_http-bellona",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱铮莺",
+      "providerVoiceId": "Bellona"
+    },
+    "002000230000009": {
+      "id": "aliyun-qwen_http-vincent",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "田叔",
+      "providerVoiceId": "Vincent"
+    },
+    "002000240000008": {
+      "id": "aliyun-qwen_http-bunny",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱芽芽",
+      "providerVoiceId": "Bunny"
+    },
+    "002000250000007": {
+      "id": "aliyun-qwen_http-neil",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "阿明远",
+      "providerVoiceId": "Neil"
+    },
+    "002000260000006": {
+      "id": "aliyun-qwen_http-elias",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱明涟",
+      "providerVoiceId": "Elias"
+    },
+    "002000270000005": {
+      "id": "aliyun-qwen_http-arthur",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "徐来顺",
+      "providerVoiceId": "Arthur"
+    },
+    "002000280000004": {
+      "id": "aliyun-qwen_http-nini",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱云朵",
+      "providerVoiceId": "Nini"
+    },
+    "002000290000003": {
+      "id": "aliyun-qwen_http-ebona",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱青烛",
+      "providerVoiceId": "Ebona"
+    },
+    "002000300000000": {
+      "id": "aliyun-qwen_http-seren",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱曦语",
+      "providerVoiceId": "Seren"
+    },
+    "002000310000009": {
+      "id": "aliyun-qwen_http-pip",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "小新",
+      "providerVoiceId": "Pip"
+    },
+    "002000320000008": {
+      "id": "aliyun-qwen_http-stella",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "爱羽月",
+      "providerVoiceId": "Stella"
+    },
+    "002000330000007": {
+      "id": "aliyun-qwen_http-bodega",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Bodega",
+      "providerVoiceId": "Bodega"
+    },
+    "002000340000006": {
+      "id": "aliyun-qwen_http-sonrisa",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Sonrisa",
+      "providerVoiceId": "Sonrisa"
+    },
+    "002000350000005": {
+      "id": "aliyun-qwen_http-alek",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Alek",
+      "providerVoiceId": "Alek"
+    },
+    "002000360000004": {
+      "id": "aliyun-qwen_http-dolce",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Dolce",
+      "providerVoiceId": "Dolce"
+    },
+    "002000370000003": {
+      "id": "aliyun-qwen_http-sohee",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Sohee",
+      "providerVoiceId": "Sohee"
+    },
+    "002000380000002": {
+      "id": "aliyun-qwen_http-ono-anna",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Ono Anna",
+      "providerVoiceId": "Ono Anna"
+    },
+    "002000390000001": {
+      "id": "aliyun-qwen_http-lenn",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Lenn",
+      "providerVoiceId": "Lenn"
+    },
+    "002000400000008": {
+      "id": "aliyun-qwen_http-emilien",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Emilien",
+      "providerVoiceId": "Emilien"
+    },
+    "002000410000007": {
+      "id": "aliyun-qwen_http-andre",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Andre",
+      "providerVoiceId": "Andre"
+    },
+    "002000420000006": {
+      "id": "aliyun-qwen_http-radio-gol",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "Radio Gol",
+      "providerVoiceId": "Radio Gol"
+    },
+    "002000430000005": {
+      "id": "aliyun-qwen_http-li",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "南京-老李",
+      "providerVoiceId": "Li"
+    },
+    "002000440000004": {
+      "id": "aliyun-qwen_http-marcus",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "陕西-秦川",
+      "providerVoiceId": "Marcus"
+    },
+    "002000450000003": {
+      "id": "aliyun-qwen_http-roy",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "闽南-阿杰",
+      "providerVoiceId": "Roy"
+    },
+    "002000460000002": {
+      "id": "aliyun-qwen_http-peter",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "天津-李彼得",
+      "providerVoiceId": "Peter"
+    },
+    "002000470000001": {
+      "id": "aliyun-qwen_http-eric",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "四川-程川",
+      "providerVoiceId": "Eric"
+    },
+    "002000480000000": {
+      "id": "aliyun-qwen_http-rocky",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "粤语-阿强",
+      "providerVoiceId": "Rocky"
+    },
+    "002000490000009": {
+      "id": "aliyun-qwen_http-kiki",
+      "provider": "aliyun",
+      "service": "qwen_http",
+      "displayName": "粤语-阿清",
+      "providerVoiceId": "Kiki"
+    }
+  }
+}

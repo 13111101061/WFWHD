@@ -1,0 +1,60 @@
+{
+  "_comment": "音色编码配置文件 - 定义服务商编码及校验算法 (v2.0 简化版，去掉模型编码)",
+  "version": "2.0.0",
+  "generatedAt": "2026-04-17",
+
+  "voiceCodeFormat": {
+    "totalLength": 15,
+    "structure": "PPP VVVVV RRRRRR C",
+    "sections": {
+      "providerCode": { "start": 0, "length": 3, "description": "服务商编码" },
+      "voiceNumber": { "start": 3, "length": 5, "description": "音色业务编号 (00001-99999)" },
+      "reserved": { "start": 8, "length": 6, "description": "预留位（当前固定000000）" },
+      "checksum": { "start": 14, "length": 1, "description": "校验位（Luhn算法）" }
+    }
+  },
+
+  "providerCodes": {
+    "001": {
+      "providerKey": "moss",
+      "serviceKey": "tts",
+      "displayName": "MOSS"
+    },
+    "002": {
+      "providerKey": "aliyun",
+      "serviceKey": "qwen_http",
+      "displayName": "阿里云"
+    },
+    "003": {
+      "providerKey": "tencent",
+      "serviceKey": "tts",
+      "displayName": "腾讯云"
+    },
+    "004": {
+      "providerKey": "volcengine",
+      "serviceKey": "volcengine_http",
+      "displayName": "火山引擎"
+    },
+    "005": {
+      "providerKey": "minimax",
+      "serviceKey": "minimax_tts",
+      "displayName": "MiniMax"
+    }
+  },
+
+  "checksumAlgorithm": "luhn",
+
+  "compatibility": {
+    "legacyIdSupport": true,
+    "resolutionPriority": ["voiceCode", "systemId", "voice"],
+    "migration": {
+      "fromVersion": "1.0.0",
+      "changes": [
+        "Removed modelCode section (3 digits)",
+        "Extended voiceNumber from 4 to 5 digits (max 99999 voices per provider)",
+        "Extended reserved from 4 to 6 digits",
+        "Merged model info into providerCodes with serviceKey"
+      ]
+    }
+  }
+}

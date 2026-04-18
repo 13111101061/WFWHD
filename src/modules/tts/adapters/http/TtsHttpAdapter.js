@@ -139,7 +139,12 @@ class TtsHttpAdapter {
    */
   async getProviders(req, res) {
     try {
-      const providers = this.synthesisService.getProviders();
+      const providersResult = this.synthesisService.getProviders();
+
+      // Backward compatible: support both array and { success, data } structures.
+      const providers = Array.isArray(providersResult)
+        ? providersResult
+        : (providersResult?.data || []);
 
       res.json({
         success: true,
@@ -231,6 +236,119 @@ class TtsHttpAdapter {
     }
   }
 
+  /**
+   * 获取单个音色详情
+   * GET /api/tts/voices/:id
+   */
+  async getVoiceById(req, res) {
+    try {
+      const { id } = req.params;
+      const voice = this.synthesisService.getVoice(id);
+
+      if (!voice) {
+        return res.status(404).json({
+          success: false,
+          error: `Voice not found: ${id}`
+        });
+      }
+
+      res.json({
+        success: true,
+        data: voice,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取音色详情
+   * GET /api/tts/voices/:id/detail
+   */
+  async getVoiceDetail(req, res) {
+    try {
+      const { id } = req.params;
+      const detail = this.synthesisService.getVoiceDetail(id);
+
+      if (!detail) {
+        return res.status(404).json({
+          success: false,
+          error: `Voice detail not found: ${id}`
+        });
+      }
+
+      res.json({
+        success: true,
+        data: detail,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取服务能力
+   * GET /api/tts/capabilities/:service
+   */
+  async getCapabilities(req, res) {
+    try {
+      const { service } = req.params;
+      const result = this.synthesisService.getCapabilities(service);
+
+      const statusCode = result.success ? 200 : 404;
+      res.status(statusCode).json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取筛选选项
+   * GET /api/tts/filters
+   */
+  async getFilterOptions(req, res) {
+    try {
+      const result = this.synthesisService.getFilterOptions();
+      res.json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取前端展示目录
+   * GET /api/tts/catalog
+   */
+  async getFrontendCatalog(req, res) {
+    try {
+      const result = this.synthesisService.getFrontendCatalog();
+      res.json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取前端展示音色数据
+   * GET /api/tts/frontend
+   */
+  async getFrontendVoices(req, res) {
+    try {
+      const result = this.synthesisService.getFrontendVoices();
+      res.json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
   // ==================== 私有方法 ====================
 
   /**
@@ -277,6 +395,9 @@ class TtsHttpAdapter {
   _getStatusCode(error) {
     switch (error.code) {
       case 'VALIDATION_ERROR':
+      case 'SERVICE_MISMATCH':  // 服务不匹配属于客户端参数错误
+      case 'UNKNOWN_SERVICE':   // 未知服务属于客户端参数错误
+      case 'CAPABILITY_ERROR':  // 能力校验失败属于客户端参数错误
         return 400;
       case 'VOICE_NOT_FOUND':
       case 'NOT_FOUND':

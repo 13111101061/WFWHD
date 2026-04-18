@@ -64,7 +64,7 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
 
       const timeout = setTimeout(() => {
         ws.close();
-        reject(this._error('TIMEOUT', 'WebSocket连接超时'));
+        reject(this._error('TIMEOUT_ERROR', 'WebSocket连接超时'));
       }, this.config.timeout);
 
       ws.on('open', () => {
@@ -106,7 +106,7 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
 
       ws.on('error', (err) => {
         clearTimeout(timeout);
-        reject(this._error('CONNECTION_ERROR', err.message));
+        reject(this._error('NETWORK_ERROR', err.message));
       });
 
       ws.on('close', () => {

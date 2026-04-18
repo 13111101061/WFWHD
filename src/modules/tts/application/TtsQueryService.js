@@ -1,8 +1,30 @@
-﻿const { VoiceCatalog } = require('../catalog/VoiceCatalog');
+/**
+ * TtsQueryService - TTS查询服务
+ *
+ * 核心职责：
+ * - 音色查询（列表/详情/筛选）
+ * - 提供商查询
+ * - 服务能力查询
+ * - 前端展示数据查询
+ */
+
+const { VoiceCatalog } = require('../catalog/VoiceCatalog');
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
 const { voiceRegistry } = require('../core/VoiceRegistry');
 
-const TtsQueryService = {
+class TtsQueryService {
+  /**
+   * 依赖注入
+   */
+  constructor({ ttsProvider } = {}) {
+    this.ttsProvider = ttsProvider;
+  }
+
+  // ==================== 音色查询 ====================
+
+  /**
+   * 查询音色列表（带筛选）
+   */
   queryVoices(filters = {}) {
     const { includeCounts = true } = filters;
 
@@ -24,20 +46,235 @@ const TtsQueryService = {
     }
 
     return response;
-  },
+  }
+
+  /**
+   * 获取单个音色
+   */
+  getVoice(voiceId) {
+    const voice = VoiceCatalog.getDisplay(voiceId);
+    if (!voice) return null;
+
+    return this._isProviderVisible(voice.provider) ? voice : null;
+  }
+
+  /**
+   * 获取音色详情
+   */
+  getVoiceDetail(voiceId) {
+    const detail = VoiceCatalog.getDetail(voiceId);
+    if (!detail) return null;
+
+    return this._isProviderVisible(detail.profile?.provider) ? detail : null;
+  }
+
+  /**
+   * 获取可用音色（按provider/service）
+   */
+  async getVoices(provider, serviceType) {
+    if (provider && serviceType) {
+      return voiceRegistry.getByProviderAndService(provider, serviceType);
+    }
+    if (provider) {
+      return voiceRegistry.getByProvider(provider);
+    }
+    return voiceRegistry.getAll();
+  }
+
+  /**
+   * 获取所有可用音色（按服务分组）
+   */
+  async getAllVoices() {
+    const stats = voiceRegistry.getStats();
+    const result = {};
+
+    for (const [provider] of Object.entries(stats.providers)) {
+      const voices = voiceRegistry.getByProvider(provider);
+
+      const services = {};
+      for (const voice of voices) {
+        const service = voice.service || 'default';
+        const key = `${provider}_${service}`;
+
+        if (!services[key]) {
+          services[key] = { provider, service, voices: [] };
+        }
+        services[key].voices.push(this._mapVoice(voice));
+      }
+
+      Object.assign(result, services);
+    }
+
+    return result;
+  }
+
+  // ==================== 提供商查询 ====================
+
+  /**
+   * 获取服务提供商列表
+   * 统一返回结构：{ key, provider, service, displayName, description, configured, status }
+   */
+  getProviders() {
+    const credentials = require('../../credentials');
+    const providers = require('../adapters/providers');
+    const { ProviderCatalog } = require('../catalog/ProviderCatalog');
+
+    const providerList = ProviderCatalog.getAll()
+      .filter(p => providers.hasProvider(p.key))
+      .map(p => ({
+        key: p.key,
+        provider: p.provider,
+        service: p.service,
+        displayName: p.displayName,
+        description: p.description,
+        configured: credentials.isConfigured(p.provider),
+        status: p.status || 'stable'
+      }));
+
+    return {
+      success: true,
+      data: providerList,
+      total: providerList.length,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 获取服务能力
+   */
+  getCapabilities(serviceKey) {
+    const config = ProviderCatalog.get(serviceKey);
+    if (!config) {
+      return {
+        success: false,
+        error: `Service not found: ${serviceKey}`
+      };
+    }
+
+    if (!this._hasVisibleVoicesFor(config.provider, config.service)) {
+      return {
+        success: false,
+        error: `Service disabled: ${serviceKey}`
+      };
+    }
+
+    return {
+      success: true,
+      data: config.capabilities,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // ==================== 前端展示 ====================
+
+  /**
+   * 获取前端展示目录
+   */
+  getFrontendCatalog() {
+    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+    const filters = this._buildFiltersMeta(items);
+    const counts = this._buildCounts(items);
+    const index = this._buildIndex(items);
+    const providers = this.getProviders();
+
+    const voices = items.map(item => ({
+      id: item.id,
+      name: item.displayName || item.name || item.id,
+      displayName: item.displayName || item.name || item.id,
+      provider: item.provider || '',
+      service: item.service || '',
+      gender: item.gender || 'unknown',
+      languages: item.languages || [],
+      tags: item.tags || [],
+      description: item.description || '',
+      previewUrl: item.preview || '',
+      status: item.status || 'active'
+    }));
+
+    return {
+      success: true,
+      data: {
+        schemaVersion: 'frontend-catalog.v1',
+        generatedAt: new Date().toISOString(),
+        voices,
+        filters,
+        counts,
+        index,
+        providers
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 获取前端展示专用数据（精简版）
+   */
+  getFrontendVoices() {
+    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+
+    const voices = items.map(item => ({
+      id: item.id,
+      displayName: item.displayName || item.name || item.id,
+      gender: item.gender || 'unknown',
+      languages: item.languages || [],
+      tags: item.tags || [],
+      description: item.description || '',
+      preview: item.preview || ''
+    }));
+
+    const genders = new Set();
+    const languages = new Set();
+    const tags = new Set();
+
+    voices.forEach(v => {
+      if (v.gender) genders.add(v.gender);
+      v.languages.forEach(lang => languages.add(lang));
+      v.tags.forEach(tag => tags.add(tag));
+    });
+
+    return {
+      success: true,
+      data: {
+        voices,
+        filters: {
+          genders: Array.from(genders).sort(),
+          languages: Array.from(languages).sort(),
+          tags: Array.from(tags).sort()
+        },
+        total: voices.length
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 获取筛选选项
+   */
+  getFilterOptions() {
+    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+    const filters = this._buildFiltersMeta(items);
+
+    return {
+      success: true,
+      data: filters,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // ==================== 辅助方法 ====================
 
   _isProviderVisible(provider) {
     return voiceRegistry.isProviderEnabled(provider);
-  },
+  }
 
   _hasVisibleVoicesFor(provider, service) {
     if (!this._isProviderVisible(provider)) return false;
     return voiceRegistry.getByProviderAndService(provider, service).length > 0;
-  },
+  }
 
   _filterVisibleVoices(items = []) {
     return items.filter(item => this._isProviderVisible(item.provider));
-  },
+  }
 
   _buildFiltersMeta(items = []) {
     const providers = new Set();
@@ -67,7 +304,7 @@ const TtsQueryService = {
       languages: Array.from(languages).sort(),
       tags: Array.from(tags).sort()
     };
-  },
+  }
 
   _buildCounts(items) {
     const counts = {
@@ -92,7 +329,7 @@ const TtsQueryService = {
     });
 
     return counts;
-  },
+  }
 
   _buildIndex(items) {
     const index = {
@@ -135,170 +372,22 @@ const TtsQueryService = {
     });
 
     return index;
-  },
+  }
 
-  getFrontendCatalog() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
-    const filters = this._buildFiltersMeta(items);
-    const counts = this._buildCounts(items);
-    const index = this._buildIndex(items);
-    const providers = this.getProviders().data || [];
-
-    const voices = items.map(item => ({
-      id: item.id,
-      name: item.displayName || item.name || item.id,
-      displayName: item.displayName || item.name || item.id,
-      provider: item.provider || '',
-      service: item.service || '',
-      gender: item.gender || 'unknown',
-      languages: item.languages || [],
-      tags: item.tags || [],
-      description: item.description || '',
-      previewUrl: item.preview || '',
-      status: item.status || 'active'
-    }));
-
+  _mapVoice(voice) {
     return {
-      success: true,
-      data: {
-        schemaVersion: 'frontend-catalog.v1',
-        generatedAt: new Date().toISOString(),
-        voices,
-        filters,
-        counts,
-        index,
-        providers
-      },
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  getVoice(voiceId) {
-    const voice = VoiceCatalog.getDisplay(voiceId);
-    if (!voice) return null;
-
-    return this._isProviderVisible(voice.provider) ? voice : null;
-  },
-
-  getVoiceDetail(voiceId) {
-    const detail = VoiceCatalog.getDetail(voiceId);
-    if (!detail) return null;
-
-    return this._isProviderVisible(detail.profile?.provider) ? detail : null;
-  },
-
-  getProviders() {
-    const providers = ProviderCatalog.getAll();
-    const credentials = require('../../credentials');
-
-    const providersWithStatus = providers
-      .filter(p => this._hasVisibleVoicesFor(p.provider, p.service))
-      .map(p => ({
-        key: p.key,
-        displayName: p.displayName,
-        description: p.description,
-        provider: p.provider,
-        service: p.service,
-        configured: credentials.isConfigured(p.provider),
-        status: p.status
-      }));
-
-    return {
-      success: true,
-      data: providersWithStatus,
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  getCapabilities(serviceKey) {
-    const config = ProviderCatalog.get(serviceKey);
-    if (!config) {
-      return {
-        success: false,
-        error: `Service not found: ${serviceKey}`
-      };
-    }
-
-    if (!this._hasVisibleVoicesFor(config.provider, config.service)) {
-      return {
-        success: false,
-        error: `Service disabled: ${serviceKey}`
-      };
-    }
-
-    return {
-      success: true,
-      data: config.capabilities,
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  getStats() {
-    const stats = VoiceCatalog.getStats();
-
-    return {
-      success: true,
-      data: stats,
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  getFilterOptions() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
-    const filters = this._buildFiltersMeta(items);
-
-    return {
-      success: true,
-      data: filters,
-      timestamp: new Date().toISOString()
-    };
-  },
-
-  /**
-   * 获取前端展示专用数据（精简版）
-   * 只返回7个展示字段：id, displayName, gender, languages, tags, description, preview
-   */
-  getFrontendVoices() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
-
-    // 只返回前端需要的7个展示字段
-    const voices = items.map(item => ({
-      id: item.id,
-      displayName: item.displayName || item.name || item.id,
-      gender: item.gender || 'unknown',
-      languages: item.languages || [],
-      tags: item.tags || [],
-      description: item.description || '',
-      preview: item.preview || ''
-    }));
-
-    // 构建筛选选项
-    const genders = new Set();
-    const languages = new Set();
-    const tags = new Set();
-
-    voices.forEach(v => {
-      if (v.gender) genders.add(v.gender);
-      v.languages.forEach(lang => languages.add(lang));
-      v.tags.forEach(tag => tags.add(tag));
-    });
-
-    return {
-      success: true,
-      data: {
-        voices,
-        filters: {
-          genders: Array.from(genders).sort(),
-          languages: Array.from(languages).sort(),
-          tags: Array.from(tags).sort()
-        },
-        total: voices.length
-      },
-      timestamp: new Date().toISOString()
+      id: voice.id,
+      sourceId: voice.sourceId,
+      provider: voice.provider,
+      service: voice.service,
+      displayName: voice.displayName,
+      gender: voice.gender,
+      languages: voice.languages || ['zh-CN'],
+      tags: voice.tags || [],
+      description: voice.description,
+      ttsConfig: voice.ttsConfig
     };
   }
-};
+}
 
-module.exports = {
-  TtsQueryService
-};
+module.exports = TtsQueryService;

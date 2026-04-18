@@ -184,6 +184,56 @@
         "GET /api/credentials/status": 1,
         "GET /api/credentials/providers/moss/health": 1
       }
+    },
+    "2026-04-12": {
+      "totalCalls": 9,
+      "endpoints": {
+        "GET /api/tts/stats": 1,
+        "GET /api/tts/voices": 1,
+        "GET /api/tts/providers": 1,
+        "GET /api/tts/filters": 1,
+        "POST /api/tts/synthesize": 3,
+        "POST /api/tts/aliyun/qwen": 1,
+        "POST /api/tts/moss": 1
+      }
+    },
+    "2026-04-13": {
+      "totalCalls": 11,
+      "endpoints": {
+        "GET /api/tts/voices": 1,
+        "GET /api/tts/frontend": 1,
+        "GET /api/tts/filters": 1,
+        "POST /api/tts/moss": 2,
+        "POST /api/tts/synthesize": 5,
+        "GET /api/public/info": 1
+      }
+    },
+    "2026-04-14": {
+      "totalCalls": 11,
+      "endpoints": {
+        "POST /api/tts/synthesize": 8,
+        "GET /api": 1,
+        "GET /": 2
+      }
+    },
+    "2026-04-15": {
+      "totalCalls": 37,
+      "endpoints": {
+        "POST /api/tts/synthesize": 14,
+        "POST /api/tts/batch": 7,
+        "GET /api/tts/providers": 7,
+        "POST /api/tts/volcengine/websocket": 4,
+        "GET /api/tts/voices": 5
+      }
+    },
+    "2026-04-18": {
+      "totalCalls": 10,
+      "endpoints": {
+        "GET /api/tts/providers": 1,
+        "GET /api/tts/voices": 3,
+        "POST /api/tts/synthesize": 4,
+        "GET /api/tts/stats": 2
+      }
     }
   }
 }

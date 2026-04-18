@@ -1,6 +1,7 @@
 const { audioStorageManager } = require('../../../../shared/utils/audioStorage');
 const { voiceRegistry } = require('../../core/VoiceRegistry');
 const credentials = require('../../../credentials');
+const ttsDefaults = require('../../config/ttsDefaults');
 
 class BaseTtsAdapter {
   constructor(config = {}) {
@@ -125,6 +126,8 @@ class BaseTtsAdapter {
   }
 
   validateText(text) {
+    const maxLength = ttsDefaults.textLimits?.maxLength || 10000;
+
     if (!text || typeof text !== 'string') {
       const error = new Error('Text must be a non-empty string');
       error.code = 'VALIDATION_ERROR';
@@ -135,8 +138,8 @@ class BaseTtsAdapter {
       error.code = 'VALIDATION_ERROR';
       throw error;
     }
-    if (text.length > 10000) {
-      const error = new Error('Text too long, maximum 10000 characters');
+    if (text.length > maxLength) {
+      const error = new Error(`Text too long, maximum ${maxLength} characters`);
       error.code = 'VALIDATION_ERROR';
       throw error;
     }

@@ -26,46 +26,52 @@ module.exports = {
    *
    * 注意：defaultVoiceId 必须与 voices/dist/voices.json 中的实际音色 ID 一致
    * model 必须与音色 ttsConfig.model 一致
+   *
+   * 当前实际启用的音色库（根据 voices/dist/voices.json）：
+   * - aliyun: 49个音色 (qwen_http)
+   * - moss: 9个音色 (moss_tts)
+   * - minimax/tencent/volcengine: 0个音色（已禁用）
    */
   byService: {
-    // 阿里云 Qwen HTTP
+    // 阿里云 Qwen HTTP - 实际存在的音色
     aliyun_qwen_http: {
       defaultVoiceId: 'aliyun-qwen_http-cherry',
       sampleRate: 24000,
-      model: 'qwen3-tts-flash'  // 实际音色使用的模型
+      model: 'qwen3-tts-flash'
     },
 
-    // 阿里云 CosyVoice（当前无音色数据，待补充）
-    aliyun_cosyvoice: {
-      // defaultVoiceId: 待音色数据导入后配置
-      sampleRate: 22050,
-      model: 'cosyvoice-v2'
-    },
+    // 阿里云 CosyVoice - 待音色数据导入后配置
+    // aliyun_cosyvoice: {
+    //   defaultVoiceId: null,
+    //   sampleRate: 22050,
+    //   model: 'cosyvoice-v2'
+    // },
 
-    // 腾讯云
-    tencent_tts: {
-      defaultVoiceId: 'tencent-tts-qinqin',  // 实际存在的音色
-      sampleRate: 16000
-    },
+    // 腾讯云 - 当前无音色数据（voices.json 中 count: 0, enabled: false）
+    // tencent_tts: {
+    //   defaultVoiceId: null,
+    //   sampleRate: 16000
+    // },
 
-    // 火山引擎 HTTP
-    volcengine_http: {
-      defaultVoiceId: 'volcengine-volcengine_http-bv001_streaming',
-      sampleRate: 24000,
-      cluster: 'volcano_tts'
-    },
+    // 火山引擎 HTTP - 当前无音色数据（voices.json 中 count: 0, enabled: false）
+    // volcengine_http: {
+    //   defaultVoiceId: null,
+    //   sampleRate: 24000,
+    //   cluster: 'volcano_tts'
+    // },
 
-    // MiniMax
-    minimax_tts: {
-      defaultVoiceId: 'minimax-minimax_tts-female-1',
-      sampleRate: 32000,
-      model: 'speech-01-hd-preview'
-    },
+    // MiniMax - 当前无音色数据（voices.json 中 count: 0, enabled: false）
+    // minimax_tts: {
+    //   defaultVoiceId: null,
+    //   sampleRate: 32000,
+    //   model: 'speech-01-hd-preview'
+    // },
 
-    // MOSS
+    // MOSS TTS - 实际存在的音色（9个）
     moss_tts: {
-      defaultVoiceId: 'moss-tts-ashui',
-      sampleRate: 24000
+      defaultVoiceId: 'moss-tts-beijingnan',  // 改为实际存在的音色ID
+      sampleRate: 24000,
+      model: 'moss-tts'
     }
   },
 

@@ -1,7 +1,7 @@
 # API_ENDPOINTS_INDEX
 
-version: 1
-updated_at: 2026-04-02
+version: 2
+updated_at: 2026-04-14
 audience: AI_AGENT_FIRST
 scope: ALL_TTS_API_ENDPOINTS
 
@@ -11,10 +11,13 @@ scope: ALL_TTS_API_ENDPOINTS
 - 为AI快速定位问题归属提供索引
 
 ## ROUTE_FILES_LOCATION
-- ttsRoutes.js: apps/api/routes/ttsRoutes.js
+- ttsRoutes.js: apps/api/routes/ttsRoutes.js (合并版 v3.0)
 - voiceManageRoutes.js: src/modules/tts/routes/voiceManageRoutes.js
 - audioRoutes.js: apps/api/routes/audioRoutes.js
-- ttsRoutes.v2.js: apps/api/routes/ttsRoutes.v2.js (未激活)
+
+## DELETED_ROUTE_FILES
+- ttsRoutes.v2.js (已合并)
+- index.v2.js (未使用的备用入口)
 
 ---
 
@@ -22,151 +25,138 @@ scope: ALL_TTS_API_ENDPOINTS
 
 ### 1.1 语音合成接口
 
-| 端点 | 方法 | 调用链锚点 | 功能 |
-|------|------|-----------|------|
-| `/api/tts/synthesize` | POST | apps/api/routes/ttsRoutes.js:21 | 统一TTS合成入口 |
-| `/api/tts` | POST | apps/api/routes/ttsRoutes.js:32 | Legacy兼容端点 |
+| 端点 | 方法 | 认证 | 调用链锚点 | 功能 |
+|------|------|------|-----------|------|
+| `/api/tts/synthesize` | POST | ✅ | apps/api/routes/ttsRoutes.js:44 | 统一TTS合成入口 |
+| `/api/tts` | POST | ✅ | apps/api/routes/ttsRoutes.js:60 | Legacy兼容端点 |
+| `/api/tts/batch` | POST | ✅ | apps/api/routes/ttsRoutes.js:76 | 批量合成（最多10条） |
 
-**完整调用链路：**
+**完整调用链路 (v3.0)：**
 ```
 POST /api/tts/synthesize
   │
-  ├─► TtsSynthesisService.synthesize(req.body)
-  │     anchor: src/modules/tts/application/TtsSynthesisService.js:37
+  ├─► 中间件链: unifiedAuth → securityLogger → validateTtsParams → createUnifiedTtsMiddleware
   │
-  ├─► VoiceResolver.normalizeRequest()
-  │     anchor: src/modules/tts/application/VoiceResolver.js:33
+  ├─► TtsHttpAdapter.synthesize(req, res)
+  │     anchor: src/modules/tts/adapters/http/TtsHttpAdapter.js:32
+  │     └─► SynthesisRequest.fromJSON(req.body)
   │
-  ├─► VoiceResolver.validateText()
-  │     anchor: src/modules/tts/application/VoiceResolver.js:156
+  ├─► TtsSynthesisService.synthesize(request)
+  │     anchor: src/modules/tts/domain/TtsSynthesisService.js:106
+  │     │
+  │     ├─► _validateRequest()
+  │     │     ├─► SynthesisRequest.validate()
+  │     │     └─► TtsValidationService.validateText()
+  │     │
+  │     ├─► _resolveServiceIdentifier()
+  │     │     └─► parse service string -> provider + serviceType
+  │     │         OR lookup by systemId in voiceCatalog
+  │     │
+  │     ├─► _checkRateLimit() → per-service 100 req/min
+  │     │
+  │     ├─► circuitBreaker.execute(() => _synthesizeWithRetry())
+  │     │     anchor: src/modules/tts/domain/TtsSynthesisService.js:122
+  │     │     │
+  │     │     ├─► timeout: 60s (env: TTS_SYNTH_TIMEOUT_MS)
+  │     │     │
+  │     │     └─► retry: 1 attempt, backoff 120ms*attempt
+  │     │           retryable: API_ERROR, PROVIDER_ERROR, TIMEOUT_ERROR, network
+  │     │           │
+  │     │           └─► ttsProvider.synthesize(provider, serviceType, text, options)
+  │     │                 anchor: src/modules/tts/adapters/TtsProviderAdapter.js:27
+  │     │                 │
+  │     │                 └─► adapter.synthesizeAndSave(text, runtimeOptions)
+  │     │                       anchor: src/modules/tts/adapters/providers/BaseTtsAdapter.js:73
+  │     │                       │
+  │     │                       ├─► _getCredentials() → pool select + health check
+  │     │                       ├─► call external provider API
+  │     │                       ├─► _reportSuccess/Failure() → health tracking
+  │     │                       └─► audioStorageManager.saveAudioFile()
+  │     │
+  │     └─► AudioResult.fromServiceResult() → DTO
   │
-  ├─► VoiceResolver.resolve()
-  │     anchor: src/modules/tts/application/VoiceResolver.js:59
-  │     ├─► ProviderCatalog.resolveCanonicalKey()
-  │     │     anchor: src/modules/tts/catalog/ProviderCatalog.js:52
-  │     ├─► VoiceCatalog.getRuntime()
-  │     │     anchor: src/modules/tts/catalog/VoiceCatalog.js:89
-  │     └─► ttsDefaults.getDefaultVoiceId()
-  │           anchor: src/modules/tts/config/ttsDefaults.js:31
-  │
-  ├─► credentials.isConfigured(providerKey)
-  │     anchor: src/modules/credentials/core/CredentialsRegistry.js:319
-  │
-  ├─► createProvider(adapterKey)
-  │     anchor: src/modules/tts/adapters/providers/index.js
-  │     └─► 具体适配器实例化
-  │           - AliyunQwenAdapter
-  │           - AliyunCosyVoiceAdapter
-  │           - TencentTtsAdapter
-  │           - VolcengineTtsAdapter
-  │           - MinimaxTtsAdapter
-  │           - MossTtsAdapter
-  │
-  ├─► adapter.synthesizeAndSave(text, runtimeOptions)
-  │     anchor: src/modules/tts/adapters/providers/BaseTtsAdapter.js:65
-  │     ├─► _getCredentials() → credentials.selectCredentials()
-  │     │     anchor: src/modules/credentials/core/CredentialsRegistry.js:450
-  │     ├─► 调用外部服务商API (HTTP/WebSocket)
-  │     ├─► audioStorageManager.save()
-  │     │     anchor: src/shared/utils/audioStorage.js
-  │     └─► reportSuccess/Failure() → health feedback
-  │           anchor: src/modules/credentials/core/CredentialsRegistry.js:474
-  │
-  └─► buildSynthesisSuccessResponse()
-        anchor: src/modules/tts/catalog/dto/synthesisResultDto.js
+  └─► HTTP response: standardized JSON
 ```
 
 **请求契约：**
 ```json
 {
-  "text": "要合成的文本内容",           // 必填
-  "service": "aliyun_cosyvoice",        // 可选，服务标识
-  "voice": "longxiaochun_v2",           // 可选，音色ID
-  "voiceId": "longxiaochun_v2",         // 可选，voice别名
-  "options": {                          // 可选，合成参数
-    "speed": 1.0,
-    "pitch": 1.0,
-    "volume": 50,
-    "format": "mp3"
-  }
+  "text": "要合成的文本内容",
+  "service": "moss_tts",
+  "voice": "moss-tts-ashui",
+  "speed": 1.0,
+  "pitch": 1.0,
+  "volume": 5
 }
 ```
 
-**响应契约：**
-```json
-{
-  "success": true,
-  "audioUrl": "http://...",
-  "format": "mp3",
-  "size": 12345,
-  "isRemote": false,
-  "provider": "aliyun_cosyvoice",
-  "voice": "longxiaochun_v2",
-  "metadata": { ... }
-}
+**voice ID 转译规则（重要）：**
+```
+前端传入: voice = "moss-tts-ashui"  (系统音色ID)
+         或 voice = "ashui"         (短名称)
+         或 voice = "2001257729754140672" (直接使用服务商ID)
+
+VoiceResolver 转译:
+  1. voiceRegistry.get("moss-tts-ashui") -> 原始音色数据
+  2. 提取 runtime.voiceId = "2001257729754140672" (服务商真实ID)
+  3. runtime.voiceId 优先级最高，不被用户参数覆盖
+  4. 传递给 Provider adapter 的 voice = runtime.voiceId
+
+服务商收到: voice_id = "2001257729754140672" (正确)
 ```
 
 ---
 
-## 二、音色查询类（数据读取，无副作用）
+### 1.2 服务商快捷路由
+
+| 端点 | 方法 | 认证 | 功能 |
+|------|------|------|------|
+| `/api/tts/aliyun/cosyvoice` | POST | ✅ | 阿里云CosyVoice快捷调用 |
+| `/api/tts/aliyun/qwen` | POST | ✅ | 阿里云Qwen快捷调用 |
+| `/api/tts/tencent` | POST | ✅ | 腾讯云快捷调用 |
+| `/api/tts/volcengine/http` | POST | ✅ | 火山引擎HTTP快捷调用 |
+| `/api/tts/volcengine/websocket` | POST | ✅ | 火山引擎WS快捷调用 |
+| `/api/tts/minimax` | POST | ✅ | MiniMax快捷调用 |
+| `/api/tts/moss` | POST | ✅ | MOSS-TTS快捷调用 |
+
+---
+
+## 二、音色查询类（数据读取）
 
 ### 2.1 音色列表与详情
 
-| 端点 | 方法 | 调用链锚点 | 功能 |
-|------|------|-----------|------|
-| `/api/tts/voices` | GET | apps/api/routes/ttsRoutes.js:45 | 音色列表（支持筛选） |
-| `/api/tts/voices/:id` | GET | apps/api/routes/ttsRoutes.js:58 | 单个音色详情 |
-| `/api/tts/catalog` | GET | apps/api/routes/ttsRoutes.js:105 | 前端完整目录 |
-| `/api/tts/frontend` | GET | apps/api/routes/ttsRoutes.js:111 | 前端精简数据（7字段） |
-| `/api/tts/filters` | GET | apps/api/routes/ttsRoutes.js:101 | 筛选选项列表 |
-
-**TtsQueryService 调用链：**
-```
-GET /api/tts/voices
-  │
-  └─► TtsQueryService.queryVoices(filters)
-        anchor: src/modules/tts/application/TtsQueryService.js:13
-        │
-        ├─► VoiceCatalog.query(filters)
-        │     anchor: src/modules/tts/catalog/VoiceCatalog.js:45
-        │     数据源: voices/dist/voices.json (构建产物)
-        │
-        ├─► _filterVisibleVoices()
-        │     anchor: src/modules/tts/application/TtsQueryService.js:38
-        │     └─► voiceRegistry.isProviderEnabled()
-        │           anchor: src/modules/tts/core/VoiceRegistry.js:215
-        │
-        └─► _buildFiltersMeta() / _buildCounts()
-              anchor: src/modules/tts/application/TtsQueryService.js:52
-```
+| 端点 | 方法 | 认证 | 调用链锚点 | 功能 |
+|------|------|------|-----------|------|
+| `/api/tts/voices` | GET | ❌ | apps/api/routes/ttsRoutes.js:99 | 音色列表（按服务商分组） |
+| `/api/tts/voices/:id` | GET | ❌ | apps/api/routes/ttsRoutes.js:115 | 单个音色详情 |
+| `/api/tts/voices/:id/detail` | GET | ❌ | apps/api/routes/ttsRoutes.js:127 | 音色完整详情（含runtime） |
+| `/api/tts/catalog` | GET | ❌ | apps/api/routes/ttsRoutes.js:175 | 前端完整目录 |
+| `/api/tts/frontend` | GET | ❌ | apps/api/routes/ttsRoutes.js:187 | 前端精简数据（7字段） |
+| `/api/tts/filters` | GET | ❌ | apps/api/routes/ttsRoutes.js:165 | 筛选选项列表 |
 
 ### 2.2 服务商与能力查询
 
-| 端点 | 方法 | 调用链锚点 | 功能 |
-|------|------|-----------|------|
-| `/api/tts/providers` | GET | apps/api/routes/ttsRoutes.js:70 | 服务商列表+配置状态 |
-| `/api/tts/capabilities/:service` | GET | apps/api/routes/ttsRoutes.js:79 | 服务能力配置 |
-| `/api/tts/stats` | GET | apps/api/routes/ttsRoutes.js:96 | 音色统计信息 |
-
-**服务商查询调用链：**
-```
-GET /api/tts/providers
-  │
-  └─► TtsQueryService.getProviders()
-        anchor: src/modules/tts/application/TtsQueryService.js:105
-        │
-        ├─► ProviderCatalog.getAll()
-        │     anchor: src/modules/tts/catalog/ProviderCatalog.js:63
-        │
-        └─► credentials.isConfigured(provider)
-              anchor: src/modules/credentials/core/CredentialsRegistry.js:319
-```
+| 端点 | 方法 | 认证 | 调用链锚点 | 功能 |
+|------|------|------|-----------|------|
+| `/api/tts/providers` | GET | ✅ | apps/api/routes/ttsRoutes.js:139 | 服务商列表+配置状态 |
+| `/api/tts/capabilities/:service` | GET | ❌ | apps/api/routes/ttsRoutes.js:153 | 服务能力配置 |
 
 ---
 
-## 三、音色管理类（配置增删改，需认证）
+## 三、运维管理类
 
-### 3.1 管理端路由（挂载于 /api/voices）
+| 端点 | 方法 | 认证 | 功能 |
+|------|------|------|------|
+| `/api/tts/health` | GET | ✅ | TTS模块健康检查（含熔断器状态） |
+| `/api/tts/stats` | GET | ✅ | 统计信息（请求量/成功率/延迟/熔断器） |
+| `/api/tts/reset-stats` | POST | ✅ | 重置统计信息+熔断器 |
+| `/api/tts/clear-cache` | POST | ✅ | 清理音频缓存 |
+
+---
+
+## 四、音色管理类（后台配置，需admin权限）
+
+### 4.1 管理端路由（挂载于 /api/voices）
 
 | 端点 | 方法 | 调用链锚点 | 功能 |
 |------|------|-----------|------|
@@ -181,122 +171,39 @@ GET /api/tts/providers
 | `/api/voices/save` | POST | src/modules/tts/routes/voiceManageRoutes.js:196 | 保存到文件/Redis |
 | `/api/voices/reload` | POST | src/modules/tts/routes/voiceManageRoutes.js:213 | 重新加载配置 |
 
-**VoiceRegistry 调用链：**
-```
-GET /api/voices
-  │
-  └─► voiceRegistry.getAll()
-        anchor: src/modules/tts/core/VoiceRegistry.js:85
+---
 
-POST /api/voices
-  │
-  └─► voiceRegistry.add(voice)
-        anchor: src/modules/tts/core/VoiceRegistry.js:93
-        │
-        ├─► this.voices.set(id, voice)     // 内存索引
-        ├─► _updateIndexes(voice)          // 更新索引
-        │     anchor: src/modules/tts/core/VoiceRegistry.js:229
-        └─► (可选) _saveToRedis()          // Redis持久化
-              anchor: src/modules/tts/core/VoiceRegistry.js:276
-```
+## 五、音频存储类
 
-**认证要求：**
-```javascript
-// voiceManageRoutes.js 第21行
-router.use(unifiedAuth.createMiddleware({
-  required: true,
-  permissions: ['admin.access'],
-  rateLimitTier: 'admin'
-}));
-```
+| 端点 | 方法 | 功能 |
+|------|------|------|
+| `/api/audio/stats` | GET | 存储统计 |
+| `/api/audio/cleanup` | POST | 清理过期文件 |
+| `/api/audio/exists/:filename` | GET | 检查文件存在 |
+| `/api/audio/info/:filename` | GET | 文件信息 |
+| `/api/audio/:filename` | DELETE | 删除音频 |
 
 ---
 
-## 四、音频存储管理类
+## 六、全局端点
 
-### 4.1 文件管理路由（挂载于 /api/audio）
-
-| 端点 | 方法 | 调用链锚点 | 功能 |
-|------|------|-----------|------|
-| `/api/audio/stats` | GET | apps/api/routes/audioRoutes.js:22 | 存储统计 |
-| `/api/audio/cleanup` | POST | apps/api/routes/audioRoutes.js:45 | 清理过期文件 |
-| `/api/audio/exists/:filename` | GET | apps/api/routes/audioRoutes.js:68 | 检查文件存在 |
-| `/api/audio/info/:filename` | GET | apps/api/routes/audioRoutes.js:91 | 文件信息 |
-| `/api/audio/:filename` | DELETE | apps/api/routes/audioRoutes.js:119 | 删除音频 |
-| `/api/audio/generate-filename` | POST | apps/api/routes/audioRoutes.js:146 | 生成安全文件名 |
-| `/api/audio/config` | GET | apps/api/routes/audioRoutes.js:171 | 存储配置 |
-
-**audioStorageManager 调用链：**
-```
-GET /api/audio/stats
-  │
-  └─► audioStorageManager.getStorageStats()
-        anchor: src/shared/utils/audioStorage.js
-```
+| 端点 | 方法 | 认证 | 功能 |
+|------|------|------|------|
+| `/health` | GET | ❌ | 全局健康检查 |
+| `/api/public/info` | GET | ❌ | 公开服务信息 |
 
 ---
 
-## 五、健康检查类
+## 七、认证边界
 
-| 端点 | 方法 | 调用链锚点 | 功能 |
-|------|------|-----------|------|
-| `/health` | GET | apps/api/index.js:49 | 全局健康检查 |
-| `/api/tts/health` | GET | apps/api/routes/ttsRoutes.js:88 | TTS模块健康检查 |
-| `/api/public/info` | GET | apps/api/index.js:57 | 公开服务信息 |
-
----
-
-## 六、关键模块区分
-
-### 6.1 三个"音色"概念的区别
-
-| 模块 | 文件位置 | 数据性质 | 用途 |
-|------|---------|---------|------|
-| **VoiceCatalog** | `src/modules/tts/catalog/VoiceCatalog.js` | 静态（构建产物 voices/dist/voices.json） | 前端查询、合成时音色映射 |
-| **VoiceRegistry** | `src/modules/tts/core/VoiceRegistry.js` | 动态（内存+Redis/文件持久化） | 后台管理、服务商启用状态控制 |
-| **ProviderCatalog** | `src/modules/tts/catalog/ProviderCatalog.js` | 静态（代码内定义） | 服务商元信息、canonical key解析、aliases映射 |
-
-### 6.2 路由挂载点区分
-
-| 路由前缀 | 数据源 | 认证要求 | 用途 |
-|---------|--------|---------|------|
-| `/api/tts/voices` | VoiceCatalog（静态） | ❌ 无需认证 | 前端展示查询 |
-| `/api/voices` | VoiceRegistry（动态） | ✅ 需要 admin.access | 后台配置管理 |
-
----
-
-## 七、v2备用架构（未激活）
-
-### 7.1 入口文件对比
-
-| 文件 | 启动命令 | 实际使用路由 | 状态 |
-|------|---------|-------------|------|
-| `apps/api/index.js` | `npm start` | ttsRoutes.js | ✅ 当前生产 |
-| `apps/api/index.v2.js` | `npm run start:v2` | ttsRoutes.js（非v2！） | ⚠️ 备用 |
-
-### 7.2 未激活的v2路由特性
-
-`ttsRoutes.v2.js` 包含以下未激活功能：
-- 批量合成接口 `/api/tts/batch`
-- 服务快捷路由 `/api/tts/aliyun/cosyvoice`、`/api/tts/tencent` 等
-- 缓存清理 `/api/tts/clear-cache`
-- 统计重置 `/api/tts/reset-stats`
-- HttpAdapter模式（通过ServiceContainer）
-
-**注意**：`index.v2.js` 第86行仍然引用 `ttsRoutes.js`，而非 `ttsRoutes.v2.js`。
-
----
-
-## 八、认证边界说明
-
-| 端点类别 | 认证要求 | 说明 |
-|---------|---------|------|
-| 合成接口 `/api/tts/synthesize` | ✅ 需要 X-API-Key | 业务接口需认证 |
-| 查询接口 `/api/tts/voices` | ❌ 无需认证 | 公开接口，适合CDN缓存 |
-| 前端接口 `/api/tts/frontend` | ❌ 无需认证 | 公开接口 |
-| 管理接口 `/api/voices` | ✅ 需要 admin.access | 配置管理需权限 |
-| 音频管理 `/api/audio` | ✅ 需要 audio.access | 文件操作需认证 |
-| 健康检查 `/health` | ❌ 无需认证 | 监控接口公开 |
+| 端点类别 | 认证 | 说明 |
+|---------|------|------|
+| 合成接口 | ✅ | 业务接口需认证 |
+| 音色查询 | ❌ | 公开接口 |
+| 服务商查询 | ✅ | 含配置状态信息 |
+| 运维管理 | ✅ | 统计/重置/清理 |
+| 音色管理 | ✅ admin.access | 后台配置 |
+| 健康检查 | ❌ | 监控接口 |
 
 ---
 
@@ -304,11 +211,11 @@ GET /api/audio/stats
 
 | 错误现象 | 首查端点归属 | 首查锚点 |
 |---------|-------------|---------|
-| 合成失败 | POST /api/tts/synthesize | TtsSynthesisService.synthesize |
+| HTTP 404 from provider | POST /api/tts/synthesize | MossTtsAdapter._callApi - voice_id wrong |
+| CONFIG_ERROR | POST /api/tts/synthesize | credentials.isConfigured() failed |
+| KEY_NOT_FOUND | 所有认证端点 | apiKeyMiddleware - API_KEYS not loaded |
 | 音色找不到 | GET /api/tts/voices | VoiceCatalog.query |
 | 服务商未配置 | GET /api/tts/providers | credentials.isConfigured |
-| 音色配置保存失败 | POST /api/voices/save | voiceRegistry.save |
-| 音频文件丢失 | GET /api/audio/exists | audioStorageManager.fileExists |
 
 ---
 
@@ -316,20 +223,26 @@ GET /api/audio/stats
 
 ```bash
 # 合成测试
-curl -X POST -H "X-API-Key: key2" \
+curl -X POST -H "X-API-Key: key1" \
   -H "Content-Type: application/json" \
-  -d '{"text":"测试","service":"aliyun_cosyvoice"}' \
-  http://localhost:3000/api/tts/synthesize
+  -d '{"text":"你好测试","service":"moss_tts","voice":"moss-tts-ashui"}' \
+  http://localhost:6678/api/tts/synthesize
+
+# 快捷调用
+curl -X POST -H "X-API-Key: key1" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"你好测试"}' \
+  http://localhost:6678/api/tts/moss
 
 # 音色列表
-curl http://localhost:3000/api/tts/voices
+curl http://localhost:6678/api/tts/voices
 
 # 前端精简数据
-curl http://localhost:3000/api/tts/frontend
+curl http://localhost:6678/api/tts/frontend
 
 # 服务商状态
-curl http://localhost:3000/api/tts/providers
+curl http://localhost:6678/api/tts/providers
 
 # 健康检查
-curl http://localhost:3000/health
+curl http://localhost:6678/health
 ```

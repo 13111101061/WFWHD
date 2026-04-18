@@ -78,29 +78,6 @@ class AudioResult {
   }
 
   /**
-   * 转换为API响应格式
-   */
-  toApiResponse() {
-    return {
-      text: this.text,
-      audioUrl: this.audioUrl,
-      filePath: this.filePath,
-      fileName: this.fileName,
-      provider: this.provider,
-      serviceType: this.serviceType,
-      voice: this.voice,
-      model: this.model,
-      duration: this.duration,
-      fileSize: this.fileSize,
-      format: this.format,
-      sampleRate: this.sampleRate,
-      traceId: this.traceId,
-      fromCache: this.fromCache,
-      timestamp: this.timestamp
-    };
-  }
-
-  /**
    * 转换为JSON
    */
   toJSON() {
@@ -121,6 +98,13 @@ class AudioResult {
       fromCache: this.fromCache,
       timestamp: this.timestamp
     };
+  }
+
+  /**
+   * 转换为API响应格式
+   */
+  toApiResponse() {
+    return this.toJSON();
   }
 }
 

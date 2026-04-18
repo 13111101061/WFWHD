@@ -119,7 +119,7 @@ module.exports = {
   // 类型导出（用于扩展）
   SynthesisRequest: require('./domain/SynthesisRequest'),
   AudioResult: require('./domain/AudioResult'),
-  TtsSynthesisService: require('./domain/TtsSynthesisService'),
+  TtsSynthesisService: require('./domain/TtsSynthesisService').TtsSynthesisService,  // 兼容解构导出
   TtsValidationService: require('./domain/TtsValidationService'),
   TtsProviderPort: require('./ports/TtsProviderPort'),
   VoiceCatalogPort: require('./ports/VoiceCatalogPort'),

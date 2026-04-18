@@ -54,34 +54,23 @@ class TtsProviderAdapter extends TtsProviderPort {
 
   /**
    * 获取可用服务提供商列表
+   * 返回结构统一：{ key, provider, service, displayName, description, configured }
    */
   getAvailableProviders() {
-    const registered = providers.getRegisteredProviders();
-    const grouped = {};
+    const { ProviderCatalog } = require('../catalog/ProviderCatalog');
+    const credentials = require('../../../credentials');
 
-    for (const key of registered) {
-      const [provider, service] = key.split('_');
-      if (!grouped[provider]) {
-        grouped[provider] = { provider, services: [], description: '' };
-      }
-      if (service && !grouped[provider].services.includes(service)) {
-        grouped[provider].services.push(service);
-      }
-    }
-
-    // 添加描述
-    const descriptions = {
-      aliyun: '阿里云TTS服务',
-      tencent: '腾讯云TTS服务',
-      volcengine: '火山引擎TTS服务',
-      minimax: 'MiniMax TTS服务'
-    };
-
-    for (const provider in grouped) {
-      grouped[provider].description = descriptions[provider] || '';
-    }
-
-    return Object.values(grouped);
+    return ProviderCatalog.getAll()
+      .filter(p => providers.hasProvider(p.key))
+      .map(p => ({
+        key: p.key,
+        provider: p.provider,
+        service: p.service,
+        displayName: p.displayName,
+        description: p.description,
+        configured: credentials.isConfigured(p.provider),
+        status: p.status || 'stable'
+      }));
   }
 
   /**

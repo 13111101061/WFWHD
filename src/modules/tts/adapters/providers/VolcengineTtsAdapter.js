@@ -61,7 +61,21 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
       }
 
       const result = await response.json();
+
+      // 验证响应数据
+      if (!result.data) {
+        const errorMsg = result.base_resp?.status_msg || '响应中未找到音频数据';
+        throw this._error('PARSE_ERROR', `火山引擎TTS响应格式错误: ${errorMsg}`);
+      }
+
+      if (typeof result.data !== 'string') {
+        throw this._error('PARSE_ERROR', '火山引擎TTS: data字段不是Base64字符串');
+      }
+
       const audio = Buffer.from(result.data, 'base64');
+      if (audio.length === 0) {
+        throw this._error('PARSE_ERROR', '火山引擎TTS: 解码Base64后音频数据为空');
+      }
 
       // 报告成功
       this._reportSuccess();

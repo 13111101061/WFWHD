@@ -1,0 +1,38 @@
+[AuthContainer] Initializing...
+[ApiKeyRepository] Loaded 3 API keys
+[AuthContainer] Initialized successfully
+[AuthModule] Initialized successfully
+[UnifiedAuth] Authentication middleware initialized (compatibility layer)
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+✅ Configuration validated successfully
+[Startup] 凭证配置状态:
+  阿里云: ✅
+  MiniMax: ❌
+  MOSS-TTS: ✅
+  腾讯云: ❌
+  火山引擎: ❌
+[ServiceContainer] Initializing services...
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module './routes/ttsRoutes.merged'
+Require stack:
+- E:\D G\H D\WFWHD\apps\api\index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.require (node:internal/modules/cjs/loader:1503:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (E:\D G\H D\WFWHD\apps\api\index.js:89:21)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ 'E:\\D G\\H D\\WFWHD\\apps\\api\\index.js' ]
+}
+
+Node.js v24.9.0

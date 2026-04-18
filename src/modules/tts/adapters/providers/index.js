@@ -31,7 +31,8 @@ const adapters = {
   // canonical key: volcengine_http (与 YAML/voices.json 保持一致)
   volcengine: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
   volcengine_http: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
-  // 兼容别名: http (旧版调用)
+  // 兼容别名: volcengine_ws (WebSocket路由使用), http (旧版调用)
+  volcengine_ws: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
   volcengine_http_legacy: { Adapter: VolcengineTtsAdapter, provider: 'volcengine', service: 'volcengine_http' },
 
   // MiniMax

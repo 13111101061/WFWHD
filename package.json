@@ -8,6 +8,7 @@
     "start:v2": "node apps/api/index.v2.js",
     "dev": "nodemon apps/api/index.js",
     "dev:v2": "nodemon apps/api/index.v2.js",
+    "test:voxcpm": "node tests/test-voxcpm-connection.js",
     "test": "mocha 'tests/**/*.test.js' --timeout 10000",
     "test:tts": "node test/test-tts.js",
     "test:qwen-tts": "node test/qwen-tts-test.js",
@@ -50,6 +51,7 @@
     "ws": "^8.19.0"
   },
   "devDependencies": {
+    "@gradio/client": "^2.2.0",
     "js-yaml": "^4.1.1",
     "mocha": "^10.7.3",
     "nodemon": "^3.1.14"

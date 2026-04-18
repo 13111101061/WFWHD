@@ -7,7 +7,8 @@
  * const ttsHttpAdapter = container.get('ttsHttpAdapter');
  */
 
-const TtsSynthesisService = require('../modules/tts/domain/TtsSynthesisService');
+const { TtsSynthesisService } = require('../modules/tts/domain/TtsSynthesisService');
+const TtsQueryService = require('../modules/tts/application/TtsQueryService');
 const TtsValidationService = require('../modules/tts/domain/TtsValidationService');
 const TtsHttpAdapter = require('../modules/tts/adapters/http/TtsHttpAdapter');
 const { ttsProviderAdapter } = require('../modules/tts/adapters/TtsProviderAdapter');
@@ -35,15 +36,40 @@ class ServiceContainer {
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
-    // 3. 创建领域服务（注入适配器）
+    // 3. 创建查询服务（无依赖）
+    const queryService = new TtsQueryService({ ttsProvider: ttsProviderAdapter });
+    this._services.set('queryService', queryService);
+
+    // 4. 创建领域服务（注入适配器）
     const synthesisService = new TtsSynthesisService({
       ttsProvider: ttsProviderAdapter,
       voiceCatalog: voiceCatalogAdapter,
       validator: validationService
     });
+
+    // 注入查询服务
+    synthesisService.setQueryService(queryService);
+
+    // 5. 初始化并注入能力校验器和参数映射器
+    const { CapabilityValidator } = require('../modules/tts/domain/CapabilityValidator');
+    const { ProviderCatalog } = require('../modules/tts/catalog/ProviderCatalog');
+    const { parameterMapper } = require('../modules/tts/config/ParameterMapper');
+
+    // 初始化参数映射器（当前 DISABLED - 与 adapter 不兼容，保留占位）
+    await parameterMapper.initialize();
+    this._services.set('parameterMapper', parameterMapper);
+
+    // 创建能力校验器
+    const capabilityValidator = new CapabilityValidator(ProviderCatalog);
+    this._services.set('capabilityValidator', capabilityValidator);
+
+    // 注入到领域服务
+    synthesisService.setCapabilityValidator(capabilityValidator);
+    synthesisService.setParameterMapper(parameterMapper);
+
     this._services.set('synthesisService', synthesisService);
 
-    // 4. 创建HTTP适配器（注入领域服务）
+    // 6. 创建HTTP适配器（注入领域服务）
     const ttsHttpAdapter = new TtsHttpAdapter(synthesisService);
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 

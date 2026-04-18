@@ -23,7 +23,8 @@ class UnifiedAuthMiddleware {
         enableRateLimit: options.enableRateLimit !== false,
         rateLimit: options.rateLimits?.default || { requests: 100, window: 60000 },
         maxEvents: options.maxEvents || 5000,
-        enableMetrics: options.enableAudit !== false
+        enableMetrics: options.enableAudit !== false,
+        keys: process.env.API_KEYS?.split(',') || []  // ← 加载.env中的API Keys
       });
     }
 

@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "version": "2.2",
+    "version": "3.0",
     "generatedAt": "2026-03-29T10:07:25.829Z",
     "totalVoices": 58,
     "sources": [
@@ -46,7 +46,9 @@
         "volcengine"
       ]
     },
-    "buildTime": 13
+    "buildTime": 13,
+    "voiceCodeVersion": "2.0.0",
+    "migratedAt": "2026-04-17T09:18:47.647Z"
   },
   "voices": [
     {
@@ -87,6 +89,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000010000007",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 1,
+        "providerKey": "moss"
       }
     },
     {
@@ -127,6 +135,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000020000006",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 2,
+        "providerKey": "moss"
       }
     },
     {
@@ -167,6 +181,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000030000005",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 3,
+        "providerKey": "moss"
       }
     },
     {
@@ -207,6 +227,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000040000004",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 4,
+        "providerKey": "moss"
       }
     },
     {
@@ -247,6 +273,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000050000003",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 5,
+        "providerKey": "moss"
       }
     },
     {
@@ -287,6 +319,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000060000002",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 6,
+        "providerKey": "moss"
       }
     },
     {
@@ -327,6 +365,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000070000001",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 7,
+        "providerKey": "moss"
       }
     },
     {
@@ -367,6 +411,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000080000000",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 8,
+        "providerKey": "moss"
       }
     },
     {
@@ -407,6 +457,12 @@
           "top_p": 0.8,
           "top_k": 25
         }
+      },
+      "voiceCode": "001000090000009",
+      "voiceCodeMeta": {
+        "providerCode": "001",
+        "voiceNumber": 9,
+        "providerKey": "moss"
       }
     },
     {
@@ -441,6 +497,12 @@
         "voiceName": "Cherry",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000010000005",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 1,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -475,6 +537,12 @@
         "voiceName": "Ethan",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000020000004",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 2,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -509,6 +577,12 @@
         "voiceName": "Chelsie",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000030000003",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 3,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -543,6 +617,12 @@
         "voiceName": "Serena",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000040000002",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 4,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -577,6 +657,12 @@
         "voiceName": "Dylan",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000050000001",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 5,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -609,6 +695,12 @@
         "voiceName": "Jada",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000060000000",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 6,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -641,6 +733,12 @@
         "voiceName": "Sunny",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000070000009",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 7,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -675,6 +773,12 @@
         "voiceName": "Momo",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000080000008",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 8,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -709,6 +813,12 @@
         "voiceName": "Vivian",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000090000007",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 9,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -743,6 +853,12 @@
         "voiceName": "Moon",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000100000004",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 10,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -777,6 +893,12 @@
         "voiceName": "Maia",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000110000003",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 11,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -811,6 +933,12 @@
         "voiceName": "Kai",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000120000002",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 12,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -845,6 +973,12 @@
         "voiceName": "Nofish",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000130000001",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 13,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -879,6 +1013,12 @@
         "voiceName": "Bella",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000140000000",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 14,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -913,6 +1053,12 @@
         "voiceName": "Jennifer",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000150000009",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 15,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -947,6 +1093,12 @@
         "voiceName": "Ryan",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000160000008",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 16,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -981,6 +1133,12 @@
         "voiceName": "Katerina",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000170000007",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 17,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1015,6 +1173,12 @@
         "voiceName": "Aiden",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000180000006",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 18,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1049,6 +1213,12 @@
         "voiceName": "Eldric Sage",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000190000005",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 19,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1083,6 +1253,12 @@
         "voiceName": "Mia",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000200000002",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 20,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1117,6 +1293,12 @@
         "voiceName": "Mochi",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000210000001",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 21,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1151,6 +1333,12 @@
         "voiceName": "Bellona",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000220000000",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 22,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1185,6 +1373,12 @@
         "voiceName": "Vincent",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000230000009",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 23,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1219,6 +1413,12 @@
         "voiceName": "Bunny",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000240000008",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 24,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1253,6 +1453,12 @@
         "voiceName": "Neil",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000250000007",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 25,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1287,6 +1493,12 @@
         "voiceName": "Elias",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000260000006",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 26,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1321,6 +1533,12 @@
         "voiceName": "Arthur",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000270000005",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 27,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1355,6 +1573,12 @@
         "voiceName": "Nini",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000280000004",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 28,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1389,6 +1613,12 @@
         "voiceName": "Ebona",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000290000003",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 29,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1423,6 +1653,12 @@
         "voiceName": "Seren",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000300000000",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 30,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1457,6 +1693,12 @@
         "voiceName": "Pip",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000310000009",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 31,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1491,6 +1733,12 @@
         "voiceName": "Stella",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000320000008",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 32,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1524,6 +1772,12 @@
         "voiceName": "Bodega",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000330000007",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 33,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1557,6 +1811,12 @@
         "voiceName": "Sonrisa",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000340000006",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 34,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1590,6 +1850,12 @@
         "voiceName": "Alek",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000350000005",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 35,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1623,6 +1889,12 @@
         "voiceName": "Dolce",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000360000004",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 36,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1657,6 +1929,12 @@
         "voiceName": "Sohee",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000370000003",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 37,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1691,6 +1969,12 @@
         "voiceName": "Ono Anna",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000380000002",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 38,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1725,6 +2009,12 @@
         "voiceName": "Lenn",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000390000001",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 39,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1759,6 +2049,12 @@
         "voiceName": "Emilien",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000400000008",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 40,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1793,6 +2089,12 @@
         "voiceName": "Andre",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000410000007",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 41,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1827,6 +2129,12 @@
         "voiceName": "Radio Gol",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000420000006",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 42,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1859,6 +2167,12 @@
         "voiceName": "Li",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000430000005",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 43,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1891,6 +2205,12 @@
         "voiceName": "Marcus",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000440000004",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 44,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1923,6 +2243,12 @@
         "voiceName": "Roy",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000450000003",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 45,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1955,6 +2281,12 @@
         "voiceName": "Peter",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000460000002",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 46,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -1987,6 +2319,12 @@
         "voiceName": "Eric",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000470000001",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 47,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -2019,6 +2357,12 @@
         "voiceName": "Rocky",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000480000000",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 48,
+        "providerKey": "aliyun"
       }
     },
     {
@@ -2051,6 +2395,12 @@
         "voiceName": "Kiki",
         "model": "qwen3-tts-flash",
         "sampleRate": 24000
+      },
+      "voiceCode": "002000490000009",
+      "voiceCodeMeta": {
+        "providerCode": "002",
+        "voiceNumber": 49,
+        "providerKey": "aliyun"
       }
     }
   ]

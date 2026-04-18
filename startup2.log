@@ -1,0 +1,44 @@
+[AuthContainer] Initializing...
+[ApiKeyRepository] Loaded 3 API keys
+[AuthContainer] Initialized successfully
+[AuthModule] Initialized successfully
+[UnifiedAuth] Authentication middleware initialized (compatibility layer)
+[dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+✅ Configuration validated successfully
+[Startup] 凭证配置状态:
+  阿里云: ✅
+  MiniMax: ❌
+  MOSS-TTS: ✅
+  腾讯云: ❌
+  火山引擎: ❌
+[ServiceContainer] Initializing services...
+📁 音频存储目录初始化成功: E:\D G\H D\WFWHD\src\storage\uploads\audio
+⏰ 下次文件清理时间: 2026-04-12T18:00:00.000Z
+[VoiceRegistry] ✅ Loaded 58 voices from file
+[ServiceContainer] Services initialized successfully
+✅ TTS ServiceContainer initialized
+[VoiceRegistry] ✅ Loaded 58 voices from file
+✅ VoiceRegistry initialized: undefined voices, [object Object] providers
+TTS microservice running on port 6678
+API base: http://localhost:6678/api
+Health: http://localhost:6678/health
+API keys configured: 3
+Auth system: unified API keys, monitoring/auditing, rate limiting, service-level permissions
+Tip: test auth system with `node tests/test-new-auth.js`
+📈 历史数据加载完成
+📊 统一指标收集器初始化成功
+获取账户秘钥失败: 获取AuthCode失败 (代码: 500 )
+获取上传秘钥失败: 获取AuthCode失败 (代码: 500 )
+[2026-04-12T15:44:24.513Z] GET /voices
+[tts_1776008990694_uvtmz4als] POST /synthesize | IP: ::1 | Service: aliyun_qwen_http | TextLength: 9 | Fingerprint: b037076d47acc068
+[tts_1776008990694_uvtmz4als] Completed | Status: 500 | Duration: 6474ms
+[tts_1776009009646_0n22sdyzc] POST /synthesize | IP: ::1 | Service: moss_tts | TextLength: 5 | Fingerprint: 32969d2c2c3a3a25
+[tts_1776009009646_0n22sdyzc] Completed | Status: 500 | Duration: 673ms
+[tts_1776009025401_0ld9rv53b] POST /aliyun/qwen | IP: ::1 | Service: undefined | TextLength: 2 | Fingerprint: 069ac1d1882759f3
+[tts_1776009025401_0ld9rv53b] Completed | Status: 500 | Duration: 6447ms
+[tts_1776010187716_yjhxiqlr4] POST /moss | IP: ::1 | Service: undefined | TextLength: 13 | Fingerprint: 52321741d47a4e0d
+[tts_1776010187716_yjhxiqlr4] Completed | Status: 500 | Duration: 650ms
+[tts_1776010207754_4k5kr8zfp] POST /synthesize | IP: ::1 | Service: moss_tts | TextLength: 4 | Fingerprint: 4340c94aa73a012e
+[tts_1776010207754_4k5kr8zfp] Completed | Status: 500 | Duration: 580ms

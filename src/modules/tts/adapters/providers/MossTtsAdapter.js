@@ -51,7 +51,7 @@ class MossTtsAdapter extends BaseTtsAdapter {
     const apiKey = creds?.apiKey || this.apiKey;
 
     if (!apiKey) {
-      throw this._error('MISSING_API_KEY', 'MOSS-TTS API Key 未配置');
+      throw this._error('CONFIG_ERROR', 'MOSS-TTS API Key 未配置');
     }
 
     try {
@@ -94,6 +94,8 @@ class MossTtsAdapter extends BaseTtsAdapter {
       voice_id: params.voice || params.voiceId || '2001257729754140672'
     };
 
+    console.log('[MOSS-TTS] Request body:', JSON.stringify(body, null, 2));
+
     // 添加期望时长（如果指定）
     if (params.expectedDurationSec || params.expected_duration_sec) {
       body.expected_duration_sec = params.expectedDurationSec || params.expected_duration_sec;
@@ -103,19 +105,17 @@ class MossTtsAdapter extends BaseTtsAdapter {
     if (params.samplingParams || params.sampling_params) {
       body.sampling_params = params.samplingParams || params.sampling_params;
     } else {
-      // 默认采样参数（中文推荐配置）
+      // 默认采样参数（官方推荐配置）
       body.sampling_params = {
-        max_new_tokens: 512,
+        max_new_tokens: 20000,
         temperature: params.temperature || 1.7,
         top_p: params.topP || params.top_p || 0.8,
         top_k: params.topK || params.top_k || 25
       };
     }
 
-    // 是否返回性能指标
-    if (params.metaInfo !== undefined) {
-      body.meta_info = params.metaInfo;
-    }
+    // 是否返回性能指标（默认true）
+    body.meta_info = params.metaInfo !== undefined ? params.metaInfo : true;
 
     const response = await fetch(this.endpoint, {
       method: 'POST',
@@ -152,7 +152,26 @@ class MossTtsAdapter extends BaseTtsAdapter {
 
       if (code && ERROR_CODES[code]) {
         errorMessage = `MOSS-TTS 错误 [${code}]: ${ERROR_CODES[code]}`;
-        errorCode = `MOSS_${code}`;
+        // 将MOSS错误码映射为标准错误码
+        if (code === 4000) {
+          errorCode = 'VALIDATION_ERROR'; // 请求格式无效
+        } else if (code === 4002) {
+          errorCode = 'VALIDATION_ERROR'; // 参考音频格式无效
+        } else if (code === 4010 || code === 4011) {
+          errorCode = 'CONFIG_ERROR'; // 未授权/API Key无效
+        } else if (code === 4020) {
+          errorCode = 'API_ERROR'; // 余额不足
+        } else if (code === 4029) {
+          errorCode = 'API_ERROR'; // 请求频率超限
+        } else if (code === 5000) {
+          errorCode = 'PROVIDER_ERROR'; // 服务内部错误
+        } else if (code === 5002) {
+          errorCode = 'PROVIDER_ERROR'; // 音色不可用
+        } else if (code === 5004) {
+          errorCode = 'TIMEOUT_ERROR'; // 请求超时
+        } else {
+          errorCode = 'API_ERROR'; // 默认
+        }
       } else if (message) {
         errorMessage = `MOSS-TTS 错误: ${message}`;
       }

@@ -307,20 +307,20 @@ class ParameterMapper {
   }
 
   /**
-   * 验证系统ID的参数（v2.0 - 使用VoiceManager）
+   * 验证系统ID的参数
    * @param {string} systemId - 系统ID
    * @param {Object} options - 参数
    * @returns {Object} 验证结果
    */
   validateSystemIdParameters(systemId, options) {
-    const { voiceManager } = require('../core/VoiceManager');
-    const model = voiceManager.getById(systemId);
+    const { voiceRegistry } = require('../core/VoiceRegistry');
+    const voice = voiceRegistry.get(systemId);
 
-    if (!model) {
+    if (!voice) {
       throw TtsException.NotFound(`System ID not found: ${systemId}`);
     }
 
-    return this.mapAndValidate(model.provider, model.service, options);
+    return this.mapAndValidate(voice.provider, voice.service, options);
   }
 }
 

@@ -2,13 +2,19 @@
  * SynthesisRequest - Value Object
  * 纯数据传输对象，无副作用，不可变
  * 用于封装TTS合成请求的所有参数
+ *
+ * 支持三种音色标识方式（兼容期内）：
+ * - voiceCode: 15位数字编码（新标准，如 "001000300100001"）
+ * - systemId: 旧系统ID（如 "moss-tts-ashui"）
+ * - voice: 提供商音色名（旧方式，如 "ashui"）
  */
 class SynthesisRequest {
   /**
    * @param {Object} params
    * @param {string} params.text - 要转换的文本
    * @param {string} [params.service] - 服务标识符 (如 "aliyun_cosyvoice")
-   * @param {string} [params.systemId] - 系统音色ID
+   * @param {string} [params.voiceCode] - 15位音色编码（新标准）
+   * @param {string} [params.systemId] - 系统音色ID（兼容）
    * @param {string} [params.provider] - 服务提供商 (如 "aliyun")
    * @param {string} [params.serviceType] - 服务类型 (如 "cosyvoice")
    * @param {Object} [params.options] - 合成选项
@@ -16,6 +22,7 @@ class SynthesisRequest {
   constructor({
     text,
     service,
+    voiceCode,
     systemId,
     provider,
     serviceType,
@@ -24,6 +31,7 @@ class SynthesisRequest {
     // 不可变性：使用 Object.freeze
     this.text = text;
     this.service = service;
+    this.voiceCode = voiceCode;
     this.systemId = systemId;
     this.provider = provider;
     this.serviceType = serviceType;
@@ -42,13 +50,67 @@ class SynthesisRequest {
    * @returns {SynthesisRequest}
    */
   static fromJSON(json) {
+    // 支持字段别名（下划线转驼峰，兼容前端多种传参方式）
+    const fieldAliasMap = {
+      'voice_code': 'voiceCode',
+      'voiceCode': 'voiceCode',
+      'system_id': 'systemId',
+      'systemId': 'systemId',
+      'voice_id': 'voiceId',
+      'voiceId': 'voiceId',
+      'voice': 'voice'  // 保留，后续映射到 voiceId
+    };
+
+    // 提取标准化后的字段值（优先级：同名 > 下划线别名）
+    const getFieldValue = (camelKey, snakeKey) => {
+      return json[camelKey] !== undefined ? json[camelKey] :
+             json[snakeKey] !== undefined ? json[snakeKey] : undefined;
+    };
+
+    const voiceCode = getFieldValue('voiceCode', 'voice_code');
+    const systemId = getFieldValue('systemId', 'system_id');
+
+    // 处理 voice/voiceId：voice 字段可能是音色名称或 ID，统一保留供后续解析
+    let voiceId = getFieldValue('voiceId', 'voice_id');
+    if (!voiceId && json.voice) {
+      voiceId = json.voice;
+    }
+
+    const reservedKeys = new Set([
+      'text', 'service',
+      'voiceCode', 'voice_code',
+      'systemId', 'system_id',
+      'provider', 'serviceType',
+      'options',
+      'voice', 'voiceId', 'voice_id'
+    ]);
+
+    const topLevelOptions = Object.entries(json || {}).reduce((acc, [key, value]) => {
+      if (!reservedKeys.has(key) && value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    // 如果有 voiceId，放入 options 供解析器使用
+    if (voiceId) {
+      topLevelOptions.voiceId = voiceId;
+    }
+
     return new SynthesisRequest({
       text: json.text,
       service: json.service,
-      systemId: json.systemId,
+      voiceCode,
+      systemId,
       provider: json.provider,
       serviceType: json.serviceType,
-      options: json.options || {}
+      // Backward compatible:
+      // - allow top-level options (voice/speed/model/...)
+      // - allow nested options object (preferred)
+      options: {
+        ...topLevelOptions,
+        ...(json.options || {})
+      }
     });
   }
 
@@ -131,8 +193,8 @@ class SynthesisRequest {
       errors.push('Text parameter is required');
     }
 
-    if (!this.service && !this.systemId && !this.provider) {
-      errors.push('Either service, systemId, or provider parameter is required');
+    if (!this.service && !this.voiceCode && !this.systemId && !this.provider) {
+      errors.push('Either service, voiceCode, systemId, or provider parameter is required');
     }
 
     if (this.text && typeof this.text !== 'string') {
@@ -141,6 +203,14 @@ class SynthesisRequest {
 
     if (this.text && this.text.length > 10000) {
       errors.push('Text too long, maximum 10000 characters allowed');
+    }
+
+    // voiceCode 格式校验（如果提供）
+    if (this.voiceCode) {
+      const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
+      if (!VoiceCodeGenerator.isValid(this.voiceCode)) {
+        errors.push(`Invalid voiceCode format: ${this.voiceCode} (must be 15-digit number with valid Luhn checksum)`);
+      }
     }
 
     return {
@@ -158,6 +228,7 @@ class SynthesisRequest {
     return new SynthesisRequest({
       text: this.text,
       service: this.service,
+      voiceCode: this.voiceCode || voice.voiceCode,
       systemId: this.systemId,
       provider: voice.provider,
       serviceType: voice.service,
@@ -175,6 +246,7 @@ class SynthesisRequest {
     return {
       text: this.text,
       service: this.service,
+      voiceCode: this.voiceCode,
       systemId: this.systemId,
       provider: this.provider,
       serviceType: this.serviceType,

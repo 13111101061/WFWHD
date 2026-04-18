@@ -112,7 +112,9 @@ function toCatalogVoice(rawVoice) {
     tags: rawVoice.tags || [],
     category: rawVoice.category,
     preview: rawVoice.preview,
-    status: rawVoice.status || 'active'
+    status: rawVoice.status || 'active',
+    // 新增 voiceCode 字段
+    voiceCode: rawVoice.voiceCode || null
   };
 
   const runtime = normalizeRuntime(rawVoice);
@@ -145,7 +147,9 @@ function toDisplayDto(catalogVoice) {
     description: profile.description,
     tags: profile.tags,
     preview: profile.preview,
-    status: profile.status
+    status: profile.status,
+    // 新增 voiceCode 字段
+    voiceCode: profile.voiceCode || null
   };
 }
 
@@ -157,12 +161,26 @@ function toDetailDto(catalogVoice) {
 
   const { profile, runtime, _raw } = catalogVoice;
 
+  // provider_voice_id 脱敏处理（保留前4位和后4位）
+  const providerVoiceId = runtime?.voiceId || null;
+  const maskedProviderVoiceId = providerVoiceId
+    ? providerVoiceId.length > 8
+      ? `${providerVoiceId.substring(0, 4)}****${providerVoiceId.substring(providerVoiceId.length - 4)}`
+      : providerVoiceId
+    : null;
+
   return {
-    profile,
+    profile: {
+      ...profile,
+      // 新增 voiceCode
+      voiceCode: profile.voiceCode || null
+    },
     runtime,
     metadata: _raw?.metadata || {},
     createdAt: _raw?.metadata?.registeredAt || null,
-    updatedAt: _raw?.metadata?.updatedAt || null
+    updatedAt: _raw?.metadata?.updatedAt || null,
+    // 脱敏的 provider_voice_id
+    providerVoiceId: maskedProviderVoiceId
   };
 }
 
