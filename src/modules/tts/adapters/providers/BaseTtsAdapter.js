@@ -2,6 +2,7 @@ const { audioStorageManager } = require('../../../../shared/utils/audioStorage')
 const { voiceRegistry } = require('../../core/VoiceRegistry');
 const credentials = require('../../../credentials');
 const ttsDefaults = require('../../config/ttsDefaults');
+const VoiceMapper = require('../../application/VoiceMapper');
 
 class BaseTtsAdapter {
   constructor(config = {}) {
@@ -109,7 +110,7 @@ class BaseTtsAdapter {
   async getAvailableVoices() {
     const voices = voiceRegistry.getByProviderAndService(this.provider, this.serviceType);
     if (voices.length === 0) return this.getFallbackVoices();
-    return voices.map(v => this._mapVoice(v));
+    return voices.map(v => VoiceMapper.toAdapterFormat(v));
   }
 
   getFallbackVoices() {
@@ -145,31 +146,52 @@ class BaseTtsAdapter {
     }
   }
 
+  /**
+   * 验证选项参数（改造后）
+   *
+   * 不再设置默认值，默认值由 ParameterResolutionService 处理
+   * 只做基础的参数校验和透传
+   *
+   * @param {Object} options - 已映射的服务商参数
+   * @returns {Object} 验证后的参数
+   */
   validateOptions(options) {
-    return {
-      voice: options.voice || 'default',
-      speed: options.speed || 1.0,
-      pitch: options.pitch || 1.0,
-      volume: options.volume || 50,
-      format: options.format || 'mp3',
-      sampleRate: options.sampleRate || 16000,
-      ...options
-    };
+    // 不再设置默认值，只透传参数
+    // 默认值由 ParameterResolutionService 统一处理
+    return { ...options };
   }
 
-  _mapVoice(v) {
-    return {
-      id: v.sourceId || v.id,
-      systemId: v.id,
-      name: v.displayName || v.name,
-      gender: v.gender,
-      language: v.languages?.[0] || 'zh-CN',
-      languages: v.languages || ['zh-CN'],
-      tags: v.tags || [],
-      description: v.description,
-      ttsConfig: v.ttsConfig || {}
-    };
+  _getNestedValue(obj, path) {
+    if (!obj || !path) return undefined;
+
+    const parts = Array.isArray(path) ? path : String(path).split('.');
+    let current = obj;
+
+    for (const part of parts) {
+      if (current === null || current === undefined || !Object.prototype.hasOwnProperty.call(current, part)) {
+        return undefined;
+      }
+      current = current[part];
+    }
+
+    return current;
   }
+
+  _pickOption(options, candidates = []) {
+    for (const candidate of candidates) {
+      const value = this._getNestedValue(options, candidate);
+      if (value !== undefined && value !== null) {
+        return value;
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * [已废弃] _extractResultMetadata
+   * 此方法已移动到 synthesizeAndSave 内部使用
+   */
 
   _error(code, message) {
     const error = new Error(message);

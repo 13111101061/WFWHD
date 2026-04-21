@@ -1,0 +1,108 @@
+=== ParameterMapper 测试报告 ===
+
+初始化 ParameterMapper...
+✅ 初始化成功
+
+【测试 1】Aliyun CosyVoice - 基础映射
+输入: {voice: "longxiaochun_v2", speed: 1.5, volume: 8}
+输出: {
+  "voice": "longxiaochun_v2",
+  "rate": 1.5,
+  "volume": 80,
+  "pitch": 1,
+  "sample_rate": 22050,
+  "format": "mp3"
+}
+✅ speed → rate: 1.5
+✅ volume 标准化: 8 → 80 (8*10)
+✅ 测试通过
+
+【测试 2】MiniMax TTS - 嵌套映射 + 标准化
+输入: {voice: "male-qn-qingse", speed: 1.2, volume: 8, pitch: 1.25}
+输出: {
+  "voice_setting": {
+    "voice_id": "male-qn-qingse",
+    "speed": 1.2,
+    "vol": 0.8,
+    "pitch": 6,
+    "emotion": "calm"
+  },
+  "audio_setting": {
+    "sample_rate": 32000,
+    "format": "mp3"
+  }
+}
+✅ volume 标准化: 8 → 0.8 (8/10)
+✅ pitch 标准化: 1.25 → 6 ((1.25-1)*24)
+✅ 测试通过
+
+【测试 3】Tencent TTS - 类型转换
+输入: {voice: 101001, volume: 7}
+输出: {
+  "VoiceType": 101001,
+  "Volume": 7,
+  "Speed": 1,
+  "SampleRate": 16000,
+  "Codec": "wav"
+}
+✅ voice 字符串转整数: "101001" → 101001 (类型: number)
+✅ 测试通过
+
+【测试 4】Volcengine HTTP - 深层嵌套
+输入: {voice: "zh_female_shuangkuaisisi_moon_bigtts", volume: 5}
+输出: {
+  "audio": {
+    "voice_type": "zh_female_shuangkuaisisi_moon_bigtts",
+    "volume_ratio": 0.5,
+    "speed_ratio": 1,
+    "rate": 24000,
+    "encoding": "mp3"
+  }
+}
+✅ volume 嵌套映射: audio.volume_ratio = 0.5 (5/10)
+✅ 测试通过
+
+【测试 5】错误处理 - Tencent 不支持 pitch
+✅ 正确抛出异常: tencent 不支持参数: pitch。腾讯云不支持音调调整
+✅ 测试通过
+
+【测试 6】错误处理 - speed 超出范围
+✅ 正确抛出异常: speed 必须在 0.5 到 2 之间，收到: 5
+✅ 测试通过
+
+【测试 7】默认值应用
+输入: {voice: "male-qn-qingse"}
+输出: {
+  "voice_setting": {
+    "voice_id": "male-qn-qingse",
+    "speed": 1,
+    "vol": 1,
+    "pitch": 0,
+    "emotion": "calm"
+  },
+  "audio_setting": {
+    "sample_rate": 32000,
+    "format": "mp3"
+  }
+}
+✅ speed 默认值: 1
+✅ volume 默认值: 1
+✅ pitch 默认值: 0
+✅ 测试通过
+
+【测试 8】Qwen - 参数支持检查
+✅ 正确拒绝 speed 参数: aliyun 不支持参数: speed。Qwen不支持语速调整
+✅ 测试通过
+
+========================================
+测试总结
+========================================
+总测试数: 8
+通过: 8
+失败: 0
+成功率: 100.00%
+
+🎉 所有测试通过！ParameterMapper 工作正常。
+
+错误:
+无

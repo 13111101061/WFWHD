@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": "3.0",
-    "generatedAt": "2026-03-29T10:07:25.829Z",
+    "generatedAt": "2026-04-21T14:54:02.003Z",
     "totalVoices": 58,
     "sources": [
       {
@@ -47,31 +47,36 @@
       ]
     },
     "buildTime": 13,
-    "voiceCodeVersion": "2.0.0",
-    "migratedAt": "2026-04-17T09:18:47.647Z"
+    "format": "StoredVoice"
   },
   "voices": [
     {
-      "id": "moss-tts-beijingnan",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "beijingnan",
-      "displayName": "北京男声",
-      "name": "清朗男生",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "普通话标准，带轻微北京口音，发音清晰自然，语气松弛有亲和力。",
-      "tags": [
-        "清晰",
-        "自然",
-        "松弛",
-        "亲和"
-      ],
+      "identity": {
+        "id": "moss-tts-beijingnan",
+        "voiceCode": "001000010000007",
+        "sourceId": "beijingnan",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "北京男声",
+        "alias": "清朗男生",
+        "gender": "male",
+        "languages": [
+          "中文"
+        ],
+        "description": "普通话标准，带轻微北京口音，发音清晰自然，语气松弛有亲和力。",
+        "tags": [
+          "清晰",
+          "自然",
+          "松弛",
+          "亲和"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2020008594694475776",
-        "voice": "2020008594694475776",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -81,43 +86,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2020008594694475776",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000010000007",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 1,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2020008594694475776",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-taiwannv",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "taiwannv",
-      "displayName": "台湾女声",
-      "name": "温柔女生",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "台湾口音柔和细腻，语气温柔平稳，情绪收敛但有温度。",
-      "tags": [
-        "温柔",
-        "治愈",
-        "柔和",
-        "细腻"
-      ],
+      "identity": {
+        "id": "moss-tts-taiwannv",
+        "voiceCode": "001000020000006",
+        "sourceId": "taiwannv",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "台湾女声",
+        "alias": "温柔女生",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "台湾口音柔和细腻，语气温柔平稳，情绪收敛但有温度。",
+        "tags": [
+          "温柔",
+          "治愈",
+          "柔和",
+          "细腻"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2020009311371005952",
-        "voice": "2020009311371005952",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -127,43 +140,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2020009311371005952",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000020000006",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 2,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2020009311371005952",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-ashui",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "ashui",
-      "displayName": "阿树",
-      "name": "阿树",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "冬天清晨的灰白天空，风很冷，但阳光迟早会出来。",
-      "tags": [
-        "松弛",
-        "耐听",
-        "治愈",
-        "温暖"
-      ],
+      "identity": {
+        "id": "moss-tts-ashui",
+        "voiceCode": "001000030000005",
+        "sourceId": "ashui",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "阿树",
+        "alias": "阿树",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "冬天清晨的灰白天空，风很冷，但阳光迟早会出来。",
+        "tags": [
+          "松弛",
+          "耐听",
+          "治愈",
+          "温暖"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2001257729754140672",
-        "voice": "2001257729754140672",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -173,43 +194,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2001257729754140672",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000030000005",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 3,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2001257729754140672",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-zhouzhou",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "zhouzhou",
-      "displayName": "周周",
-      "name": "周周",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "薄雾里的风、旧磁带、夜里低声自言自语。",
-      "tags": [
-        "独白",
-        "讲述",
-        "低沉",
-        "氛围"
-      ],
+      "identity": {
+        "id": "moss-tts-zhouzhou",
+        "voiceCode": "001000040000004",
+        "sourceId": "zhouzhou",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "周周",
+        "alias": "周周",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "薄雾里的风、旧磁带、夜里低声自言自语。",
+        "tags": [
+          "独白",
+          "讲述",
+          "低沉",
+          "氛围"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2001286865130360832",
-        "voice": "2001286865130360832",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -219,43 +248,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2001286865130360832",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000040000004",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 4,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2001286865130360832",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-ziqi",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "ziqi",
-      "displayName": "子琪",
-      "name": "子琪",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "雨后未干的水泥地，空气里有点凉，音量不大，却带着倔强的边角。",
-      "tags": [
-        "轻快",
-        "元气",
-        "倔强",
-        "清新"
-      ],
+      "identity": {
+        "id": "moss-tts-ziqi",
+        "voiceCode": "001000050000003",
+        "sourceId": "ziqi",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "子琪",
+        "alias": "子琪",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "雨后未干的水泥地，空气里有点凉，音量不大，却带着倔强的边角。",
+        "tags": [
+          "轻快",
+          "元气",
+          "倔强",
+          "清新"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2001898421836845056",
-        "voice": "2001898421836845056",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -265,43 +302,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2001898421836845056",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000050000003",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 5,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2001898421836845056",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-xiaoman",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "xiaoman",
-      "displayName": "小满",
-      "name": "小满",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "音色清透偏高，带自然甜感，节奏轻快但不浮，语气坚定、有朝气。",
-      "tags": [
-        "轻快",
-        "明亮",
-        "坚定",
-        "朝气"
-      ],
+      "identity": {
+        "id": "moss-tts-xiaoman",
+        "voiceCode": "001000060000002",
+        "sourceId": "xiaoman",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "小满",
+        "alias": "小满",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "音色清透偏高，带自然甜感，节奏轻快但不浮，语气坚定、有朝气。",
+        "tags": [
+          "轻快",
+          "明亮",
+          "坚定",
+          "朝气"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2001910895478837248",
-        "voice": "2001910895478837248",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -311,43 +356,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2001910895478837248",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000060000002",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 6,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2001910895478837248",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-chengshu",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "chengshu",
-      "displayName": "程述",
-      "name": "程述",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "中低音偏中，发音清晰标准，语速自然不过快，语气沉稳但不老成，带轻微电台感与亲和力。",
-      "tags": [
-        "播客",
-        "理性",
-        "沉稳",
-        "亲和"
-      ],
+      "identity": {
+        "id": "moss-tts-chengshu",
+        "voiceCode": "001000070000001",
+        "sourceId": "chengshu",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "程述",
+        "alias": "程述",
+        "gender": "male",
+        "languages": [
+          "中文"
+        ],
+        "description": "中低音偏中，发音清晰标准，语速自然不过快，语气沉稳但不老成，带轻微电台感与亲和力。",
+        "tags": [
+          "播客",
+          "理性",
+          "沉稳",
+          "亲和"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2001931510222950400",
-        "voice": "2001931510222950400",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -357,43 +410,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2001931510222950400",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000070000001",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 7,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2001931510222950400",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-aning",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "aning",
-      "displayName": "阿宁",
-      "name": "阿宁",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "声音柔和而稳定，不催促、不打断，给人被照顾的安心感。",
-      "tags": [
-        "温柔",
-        "稳定",
-        "安心",
-        "柔和"
-      ],
+      "identity": {
+        "id": "moss-tts-aning",
+        "voiceCode": "001000080000000",
+        "sourceId": "aning",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "阿宁",
+        "alias": "阿宁",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "声音柔和而稳定，不催促、不打断，给人被照顾的安心感。",
+        "tags": [
+          "温柔",
+          "稳定",
+          "安心",
+          "柔和"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2002941772480647168",
-        "voice": "2002941772480647168",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -403,43 +464,51 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2002941772480647168",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000080000000",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 8,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2002941772480647168",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "moss-tts-liangzi",
-      "provider": "moss",
-      "service": "tts",
-      "sourceId": "liangzi",
-      "displayName": "梁子",
-      "name": "梁子",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "咬字清晰，但又语气放松，不会给人太多的听感压力。",
-      "tags": [
-        "新闻",
-        "专业",
-        "清晰",
-        "放松"
-      ],
+      "identity": {
+        "id": "moss-tts-liangzi",
+        "voiceCode": "001000090000009",
+        "sourceId": "liangzi",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "梁子",
+        "alias": "梁子",
+        "gender": "male",
+        "languages": [
+          "中文"
+        ],
+        "description": "咬字清晰，但又语气放松，不会给人太多的听感压力。",
+        "tags": [
+          "新闻",
+          "专业",
+          "清晰",
+          "放松"
+        ],
+        "status": "active",
+        "preview": null
+      },
       "runtime": {
         "voiceId": "2002991117984862208",
-        "voice": "2002991117984862208",
         "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
@@ -449,1958 +518,2303 @@
           }
         }
       },
-      "ttsConfig": {
-        "sourceId": "2002991117984862208",
-        "model": "moss-tts",
-        "samplingParams": {
-          "temperature": 1.7,
-          "top_p": 0.8,
-          "top_k": 25
-        }
+      "meta": {
+        "createdAt": "2026-04-21T14:54:01.997Z",
+        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "dataSource": "import",
+        "version": "v1"
       },
-      "voiceCode": "001000090000009",
-      "voiceCodeMeta": {
-        "providerCode": "001",
-        "voiceNumber": 9,
-        "providerKey": "moss"
+      "_compat": {
+        "ttsConfig": {
+          "sourceId": "2002991117984862208",
+          "model": "moss-tts",
+          "samplingParams": {
+            "temperature": 1.7,
+            "top_p": 0.8,
+            "top_k": 25
+          }
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-cherry",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "cherry",
-      "displayName": "爱千月",
-      "name": "Cherry",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "阳光积极的邻家姐姐，用亲切自然的话语予人最贴心的治愈。",
-      "tags": [
-        "舒缓",
-        "亲切",
-        "自然",
-        "治愈",
-        "温柔",
-        "温暖"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/cherry.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-cherry",
+        "voiceCode": "002000010000005",
+        "sourceId": "cherry",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��ǧ��",
+        "alias": "Cherry",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "����������ڼҽ�㣬��������Ȼ�Ļ������������ĵ�������",
+        "tags": [
+          "�滺",
+          "����",
+          "��Ȼ",
+          "����",
+          "����",
+          "��ů"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/cherry.wav"
+      },
       "runtime": {
         "voiceId": "Cherry",
-        "voice": "Cherry",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Cherry",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000010000005",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 1,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Cherry",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-ethan",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "ethan",
-      "displayName": "爱晨曦",
-      "name": "Ethan",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "充满朝气与活力的青年之声，温暖有力，尽显北方口音的爽朗与可靠。",
-      "tags": [
-        "阳光",
-        "温暖",
-        "活力",
-        "朝气",
-        "磁性",
-        "可靠"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/ethan.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-ethan",
+        "voiceCode": "002000020000004",
+        "sourceId": "ethan",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Ethan",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�������������������֮������ů���������Ա���������ˬ����ɿ���",
+        "tags": [
+          "����",
+          "��ů",
+          "����",
+          "����",
+          "����",
+          "�ɿ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/ethan.wav"
+      },
       "runtime": {
         "voiceId": "Ethan",
-        "voice": "Ethan",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Ethan",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000020000004",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 2,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Ethan",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-chelsie",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "chelsie",
-      "displayName": "爱千雪",
-      "name": "Chelsie",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "甜美软萌的二次元虚拟女友，声音亲密无间，带着一丝娇憨与心动。",
-      "tags": [
-        "二次元",
-        "软萌",
-        "甜美",
-        "娇憨",
-        "亲密",
-        "心动"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/chelsie.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-chelsie",
+        "voiceCode": "002000030000003",
+        "sourceId": "chelsie",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��ǧѩ",
+        "alias": "Chelsie",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�������ȵĶ���Ԫ����Ů�ѣ����������޼䣬����һ˿�������Ķ���",
+        "tags": [
+          "����Ԫ",
+          "����",
+          "����",
+          "����",
+          "����",
+          "�Ķ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/chelsie.wav"
+      },
       "runtime": {
         "voiceId": "Chelsie",
-        "voice": "Chelsie",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Chelsie",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000030000003",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 3,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Chelsie",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-serena",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "serena",
-      "displayName": "爱苏瑶",
-      "name": "Serena",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "温柔而充满阳光的声音，如同明亮清泉，带来清澈亲切的听觉体验。",
-      "tags": [
-        "阳光",
-        "明亮",
-        "亲切",
-        "清澈",
-        "活泼",
-        "温柔"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/serena.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-serena",
+        "voiceCode": "002000040000002",
+        "sourceId": "serena",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Serena",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "����������������������ͬ������Ȫ�������峺���е��������顣",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "�峺",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/serena.wav"
+      },
       "runtime": {
         "voiceId": "Serena",
-        "voice": "Serena",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Serena",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000040000002",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 4,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Serena",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-dylan",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "dylan",
-      "displayName": "北京-晓东",
-      "name": "Dylan",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "从北京胡同里长大的少年，充满活力，口音地道。",
-      "tags": [
-        "少年",
-        "活力",
-        "京腔",
-        "爽朗",
-        "利落",
-        "干脆"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-dylan",
+        "voiceCode": "002000050000001",
+        "sourceId": "dylan",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����-����",
+        "alias": "Dylan",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�ӱ�����ͬ�ﳤ������꣬���������������ص���",
+        "tags": [
+          "����",
+          "����",
+          "��ǻ",
+          "ˬ��",
+          "����",
+          "�ɴ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dylan.wav"
+      },
       "runtime": {
         "voiceId": "Dylan",
-        "voice": "Dylan",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Dylan",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000050000001",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 5,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Dylan",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-jada",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "jada",
-      "displayName": "上海-阿珍",
-      "name": "Jada",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "风风火火的沪上阿姐，做事干练，性格爽朗。",
-      "tags": [
-        "阿姐",
-        "干练",
-        "活泼",
-        "爽朗"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jada.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-jada",
+        "voiceCode": "002000060000000",
+        "sourceId": "jada",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "�Ϻ�-����",
+        "alias": "Jada",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�����Ļ��ϰ��㣬���¸������Ը�ˬ�ʡ�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "ˬ��"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jada.wav"
+      },
       "runtime": {
         "voiceId": "Jada",
-        "voice": "Jada",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Jada",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000060000000",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 6,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Jada",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-sunny",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "sunny",
-      "displayName": "四川-晴儿",
-      "name": "Sunny",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "甜到心里的川妹子，声音活泼娇媚，感染力十足。",
-      "tags": [
-        "川妹子",
-        "甜美",
-        "活泼",
-        "娇媚"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sunny.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-sunny",
+        "voiceCode": "002000070000009",
+        "sourceId": "sunny",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "�Ĵ�-���",
+        "alias": "Sunny",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "������Ĵ����ӣ��������ý��ģ���Ⱦ��ʮ�㡣",
+        "tags": [
+          "������",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sunny.wav"
+      },
       "runtime": {
         "voiceId": "Sunny",
-        "voice": "Sunny",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Sunny",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000070000009",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 7,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Sunny",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-momo",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "momo",
-      "displayName": "爱伏兔",
-      "name": "Momo",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "古灵精怪的开心果，声音多变搞怪，擅长用撒娇和俏皮逗你开心。",
-      "tags": [
-        "搞怪",
-        "撒娇",
-        "活泼",
-        "俏皮",
-        "灵动",
-        "元气少女"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Momo.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-momo",
+        "voiceCode": "002000080000008",
+        "sourceId": "momo",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Momo",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "���龫�ֵĿ��Ĺ�����������֣��ó�����������Ƥ���㿪�ġ�",
+        "tags": [
+          "���",
+          "����",
+          "����",
+          "��Ƥ",
+          "�鶯",
+          "Ԫ����Ů"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Momo.wav"
+      },
       "runtime": {
         "voiceId": "Momo",
-        "voice": "Momo",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Momo",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000080000008",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 8,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Momo",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-vivian",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "vivian",
-      "displayName": "爱十一",
-      "name": "Vivian",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "外表帅气、拽拽的傲娇少女，偶尔的可爱小暴躁下藏着一颗柔软的心。",
-      "tags": [
-        "傲娇",
-        "帅气",
-        "个性",
-        "小暴躁",
-        "叛逆",
-        "反差萌"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vivian.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-vivian",
+        "voiceCode": "002000090000007",
+        "sourceId": "vivian",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��ʮһ",
+        "alias": "Vivian",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "���˧����קק�İ�����Ů��ż���Ŀɰ�С�����²���һ���������ġ�",
+        "tags": [
+          "����",
+          "˧��",
+          "����",
+          "С����",
+          "����",
+          "������"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vivian.wav"
+      },
       "runtime": {
         "voiceId": "Vivian",
-        "voice": "Vivian",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Vivian",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000090000007",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 9,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Vivian",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-moon",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "moon",
-      "displayName": "爱月白",
-      "name": "Moon",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "率性帅气的清冷少年音，语调从容洒脱，如月光般皎洁而有磁性。",
-      "tags": [
-        "清冷",
-        "帅气",
-        "洒脱",
-        "磁性",
-        "冷静",
-        "少年感"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Moon.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-moon",
+        "voiceCode": "002000100000004",
+        "sourceId": "moon",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "���°�",
+        "alias": "Moon",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "����˧��������������������������ѣ����¹������д��ԡ�",
+        "tags": [
+          "����",
+          "˧��",
+          "����",
+          "����",
+          "�侲",
+          "�����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Moon.wav"
+      },
       "runtime": {
         "voiceId": "Moon",
-        "voice": "Moon",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Moon",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000100000004",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 10,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Moon",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-maia",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "maia",
-      "displayName": "爱七月",
-      "name": "Maia",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "知性与温柔并存的御姐，如月光般优雅迷人。",
-      "tags": [
-        "知性",
-        "温柔",
-        "御姐",
-        "气质",
-        "陪伴",
-        "成熟"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Maia.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-maia",
+        "voiceCode": "002000110000003",
+        "sourceId": "maia",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Maia",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "֪�������Ტ������㣬���¹���������ˡ�",
+        "tags": [
+          "֪��",
+          "����",
+          "����",
+          "����",
+          "���",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Maia.wav"
+      },
       "runtime": {
         "voiceId": "Maia",
-        "voice": "Maia",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Maia",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000110000003",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 11,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Maia",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-kai",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "kai",
-      "displayName": "凯",
-      "name": "Kai",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "声线低沉磁性，如同专业的音乐评述人，冷静而富有深度。",
-      "tags": [
-        "低沉",
-        "磁性",
-        "专业",
-        "评述",
-        "冷静",
-        "深度"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Kai.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-kai",
+        "voiceCode": "002000120000002",
+        "sourceId": "kai",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��",
+        "alias": "Kai",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "���ߵͳ����ԣ���ͬרҵ�����������ˣ��侲��������ȡ�",
+        "tags": [
+          "�ͳ�",
+          "����",
+          "רҵ",
+          "����",
+          "�侲",
+          "���"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Kai.wav"
+      },
       "runtime": {
         "voiceId": "Kai",
-        "voice": "Kai",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Kai",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000120000002",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 12,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Kai",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-nofish",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "nofish",
-      "displayName": "不爱吃鱼",
-      "name": "Nofish",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "不会翘舌的清新少年音，自然率性，如同文艺范的设计师。",
-      "tags": [
-        "清新",
-        "文艺",
-        "少年音",
-        "平舌",
-        "自然",
-        "个性"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nofish.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-nofish",
+        "voiceCode": "002000130000001",
+        "sourceId": "nofish",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��������",
+        "alias": "Nofish",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����������������������Ȼ���ԣ���ͬ���շ������ʦ��",
+        "tags": [
+          "����",
+          "����",
+          "������",
+          "ƽ��",
+          "��Ȼ",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nofish.wav"
+      },
       "runtime": {
         "voiceId": "Nofish",
-        "voice": "Nofish",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Nofish",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000130000001",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 13,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Nofish",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-bella",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "bella",
-      "displayName": "爱晴宝",
-      "name": "Bella",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "奶萌俏皮的小萝莉，声音里带着不打醉拳的狡黠与活泼。",
-      "tags": [
-        "萝莉",
-        "奶萌",
-        "俏皮",
-        "活泼",
-        "娇憨",
-        "醉意"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-bella",
+        "voiceCode": "002000140000000",
+        "sourceId": "bella",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "���籦",
+        "alias": "Bella",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "������Ƥ��С������������Ų�����ȭ�Ľ�������á�",
+        "tags": [
+          "����",
+          "����",
+          "��Ƥ",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bella.wav"
+      },
       "runtime": {
         "voiceId": "Bella",
-        "voice": "Bella",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Bella",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000140000000",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 14,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Bella",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-jennifer",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "jennifer",
-      "displayName": "Jennifer",
-      "name": "Jennifer",
-      "gender": "female",
-      "languages": [
-        "英语"
-      ],
-      "description": "品牌级英语广告女声，质感优雅，尽显高级与专业。",
-      "tags": [
-        "英语",
-        "专业",
-        "高级",
-        "优雅",
-        "大气",
-        "质感"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-jennifer",
+        "voiceCode": "002000150000009",
+        "sourceId": "jennifer",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Jennifer",
+        "alias": "Jennifer",
+        "gender": "female",
+        "languages": [
+          "Ӣ��"
+        ],
+        "description": "Ʒ�Ƽ�Ӣ����Ů�����ʸ����ţ����Ը߼���רҵ��",
+        "tags": [
+          "Ӣ��",
+          "רҵ",
+          "�߼�",
+          "����",
+          "����",
+          "�ʸ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Jennifer.wav"
+      },
       "runtime": {
         "voiceId": "Jennifer",
-        "voice": "Jennifer",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Jennifer",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000150000009",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 15,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Jennifer",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-ryan",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "ryan",
-      "displayName": "Ryan",
-      "name": "Ryan",
-      "gender": "male",
-      "languages": [
-        "英语"
-      ],
-      "description": "戏感炸裂的英语电影男声，节奏与张力十足，极具沉浸感。",
-      "tags": [
-        "英语",
-        "电影感",
-        "张力",
-        "情感丰富",
-        "沉浸",
-        "演技派"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ryan.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-ryan",
+        "voiceCode": "002000160000008",
+        "sourceId": "ryan",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Ryan",
+        "alias": "Ryan",
+        "gender": "male",
+        "languages": [
+          "Ӣ��"
+        ],
+        "description": "Ϸ��ը�ѵ�Ӣ���Ӱ����������������ʮ�㣬���߳����С�",
+        "tags": [
+          "Ӣ��",
+          "��Ӱ��",
+          "����",
+          "��зḻ",
+          "����",
+          "�ݼ���"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ryan.wav"
+      },
       "runtime": {
         "voiceId": "Ryan",
-        "voice": "Ryan",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Ryan",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000160000008",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 16,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Ryan",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-katerina",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "katerina",
-      "displayName": "Katerina",
-      "name": "Katerina",
-      "gender": "female",
-      "languages": [
-        "英语"
-      ],
-      "description": "韵律十足的英语御姐音，成熟优雅，气场全开。",
-      "tags": [
-        "英语",
-        "御姐",
-        "韵律",
-        "成熟",
-        "优雅",
-        "气场"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Katerina.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-katerina",
+        "voiceCode": "002000170000007",
+        "sourceId": "katerina",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Katerina",
+        "alias": "Katerina",
+        "gender": "female",
+        "languages": [
+          "Ӣ��"
+        ],
+        "description": "����ʮ���Ӣ�����������������ţ�����ȫ����",
+        "tags": [
+          "Ӣ��",
+          "����",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Katerina.wav"
+      },
       "runtime": {
         "voiceId": "Katerina",
-        "voice": "Katerina",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Katerina",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000170000007",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 17,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Katerina",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-aiden",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "aiden",
-      "displayName": "Aiden",
-      "name": "Aiden",
-      "gender": "male",
-      "languages": [
-        "英语"
-      ],
-      "description": "精通美语的腼腆大男孩，声音干净，带着邻家般的阳光感。",
-      "tags": [
-        "英语",
-        "青年",
-        "腼腆",
-        "干净",
-        "阳光",
-        "邻家"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Aiden.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-aiden",
+        "voiceCode": "002000180000006",
+        "sourceId": "aiden",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Aiden",
+        "alias": "Aiden",
+        "gender": "male",
+        "languages": [
+          "Ӣ��"
+        ],
+        "description": "��ͨ�����������к��������ɾ��������ڼҰ������С�",
+        "tags": [
+          "Ӣ��",
+          "����",
+          "����",
+          "�ɾ�",
+          "����",
+          "�ڼ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Aiden.wav"
+      },
       "runtime": {
         "voiceId": "Aiden",
-        "voice": "Aiden",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Aiden",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000180000006",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 18,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Aiden",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-eldric-sage",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "eldric-sage",
-      "displayName": "沧明子",
-      "name": "Eldric Sage",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "沉稳睿智的老者，声音历经沧桑，心明如镜，充满故事感。",
-      "tags": [
-        "长者",
-        "睿智",
-        "沉稳",
-        "沧桑",
-        "故事感",
-        "哲学"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eldric+Sage.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-eldric-sage",
+        "voiceCode": "002000190000005",
+        "sourceId": "eldric-sage",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Eldric Sage",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "������ǵ����ߣ�����������ɣ�������羵���������¸С�",
+        "tags": [
+          "����",
+          "���",
+          "����",
+          "��ɣ",
+          "���¸�",
+          "��ѧ"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eldric+Sage.wav"
+      },
       "runtime": {
         "voiceId": "Eldric Sage",
-        "voice": "Eldric Sage",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Eldric Sage",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000190000005",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 19,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Eldric Sage",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-mia",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "mia",
-      "displayName": "爱念棠",
-      "name": "Mia",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "温顺乖巧的邻家小妹，声音甜美软糯，治愈力十足。",
-      "tags": [
-        "乖巧",
-        "温顺",
-        "甜美",
-        "软糯",
-        "年轻女性",
-        "治愈"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mia.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-mia",
+        "voiceCode": "002000200000002",
+        "sourceId": "mia",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Mia",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "��˳���ɵ��ڼ�С�ã�����������Ŵ��������ʮ�㡣",
+        "tags": [
+          "����",
+          "��˳",
+          "����",
+          "��Ŵ",
+          "����Ů��",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mia.wav"
+      },
       "runtime": {
         "voiceId": "Mia",
-        "voice": "Mia",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Mia",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000200000002",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 20,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Mia",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-mochi",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "mochi",
-      "displayName": "爱星冉",
-      "name": "Mochi",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "聪明伶俐的小大人，童真未泯，声音清秀又透着一丝早慧。",
-      "tags": [
-        "正太",
-        "聪明",
-        "小大人",
-        "童真",
-        "清秀",
-        "早慧"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mochi.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-mochi",
+        "voiceCode": "002000210000001",
+        "sourceId": "mochi",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����Ƚ",
+        "alias": "Mochi",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "����������С���ˣ�ͯ��δ��������������͸��һ˿��ۡ�",
+        "tags": [
+          "��̫",
+          "����",
+          "С����",
+          "ͯ��",
+          "����",
+          "���"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Mochi.wav"
+      },
       "runtime": {
         "voiceId": "Mochi",
-        "voice": "Mochi",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Mochi",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000210000001",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 21,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Mochi",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-bellona",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "bellona",
-      "displayName": "爱铮莺",
-      "name": "Bellona",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "声音洪亮清晰的江湖说书人，节奏感强，字正腔圆，一听就让人热血沸腾。",
-      "tags": [
-        "洪亮",
-        "清晰",
-        "戏剧性",
-        "说书人",
-        "江湖",
-        "热血"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bellona.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-bellona",
+        "voiceCode": "002000220000000",
+        "sourceId": "bellona",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "���ݺ",
+        "alias": "Bellona",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�������������Ľ���˵���ˣ������ǿ������ǻԲ��һ����������Ѫ���ڡ�",
+        "tags": [
+          "����",
+          "����",
+          "Ϸ����",
+          "˵����",
+          "����",
+          "��Ѫ"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bellona.wav"
+      },
       "runtime": {
         "voiceId": "Bellona",
-        "voice": "Bellona",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Bellona",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000220000000",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 22,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Bellona",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-vincent",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "vincent",
-      "displayName": "田叔",
-      "name": "Vincent",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "一口独特的沙哑烟嗓，是道尽江湖豪情与千军万马的传奇说书人。",
-      "tags": [
-        "沙哑",
-        "烟嗓",
-        "说书人",
-        "沧桑",
-        "豪情",
-        "故事"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vincent.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-vincent",
+        "voiceCode": "002000230000009",
+        "sourceId": "vincent",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����",
+        "alias": "Vincent",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "һ�ڶ��ص�ɳ����ɤ���ǵ�������������ǧ�������Ĵ���˵���ˡ�",
+        "tags": [
+          "ɳ��",
+          "��ɤ",
+          "˵����",
+          "��ɣ",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Vincent.wav"
+      },
       "runtime": {
         "voiceId": "Vincent",
-        "voice": "Vincent",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Vincent",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000230000009",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 23,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Vincent",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-bunny",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "bunny",
-      "displayName": "爱芽芽",
-      "name": "Bunny",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "萌属性爆棚的小萝莉音，甜美可爱，让人瞬间心化。",
-      "tags": [
-        "萝莉",
-        "萌",
-        "甜美",
-        "软糯",
-        "可爱",
-        "儿童"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bunny.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-bunny",
+        "voiceCode": "002000240000008",
+        "sourceId": "bunny",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "��ѿѿ",
+        "alias": "Bunny",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�����Ա����С�������������ɰ�������˲���Ļ���",
+        "tags": [
+          "����",
+          "��",
+          "����",
+          "��Ŵ",
+          "�ɰ�",
+          "��ͯ"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bunny.wav"
+      },
       "runtime": {
         "voiceId": "Bunny",
-        "voice": "Bunny",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Bunny",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000240000008",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 24,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Bunny",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-neil",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "neil",
-      "displayName": "阿明远",
-      "name": "Neil",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "字正腔圆的专业新闻主持人，语调平直客观，极具权威感。",
-      "tags": [
-        "专业",
-        "新闻",
-        "客观",
-        "字正腔圆",
-        "权威",
-        "沉稳"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Neil.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-neil",
+        "voiceCode": "002000250000007",
+        "sourceId": "neil",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����Զ",
+        "alias": "Neil",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "����ǻԲ��רҵ���������ˣ����ƽֱ�͹ۣ�����Ȩ���С�",
+        "tags": [
+          "רҵ",
+          "����",
+          "�͹�",
+          "����ǻԲ",
+          "Ȩ��",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Neil.wav"
+      },
       "runtime": {
         "voiceId": "Neil",
-        "voice": "Neil",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Neil",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000250000007",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 25,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Neil",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-elias",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "elias",
-      "displayName": "爱明涟",
-      "name": "Elias",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "将复杂知识通俗化的解惑者，声音清晰条理，兼具学科严谨与叙事温情。",
-      "tags": [
-        "教育",
-        "知识",
-        "清晰",
-        "条理",
-        "温润",
-        "治愈"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-elias",
+        "voiceCode": "002000260000006",
+        "sourceId": "elias",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Elias",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "������֪ʶͨ�׻��Ľ���ߣ������������������ѧ���Ͻ����������顣",
+        "tags": [
+          "����",
+          "֪ʶ",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Elias.wav"
+      },
       "runtime": {
         "voiceId": "Elias",
-        "voice": "Elias",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Elias",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000260000006",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 26,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Elias",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-arthur",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "arthur",
-      "displayName": "徐来顺",
-      "name": "Arthur",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "被岁月沉淀的质朴之声，不疾不徐地讲述着村里的奇闻异事。",
-      "tags": [
-        "乡土",
-        "质朴",
-        "故事",
-        "慢节奏",
-        "沧桑",
-        "长者"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Arthur.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-arthur",
+        "voiceCode": "002000270000005",
+        "sourceId": "arthur",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����˳",
+        "alias": "Arthur",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����³���������֮������������ؽ����Ŵ�����������¡�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "������",
+          "��ɣ",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Arthur.wav"
+      },
       "runtime": {
         "voiceId": "Arthur",
-        "voice": "Arthur",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Arthur",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000270000005",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 27,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Arthur",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-nini",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "nini",
-      "displayName": "爱云朵",
-      "name": "Nini",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "糯米糍一样软又黏的嗓音，那一声\"哥哥\"甜到骨子里。",
-      "tags": [
-        "撒娇",
-        "软糯",
-        "甜美",
-        "甜蜜",
-        "年轻女性",
-        "萝莉音"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nini.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-nini",
+        "voiceCode": "002000280000004",
+        "sourceId": "nini",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "���ƶ�",
+        "alias": "Nini",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "Ŵ����һ��������ɤ������һ��\"���\"�𵽹����",
+        "tags": [
+          "����",
+          "��Ŵ",
+          "����",
+          "����",
+          "����Ů��",
+          "������"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Nini.wav"
+      },
       "runtime": {
         "voiceId": "Nini",
-        "voice": "Nini",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Nini",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000280000004",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 28,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Nini",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-ebona",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "ebona",
-      "displayName": "爱青烛",
-      "name": "Ebona",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "伴随幽暗与恐惧的低语，如同生锈的钥匙，缓缓开启你内心深处。",
-      "tags": [
-        "神秘",
-        "黑暗",
-        "低语",
-        "疗愈",
-        "哥特",
-        "气声"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ebona.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-ebona",
+        "voiceCode": "002000290000003",
+        "sourceId": "ebona",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Ebona",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�����İ���־�ĵ����ͬ�����Կ�ף������������������",
+        "tags": [
+          "����",
+          "�ڰ�",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ebona.wav"
+      },
       "runtime": {
         "voiceId": "Ebona",
-        "voice": "Ebona",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Ebona",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000290000003",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 29,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Ebona",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-seren",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "seren",
-      "displayName": "爱曦语",
-      "name": "Seren",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "温和舒缓的助眠师，用温柔的声线伴你安然入梦。",
-      "tags": [
-        "舒缓",
-        "助眠",
-        "温柔",
-        "治愈",
-        "ASMR",
-        "晚安"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Seren.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-seren",
+        "voiceCode": "002000300000000",
+        "sourceId": "seren",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Seren",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "�º��滺������ʦ������������߰��㰲Ȼ���Ρ�",
+        "tags": [
+          "�滺",
+          "����",
+          "����",
+          "����",
+          "ASMR",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Seren.wav"
+      },
       "runtime": {
         "voiceId": "Seren",
-        "voice": "Seren",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Seren",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000300000000",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 30,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Seren",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-pip",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "pip",
-      "displayName": "小新",
-      "name": "Pip",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "调皮捣蛋又充满童真的小新，声音里全是古灵精怪的快乐。",
-      "tags": [
-        "顽皮",
-        "活泼",
-        "童真",
-        "搞笑",
-        "正太",
-        "个性"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Pip.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-pip",
+        "voiceCode": "002000310000009",
+        "sourceId": "pip",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "С��",
+        "alias": "Pip",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "��Ƥ�����ֳ���ͯ���С�£�������ȫ�ǹ��龫�ֵĿ��֡�",
+        "tags": [
+          "��Ƥ",
+          "����",
+          "ͯ��",
+          "��Ц",
+          "��̫",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Pip.wav"
+      },
       "runtime": {
         "voiceId": "Pip",
-        "voice": "Pip",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Pip",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000310000009",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 31,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Pip",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-stella",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "stella",
-      "displayName": "爱羽月",
-      "name": "Stella",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "平时是甜美的迷糊少女，关键时刻能瞬间变身充满正义的战斗少女。",
-      "tags": [
-        "双重人格",
-        "动漫",
-        "元气",
-        "甜美",
-        "帅气",
-        "战斗少女"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Stella.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-stella",
+        "voiceCode": "002000320000008",
+        "sourceId": "stella",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "������",
+        "alias": "Stella",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "ƽʱ���������Ժ���Ů���ؼ�ʱ����˲��������������ս����Ů��",
+        "tags": [
+          "˫���˸�",
+          "����",
+          "Ԫ��",
+          "����",
+          "˧��",
+          "ս����Ů"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Stella.wav"
+      },
       "runtime": {
         "voiceId": "Stella",
-        "voice": "Stella",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Stella",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000320000008",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 32,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Stella",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-bodega",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "bodega",
-      "displayName": "Bodega",
-      "name": "Bodega",
-      "gender": "male",
-      "languages": [
-        "西班牙语"
-      ],
-      "description": "热情洋溢的西班牙大叔，声音里满是阳光与拉丁式的活力。",
-      "tags": [
-        "西班牙语",
-        "热情",
-        "大叔",
-        "阳光",
-        "活力"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bodega.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-bodega",
+        "voiceCode": "002000330000007",
+        "sourceId": "bodega",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Bodega",
+        "alias": "Bodega",
+        "gender": "male",
+        "languages": [
+          "��������"
+        ],
+        "description": "������������������壬��������������������ʽ�Ļ�����",
+        "tags": [
+          "��������",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Bodega.wav"
+      },
       "runtime": {
         "voiceId": "Bodega",
-        "voice": "Bodega",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Bodega",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000330000007",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 33,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Bodega",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-sonrisa",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "sonrisa",
-      "displayName": "Sonrisa",
-      "name": "Sonrisa",
-      "gender": "female",
-      "languages": [
-        "西班牙语"
-      ],
-      "description": "热情开朗的拉美大姐，声音极具感染力，仿佛能驱散所有阴霾。",
-      "tags": [
-        "西班牙语",
-        "热情",
-        "开朗",
-        "大姐姐",
-        "活力"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sonrisa.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-sonrisa",
+        "voiceCode": "002000340000006",
+        "sourceId": "sonrisa",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Sonrisa",
+        "alias": "Sonrisa",
+        "gender": "female",
+        "languages": [
+          "��������"
+        ],
+        "description": "���鿪�ʵ�������㣬�������߸�Ⱦ�����·�����ɢ����������",
+        "tags": [
+          "��������",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sonrisa.wav"
+      },
       "runtime": {
         "voiceId": "Sonrisa",
-        "voice": "Sonrisa",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Sonrisa",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000340000006",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 34,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Sonrisa",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-alek",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "alek",
-      "displayName": "Alek",
-      "name": "Alek",
-      "gender": "male",
-      "languages": [
-        "俄语"
-      ],
-      "description": "一开口就是典型的俄罗斯硬朗口音，自带战斗民族的冷峻气场。",
-      "tags": [
-        "俄语",
-        "战斗民族",
-        "硬朗",
-        "冷酷",
-        "低沉"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Alek.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-alek",
+        "voiceCode": "002000350000005",
+        "sourceId": "alek",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Alek",
+        "alias": "Alek",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "һ���ھ��ǵ��͵Ķ���˹Ӳ�ʿ������Դ�ս����������������",
+        "tags": [
+          "����",
+          "ս������",
+          "Ӳ��",
+          "���",
+          "�ͳ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Alek.wav"
+      },
       "runtime": {
         "voiceId": "Alek",
-        "voice": "Alek",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Alek",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000350000005",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 35,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Alek",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-dolce",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "dolce",
-      "displayName": "Dolce",
-      "name": "Dolce",
-      "gender": "male",
-      "languages": [
-        "意大利语"
-      ],
-      "description": "如同午后阳光般慵懒的意大利大叔，声音随性而充满浪漫。",
-      "tags": [
-        "意大利语",
-        "慵懒",
-        "浪漫",
-        "磁性",
-        "随性"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dolce.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-dolce",
+        "voiceCode": "002000360000004",
+        "sourceId": "dolce",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Dolce",
+        "alias": "Dolce",
+        "gender": "male",
+        "languages": [
+          "�������"
+        ],
+        "description": "��ͬ���������������������壬�������Զ�����������",
+        "tags": [
+          "�������",
+          "���",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Dolce.wav"
+      },
       "runtime": {
         "voiceId": "Dolce",
-        "voice": "Dolce",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Dolce",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000360000004",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 36,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Dolce",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-sohee",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "sohee",
-      "displayName": "Sohee",
-      "name": "Sohee",
-      "gender": "female",
-      "languages": [
-        "韩语"
-      ],
-      "description": "温柔开朗的韩国欧尼，声音甜美，情绪表达丰富而真诚。",
-      "tags": [
-        "韩语",
-        "温柔",
-        "开朗",
-        "欧尼",
-        "甜美",
-        "情绪丰富"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sohee.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-sohee",
+        "voiceCode": "002000370000003",
+        "sourceId": "sohee",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Sohee",
+        "alias": "Sohee",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "���Ὺ�ʵĺ���ŷ�ᣬ������������������ḻ����ϡ�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "ŷ��",
+          "����",
+          "�����ḻ"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Sohee.wav"
+      },
       "runtime": {
         "voiceId": "Sohee",
-        "voice": "Sohee",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Sohee",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000370000003",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 37,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Sohee",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-ono-anna",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "ono-anna",
-      "displayName": "Ono Anna",
-      "name": "Ono Anna",
-      "gender": "female",
-      "languages": [
-        "日语"
-      ],
-      "description": "鬼灵精怪的日语青梅竹马，声音娇俏活泼，充满邻家少女感。",
-      "tags": [
-        "日语",
-        "鬼马",
-        "活泼",
-        "娇俏",
-        "邻家",
-        "青梅竹马"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ono+Anna.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-ono-anna",
+        "voiceCode": "002000380000002",
+        "sourceId": "ono-anna",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Ono Anna",
+        "alias": "Ono Anna",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "���龫�ֵ�������÷�������������λ��ã������ڼ���Ů�С�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "����",
+          "�ڼ�",
+          "��÷����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Ono+Anna.wav"
+      },
       "runtime": {
         "voiceId": "Ono Anna",
-        "voice": "Ono Anna",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Ono Anna",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000380000002",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 38,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Ono Anna",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-lenn",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "lenn",
-      "displayName": "Lenn",
-      "name": "Lenn",
-      "gender": "male",
-      "languages": [
-        "德语"
-      ],
-      "description": "理性是底色的德国青年，细节中藏着不羁的叛逆，声音冷静而独特。",
-      "tags": [
-        "德语",
-        "理性",
-        "叛逆",
-        "青年",
-        "冷静",
-        "个性"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Lenn.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-lenn",
+        "voiceCode": "002000390000001",
+        "sourceId": "lenn",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Lenn",
+        "alias": "Lenn",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����ǵ�ɫ�ĵ¹����꣬ϸ���в��Ų�����棬�����侲�����ء�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "����",
+          "�侲",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Lenn.wav"
+      },
       "runtime": {
         "voiceId": "Lenn",
-        "voice": "Lenn",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Lenn",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000390000001",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 39,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Lenn",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-emilien",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "emilien",
-      "displayName": "Emilien",
-      "name": "Emilien",
-      "gender": "male",
-      "languages": [
-        "法语"
-      ],
-      "description": "浪漫的法国大哥哥，声音优雅温柔，充满了迷人的绅士风度。",
-      "tags": [
-        "法语",
-        "浪漫",
-        "温柔",
-        "大哥哥",
-        "磁性",
-        "优雅"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Emilien.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-emilien",
+        "voiceCode": "002000400000008",
+        "sourceId": "emilien",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Emilien",
+        "alias": "Emilien",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����ķ������磬�����������ᣬ���������˵���ʿ��ȡ�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Emilien.wav"
+      },
       "runtime": {
         "voiceId": "Emilien",
-        "voice": "Emilien",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Emilien",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000400000008",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 40,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Emilien",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-andre",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "andre",
-      "displayName": "Andre",
-      "name": "Andre",
-      "gender": "male",
-      "languages": [
-        "西班牙语"
-      ],
-      "description": "稳重可靠的西班牙科学家，声音沉静理性，是值得信赖的伴侣与学者。",
-      "tags": [
-        "西班牙语",
-        "稳重",
-        "理性",
-        "科学家",
-        "温暖",
-        "低沉"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-andre",
+        "voiceCode": "002000410000007",
+        "sourceId": "andre",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Andre",
+        "alias": "Andre",
+        "gender": "male",
+        "languages": [
+          "��������"
+        ],
+        "description": "���ؿɿ�����������ѧ�ң������������ԣ���ֵ�������İ�����ѧ�ߡ�",
+        "tags": [
+          "��������",
+          "����",
+          "����",
+          "��ѧ��",
+          "��ů",
+          "�ͳ�"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Andre.wav"
+      },
       "runtime": {
         "voiceId": "Andre",
-        "voice": "Andre",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Andre",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000410000007",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 41,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Andre",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-radio-gol",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "radio-gol",
-      "displayName": "Radio Gol",
-      "name": "Radio Gol",
-      "gender": "male",
-      "languages": [
-        "西班牙语"
-      ],
-      "description": "赛场上的足球诗人，用充满激情的西班牙语为你解说每一场精彩对决。",
-      "tags": [
-        "体育",
-        "解说",
-        "激情",
-        "诗人",
-        "西班牙语",
-        "活力"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Radio+Gol.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-radio-gol",
+        "voiceCode": "002000420000006",
+        "sourceId": "radio-gol",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "Radio Gol",
+        "alias": "Radio Gol",
+        "gender": "male",
+        "languages": [
+          "��������"
+        ],
+        "description": "�����ϵ�����ʫ�ˣ��ó����������������Ϊ���˵ÿһ�����ʶԾ���",
+        "tags": [
+          "����",
+          "��˵",
+          "����",
+          "ʫ��",
+          "��������",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Radio+Gol.wav"
+      },
       "runtime": {
         "voiceId": "Radio Gol",
-        "voice": "Radio Gol",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Radio Gol",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000420000006",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 42,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Radio Gol",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-li",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "li",
-      "displayName": "南京-老李",
-      "name": "Li",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "语气温和的瑜伽老师，声音沉稳，极具耐心。",
-      "tags": [
-        "老师",
-        "耐心",
-        "沉稳",
-        "温柔"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Li.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-li",
+        "voiceCode": "002000430000005",
+        "sourceId": "li",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "�Ͼ�-����",
+        "alias": "Li",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����º͵��٤��ʦ���������ȣ��������ġ�",
+        "tags": [
+          "��ʦ",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Li.wav"
+      },
       "runtime": {
         "voiceId": "Li",
-        "voice": "Li",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Li",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000430000005",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 43,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Li",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-marcus",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "marcus",
-      "displayName": "陕西-秦川",
-      "name": "Marcus",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "心实声沉的老陕，话音里透着西北汉子的淳朴与沉稳。",
-      "tags": [
-        "长者",
-        "淳朴",
-        "沉稳",
-        "憨厚"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Marcus.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-marcus",
+        "voiceCode": "002000440000004",
+        "sourceId": "marcus",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����-�ش�",
+        "alias": "Marcus",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "��ʵ���������£�������͸���������ӵĴ�������ȡ�",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Marcus.wav"
+      },
       "runtime": {
         "voiceId": "Marcus",
-        "voice": "Marcus",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Marcus",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000440000004",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 44,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Marcus",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-roy",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "roy",
-      "displayName": "闽南-阿杰",
-      "name": "Roy",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "诙谐直爽的台湾哥仔，声音市井活泼，充满生活气息。",
-      "tags": [
-        "台哥",
-        "诙谐",
-        "直爽",
-        "活泼"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Roy.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-roy",
+        "voiceCode": "002000450000003",
+        "sourceId": "roy",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����-����",
+        "alias": "Roy",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "ڶгֱˬ��̨����У������о����ã�����������Ϣ��",
+        "tags": [
+          "̨��",
+          "ڶг",
+          "ֱˬ",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Roy.wav"
+      },
       "runtime": {
         "voiceId": "Roy",
-        "voice": "Roy",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Roy",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000450000003",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 45,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Roy",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-peter",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "peter",
-      "displayName": "天津-李彼得",
-      "name": "Peter",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "天津相声专业捧哏，一开口就自带幽默效果。",
-      "tags": [
-        "相声",
-        "幽默",
-        "捧哏",
-        "诙谐"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Peter.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-peter",
+        "voiceCode": "002000460000002",
+        "sourceId": "peter",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "���-��˵�",
+        "alias": "Peter",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�������רҵ���磬һ���ھ��Դ���ĬЧ����",
+        "tags": [
+          "����",
+          "��Ĭ",
+          "����",
+          "ڶг"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Peter.wav"
+      },
       "runtime": {
         "voiceId": "Peter",
-        "voice": "Peter",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Peter",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000460000002",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 46,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Peter",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-eric",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "eric",
-      "displayName": "四川-程川",
-      "name": "Eric",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "跳脱市井的成都男子，声音里带着风趣与洒脱。",
-      "tags": [
-        "成都",
-        "个性",
-        "洒脱",
-        "风趣"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eric.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-eric",
+        "voiceCode": "002000470000001",
+        "sourceId": "eric",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "�Ĵ�-�̴�",
+        "alias": "Eric",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "�����о��ĳɶ����ӣ���������ŷ�Ȥ�����ѡ�",
+        "tags": [
+          "�ɶ�",
+          "����",
+          "����",
+          "��Ȥ"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Eric.wav"
+      },
       "runtime": {
         "voiceId": "Eric",
-        "voice": "Eric",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Eric",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000470000001",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 47,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Eric",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-rocky",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "rocky",
-      "displayName": "粤语-阿强",
-      "name": "Rocky",
-      "gender": "male",
-      "languages": [
-        "中文"
-      ],
-      "description": "幽默风趣的粤语阿强，是你的在线陪聊好朋友。",
-      "tags": [
-        "广仔",
-        "幽默",
-        "风趣",
-        "陪聊"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Rocky.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-rocky",
+        "voiceCode": "002000480000000",
+        "sourceId": "rocky",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����-��ǿ",
+        "alias": "Rocky",
+        "gender": "male",
+        "languages": [
+          "����"
+        ],
+        "description": "��Ĭ��Ȥ�����ﰢǿ��������������ĺ����ѡ�",
+        "tags": [
+          "����",
+          "��Ĭ",
+          "��Ȥ",
+          "����"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/Rocky.wav"
+      },
       "runtime": {
         "voiceId": "Rocky",
-        "voice": "Rocky",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Rocky",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000480000000",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 48,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Rocky",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     },
     {
-      "id": "aliyun-qwen_http-kiki",
-      "provider": "aliyun",
-      "service": "qwen_http",
-      "sourceId": "kiki",
-      "displayName": "粤语-阿清",
-      "name": "Kiki",
-      "gender": "female",
-      "languages": [
-        "中文"
-      ],
-      "description": "声音甜美的港妹闺蜜，亲切可爱，如同少女在耳边低语。",
-      "tags": [
-        "港妹",
-        "甜美",
-        "闺蜜",
-        "少女"
-      ],
-      "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/KiKi.wav",
+      "identity": {
+        "id": "aliyun-qwen_http-kiki",
+        "voiceCode": "002000490000009",
+        "sourceId": "kiki",
+        "provider": "aliyun",
+        "service": "qwen_http"
+      },
+      "profile": {
+        "displayName": "����-����",
+        "alias": "Kiki",
+        "gender": "female",
+        "languages": [
+          "����"
+        ],
+        "description": "���������ĸ��ù��ۣ����пɰ�����ͬ��Ů�ڶ��ߵ��",
+        "tags": [
+          "����",
+          "����",
+          "����",
+          "��Ů"
+        ],
+        "status": "active",
+        "preview": "http://bf.9p.pw/YP-WJ/QWEN-LA/KiKi.wav"
+      },
       "runtime": {
         "voiceId": "Kiki",
-        "voice": "Kiki",
-        "model": "qwen3-tts-flash",
-        "sampleRate": 24000,
-        "providerOptions": {}
-      },
-      "ttsConfig": {
-        "voiceName": "Kiki",
-        "model": "qwen3-tts-flash",
+        "model": "qwen3-tts-instruct-flash-realtime",
+        "providerOptions": {},
         "sampleRate": 24000
       },
-      "voiceCode": "002000490000009",
-      "voiceCodeMeta": {
-        "providerCode": "002",
-        "voiceNumber": 49,
-        "providerKey": "aliyun"
+      "meta": {
+        "createdAt": "2026-04-21T14:54:02.001Z",
+        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "dataSource": "import",
+        "version": "v1"
+      },
+      "_compat": {
+        "ttsConfig": {
+          "voiceName": "Kiki",
+          "model": "qwen3-tts-instruct-flash-realtime",
+          "sampleRate": 24000
+        }
       }
     }
   ]

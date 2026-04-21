@@ -1,6 +1,6 @@
 # TTS_MODULE_ARCHITECTURE_REFERENCE
 
-version: 4
+version: 5
 updated_at: 2026-04-18
 audience: AI_AGENT_ONLY
 purpose: COMPLETE_TTS_MODULE_REFERENCE_FOR_CODE_OPERATIONS
@@ -15,6 +15,12 @@ purpose: COMPLETE_TTS_MODULE_REFERENCE_FOR_CODE_OPERATIONS
   - Disabled: ParameterMapper (compatibility issue with adapters)
   - Created: ResolvedTtsContext (not yet integrated)
   - Test: Full chain verified - synthesis, providers, voices, stats all working
+  - Added: VoiceFormSchema + StoredVoiceSchema + VoiceNormalizer
+  - Added: VoiceMapper as shared mapping utility
+  - Fixed: VoiceRegistry index maintenance for 4-layer voice structure
+  - Fixed: systemId -> service inference for new voice structure
+  - Fixed: create/batch/update voice management now use unified validation chain
+  - Added: regression suite tests/regression/VoiceStructureRegression.test.js (27 passing)
 ```
 
 ---
@@ -128,6 +134,95 @@ ProviderAdapter (执行合成)
 
 ---
 
+## CURRENT_ARCHITECTURE_STATUS
+
+```
+CURRENT_JUDGEMENT: NO_BLOCKING_ARCHITECTURE_ISSUE
+
+MEANING:
+  - Main synthesis chain is structurally closed
+  - Voice management chain is structurally closed
+  - Query/display side and adapter side both understand the current voice structure
+  - Remaining work is cleanup / future evolution, not immediate architecture repair
+
+NON_BLOCKING_FUTURE_WORK:
+  - Integrate ResolvedTtsContext if context standardization is still desired
+  - Re-enable ParameterMapper only after adapter input contract is unified
+  - Remove duplicate query method definitions in TtsSynthesisService when convenient
+```
+
+---
+
+## VOICE_DATA_CONTRACT_CANONICAL
+
+```
+CANONICAL_STORED_VOICE:
+  identity:
+    id: provider-service-sourceId
+    voiceCode: optional 15-digit code
+    sourceId: provider-side business identifier
+    provider: provider key
+    service: service key
+
+  profile:
+    displayName: frontend display name
+    alias: optional alias
+    gender: male|female|neutral
+    languages: array
+    description: display description
+    tags: array
+    status: active|inactive|deprecated
+    preview: optional preview url
+
+  runtime:
+    voiceId: provider real voice id
+    model: runtime model name
+    providerOptions: provider-specific runtime options
+
+  meta:
+    createdAt: iso datetime
+    updatedAt: iso datetime
+    dataSource: manual|import|migration|api
+    version: schema version
+```
+
+### Important Clarification
+
+```
+"4-layer separation" DOES NOT mean "4 files per voice".
+
+It means:
+  - one voice record
+  - one canonical stored object
+  - internally split into identity/profile/runtime/meta
+
+Operationally:
+  - Add/update by management API: submit one form DTO
+  - Storage file: one voice entry in voices/dist/voices.json
+  - Derived files should be generated, not manually synchronized field-by-field
+```
+
+---
+
+## VOICE_MANAGEMENT_CHAIN_CANONICAL
+
+```
+POST /api/voices
+POST /api/voices/batch
+PUT  /api/voices/:id
+    |
+    +-- VoiceFormSchema.validate() / validateUpdate()
+    +-- VoiceNormalizer.fromForm() or merge existing stored object
+    +-- StoredVoiceSchema.validate()
+    +-- VoiceRegistry.add() / update()
+
+BENEFIT:
+  - create/update/batch now follow the same structure contract
+  - form layer and storage layer are no longer split-brain
+```
+
+---
+
 ## LAYER_RESPONSIBILITY_MATRIX
 
 | Layer | File | Core_Responsibility | In_Main_Chain |
@@ -140,6 +235,10 @@ ProviderAdapter (执行合成)
 | provider_aggregation | adapters/TtsProviderAdapter.js | aggregate all providers | YES |
 | provider_concrete | adapters/providers/*Adapter.js | call external API, credential selection, health report | YES |
 | credentials | modules/credentials/core/*.js | pooling, health tracking, circuit breaker | YES |
+| voice_normalizer | application/VoiceNormalizer.js | form/legacy/stored/runtime conversion | NO |
+| voice_mapper | application/VoiceMapper.js | shared display/detail/adapter mapping | NO |
+| voice_form_schema | schema/VoiceFormSchema.js | validate editable form DTO | NO |
+| stored_voice_schema | schema/StoredVoiceSchema.js | validate canonical stored voice | NO |
 | catalog | catalog/VoiceCatalog.js | query/display: list, detail, filter | NO |
 | query_service | application/TtsQueryService.js | query aggregation for frontend | NO |
 | config_parameter | config/ParameterMapper.js | param mapping: unified -> provider-specific | NO |
@@ -187,6 +286,7 @@ CredentialPool responsibility:
 ```
 PRIMARY_SOURCE: VoiceRegistry (core/VoiceRegistry.js)
 QUERY_FACADE: VoiceCatalog (catalog/VoiceCatalog.js)
+WRITE_ENTRY: voiceManageRoutes + VoiceFormSchema + VoiceNormalizer + StoredVoiceSchema
 
 VoiceRegistry: used in MAIN_SYNTHESIS_CHAIN
   - get(id) -> O(1) lookup
@@ -247,16 +347,34 @@ key_methods:
   - getAll(): all voices
 
 voice_object_structure:
-  id: string                    # system id, e.g. "moss-tts-ashui"
-  provider: string              # e.g. "moss"
-  service: string               # e.g. "tts"
-  displayName: string
+  identity:
+    id: string                  # system id, e.g. "moss-tts-ashui"
+    voiceCode: string | null    # 15-digit encoding (optional)
+    sourceId: string
+    provider: string
+    service: string
+  profile:
+    displayName: string
+    alias: string
+    gender: string
+    languages: array
+    description: string
+    tags: array
+    status: string
+    preview: string | null
   runtime:
     voiceId: string             # PROVIDER REAL ID
     model: string
-    sampleRate: number
     providerOptions: object
-  voiceCode: string             # 15-digit encoding (new standard)
+  meta:
+    createdAt: iso datetime
+    updatedAt: iso datetime
+    dataSource: string
+    version: string
+
+compatibility_behavior:
+  - get()/getAll()/getByProvider* normalize legacy flat voices automatically
+  - indexes support both new structure and old flat structure during transition
 ```
 
 ### VoiceResolver
@@ -282,6 +400,11 @@ output_structure:
 merge_order:
   baseOptions (defaults) -> runtimeOptions -> userOptions
   [LOCKED] voice/voiceId from runtime, cannot be overridden by user
+
+important_current_behavior:
+  - systemId -> service inference reads identity.provider / identity.service first
+  - providerOptions are flattened into runtimeOptions for adapter compatibility
+  - output is still plain object; ResolvedTtsContext is not yet integrated
 
 error_codes_used:
   - UNKNOWN_SERVICE
@@ -316,9 +439,30 @@ provided_methods:
   - _reportFailure(): -> credentials.reportFailure()
   - synthesizeAndSave(): -> synthesize() + audioStorage
   - validateText(), validateOptions()
+  - getAvailableVoices(): uses shared VoiceMapper adapter format
 
 [NOTE] BaseTtsAdapter CALLS credentials module
        credentials module OWNS pooling/circuit_breaker logic
+```
+
+### VoiceMapper
+
+```
+file: src/modules/tts/application/VoiceMapper.js
+status: ACTIVE_SHARED_UTILITY
+purpose: remove duplicated voice mapping logic across adapter/query/catalog sides
+
+main_exports:
+  - map()
+  - toDisplay()
+  - toAdapterFormat()
+  - toDetail()
+  - mapAll()
+
+current_consumers:
+  - BaseTtsAdapter
+  - TtsQueryService
+  - VoiceCatalogAdapter
 ```
 
 ### Provider Index
@@ -534,6 +678,41 @@ key_methods:
 wraps: VoiceRegistry
 ```
 
+### VoiceFormSchema / StoredVoiceSchema / VoiceNormalizer
+
+```
+files:
+  - src/modules/tts/schema/VoiceFormSchema.js
+  - src/modules/tts/schema/StoredVoiceSchema.js
+  - src/modules/tts/application/VoiceNormalizer.js
+
+combined_role:
+  - VoiceFormSchema: validate incoming editable payload
+  - VoiceNormalizer: convert form/legacy data to canonical stored voice
+  - StoredVoiceSchema: enforce canonical stored structure before registry write
+
+current_state:
+  - ACTIVE in management chain
+  - create/batch/update all pass through this structure contract
+  - voiceCode is optional at stored layer
+```
+
+### Regression Coverage
+
+```
+file: tests/regression/VoiceStructureRegression.test.js
+status: PASSING
+
+covered_topics:
+  - VoiceNormalizer form/legacy/runtime conversion
+  - VoiceMapper display/detail/adapter mapping
+  - VoiceFormSchema validation
+  - StoredVoiceSchema validation
+  - VoiceRegistry index maintenance
+  - VoiceCatalog grouping and display DTOs
+  - end-to-end form -> normalize -> validate -> register flow
+```
+
 ---
 
 ## STRUCTURAL_RISKS
@@ -558,6 +737,21 @@ DRIFT_INDICATORS:
   - Service string resolves in one but not the other
 
 CURRENT_SYNC_STATUS: MANUALLY_MAINTAINED, NO_AUTO_VALIDATION
+```
+
+### RISK_2: DOCUMENTATION_DRIFT_ON_VOICE_STRUCTURE
+
+```
+OLD_ASSUMPTION_TO_AVOID:
+  "voice object is still flat"
+
+CURRENT_TRUTH:
+  canonical stored format is 4-layer
+  flat format is compatibility input/output only
+
+IF_UPDATING_CODE_OR_DOCS:
+  always treat StoredVoice as the source contract
+  do not document flat structure as the primary structure anymore
 ```
 
 ---

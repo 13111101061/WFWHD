@@ -4,9 +4,9 @@
  * - Read YAML provider files under voices/sources/providers
  * - Emit voices/dist/voices.json and voices/dist/categories.json
  *
- * Runtime normalization:
- * - Canonical runtime schema is generated for each voice
- * - Legacy ttsConfig is kept for backward compatibility
+ * Output format (v3.0):
+ * - StoredVoice structure with identity/profile/runtime/meta layers
+ * - Legacy ttsConfig kept in _compat for backward compatibility
  */
 
 const fs = require('fs').promises;
@@ -18,6 +18,9 @@ const CONFIG = {
   outputDir: path.join(__dirname, 'dist')
 };
 
+/**
+ * 从多个候选值中选取第一个有效值
+ */
 function pickFirst(...values) {
   for (const value of values) {
     if (value !== undefined && value !== null && value !== '') {
@@ -27,9 +30,12 @@ function pickFirst(...values) {
   return undefined;
 }
 
+/**
+ * 从对象中排除指定字段
+ */
 function omit(obj = {}, keys = []) {
   const keySet = new Set(keys);
-  return Object.entries(obj).reduce((acc, [key, value]) => {
+  return Object.entries(obj || {}).reduce((acc, [key, value]) => {
     if (!keySet.has(key) && value !== undefined) {
       acc[key] = value;
     }
@@ -37,7 +43,10 @@ function omit(obj = {}, keys = []) {
   }, {});
 }
 
-function normalizeRuntime({ ttsConfig = {}, runtime = {}, fallbackVoiceId }) {
+/**
+ * 从 ttsConfig 和 runtime 中提取运行时配置
+ */
+function extractRuntime({ ttsConfig = {}, runtime = {}, fallbackVoiceId }) {
   const legacyVoiceId = pickFirst(
     ttsConfig.voiceId,
     ttsConfig.voiceName,
@@ -62,32 +71,44 @@ function normalizeRuntime({ ttsConfig = {}, runtime = {}, fallbackVoiceId }) {
       ? runtime.providerOptions
       : {};
 
-  const runtimeExtras = omit(runtime, [
-    'voice',
-    'voiceId',
-    'model',
-    'sampleRate',
-    'cluster',
-    'voiceType',
-    'providerOptions'
-  ]);
+  // 合并 providerOptions
+  const providerOptions = {
+    ...legacyProviderOptions,
+    ...runtimeProviderOptions
+  };
+
+  // 如果 ttsConfig 有 samplingParams，也合并进去
+  if (ttsConfig.samplingParams) {
+    providerOptions.samplingParams = ttsConfig.samplingParams;
+  }
 
   return {
     voiceId,
-    // Compatibility alias
-    voice: pickFirst(runtime.voice, voiceId),
-    model: pickFirst(runtime.model, ttsConfig.model),
+    model: pickFirst(runtime.model, ttsConfig.model, 'default'),
+    providerOptions,
+    // 保留其他运行时字段
     sampleRate: pickFirst(runtime.sampleRate, ttsConfig.sampleRate),
     cluster: pickFirst(runtime.cluster, ttsConfig.cluster),
-    voiceType: pickFirst(runtime.voiceType, ttsConfig.voiceType),
-    providerOptions: {
-      ...legacyProviderOptions,
-      ...runtimeProviderOptions
-    },
-    ...runtimeExtras
+    voiceType: pickFirst(runtime.voiceType, ttsConfig.voiceType)
   };
 }
 
+/**
+ * 生成 voiceCode
+ */
+function generateVoiceCode(provider, voiceNumber) {
+  try {
+    const VoiceCodeGenerator = require('../src/modules/tts/config/VoiceCodeGenerator');
+    return VoiceCodeGenerator.generate({ providerKey: provider, voiceNumber });
+  } catch (e) {
+    console.warn(`[build] Failed to generate voiceCode for ${provider}: ${e.message}`);
+    return null;
+  }
+}
+
+/**
+ * 处理单个 YAML 文件
+ */
 async function processYamlFile(filePath) {
   const content = await fs.readFile(filePath, 'utf8');
   const data = yaml.load(content);
@@ -98,10 +119,14 @@ async function processYamlFile(filePath) {
 
   const { provider, service, enabled = true } = data.meta;
   const voices = [];
+  const now = new Date().toISOString();
 
   if (enabled === false) {
     return { voices: [], provider, enabled: false };
   }
+
+  // 音色编号计数器（用于生成 voiceCode）
+  let voiceNumber = 1;
 
   for (const v of data.voices) {
     if (!v.id || !v.displayName || !v.gender) {
@@ -109,33 +134,60 @@ async function processYamlFile(filePath) {
     }
 
     const globalId = `${provider}-${service || 'tts'}-${v.id}`;
-    const runtime = normalizeRuntime({
+    const runtime = extractRuntime({
       ttsConfig: v.ttsConfig || {},
       runtime: v.runtime || {},
       fallbackVoiceId: v.id
     });
 
-    voices.push({
-      id: globalId,
-      provider,
-      service: service || 'tts',
-      sourceId: v.id,
-      displayName: v.displayName,
-      name: v.name || v.displayName,
-      gender: v.gender,
-      languages: v.languages || ['zh-CN'],
-      description: v.description || '',
-      tags: v.tags || [],
-      preview: v.preview,
+    // 生成 voiceCode
+    const voiceCode = generateVoiceCode(provider, voiceNumber);
+    voiceNumber++;
+
+    // 构建新格式 StoredVoice
+    const storedVoice = {
+      identity: {
+        id: globalId,
+        voiceCode,
+        sourceId: v.id,
+        provider,
+        service: service || 'tts'
+      },
+      profile: {
+        displayName: v.displayName,
+        alias: v.name || v.displayName,
+        gender: v.gender,
+        languages: v.languages || ['zh-CN'],
+        description: v.description || '',
+        tags: v.tags || [],
+        status: 'active',
+        preview: v.preview || null
+      },
       runtime,
-      // Keep old field for compatibility; migration can remove this in a future major version.
-      ttsConfig: v.ttsConfig || {}
-    });
+      meta: {
+        createdAt: now,
+        updatedAt: now,
+        dataSource: 'import',
+        version: 'v1'
+      }
+    };
+
+    // 保留兼容层（逐步淘汰）
+    if (v.ttsConfig && Object.keys(v.ttsConfig).length > 0) {
+      storedVoice._compat = {
+        ttsConfig: v.ttsConfig
+      };
+    }
+
+    voices.push(storedVoice);
   }
 
   return { voices, provider, enabled: true };
 }
 
+/**
+ * 生成分类索引
+ */
 async function generateCategories(voices) {
   const categories = {
     _meta: {
@@ -152,29 +204,39 @@ async function generateCategories(voices) {
   };
 
   for (const voice of voices) {
-    if (!categories.byProvider[voice.provider]) {
-      categories.byProvider[voice.provider] = [];
-    }
-    categories.byProvider[voice.provider].push(voice.id);
+    const id = voice.identity.id;
+    const provider = voice.identity.provider;
+    const gender = voice.profile.gender;
+    const languages = voice.profile.languages;
+    const tags = voice.profile.tags;
 
-    if (voice.gender === 'female') {
-      categories.byGender.female.push(voice.id);
-    } else if (voice.gender === 'male') {
-      categories.byGender.male.push(voice.id);
+    // byProvider
+    if (!categories.byProvider[provider]) {
+      categories.byProvider[provider] = [];
+    }
+    categories.byProvider[provider].push(id);
+
+    // byGender
+    if (gender === 'female') {
+      categories.byGender.female.push(id);
+    } else if (gender === 'male') {
+      categories.byGender.male.push(id);
     }
 
-    for (const lang of voice.languages || []) {
+    // byLanguage
+    for (const lang of languages || []) {
       if (!categories.byLanguage[lang]) {
         categories.byLanguage[lang] = [];
       }
-      categories.byLanguage[lang].push(voice.id);
+      categories.byLanguage[lang].push(id);
     }
 
-    for (const tag of voice.tags || []) {
+    // byTag
+    for (const tag of tags || []) {
       if (!categories.byTag[tag]) {
         categories.byTag[tag] = [];
       }
-      categories.byTag[tag].push(voice.id);
+      categories.byTag[tag].push(id);
     }
   }
 
@@ -185,9 +247,12 @@ async function generateCategories(voices) {
   );
 }
 
+/**
+ * 主构建函数
+ */
 async function build() {
   const startTime = Date.now();
-  console.log('Building voice config...');
+  console.log('Building voice config (v3.0 format)...');
 
   try {
     await fs.mkdir(CONFIG.outputDir, { recursive: true });
@@ -223,13 +288,15 @@ async function build() {
       errors.forEach(e => console.error(`- ${e.file}: ${e.error}`));
     }
 
+    // 检查重复 ID
     const idSet = new Set();
     const duplicates = [];
     for (const voice of allVoices) {
-      if (idSet.has(voice.id)) {
-        duplicates.push(voice.id);
+      const id = voice.identity.id;
+      if (idSet.has(id)) {
+        duplicates.push(id);
       }
-      idSet.add(voice.id);
+      idSet.add(id);
     }
     if (duplicates.length > 0) {
       console.error(`Duplicate voice ids: ${duplicates.join(', ')}`);
@@ -240,7 +307,7 @@ async function build() {
 
     const aggregated = {
       _meta: {
-        version: '2.2',
+        version: '3.0',
         generatedAt: new Date().toISOString(),
         totalVoices: allVoices.length,
         sources,
@@ -248,7 +315,8 @@ async function build() {
           enabled: enabledProviders,
           disabled: disabledProviders
         },
-        buildTime: Date.now() - startTime
+        buildTime: Date.now() - startTime,
+        format: 'StoredVoice'
       },
       voices: allVoices
     };
@@ -262,6 +330,7 @@ async function build() {
     await generateCategories(allVoices);
 
     console.log(`Build done: ${allVoices.length} voices in ${Date.now() - startTime}ms`);
+    console.log(`Format: StoredVoice (identity/profile/runtime/meta)`);
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);

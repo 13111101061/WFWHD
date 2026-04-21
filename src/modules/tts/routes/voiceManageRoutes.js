@@ -9,12 +9,18 @@
  * - DELETE /api/voices/:id      - 删除音色
  * - POST   /api/voices/save     - 保存到文件
  * - POST   /api/voices/reload   - 重新加载
+ *
+ * 路由层职责：
+ * - 入参接收
+ * - 调用 VoiceWriteService
+ * - 响应格式化
  */
 
 const express = require('express');
 const router = express.Router();
 
 const { voiceRegistry } = require('../core/VoiceRegistry');
+const { voiceWriteService } = require('../application/VoiceWriteService');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
 // Management endpoints must be authenticated.
@@ -50,15 +56,19 @@ router.get('/', async (req, res) => {
 
     // 按性别过滤
     if (gender) {
-      voices = voices.filter(v => v.gender === gender);
+      voices = voices.filter(v => {
+        const vGender = v.profile?.gender || v.gender;
+        return vGender === gender;
+      });
     }
 
     // 按标签过滤
     if (tags) {
       const tagList = tags.split(',').map(t => t.trim());
-      voices = voices.filter(v =>
-        v.tags && tagList.some(t => v.tags.includes(t))
-      );
+      voices = voices.filter(v => {
+        const vTags = v.profile?.tags || v.tags;
+        return vTags && tagList.some(t => vTags.includes(t));
+      });
     }
 
     res.json({
@@ -137,83 +147,53 @@ router.get('/providers/:provider/enabled', (req, res) => {
   });
 });
 
-// ==================== 管理 ====================
+// ==================== 写入（调用 VoiceWriteService） ====================
 
 /**
  * POST /api/voices
  * 添加音色
  */
 router.post('/', (req, res) => {
-  try {
-    const voice = req.body;
+  const result = voiceWriteService.create(req.body);
 
-    // 基础校验
-    if (!voice.id) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: id'
-      });
-    }
-    if (!voice.provider) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required field: provider'
-      });
-    }
-
-    // 检查重复
-    if (voiceRegistry.get(voice.id)) {
-      return res.status(409).json({
-        success: false,
-        error: `Voice already exists: ${voice.id}`
-      });
-    }
-
-    const added = voiceRegistry.add(voice);
-
-    res.status(201).json({
-      success: true,
-      data: added,
-      message: `Voice added: ${voice.id}`
-    });
-
-  } catch (error) {
-    res.status(400).json({
+  if (!result.success) {
+    const statusCode = result.error === 'Voice already exists' ? 409 :
+                       result.error.includes('validation') ? 400 : 400;
+    return res.status(statusCode).json({
       success: false,
-      error: error.message
+      error: result.error,
+      details: result.details
     });
   }
+
+  res.status(201).json({
+    success: true,
+    data: result.data,
+    message: `Voice added: ${result.data.identity.id}`
+  });
 });
 
 /**
  * POST /api/voices/batch
- * 批量添加
+ * 批量添加（复用 create 的校验逻辑）
  */
 router.post('/batch', (req, res) => {
-  try {
-    const { voices } = req.body;
+  const { voices } = req.body;
 
-    if (!Array.isArray(voices)) {
-      return res.status(400).json({
-        success: false,
-        error: 'voices must be an array'
-      });
-    }
-
-    const result = voiceRegistry.addBatch(voices);
-
-    res.status(201).json({
-      success: true,
-      data: result,
-      message: `Added ${result.count} voices`
-    });
-
-  } catch (error) {
-    res.status(400).json({
+  if (!Array.isArray(voices)) {
+    return res.status(400).json({
       success: false,
-      error: error.message
+      error: 'voices must be an array'
     });
   }
+
+  const result = voiceWriteService.createBatch(voices);
+
+  res.status(201).json({
+    success: result.success,
+    data: result.data,
+    message: `Added ${result.data.added.length} voices, ${result.data.errors.length} failed`
+  });
 });
 
 /**
@@ -221,30 +201,23 @@ router.post('/batch', (req, res) => {
  * 更新音色
  */
 router.put('/:id', (req, res) => {
-  try {
-    const updates = req.body;
-    delete updates.id; // 禁止修改id
+  const result = voiceWriteService.update(req.params.id, req.body);
 
-    const updated = voiceRegistry.update(req.params.id, updates);
-
-    res.json({
-      success: true,
-      data: updated,
-      message: `Voice updated: ${req.params.id}`
-    });
-
-  } catch (error) {
-    if (error.message.includes('not found')) {
-      return res.status(404).json({
-        success: false,
-        error: error.message
-      });
-    }
-    res.status(400).json({
+  if (!result.success) {
+    const statusCode = result.error === 'Voice not found' ? 404 :
+                       result.error.includes('validation') ? 400 : 400;
+    return res.status(statusCode).json({
       success: false,
-      error: error.message
+      error: result.error,
+      details: result.details
     });
   }
+
+  res.json({
+    success: true,
+    data: result.data,
+    message: `Voice updated: ${req.params.id}`
+  });
 });
 
 /**
@@ -252,12 +225,12 @@ router.put('/:id', (req, res) => {
  * 删除音色
  */
 router.delete('/:id', (req, res) => {
-  const removed = voiceRegistry.remove(req.params.id);
+  const result = voiceWriteService.remove(req.params.id);
 
-  if (!removed) {
+  if (!result.success) {
     return res.status(404).json({
       success: false,
-      error: `Voice not found: ${req.params.id}`
+      error: result.error
     });
   }
 
@@ -275,7 +248,7 @@ router.delete('/:id', (req, res) => {
  */
 router.post('/save', async (req, res) => {
   try {
-    await voiceRegistry.save();
+    await voiceWriteService.save();
 
     res.json({
       success: true,
@@ -296,7 +269,7 @@ router.post('/save', async (req, res) => {
  */
 router.post('/reload', async (req, res) => {
   try {
-    await voiceRegistry.reload();
+    await voiceWriteService.reload();
 
     res.json({
       success: true,

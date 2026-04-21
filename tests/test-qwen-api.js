@@ -87,7 +87,7 @@ async function testQwenAPI() {
             name: 'Qwen3 Flash - Cherry 音色',
             service: 'aliyun_qwen_http',
             voice: 'Cherry',
-            model: 'qwen3-tts-flash',
+            model: 'qwen3-tts-instruct-flash-realtime',
             text: '这是Flash模型的测试。'
         },
         {

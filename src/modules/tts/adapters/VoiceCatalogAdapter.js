@@ -2,10 +2,13 @@
  * VoiceCatalogAdapter - 音色目录适配器
  * 实现 VoiceCatalogPort 接口
  * 封装 VoiceRegistry，提供干净的接口
+ *
+ * 展示 DTO 统一使用 VoiceCatalog.toDisplayDto()
  */
 
 const VoiceCatalogPort = require('../ports/VoiceCatalogPort');
 const { voiceRegistry } = require('../core/VoiceRegistry');
+const { toDisplayDto } = require('../catalog/VoiceCatalog');
 
 class VoiceCatalogAdapter extends VoiceCatalogPort {
   constructor() {
@@ -55,13 +58,13 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
     const stats = this.registry.getStats();
     const result = {};
 
-    for (const [provider, count] of Object.entries(stats.providers)) {
+    for (const [provider] of Object.entries(stats.providers)) {
       const voices = this.registry.getByProvider(provider);
 
       // 按服务分组
       const services = {};
       for (const voice of voices) {
-        const service = voice.service || 'default';
+        const service = voice.identity?.service || voice.service || 'default';
         const key = `${provider}_${service}`;
 
         if (!services[key]) {
@@ -71,7 +74,8 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
             voices: []
           };
         }
-        services[key].voices.push(this._mapVoice(voice));
+        // 使用统一的展示 DTO
+        services[key].voices.push(toDisplayDto(voice));
       }
 
       Object.assign(result, services);
@@ -84,7 +88,6 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
    * 等待目录就绪（兼容接口）
    */
   async waitForReady(timeout = 10000) {
-    // 新架构无需等待，直接返回状态
     return this.registry.isReady;
   }
 
@@ -98,24 +101,6 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
       voices: stats.total,
       providers: Object.keys(stats.providers),
       lastUpdated: stats.lastUpdated
-    };
-  }
-
-  /**
-   * 映射音色数据为统一格式
-   */
-  _mapVoice(voice) {
-    return {
-      id: voice.id,
-      sourceId: voice.sourceId,
-      provider: voice.provider,
-      service: voice.service,
-      displayName: voice.displayName,
-      gender: voice.gender,
-      languages: voice.languages || ['zh-CN'],
-      tags: voice.tags || [],
-      description: voice.description,
-      ttsConfig: voice.ttsConfig
     };
   }
 }

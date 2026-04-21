@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 511,
+  "totalCalls": 608,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -79,16 +79,16 @@
       "lastCalled": "2025-09-22T09:32:02.076Z"
     },
     "GET /": {
-      "totalCalls": 51,
-      "lastCalled": "2026-04-14T11:05:59.404Z"
+      "totalCalls": 52,
+      "lastCalled": "2026-04-20T10:56:06.561Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 35,
-      "lastCalled": "2026-04-18T04:04:03.550Z"
+      "totalCalls": 40,
+      "lastCalled": "2026-04-18T08:10:37.970Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
-      "totalCalls": 34,
-      "lastCalled": "2026-03-24T03:57:45.139Z"
+      "totalCalls": 42,
+      "lastCalled": "2026-04-21T09:25:29.367Z"
     },
     "GET /api/tts/voices/models": {
       "totalCalls": 10,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 142,
-      "lastCalled": "2026-04-18T04:03:52.188Z"
+      "totalCalls": 172,
+      "lastCalled": "2026-04-21T08:45:33.686Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -139,8 +139,8 @@
       "lastCalled": "2025-10-31T13:48:44.640Z"
     },
     "GET /api/tts/providers": {
-      "totalCalls": 10,
-      "lastCalled": "2026-04-18T04:02:57.440Z"
+      "totalCalls": 19,
+      "lastCalled": "2026-04-20T10:50:55.597Z"
     },
     "GET /api/tts/stats": {
       "totalCalls": 4,
@@ -211,20 +211,20 @@
       "lastCalled": "2026-03-08T10:47:07.552Z"
     },
     "GET /api/voices": {
-      "totalCalls": 2,
-      "lastCalled": "2026-03-16T18:02:07.393Z"
+      "totalCalls": 6,
+      "lastCalled": "2026-04-18T07:58:33.684Z"
     },
     "GET /api": {
-      "totalCalls": 5,
-      "lastCalled": "2026-04-14T11:05:54.972Z"
+      "totalCalls": 10,
+      "lastCalled": "2026-04-21T09:25:06.857Z"
     },
     "HEAD /api/tts/voices": {
       "totalCalls": 3,
       "lastCalled": "2026-03-17T11:49:15.927Z"
     },
     "GET /api/tts/frontend": {
-      "totalCalls": 19,
-      "lastCalled": "2026-04-13T09:21:54.345Z"
+      "totalCalls": 31,
+      "lastCalled": "2026-04-21T08:45:46.657Z"
     },
     "GET /api/credentials/providers": {
       "totalCalls": 1,
@@ -261,7 +261,59 @@
     "POST /api/tts/volcengine/websocket": {
       "totalCalls": 4,
       "lastCalled": "2026-04-15T16:12:10.108Z"
+    },
+    "POST /api/voices": {
+      "totalCalls": 3,
+      "lastCalled": "2026-04-18T08:04:02.278Z"
+    },
+    "GET /api/voices/stats/overview": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-18T07:57:58.508Z"
+    },
+    "POST /api/voices/batch": {
+      "totalCalls": 2,
+      "lastCalled": "2026-04-18T07:58:13.387Z"
+    },
+    "PUT /api/voices/moss-tts-test-voice": {
+      "totalCalls": 2,
+      "lastCalled": "2026-04-18T07:58:13.479Z"
+    },
+    "GET /api/tts/voices/moss-tts-ashui/detail": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-18T08:04:02.335Z"
+    },
+    "PUT /api/voices/moss-tts-ashui": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-18T08:10:38.041Z"
+    },
+    "GET /sdk/javascript/tts/TtsClient.js": {
+      "totalCalls": 3,
+      "lastCalled": "2026-04-20T10:48:00.857Z"
+    },
+    "GET /sdk/javascript/tts/example.html": {
+      "totalCalls": 4,
+      "lastCalled": "2026-04-20T10:48:00.830Z"
+    },
+    "GET /sdk/javascript/voices/VoiceLibraryClient.js": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-20T10:48:00.857Z"
+    },
+    "GET /api/tts/catalog": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-21T08:45:04.633Z"
+    },
+    "GET /apii/tts/frontend": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-21T09:25:13.646Z"
+    },
+    "GET /api/tts/voices/:id/detail": {
+      "totalCalls": 1,
+      "lastCalled": "2026-04-21T09:25:23.032Z"
+    },
+    "GET /api/tts/capabilities/:service": {
+      "totalCalls": 2,
+      "lastCalled": "2026-04-21T09:27:23.449Z"
     }
   },
-  "lastUpdated": "2026-04-18T04:04:12.152Z"
+  "lastUpdated": "2026-04-21T09:27:23.449Z"
 }

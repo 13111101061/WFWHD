@@ -112,7 +112,7 @@ async function testQwenVoiceFactory() {
 
         const result = await qwenService.synthesize('你好，这是一个测试', {
           voice: 'Cherry',
-          model: 'qwen3-tts-flash'  // 使用 qwen3-tts-flash 模型（无连字符）
+          model: 'qwen3-tts-instruct-flash-realtime'  // 使用新的 Qwen3 实时模型
         });
 
         console.log('✅ API 调用成功!');

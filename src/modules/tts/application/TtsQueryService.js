@@ -5,19 +5,28 @@
  * - 音色查询（列表/详情/筛选）
  * - 提供商查询
  * - 服务能力查询
- * - 前端展示数据查询
+ * - 前端展示数据组装
+ *
+ * 展示 DTO 统一由 VoiceCatalog.toDisplayDto() / toDetailDto() 生成
+ * 本服务只做组装和过滤，不再手写字段映射
  */
 
-const { VoiceCatalog } = require('../catalog/VoiceCatalog');
+const { VoiceCatalog, toDisplayDto } = require('../catalog/VoiceCatalog');
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
 const { voiceRegistry } = require('../core/VoiceRegistry');
 
 class TtsQueryService {
   /**
    * 依赖注入
+   * @param {Object} options
+   * @param {Object} [options.ttsProvider] - TTS Provider 适配器
+   * @param {Object} [options.providerManagementService] - 服务商管理服务（统一服务商信息入口）
+   * @param {Object} [options.capabilityResolver] - 能力解析器（统一能力规则源）
    */
-  constructor({ ttsProvider } = {}) {
+  constructor({ ttsProvider, providerManagementService, capabilityResolver } = {}) {
     this.ttsProvider = ttsProvider;
+    this.providerManagementService = providerManagementService;
+    this.capabilityResolver = capabilityResolver;
   }
 
   // ==================== 音色查询 ====================
@@ -65,7 +74,7 @@ class TtsQueryService {
     const detail = VoiceCatalog.getDetail(voiceId);
     if (!detail) return null;
 
-    return this._isProviderVisible(detail.profile?.provider) ? detail : null;
+    return this._isProviderVisible(detail.identity?.provider) ? detail : null;
   }
 
   /**
@@ -73,12 +82,12 @@ class TtsQueryService {
    */
   async getVoices(provider, serviceType) {
     if (provider && serviceType) {
-      return voiceRegistry.getByProviderAndService(provider, serviceType);
+      return VoiceCatalog.getByProviderAndService(provider, serviceType);
     }
     if (provider) {
-      return voiceRegistry.getByProvider(provider);
+      return VoiceCatalog.getByProvider(provider);
     }
-    return voiceRegistry.getAll();
+    return VoiceCatalog.getAllDisplay();
   }
 
   /**
@@ -93,13 +102,14 @@ class TtsQueryService {
 
       const services = {};
       for (const voice of voices) {
-        const service = voice.service || 'default';
+        const service = voice.identity?.service || voice.service || 'default';
         const key = `${provider}_${service}`;
 
         if (!services[key]) {
           services[key] = { provider, service, voices: [] };
         }
-        services[key].voices.push(this._mapVoice(voice));
+        // 使用统一的展示 DTO
+        services[key].voices.push(toDisplayDto(voice));
       }
 
       Object.assign(result, services);
@@ -112,23 +122,29 @@ class TtsQueryService {
 
   /**
    * 获取服务提供商列表
-   * 统一返回结构：{ key, provider, service, displayName, description, configured, status }
+   * [重构] 使用 ProviderManagementService 作为统一入口
    */
   getProviders() {
-    const credentials = require('../../credentials');
-    const providers = require('../adapters/providers');
-    const { ProviderCatalog } = require('../catalog/ProviderCatalog');
+    return this._getProvidersFromService(this._ensureProviderManagementService());
+  }
 
-    const providerList = ProviderCatalog.getAll()
-      .filter(p => providers.hasProvider(p.key))
-      .map(p => ({
-        key: p.key,
-        provider: p.provider,
-        service: p.service,
-        displayName: p.displayName,
-        description: p.description,
-        configured: credentials.isConfigured(p.provider),
-        status: p.status || 'stable'
+  /**
+   * 从 ProviderManagementService 获取提供商列表
+   * @private
+   */
+  _getProvidersFromService(pms) {
+    const allInfo = pms.getAllServiceInfo();
+
+    const providerList = allInfo
+      .filter(info => info.availability.adapterRegistered)
+      .map(info => ({
+        key: info.key,
+        provider: info.provider,
+        service: info.service,
+        displayName: info.displayName,
+        description: info.description,
+        configured: info.availability.credentialsConfigured,
+        status: info.status
       }));
 
     return {
@@ -141,6 +157,9 @@ class TtsQueryService {
 
   /**
    * 获取服务能力
+   *
+   * [改造] 通过 CapabilityResolver 获取能力数据
+   * 确保前端能力查询与后端执行使用相同的规则源
    */
   getCapabilities(serviceKey) {
     const config = ProviderCatalog.get(serviceKey);
@@ -158,9 +177,33 @@ class TtsQueryService {
       };
     }
 
+    return this._getCapabilitiesFromResolver(this._ensureCapabilityResolver(), serviceKey);
+  }
+
+  /**
+   * 从 CapabilityResolver 获取能力数据
+   * @private
+   */
+  _getCapabilitiesFromResolver(resolver, serviceKey) {
+    const context = resolver.resolve(serviceKey);
+
     return {
       success: true,
-      data: config.capabilities,
+      data: {
+        // 前端展示用
+        displayName: context.metadata?.displayName,
+        defaultVoiceId: context.metadata?.defaultVoiceId,
+        status: context.metadata?.status,
+
+        // 参数能力（前端判断哪些参数可用）
+        parameters: context.parameterSupport,
+
+        // 可执行默认值（前端默认填充）
+        defaults: context.resolvedDefaults,
+
+        // 锁定参数（前端禁止修改）
+        lockedParams: context.lockedParams
+      },
       timestamp: new Date().toISOString()
     };
   }
@@ -169,6 +212,7 @@ class TtsQueryService {
 
   /**
    * 获取前端展示目录
+   * 使用统一的 VoiceListItemDTO
    */
   getFrontendCatalog() {
     const items = this._filterVisibleVoices(VoiceCatalog.query({}));
@@ -177,19 +221,8 @@ class TtsQueryService {
     const index = this._buildIndex(items);
     const providers = this.getProviders();
 
-    const voices = items.map(item => ({
-      id: item.id,
-      name: item.displayName || item.name || item.id,
-      displayName: item.displayName || item.name || item.id,
-      provider: item.provider || '',
-      service: item.service || '',
-      gender: item.gender || 'unknown',
-      languages: item.languages || [],
-      tags: item.tags || [],
-      description: item.description || '',
-      previewUrl: item.preview || '',
-      status: item.status || 'active'
-    }));
+    // 直接使用 VoiceCatalog 的展示 DTO，不再手写字段
+    const voices = items;
 
     return {
       success: true,
@@ -208,20 +241,27 @@ class TtsQueryService {
 
   /**
    * 获取前端展示专用数据（精简版）
+   * 用于移动端或简单选择场景
+   *
+   * 注意：此方法只能从标准展示 DTO (toDisplayDto) 裁剪字段，
+   * 不能独立定义另一套字段语义
    */
   getFrontendVoices() {
     const items = this._filterVisibleVoices(VoiceCatalog.query({}));
 
+    // 从标准展示 DTO 裁剪字段（不独立定义字段语义）
     const voices = items.map(item => ({
       id: item.id,
-      displayName: item.displayName || item.name || item.id,
-      gender: item.gender || 'unknown',
-      languages: item.languages || [],
-      tags: item.tags || [],
-      description: item.description || '',
-      preview: item.preview || ''
+      voiceCode: item.voiceCode,
+      displayName: item.displayName,
+      gender: item.gender,
+      languages: item.languages,
+      tags: item.tags,
+      description: item.description,
+      previewUrl: item.previewUrl
     }));
 
+    // 构建筛选元数据
     const genders = new Set();
     const languages = new Set();
     const tags = new Set();
@@ -374,19 +414,26 @@ class TtsQueryService {
     return index;
   }
 
-  _mapVoice(voice) {
-    return {
-      id: voice.id,
-      sourceId: voice.sourceId,
-      provider: voice.provider,
-      service: voice.service,
-      displayName: voice.displayName,
-      gender: voice.gender,
-      languages: voice.languages || ['zh-CN'],
-      tags: voice.tags || [],
-      description: voice.description,
-      ttsConfig: voice.ttsConfig
-    };
+  _ensureProviderManagementService() {
+    if (!this.providerManagementService) {
+      throw new Error(
+        'ProviderManagementService not injected into TtsQueryService. ' +
+        'Ensure ServiceContainer.initialize() is called before using provider query methods.'
+      );
+    }
+
+    return this.providerManagementService;
+  }
+
+  _ensureCapabilityResolver() {
+    if (!this.capabilityResolver) {
+      throw new Error(
+        'CapabilityResolver not injected into TtsQueryService. ' +
+        'Ensure ServiceContainer.initialize() is called before using capability query methods.'
+      );
+    }
+
+    return this.capabilityResolver;
   }
 }
 

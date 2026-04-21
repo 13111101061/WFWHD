@@ -68,17 +68,34 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
       }, this.config.timeout);
 
       ws.on('open', () => {
+        const parameters = {
+          text,
+          voice: this._pickOption(params, ['voice']) || 'longxiaochun',
+          format: this._pickOption(params, ['format']) || 'mp3',
+          sample_rate: this._pickOption(params, ['sample_rate', 'sampleRate']) || 16000
+        };
+
+        const rate = this._pickOption(params, ['rate', 'speed']);
+        if (rate !== undefined) {
+          parameters.rate = rate;
+        }
+
+        const volume = this._pickOption(params, ['volume']);
+        if (volume !== undefined) {
+          parameters.volume = volume;
+        }
+
+        const pitch = this._pickOption(params, ['pitch']);
+        if (pitch !== undefined) {
+          parameters.pitch = pitch;
+        }
+
         ws.send(JSON.stringify({
           header: { task_id: taskId, action: 'run-task' },
           payload: {
             model: 'cosyvoice-v1',
             function: 'speech_synthesis',
-            parameters: {
-              text,
-              voice: params.voice || 'longxiaochun',
-              format: params.format || 'mp3',
-              sample_rate: params.sampleRate || 16000
-            }
+            parameters
           }
         }));
       });
@@ -94,7 +111,7 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
             ws.close();
             resolve({
               audio: Buffer.concat(audioBuffers),
-              format: params.format || 'mp3',
+              format: this._pickOption(params, ['format']) || 'mp3',
               provider: this.provider,
               serviceType: this.serviceType
             });

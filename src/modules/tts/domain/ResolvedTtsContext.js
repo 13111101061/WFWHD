@@ -1,7 +1,11 @@
 /**
  * ResolvedTtsContext - TTS 解析上下文
  *
- * 标准化 VoiceResolver 的输出，作为主链中各层之间传递的数据结构
+ * [未启用] 当前未接入主链路，保留作为未来架构演进的基础
+ *
+ * 设计目标：
+ * - 标准化 VoiceResolver 的输出，作为主链中各层之间传递的数据结构
+ * - 统一服务标识、音色信息、运行时配置的传递方式
  *
  * 结构设计：
  * - 服务标识：provider/service/adapter 信息

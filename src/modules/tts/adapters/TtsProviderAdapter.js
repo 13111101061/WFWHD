@@ -2,24 +2,55 @@
  * TtsProviderAdapter - TTS提供者适配器
  *
  * 实现 TtsProviderPort 接口
- * 使用新的 providers 注册中心
+ * [重构] 使用 ProviderManagementService 作为统一服务商管理入口
  */
 
 const TtsProviderPort = require('../ports/TtsProviderPort');
-const providers = require('./providers');
 const { voiceRegistry } = require('../core/VoiceRegistry');
+
+// 延迟加载 ProviderManagementService，避免循环依赖
+let _providerManagementService = null;
+let _pmsInitialized = false;
+
+function getProviderManagementService() {
+  if (!_providerManagementService) {
+    const { ProviderManagementService } = require('../provider-management');
+    _providerManagementService = ProviderManagementService;
+  }
+  return _providerManagementService;
+}
 
 class TtsProviderAdapter extends TtsProviderPort {
   constructor() {
     super();
-    this.instances = new Map(); // 缓存适配器实例
+    this._initialized = false;
   }
 
   /**
    * 初始化
+   * [修复] 同时初始化 ProviderManagementService，确保独立调用时也能正常工作
    */
   async initialize() {
+    if (this._initialized) return;
+
+    // 1. 初始化 VoiceRegistry
     await voiceRegistry.initialize();
+
+    // 2. 初始化 ProviderManagementService
+    const pms = getProviderManagementService();
+    if (!_pmsInitialized) {
+      pms.initialize();
+      _pmsInitialized = true;
+    }
+
+    this._initialized = true;
+  }
+
+  /**
+   * 检查是否已初始化
+   */
+  isInitialized() {
+    return this._initialized;
   }
 
   /**
@@ -43,33 +74,52 @@ class TtsProviderAdapter extends TtsProviderPort {
   }
 
   /**
+   * 确保已初始化
+   * @private
+   */
+  _ensureInitialized() {
+    if (!this._initialized) {
+      console.warn('[TtsProviderAdapter] Warning: initialize() not called. Auto-initializing...');
+      // 同步初始化（只初始化 ProviderManagementService，VoiceRegistry 可能需要异步）
+      const pms = getProviderManagementService();
+      if (!_pmsInitialized) {
+        pms.initialize();
+        _pmsInitialized = true;
+      }
+      this._initialized = true;
+    }
+  }
+
+  /**
    * 获取适配器实例（带缓存）
+   * [重构] 使用 ProviderManagementService
    */
   _getAdapter(key) {
-    if (!this.instances.has(key)) {
-      this.instances.set(key, providers.createProvider(key));
-    }
-    return this.instances.get(key);
+    this._ensureInitialized();
+    const pms = getProviderManagementService();
+    return pms.getAdapter(key);
   }
 
   /**
    * 获取可用服务提供商列表
-   * 返回结构统一：{ key, provider, service, displayName, description, configured }
+   * [重构] 使用 ProviderManagementService
    */
   getAvailableProviders() {
-    const { ProviderCatalog } = require('../catalog/ProviderCatalog');
-    const credentials = require('../../../credentials');
+    this._ensureInitialized();
 
-    return ProviderCatalog.getAll()
-      .filter(p => providers.hasProvider(p.key))
-      .map(p => ({
-        key: p.key,
-        provider: p.provider,
-        service: p.service,
-        displayName: p.displayName,
-        description: p.description,
-        configured: credentials.isConfigured(p.provider),
-        status: p.status || 'stable'
+    const pms = getProviderManagementService();
+    const allInfo = pms.getAllServiceInfo();
+
+    return allInfo
+      .filter(info => info.availability.adapterRegistered)
+      .map(info => ({
+        key: info.key,
+        provider: info.provider,
+        service: info.service,
+        displayName: info.displayName,
+        description: info.description,
+        configured: info.availability.credentialsConfigured,
+        status: info.status
       }));
   }
 
@@ -77,20 +127,26 @@ class TtsProviderAdapter extends TtsProviderPort {
    * 获取健康状态
    */
   async getHealthStatus() {
-    const registered = providers.getRegisteredProviders();
+    this._ensureInitialized();
+
+    const pms = getProviderManagementService();
+    const allInfo = pms.getAllServiceInfo();
+
     const health = {
       overall: 'healthy',
       services: {},
       timestamp: new Date().toISOString()
     };
 
-    for (const key of registered) {
+    for (const info of allInfo) {
+      if (!info.availability.adapterRegistered) continue;
+
       try {
-        const adapter = this._getAdapter(key);
+        const adapter = this._getAdapter(info.key);
         const status = adapter.getStatus ? adapter.getStatus() : { status: 'active' };
-        health.services[key] = { status: 'healthy', ...status };
+        health.services[info.key] = { status: 'healthy', ...status };
       } catch (error) {
-        health.services[key] = { status: 'unhealthy', error: error.message };
+        health.services[info.key] = { status: 'unhealthy', error: error.message };
         health.overall = 'degraded';
       }
     }
@@ -100,19 +156,29 @@ class TtsProviderAdapter extends TtsProviderPort {
 
   /**
    * 检查服务是否可用
+   * [重构] 使用 ProviderManagementService
    */
   async isAvailable(provider, serviceType) {
+    this._ensureInitialized();
+
     const key = serviceType ? `${provider}_${serviceType}` : provider;
-    return providers.hasProvider(key);
+    const pms = getProviderManagementService();
+    const availability = pms.checkServiceAvailability(key);
+    return availability.available;
   }
 
   /**
    * 获取服务统计
    */
   getStats() {
+    this._ensureInitialized();
+
+    const pms = getProviderManagementService();
+    const stats = pms.getStats();
+
     return {
-      cachedInstances: this.instances.size,
-      registeredProviders: providers.getRegisteredProviders().length,
+      cachedInstances: stats.runtime.cachedInstances,
+      registeredProviders: stats.runtime.registeredClasses,
       voiceStats: voiceRegistry.getStats()
     };
   }
@@ -121,7 +187,10 @@ class TtsProviderAdapter extends TtsProviderPort {
    * 清理缓存
    */
   clearCache() {
-    this.instances.clear();
+    const pms = getProviderManagementService();
+    if (pms.clearRuntimeCache) {
+      pms.clearRuntimeCache();
+    }
   }
 }
 

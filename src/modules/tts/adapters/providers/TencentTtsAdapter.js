@@ -54,20 +54,33 @@ class TencentTtsAdapter extends BaseTtsAdapter {
     try {
       const client = this._getClient(secretId, secretKey);
 
-      const response = await client.TextToVoice({
+      const voiceType = this._pickOption(params, ['VoiceType', 'voice']);
+      const mappedSpeed = this._pickOption(params, ['Speed']);
+      const legacySpeed = this._pickOption(params, ['speed']);
+      const volume = this._pickOption(params, ['Volume', 'volume']);
+      const codec = this._pickOption(params, ['Codec', 'format']) || 'mp3';
+      const sampleRate = this._pickOption(params, ['SampleRate', 'sampleRate', 'sample_rate']);
+
+      const requestBody = {
         Text: text,
-        VoiceType: parseInt(params.voice) || 101001,
-        Speed: Math.round(params.speed * 5),
-        Volume: params.volume,
-        Codec: params.format || 'mp3'
-      });
+        VoiceType: parseInt(voiceType, 10) || 101001,
+        Speed: mappedSpeed !== undefined ? mappedSpeed : Math.round((legacySpeed ?? 1.0) * 5),
+        Volume: volume,
+        Codec: codec
+      };
+
+      if (sampleRate !== undefined) {
+        requestBody.SampleRate = sampleRate;
+      }
+
+      const response = await client.TextToVoice(requestBody);
 
       // 报告成功
       this._reportSuccess();
 
       return {
         audio: Buffer.from(response.Audio, 'base64'),
-        format: params.format || 'mp3',
+        format: codec,
         provider: this.provider,
         serviceType: this.serviceType,
         requestId: response.RequestId

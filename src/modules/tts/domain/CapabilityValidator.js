@@ -1,16 +1,24 @@
 /**
  * CapabilityValidator - 能力校验器
  *
- * 校验请求参数是否在 provider/service 的能力范围内
- * 基于 ProviderCatalog 中定义的能力配置进行校验
+ * [重构] 代理 CapabilityResolver 进行能力校验
+ * 保持 API 兼容性，但内部使用新的能力规则源
+ *
+ * 注意：新代码应直接使用 CapabilityResolver
+ * 此类保留是为了向后兼容
  */
+
+const { capabilityResolver } = require('../application/CapabilityResolver');
 
 class CapabilityValidator {
   /**
-   * @param {Object} providerCatalog - ProviderCatalog 实例
+   * @param {Object} providerCatalog - ProviderCatalog 实例（向后兼容，实际不使用）
+   * @deprecated 请直接使用 CapabilityResolver
    */
   constructor(providerCatalog) {
     this.providerCatalog = providerCatalog;
+    // 内部使用 CapabilityResolver
+    this._resolver = capabilityResolver;
   }
 
   /**
@@ -23,67 +31,58 @@ class CapabilityValidator {
     const errors = [];
     const warnings = [];
 
-    // 获取服务能力配置
-    const capabilities = this.providerCatalog.getCapabilities(adapterKey);
+    // 使用 CapabilityResolver 获取能力上下文
+    const context = this._resolver.resolve(adapterKey);
+    const { parameterSupport } = context;
 
-    if (!capabilities) {
-      // 没有能力配置，跳过校验（记录警告）
+    if (!parameterSupport || Object.keys(parameterSupport).length === 0) {
+      // 没有能力配置，跳过校验
       warnings.push(`No capability config found for ${adapterKey}, validation skipped`);
       return { valid: true, errors, warnings };
     }
 
-    // 校验 speed 范围
-    if (options.speed !== undefined && capabilities.speed) {
-      const speedResult = this._validateRange('speed', options.speed, capabilities.speed);
-      if (!speedResult.valid) {
-        errors.push(speedResult.error);
+    // 遍历参数进行校验
+    for (const [param, value] of Object.entries(options)) {
+      if (value === undefined || value === null) continue;
+
+      const support = parameterSupport[param];
+      if (!support) continue;
+
+      // 检查是否支持
+      if (support.supported === false) {
+        errors.push(support.config?.description || `参数 ${param} 不被当前服务支持`);
+        continue;
       }
-    }
 
-    // 校验 pitch 范围
-    if (options.pitch !== undefined && capabilities.pitch) {
-      const pitchResult = this._validateRange('pitch', options.pitch, capabilities.pitch);
-      if (!pitchResult.valid) {
-        errors.push(pitchResult.error);
+      // 类型校验
+      if (support.config?.type && typeof value !== support.config.type) {
+        if (support.config.type === 'number' && typeof value !== 'number') {
+          errors.push(`${param} 必须是数字，收到: ${typeof value}`);
+          continue;
+        }
+        if (support.config.type === 'string' && typeof value !== 'string') {
+          errors.push(`${param} 必须是字符串，收到: ${typeof value}`);
+          continue;
+        }
       }
-    }
 
-    // 校验 volume 范围
-    if (options.volume !== undefined && capabilities.volume) {
-      const volumeResult = this._validateRange('volume', options.volume, capabilities.volume);
-      if (!volumeResult.valid) {
-        errors.push(volumeResult.error);
+      // 范围校验
+      if (support.config?.range && typeof value === 'number') {
+        const { min, max } = support.config.range;
+        if (min !== undefined && value < min) {
+          errors.push(`${param} 必须 >= ${min}，当前值: ${value}`);
+        }
+        if (max !== undefined && value > max) {
+          errors.push(`${param} 必须 <= ${max}，当前值: ${value}`);
+        }
       }
-    }
 
-    // 校验 format 是否支持
-    if (options.format !== undefined && capabilities.formats) {
-      if (!capabilities.formats.includes(options.format)) {
-        warnings.push(
-          `Format "${options.format}" may not be supported. ` +
-          `Supported formats: ${capabilities.formats.join(', ')}`
-        );
+      // 枚举校验
+      if (support.config?.type === 'enum' && support.config.values) {
+        if (!support.config.values.includes(value)) {
+          warnings.push(`${param} 值 "${value}" 可能不被支持。支持值: ${support.config.values.join(', ')}`);
+        }
       }
-    }
-
-    // 校验 sampleRate 是否支持
-    if (options.sampleRate !== undefined && capabilities.sampleRates) {
-      if (!capabilities.sampleRates.includes(options.sampleRate)) {
-        warnings.push(
-          `Sample rate ${options.sampleRate} may not be supported. ` +
-          `Supported rates: ${capabilities.sampleRates.join(', ')}`
-        );
-      }
-    }
-
-    // 校验 streaming 能力
-    if (options.streaming === true && capabilities.streaming === false) {
-      warnings.push(`Service ${adapterKey} does not support streaming`);
-    }
-
-    // 校验 realtime 能力
-    if (options.realtime === true && capabilities.realtime === false) {
-      warnings.push(`Service ${adapterKey} does not support realtime synthesis`);
     }
 
     return {
@@ -95,10 +94,7 @@ class CapabilityValidator {
 
   /**
    * 校验数值范围
-   * @param {string} paramName - 参数名
-   * @param {number} value - 参数值
-   * @param {Object} range - 范围配置 { min, max, default }
-   * @returns {Object} - { valid, error? }
+   * @deprecated 内部方法，保留向后兼容
    */
   _validateRange(paramName, value, range) {
     if (typeof value !== 'number' || isNaN(value)) {
@@ -131,48 +127,33 @@ class CapabilityValidator {
    * @returns {Object} - 默认参数
    */
   getDefaults(adapterKey) {
-    const capabilities = this.providerCatalog.getCapabilities(adapterKey);
-    if (!capabilities) {
-      return {};
-    }
-
-    const defaults = {};
-
-    if (capabilities.speed && capabilities.speed.default !== undefined) {
-      defaults.speed = capabilities.speed.default;
-    }
-
-    if (capabilities.pitch && capabilities.pitch.default !== undefined) {
-      defaults.pitch = capabilities.pitch.default;
-    }
-
-    if (capabilities.volume && capabilities.volume.default !== undefined) {
-      defaults.volume = capabilities.volume.default;
-    }
-
-    if (capabilities.formats && capabilities.formats.length > 0) {
-      defaults.format = capabilities.formats[0];
-    }
-
-    if (capabilities.sampleRates && capabilities.sampleRates.length > 0) {
-      defaults.sampleRate = capabilities.sampleRates[0];
-    }
-
-    return defaults;
+    const context = this._resolver.resolve(adapterKey);
+    return context.resolvedDefaults || {};
   }
 
   /**
    * 检查服务是否支持某项能力
    * @param {string} adapterKey - 适配器标识
-   * @param {string} capability - 能力名称 (streaming, realtime)
+   * @param {string} capability - 能力名称 (streaming, realtime, speedAdjustable, etc.)
    * @returns {boolean}
    */
   hasCapability(adapterKey, capability) {
-    const capabilities = this.providerCatalog.getCapabilities(adapterKey);
-    if (!capabilities) {
-      return false;
+    const context = this._resolver.resolve(adapterKey);
+    const { serviceCapabilities, parameterSupport } = context;
+
+    // 检查服务能力（streaming, realtime 等）
+    if (serviceCapabilities && serviceCapabilities.capabilities) {
+      if (serviceCapabilities.capabilities[capability] !== undefined) {
+        return serviceCapabilities.capabilities[capability] === true;
+      }
     }
-    return capabilities[capability] === true;
+
+    // 检查参数支持（speed, pitch, volume 等）
+    if (parameterSupport && parameterSupport[capability]) {
+      return parameterSupport[capability].supported !== false;
+    }
+
+    return false;
   }
 }
 

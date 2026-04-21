@@ -1,0 +1,342 @@
+{
+  "$schema": "ServiceFieldOverrides/v1",
+  "version": "1.0.0",
+  "description": "服务字段覆盖定义 - 定义各服务对平台字段的支持状态和覆盖规则",
+
+  "supportStatus": {
+    "supported": "前后端都可用",
+    "unsupported": "后端拒收该字段",
+    "locked": "字段存在但值由系统控制",
+    "hidden": "后端内部保留，前端不默认展示",
+    "deprecated": "暂时兼容，前端不推荐展示，后端打 warning"
+  },
+
+  "services": {
+    "moss_tts": {
+      "key": "moss_tts",
+      "displayName": "MOSS TTS",
+      "description": "MOSS 语音合成服务",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId",
+            "reason": "MOSS 通过 voiceCode 解析出 providerVoiceId，voice 字段由系统填充"
+          },
+          "speed": {
+            "status": "unsupported",
+            "reason": "MOSS 不支持语速调整"
+          },
+          "pitch": {
+            "status": "unsupported",
+            "reason": "MOSS 不支持音调调整"
+          },
+          "volume": {
+            "status": "unsupported",
+            "reason": "MOSS 不支持音量调整"
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "wav"
+          },
+          "sampleRate": {
+            "status": "supported",
+            "defaultOverride": 24000
+          },
+          "emotion": {
+            "status": "unsupported"
+          },
+          "expectedDurationSec": {
+            "status": "supported",
+            "ui": {
+              "advanced": false,
+              "highlight": true
+            }
+          },
+          "samplingParams": {
+            "status": "supported",
+            "nestedFields": {
+              "topP": { "status": "supported" },
+              "temperature": { "status": "supported" }
+            }
+          },
+          "languageType": {
+            "status": "unsupported"
+          },
+          "model": {
+            "status": "locked",
+            "lockedValue": "moss-tts"
+          }
+        }
+      }
+    },
+
+    "aliyun_qwen_http": {
+      "key": "aliyun_qwen_http",
+      "displayName": "阿里云 Qwen HTTP",
+      "description": "阿里云通义千问语音合成 HTTP 接口",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId"
+          },
+          "speed": {
+            "status": "unsupported",
+            "reason": "Qwen HTTP 不支持语速调整"
+          },
+          "pitch": {
+            "status": "unsupported",
+            "reason": "Qwen HTTP 不支持音调调整"
+          },
+          "volume": {
+            "status": "unsupported",
+            "reason": "Qwen HTTP 不支持音量调整"
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "wav"
+          },
+          "sampleRate": {
+            "status": "supported",
+            "defaultOverride": 24000,
+            "validationOverride": {
+              "enum": [8000, 16000, 24000, 48000]
+            }
+          },
+          "emotion": {
+            "status": "unsupported"
+          },
+          "expectedDurationSec": {
+            "status": "unsupported"
+          },
+          "samplingParams": {
+            "status": "unsupported"
+          },
+          "languageType": {
+            "status": "supported",
+            "defaultOverride": "Auto",
+            "ui": {
+              "highlight": true
+            }
+          },
+          "model": {
+            "status": "supported",
+            "defaultOverride": "qwen3-tts-instruct-flash-realtime",
+            "ui": {
+              "inputType": "select",
+              "options": ["qwen3-tts-instruct-flash-realtime", "qwen3-tts-plus"]
+            }
+          }
+        }
+      }
+    },
+
+    "aliyun_cosyvoice": {
+      "key": "aliyun_cosyvoice",
+      "displayName": "阿里云 CosyVoice",
+      "description": "阿里云 CosyVoice 语音合成",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId"
+          },
+          "speed": {
+            "status": "supported",
+            "defaultOverride": 1.0,
+            "rangeOverride": { "min": 0.5, "max": 2.0 }
+          },
+          "pitch": {
+            "status": "supported",
+            "defaultOverride": 1.0,
+            "rangeOverride": { "min": 0.5, "max": 2.0 }
+          },
+          "volume": {
+            "status": "supported",
+            "defaultOverride": 50,
+            "rangeOverride": { "min": 0, "max": 100 },
+            "transformHint": "value * 10"
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "mp3",
+            "validationOverride": {
+              "enum": ["mp3", "wav", "pcm", "flac"]
+            }
+          },
+          "sampleRate": {
+            "status": "supported",
+            "defaultOverride": 22050,
+            "validationOverride": {
+              "enum": [8000, 16000, 22050, 24000]
+            }
+          },
+          "emotion": {
+            "status": "unsupported"
+          },
+          "expectedDurationSec": {
+            "status": "unsupported"
+          },
+          "samplingParams": {
+            "status": "unsupported"
+          },
+          "languageType": {
+            "status": "unsupported"
+          },
+          "model": {
+            "status": "supported"
+          }
+        }
+      }
+    },
+
+    "tencent_tts": {
+      "key": "tencent_tts",
+      "displayName": "腾讯云 TTS",
+      "description": "腾讯云语音合成",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId"
+          },
+          "speed": {
+            "status": "supported",
+            "defaultOverride": 1.0,
+            "rangeOverride": { "min": -2, "max": 6 },
+            "transformHint": "direct"
+          },
+          "pitch": {
+            "status": "unsupported"
+          },
+          "volume": {
+            "status": "supported",
+            "defaultOverride": 0,
+            "rangeOverride": { "min": -10, "max": 10 }
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "wav"
+          },
+          "sampleRate": {
+            "status": "supported",
+            "defaultOverride": 16000
+          },
+          "emotion": {
+            "status": "unsupported"
+          },
+          "expectedDurationSec": {
+            "status": "unsupported"
+          },
+          "samplingParams": {
+            "status": "unsupported"
+          },
+          "languageType": {
+            "status": "unsupported"
+          },
+          "model": {
+            "status": "unsupported"
+          }
+        }
+      }
+    },
+
+    "volcengine_http": {
+      "key": "volcengine_http",
+      "displayName": "火山引擎 HTTP",
+      "description": "火山引擎语音合成 HTTP 接口",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId"
+          },
+          "speed": {
+            "status": "supported",
+            "defaultOverride": 1.0,
+            "rangeOverride": { "min": 0.5, "max": 2.0 }
+          },
+          "pitch": {
+            "status": "unsupported"
+          },
+          "volume": {
+            "status": "unsupported"
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "mp3"
+          },
+          "sampleRate": {
+            "status": "supported",
+            "defaultOverride": 24000
+          },
+          "emotion": {
+            "status": "unsupported"
+          },
+          "expectedDurationSec": {
+            "status": "unsupported"
+          },
+          "samplingParams": {
+            "status": "unsupported"
+          },
+          "languageType": {
+            "status": "unsupported"
+          },
+          "model": {
+            "status": "unsupported"
+          }
+        }
+      }
+    },
+
+    "minimax_tts": {
+      "key": "minimax_tts",
+      "displayName": "MiniMax TTS",
+      "description": "MiniMax 语音合成",
+      "operationOverrides": {
+        "synthesize": {
+          "voice": {
+            "status": "locked",
+            "lockedValueSource": "providerVoiceId"
+          },
+          "speed": {
+            "status": "unsupported"
+          },
+          "pitch": {
+            "status": "unsupported"
+          },
+          "volume": {
+            "status": "unsupported"
+          },
+          "format": {
+            "status": "supported",
+            "defaultOverride": "mp3"
+          },
+          "sampleRate": {
+            "status": "supported"
+          },
+          "emotion": {
+            "status": "supported",
+            "defaultOverride": "neutral",
+            "validationOverride": {
+              "enum": ["neutral", "happy", "sad", "angry", "fearful"]
+            }
+          },
+          "expectedDurationSec": {
+            "status": "unsupported"
+          },
+          "samplingParams": {
+            "status": "unsupported"
+          },
+          "languageType": {
+            "status": "unsupported"
+          },
+          "model": {
+            "status": "unsupported"
+          }
+        }
+      }
+    }
+  }
+}

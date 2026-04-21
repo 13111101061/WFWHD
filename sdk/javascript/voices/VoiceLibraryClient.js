@@ -5,7 +5,12 @@
  * 支持音色查询、筛选、分组等功能
  *
  * @author TTS Team
- * @version 1.0.0
+ * @version 1.1.0
+ *
+ * [v1.1.0] 更新：
+ * - 更新 API 端点为 /tts/frontend
+ * - 支持新的 voiceCode 系统
+ * - 增加音色详情查询
  */
 
 class VoiceLibraryClient {
@@ -150,14 +155,16 @@ class VoiceLibraryClient {
 
     try {
       console.log('🌐 从服务器获取音色数据...');
-      const result = await this._request('/voice-models/models');
+
+      // [v1.1.0] 使用新的 API 端点
+      const result = await this._request('/tts/frontend');
 
       if (!result.success || !result.data) {
         throw new Error(result.message || '获取音色列表失败');
       }
 
-      // 更新缓存
-      this.cache.voices = result.data.models || result.data;
+      // 更新缓存 - 适配新的数据结构
+      this.cache.voices = result.data.voices || [];
       this.cache.timestamp = Date.now();
 
       console.log(`✅ 成功加载 ${this.cache.voices.length} 个音色`);
@@ -179,7 +186,8 @@ class VoiceLibraryClient {
   async getVoiceById(systemId) {
     try {
       const voices = await this.getVoices();
-      const voice = voices.find(v => v.id === systemId);
+      // 支持新旧字段：id 或 voiceCode
+      const voice = voices.find(v => v.id === systemId || v.voiceCode === systemId);
 
       if (!voice) {
         throw new Error(`未找到音色: ${systemId}`);
@@ -193,14 +201,51 @@ class VoiceLibraryClient {
   }
 
   /**
+   * 根据 voiceCode 获取音色
+   * @param {string} voiceCode - 15位音色编码
+   * @returns {Promise<Object>} 音色对象
+   */
+  async getVoiceByCode(voiceCode) {
+    try {
+      const voices = await this.getVoices();
+      const voice = voices.find(v => v.voiceCode === voiceCode);
+
+      if (!voice) {
+        throw new Error(`未找到音色: ${voiceCode}`);
+      }
+
+      return voice;
+    } catch (error) {
+      console.error(`❌ 获取音色失败 [${voiceCode}]:`, error.message);
+      throw error;
+    }
+  }
+
+  /**
    * 根据服务商获取音色列表
-   * @param {string} provider - 服务商名称 (如: 'aliyun', 'tencent')
+   * @param {string} provider - 服务商名称 (如: 'aliyun', 'moss')
    * @returns {Promise<Array>} 音色列表
    */
   async getVoicesByProvider(provider) {
     try {
       const voices = await this.getVoices();
-      return voices.filter(v => v.provider === provider);
+      // 支持从 voiceCode 中解析服务商（voiceCode 前三位）
+      return voices.filter(v => {
+        // 直接匹配
+        if (v.provider === provider) return true;
+        // 从 voiceCode 解析（001=MOSS, 002=阿里云 Qwen）
+        if (v.voiceCode) {
+          const codeToProvider = {
+            '001': 'moss',
+            '002': 'aliyun',
+            '003': 'tencent',
+            '004': 'volcengine',
+            '005': 'minimax'
+          };
+          return codeToProvider[v.voiceCode.substring(0, 3)] === provider;
+        }
+        return false;
+      });
     } catch (error) {
       console.error(`❌ 获取${provider}音色失败:`, error.message);
       throw error;
@@ -209,7 +254,7 @@ class VoiceLibraryClient {
 
   /**
    * 根据标签获取音色列表
-   * @param {string} tag - 标签名称 (如: '双语', '热门', '可爱')
+   * @param {string} tag - 标签名称 (如: '清晰', '自然', '亲和')
    * @returns {Promise<Array>} 音色列表
    */
   async getVoicesByTag(tag) {
@@ -226,13 +271,14 @@ class VoiceLibraryClient {
    * 搜索音色
    * @param {string} keyword - 搜索关键词
    * @param {Object} options - 搜索选项
-   * @param {Array<string>} options.fields - 搜索字段 (默认: ['name', 'tags'])
+   * @param {Array<string>} options.fields - 搜索字段 (默认: ['displayName', 'tags', 'description'])
    * @returns {Promise<Array>} 匹配的音色列表
    */
   async searchVoices(keyword, options = {}) {
     try {
       const voices = await this.getVoices();
-      const { fields = ['name', 'tags', 'description'] } = options;
+      // [v1.1.0] 使用新字段名 displayName
+      const { fields = ['displayName', 'tags', 'description'] } = options;
       const keywordLower = keyword.toLowerCase();
 
       return voices.filter(voice => {

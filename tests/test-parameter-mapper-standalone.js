@@ -51,7 +51,7 @@ async function runTest() {
     // Test 2: MiniMax 嵌套结构
     log('【测试 2】MiniMax TTS - 嵌套映射 + 标准化');
     try {
-      const result2 = parameterMapper.mapAndValidate('minimax', 'tts', {
+      const result2 = parameterMapper.mapAndValidate('minimax', 'minimax_tts', {
         voice: 'male-qn-qingse',
         speed: 1.2,
         volume: 8,
@@ -78,10 +78,10 @@ async function runTest() {
     log('【测试 3】Tencent TTS - 类型转换');
     try {
       const result3 = parameterMapper.mapAndValidate('tencent', 'tts', {
-        voice: '101001',
+        voice: 101001,
         volume: 7
       });
-      log('输入: {voice: "101001", volume: 7}');
+      log('输入: {voice: 101001, volume: 7}');
       log('输出: ' + JSON.stringify(result3, null, 2));
       log('✅ voice 字符串转整数: "101001" → ' + result3.VoiceType + ' (类型: ' + typeof result3.VoiceType + ')');
 
@@ -97,7 +97,7 @@ async function runTest() {
     // Test 4: Volcengine 嵌套结构
     log('【测试 4】Volcengine HTTP - 深层嵌套');
     try {
-      const result4 = parameterMapper.mapAndValidate('volcengine', 'http', {
+      const result4 = parameterMapper.mapAndValidate('volcengine', 'volcengine_http', {
         voice: 'zh_female_shuangkuaisisi_moon_bigtts',
         volume: 5
       });
@@ -120,7 +120,7 @@ async function runTest() {
     log('【测试 5】错误处理 - Tencent 不支持 pitch');
     try {
       parameterMapper.mapAndValidate('tencent', 'tts', {
-        voice: '101001',
+        voice: 101001,
         pitch: 1.2
       });
       logError('❌ 测试失败: 应该抛出异常但没有\n');
@@ -145,7 +145,7 @@ async function runTest() {
     // Test 7: 默认值
     log('【测试 7】默认值应用');
     try {
-      const result7 = parameterMapper.mapAndValidate('minimax', 'tts', {
+      const result7 = parameterMapper.mapAndValidate('minimax', 'minimax_tts', {
         voice: 'male-qn-qingse'
       });
       log('输入: {voice: "male-qn-qingse"}');
@@ -171,7 +171,7 @@ async function runTest() {
     // Test 8: Qwen 不支持多个参数
     log('【测试 8】Qwen - 参数支持检查');
     try {
-      parameterMapper.mapAndValidate('aliyun', 'qwen', {
+      parameterMapper.mapAndValidate('aliyun', 'qwen_http', {
         voice: 'zhixiaobai',
         speed: 1.5
       });

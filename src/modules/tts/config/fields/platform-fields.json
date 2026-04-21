@@ -1,0 +1,322 @@
+{
+  "$schema": "FieldDefinitionRegistry/v1",
+  "version": "1.0.0",
+  "description": "平台标准字段定义 - 定义 TTS 平台层面的通用字段语义",
+
+  "fields": {
+    "voice": {
+      "key": "voice",
+      "displayName": "音色",
+      "description": "语音合成的音色标识",
+      "type": "string",
+      "category": "core",
+      "required": true,
+      "ui": {
+        "group": "basic",
+        "order": 1,
+        "highlight": true,
+        "placeholder": "选择音色"
+      },
+      "validation": {
+        "notEmpty": true
+      }
+    },
+
+    "text": {
+      "key": "text",
+      "displayName": "合成文本",
+      "description": "要合成的文本内容",
+      "type": "string",
+      "category": "core",
+      "required": true,
+      "ui": {
+        "group": "basic",
+        "order": 0,
+        "highlight": true,
+        "inputType": "textarea"
+      },
+      "validation": {
+        "notEmpty": true,
+        "maxLength": 5000
+      }
+    },
+
+    "speed": {
+      "key": "speed",
+      "displayName": "语速",
+      "description": "语音播放速度，1.0 为正常速度",
+      "type": "number",
+      "category": "audio",
+      "required": false,
+      "platformDefault": 1.0,
+      "platformRange": { "min": 0.25, "max": 4.0 },
+      "ui": {
+        "group": "audio",
+        "order": 1,
+        "inputType": "slider",
+        "step": 0.1,
+        "labels": {
+          "0.5": "慢",
+          "1.0": "正常",
+          "2.0": "快"
+        }
+      },
+      "validation": {
+        "range": { "min": 0.25, "max": 4.0 }
+      }
+    },
+
+    "pitch": {
+      "key": "pitch",
+      "displayName": "音调",
+      "description": "语音音调高低，1.0 为正常音调",
+      "type": "number",
+      "category": "audio",
+      "required": false,
+      "platformDefault": 1.0,
+      "platformRange": { "min": 0.5, "max": 2.0 },
+      "ui": {
+        "group": "audio",
+        "order": 2,
+        "inputType": "slider",
+        "step": 0.1,
+        "advanced": true,
+        "labels": {
+          "0.5": "低",
+          "1.0": "正常",
+          "2.0": "高"
+        }
+      },
+      "validation": {
+        "range": { "min": 0.5, "max": 2.0 }
+      }
+    },
+
+    "volume": {
+      "key": "volume",
+      "displayName": "音量",
+      "description": "语音音量大小",
+      "type": "number",
+      "category": "audio",
+      "required": false,
+      "platformDefault": 5,
+      "platformRange": { "min": 0, "max": 10 },
+      "ui": {
+        "group": "audio",
+        "order": 3,
+        "inputType": "slider",
+        "step": 1,
+        "labels": {
+          "0": "静音",
+          "5": "正常",
+          "10": "最大"
+        }
+      },
+      "validation": {
+        "range": { "min": 0, "max": 10 },
+        "integer": true
+      }
+    },
+
+    "format": {
+      "key": "format",
+      "displayName": "音频格式",
+      "description": "输出音频的编码格式",
+      "type": "enum",
+      "category": "output",
+      "required": false,
+      "platformDefault": "mp3",
+      "platformValues": ["mp3", "wav", "pcm", "flac", "ogg", "aac"],
+      "ui": {
+        "group": "output",
+        "order": 1,
+        "inputType": "select"
+      },
+      "validation": {
+        "enum": ["mp3", "wav", "pcm", "flac", "ogg", "aac"]
+      }
+    },
+
+    "sampleRate": {
+      "key": "sampleRate",
+      "displayName": "采样率",
+      "description": "音频采样率，单位 Hz",
+      "type": "enum",
+      "category": "output",
+      "required": false,
+      "platformDefault": 24000,
+      "platformValues": [8000, 16000, 22050, 24000, 44100, 48000],
+      "ui": {
+        "group": "output",
+        "order": 2,
+        "inputType": "select",
+        "advanced": true,
+        "labels": {
+          "8000": "8kHz (电话)",
+          "16000": "16kHz (宽带)",
+          "24000": "24kHz (标准)",
+          "44100": "44.1kHz (CD)"
+        }
+      },
+      "validation": {
+        "enum": [8000, 16000, 22050, 24000, 44100, 48000]
+      }
+    },
+
+    "emotion": {
+      "key": "emotion",
+      "displayName": "情感风格",
+      "description": "语音的情感表达风格",
+      "type": "enum",
+      "category": "expression",
+      "required": false,
+      "platformDefault": "neutral",
+      "platformValues": ["neutral", "happy", "sad", "angry", "fearful", "surprised", "disgusted"],
+      "ui": {
+        "group": "expression",
+        "order": 1,
+        "inputType": "select",
+        "advanced": true
+      },
+      "validation": {
+        "enum": ["neutral", "happy", "sad", "angry", "fearful", "surprised", "disgusted"]
+      }
+    },
+
+    "expectedDurationSec": {
+      "key": "expectedDurationSec",
+      "displayName": "期望时长",
+      "description": "期望生成的语音时长（秒），MOSS 专用参数",
+      "type": "number",
+      "category": "advanced",
+      "required": false,
+      "platformRange": { "min": 0.5, "max": 300 },
+      "ui": {
+        "group": "advanced",
+        "order": 1,
+        "inputType": "number",
+        "advanced": true,
+        "unit": "秒"
+      },
+      "validation": {
+        "range": { "min": 0.5, "max": 300 }
+      }
+    },
+
+    "samplingParams": {
+      "key": "samplingParams",
+      "displayName": "采样参数",
+      "description": "高级采样参数配置（topP, temperature 等）",
+      "type": "object",
+      "category": "advanced",
+      "required": false,
+      "ui": {
+        "group": "advanced",
+        "order": 2,
+        "advanced": true,
+        "collapsed": true
+      },
+      "nestedFields": {
+        "topP": {
+          "key": "samplingParams.topP",
+          "displayName": "Top P",
+          "description": "核采样参数",
+          "type": "number",
+          "platformRange": { "min": 0, "max": 1 },
+          "platformDefault": 0.9,
+          "ui": {
+            "inputType": "slider",
+            "step": 0.05
+          }
+        },
+        "temperature": {
+          "key": "samplingParams.temperature",
+          "displayName": "Temperature",
+          "description": "采样温度",
+          "type": "number",
+          "platformRange": { "min": 0, "max": 2 },
+          "platformDefault": 1.0,
+          "ui": {
+            "inputType": "slider",
+            "step": 0.1
+          }
+        }
+      }
+    },
+
+    "languageType": {
+      "key": "languageType",
+      "displayName": "语言类型",
+      "description": "文本语言类型，用于多语言语音合成",
+      "type": "enum",
+      "category": "core",
+      "required": false,
+      "platformDefault": "Auto",
+      "platformValues": ["Auto", "Chinese", "English", "Japanese", "Korean", "German", "French", "Spanish", "Russian", "Italian", "Portuguese"],
+      "ui": {
+        "group": "basic",
+        "order": 2,
+        "inputType": "select"
+      },
+      "validation": {
+        "enum": ["Auto", "Chinese", "English", "Japanese", "Korean", "German", "French", "Spanish", "Russian", "Italian", "Portuguese"]
+      }
+    },
+
+    "model": {
+      "key": "model",
+      "displayName": "模型",
+      "description": "TTS 模型版本",
+      "type": "string",
+      "category": "advanced",
+      "required": false,
+      "ui": {
+        "group": "advanced",
+        "order": 3,
+        "inputType": "select",
+        "advanced": true
+      }
+    }
+  },
+
+  "uiGroups": {
+    "basic": {
+      "key": "basic",
+      "displayName": "基础设置",
+      "order": 1,
+      "collapsed": false
+    },
+    "audio": {
+      "key": "audio",
+      "displayName": "音频参数",
+      "order": 2,
+      "collapsed": false
+    },
+    "output": {
+      "key": "output",
+      "displayName": "输出设置",
+      "order": 3,
+      "collapsed": false
+    },
+    "expression": {
+      "key": "expression",
+      "displayName": "情感表达",
+      "order": 4,
+      "collapsed": true
+    },
+    "advanced": {
+      "key": "advanced",
+      "displayName": "高级参数",
+      "order": 5,
+      "collapsed": true
+    }
+  },
+
+  "categories": {
+    "core": "核心参数",
+    "audio": "音频控制",
+    "output": "输出配置",
+    "expression": "情感表达",
+    "advanced": "高级设置"
+  }
+}

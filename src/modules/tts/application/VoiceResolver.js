@@ -3,6 +3,7 @@ const { VoiceCatalog } = require('../catalog/VoiceCatalog');
 const { voiceRegistry } = require('../core/VoiceRegistry');
 const ttsDefaults = require('../config/ttsDefaults');
 const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
+const VoiceNormalizer = require('./VoiceNormalizer');
 
 // 兼容映射缓存（懒加载）
 let _compatMap = null;
@@ -46,6 +47,21 @@ function pickFirst(...values) {
   }
   return undefined;
 }
+
+/**
+ * @typedef {Object} VoiceIdentity - VoiceResolver 输出结构
+ *
+ * VoiceResolver 职责已收缩为"身份解析"，不再负责参数合并。
+ * 参数合并逻辑已迁移到 ParameterResolutionService。
+ *
+ * @property {string} serviceKey - canonical service key (如 "moss_tts")
+ * @property {string} providerKey - 服务商标识 (如 "moss")
+ * @property {string} modelKey - 模型标识 (如 "moss-tts")
+ * @property {string} systemId - 系统音色ID (如 "moss-tts-ashui")
+ * @property {string} voiceCode - 15位音色编码 (如 "001000030000005")
+ * @property {string} providerVoiceId - 服务商真实音色ID (如 "2001257729754140672")
+ * @property {Object} voiceRuntime - 音色运行时配置（来自音色数据，供 ParameterResolutionService 使用）
+ */
 
 function extractTopLevelOptions(request = {}) {
   // 主保留字集合（驼峰形式），用于判断
@@ -109,8 +125,11 @@ const VoiceResolver = {
     if (!service && systemId) {
       // 尝试从 systemId 对应音色解析服务
       const rawVoice = voiceRegistry.get(systemId);
-      if (rawVoice && rawVoice.provider && rawVoice.service) {
-        service = `${rawVoice.provider}_${rawVoice.service}`;
+      // 支持新结构 (identity.provider/identity.service) 和旧结构
+      const provider = rawVoice?.identity?.provider || rawVoice?.provider;
+      const serviceType = rawVoice?.identity?.service || rawVoice?.service;
+      if (provider && serviceType) {
+        service = `${provider}_${serviceType}`;
       }
     }
 
@@ -155,8 +174,6 @@ const VoiceResolver = {
       throw error;
     }
 
-    const defaults = ttsDefaults.getDefaults(canonicalKey);
-
     // 核心解析逻辑：voiceCode > systemId > legacy voice
     // 关键修复：如果原始请求没有指定 service，使用从 voiceCode/systemId 解析出的服务
     const targetService = voiceCode || systemId ? service : canonicalKey;
@@ -176,37 +193,30 @@ const VoiceResolver = {
       }
     }
 
-    const runtimeOptions = this._buildRuntimeOptions({
-      defaults,
-      voiceRuntime: resolvedVoice.runtime,
-      options,
-      providerConfig
-    });
-
     // 关键修复：使用实际目标服务的配置（确保使用 canonical key）
     // 优先使用从 voiceCode/systemId 解析出的服务，其次是用户请求的服务
     const finalServiceKey = resolvedVoice.expectedServiceKey ||
                             ProviderCatalog.resolveCanonicalKey(targetService) ||
                             canonicalKey;
     const finalProviderConfig = ProviderCatalog.get(finalServiceKey) || providerConfig;
-    const finalDefaults = ttsDefaults.getDefaults(finalServiceKey) || defaults;
 
-    const finalRuntimeOptions = this._buildRuntimeOptions({
-      defaults: finalDefaults,
-      voiceRuntime: resolvedVoice.runtime,
-      options,
-      providerConfig: finalProviderConfig
-    });
-
+    // 返回 VoiceIdentity（不再包含 runtimeOptions）
+    // 参数合并逻辑已迁移到 ParameterResolutionService
     return {
+      // 新字段（主要）
+      serviceKey: finalServiceKey,
       providerKey: finalProviderConfig.provider,
-      serviceKey: finalProviderConfig.service,
-      adapterKey: finalServiceKey,  // 使用 canonical key
-      voiceCode: resolvedVoice.voiceCode,
-      voiceId: resolvedVoice.providerVoiceId,  // 供应商真实ID
+      modelKey: resolvedVoice.runtime?.model || 'default',
       systemId: resolvedVoice.systemId,
+      voiceCode: resolvedVoice.voiceCode,
+      providerVoiceId: resolvedVoice.providerVoiceId,
       voiceRuntime: resolvedVoice.runtime,
-      runtimeOptions: finalRuntimeOptions
+
+      // 兼容字段（deprecated，后续版本移除）
+      // @deprecated - 使用 providerVoiceId
+      voiceId: resolvedVoice.providerVoiceId,
+      // @deprecated - 使用 serviceKey
+      adapterKey: finalServiceKey
     };
   },
 
@@ -247,13 +257,17 @@ const VoiceResolver = {
       if (!voiceInfo) {
         // 尝试直接从 voiceRegistry 查找
         const allVoices = voiceRegistry.getAll();
-        const matched = allVoices.find(v => v.voiceCode === voiceCode);
+        const matched = allVoices.find(v =>
+          v.voiceCode === voiceCode || v.identity?.voiceCode === voiceCode
+        );
         if (matched) {
+          // 使用 VoiceNormalizer 提取运行时信息
+          const stored = VoiceNormalizer.fromLegacy(matched);
           return {
             voiceCode,
-            systemId: matched.id,
-            providerVoiceId: matched.runtime?.voiceId || matched.ttsConfig?.voiceId || matched.ttsConfig?.sourceId,
-            runtime: matched.runtime || this._buildRuntimeFromConfig(matched),
+            systemId: stored.identity.id,
+            providerVoiceId: stored.runtime.voiceId,
+            runtime: stored.runtime,
             expectedServiceKey
           };
         }
@@ -271,11 +285,13 @@ const VoiceResolver = {
         throw error;
       }
 
+      // 使用 VoiceNormalizer 提取运行时信息
+      const stored = VoiceNormalizer.fromLegacy(rawVoice);
       return {
         voiceCode,
         systemId: voiceInfo.id,
-        providerVoiceId: voiceInfo.providerVoiceId || rawVoice.runtime?.voiceId,
-        runtime: rawVoice.runtime || this._buildRuntimeFromConfig(rawVoice),
+        providerVoiceId: voiceInfo.providerVoiceId || stored.runtime.voiceId,
+        runtime: stored.runtime,
         expectedServiceKey
       };
     }
@@ -289,10 +305,8 @@ const VoiceResolver = {
         throw error;
       }
 
-      // 获取 provider_voice_id（runtime.voiceId > ttsConfig.voiceId > sourceId）
-      const providerVoiceId = rawVoice.runtime?.voiceId ||
-                              rawVoice.ttsConfig?.voiceId ||
-                              rawVoice.ttsConfig?.sourceId;
+      // 使用 VoiceNormalizer 提取运行时信息
+      const stored = VoiceNormalizer.fromLegacy(rawVoice);
 
       // 检查是否有兼容映射
       const compatMap = loadCompatMap();
@@ -300,16 +314,16 @@ const VoiceResolver = {
 
       // 推断期望的服务（用于一致性校验）
       let expectedServiceKey = null;
-      if (rawVoice.provider && rawVoice.service) {
+      if (stored.identity.provider && stored.identity.service) {
         // 构建 canonical key 如 "moss_tts"
-        expectedServiceKey = `${rawVoice.provider}_${rawVoice.service}`;
+        expectedServiceKey = `${stored.identity.provider}_${stored.identity.service}`;
       }
 
       return {
-        voiceCode: mappedVoiceCode || rawVoice.voiceCode || null,
+        voiceCode: mappedVoiceCode || stored.identity.voiceCode || null,
         systemId,
-        providerVoiceId,
-        runtime: rawVoice.runtime || this._buildRuntimeFromConfig(rawVoice),
+        providerVoiceId: stored.runtime.voiceId,
+        runtime: stored.runtime,
         expectedServiceKey
       };
     }
@@ -327,13 +341,14 @@ const VoiceResolver = {
         throw error;
       }
 
-      const providerVoiceId = rawVoice.runtime?.voiceId || rawVoice.ttsConfig?.voiceId || rawVoice.ttsConfig?.sourceId;
+      // 使用 VoiceNormalizer 提取运行时信息
+      const stored = VoiceNormalizer.fromLegacy(rawVoice);
 
       return {
-        voiceCode: mappedVoiceCode || rawVoice.voiceCode || null,
+        voiceCode: mappedVoiceCode || stored.identity.voiceCode || null,
         systemId: voiceId,
-        providerVoiceId,
-        runtime: rawVoice.runtime || this._buildRuntimeFromConfig(rawVoice),
+        providerVoiceId: stored.runtime.voiceId,
+        runtime: stored.runtime,
         expectedServiceKey: null
       };
     }
@@ -349,105 +364,30 @@ const VoiceResolver = {
     throw error;
   },
 
-  _normalizeVoiceRuntime(voiceRuntime) {
-    if (!voiceRuntime) return {};
-
-    const normalized = { ...voiceRuntime };
-    const providerOptions =
-      voiceRuntime.providerOptions && typeof voiceRuntime.providerOptions === 'object'
-        ? voiceRuntime.providerOptions
-        : {};
-
-    // Flatten provider options so existing adapters can consume them without refactor.
-    for (const [key, value] of Object.entries(providerOptions)) {
-      if (normalized[key] === undefined) {
-        normalized[key] = value;
-      }
-    }
-
-    if (!normalized.voiceId && normalized.voice) {
-      normalized.voiceId = normalized.voice;
-    }
-    if (!normalized.voice && normalized.voiceId) {
-      normalized.voice = normalized.voiceId;
-    }
-
-    return normalized;
-  },
+  /**
+   * [已移除] _normalizeVoiceRuntime
+   * 参数标准化逻辑已迁移到 ParameterResolutionService
+   */
 
   /**
-   * 从ttsConfig构建runtime数据（向后兼容）
+   * [已移除] _buildRuntimeFromConfig
+   * 已废弃：使用 VoiceNormalizer.fromLegacy 代替
    */
-  _buildRuntimeFromConfig(rawVoice) {
-    const config = rawVoice.ttsConfig || {};
-    return {
-      voiceId: config.voiceId || config.sourceId || rawVoice.sourceId,
-      voice: config.voiceId || config.sourceId || rawVoice.sourceId,
-      model: config.model,
-      sampleRate: config.sampleRate,
-      providerOptions: {
-        samplingParams: config.samplingParams || {}
-      }
-    };
-  },
 
-  _buildRuntimeOptions({ defaults, voiceRuntime, options }) {
-    const baseOptions = {
-      speed: defaults.speed,
-      pitch: defaults.pitch,
-      volume: defaults.volume,
-      format: defaults.format,
-      sampleRate: defaults.sampleRate
-    };
+  /**
+   * [已移除] _buildRuntimeOptions
+   * 参数合并逻辑已迁移到 ParameterResolutionService
+   */
 
-    const normalizedRuntime = this._normalizeVoiceRuntime(voiceRuntime);
+  /**
+   * [已移除] validateText
+   * 文本校验逻辑已在 TtsValidationService 中实现
+   */
 
-    const merged = {
-      ...baseOptions,
-      ...normalizedRuntime,
-      ...options
-    };
-
-    // 关键修复：voice/voiceId 优先使用音色运行时配置（服务商真实ID）
-    // 不被前端传入的参数覆盖
-    // voiceRuntime.voiceId 即为 provider_voice_id
-    if (normalizedRuntime.voiceId || normalizedRuntime.voice) {
-      merged.voice = normalizedRuntime.voice || normalizedRuntime.voiceId;
-      merged.voiceId = normalizedRuntime.voiceId || normalizedRuntime.voice;
-    } else if (!merged.voice) {
-      merged.voice = 'default';
-      merged.voiceId = merged.voiceId || 'default';
-    }
-
-    return merged;
-  },
-
-  validateText(text) {
-    const { maxLength } = ttsDefaults.textLimits;
-
-    if (!text) {
-      const error = new Error('Missing required parameter: text');
-      error.code = 'VALIDATION_ERROR';
-      throw error;
-    }
-
-    if (typeof text !== 'string' || text.trim().length === 0) {
-      const error = new Error('Text must be a non-empty string');
-      error.code = 'VALIDATION_ERROR';
-      throw error;
-    }
-
-    if (text.length > maxLength) {
-      const error = new Error(`Text length must not exceed ${maxLength} characters`);
-      error.code = 'VALIDATION_ERROR';
-      throw error;
-    }
-  },
-
-  getDefaults(service) {
-    const canonicalKey = ProviderCatalog.resolveCanonicalKey(service);
-    return canonicalKey ? ttsDefaults.getDefaults(canonicalKey) : { ...ttsDefaults.common };
-  }
+  /**
+   * [已移除] getDefaults
+   * 默认值获取已迁移到 CapabilityResolver
+   */
 };
 
 module.exports = {

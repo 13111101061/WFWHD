@@ -1,0 +1,341 @@
+{
+  "$schema": "ProviderFieldMappings/v1",
+  "version": "1.0.0",
+  "description": "Provider 字段映射定义 - 定义字段到各 Provider API 的映射路径和转换规则",
+
+  "transformTypes": {
+    "direct": "直接传递原值",
+    "rename": "重命名字段",
+    "linear": "线性变换: y = ax + b",
+    "enumMap": "枚举值映射",
+    "constant": "固定常量值",
+    "template": "模板字符串替换",
+    "nestedPath": "写入嵌套路径",
+    "ignore": "忽略该字段",
+    "reject": "拒绝该字段并报错"
+  },
+
+  "providers": {
+    "moss": {
+      "key": "moss",
+      "apiStructure": "flat",
+      "mappings": {
+        "voice": {
+          "providerPath": "voice_id",
+          "transform": "rename",
+          "source": "providerVoiceId"
+        },
+        "text": {
+          "providerPath": "text",
+          "transform": "direct"
+        },
+        "format": {
+          "providerPath": "format",
+          "transform": "direct"
+        },
+        "sampleRate": {
+          "providerPath": "sample_rate",
+          "transform": "rename"
+        },
+        "expectedDurationSec": {
+          "providerPath": "expected_duration_sec",
+          "transform": "rename"
+        },
+        "samplingParams": {
+          "providerPath": "sampling_params",
+          "transform": "nestedPath",
+          "nestedMappings": {
+            "topP": { "providerPath": "top_p" },
+            "temperature": { "providerPath": "temperature" }
+          }
+        },
+        "speed": {
+          "transform": "ignore"
+        },
+        "pitch": {
+          "transform": "ignore"
+        },
+        "volume": {
+          "transform": "ignore"
+        },
+        "emotion": {
+          "transform": "ignore"
+        },
+        "languageType": {
+          "transform": "ignore"
+        },
+        "model": {
+          "transform": "ignore"
+        }
+      }
+    },
+
+    "aliyun": {
+      "key": "aliyun",
+      "services": {
+        "qwen_http": {
+          "apiStructure": "nested",
+          "basePath": "input",
+          "mappings": {
+            "voice": {
+              "providerPath": "input.voice",
+              "transform": "nestedPath",
+              "source": "providerVoiceId"
+            },
+            "text": {
+              "providerPath": "input.text",
+              "transform": "nestedPath"
+            },
+            "languageType": {
+              "providerPath": "input.language_type",
+              "transform": "nestedPath"
+            },
+            "sampleRate": {
+              "providerPath": "input.sample_rate",
+              "transform": "nestedPath"
+            },
+            "model": {
+              "providerPath": "model",
+              "transform": "direct"
+            },
+            "speed": {
+              "transform": "ignore"
+            },
+            "pitch": {
+              "transform": "ignore"
+            },
+            "volume": {
+              "transform": "ignore"
+            },
+            "format": {
+              "providerPath": "input.format",
+              "transform": "nestedPath"
+            },
+            "emotion": {
+              "transform": "ignore"
+            },
+            "expectedDurationSec": {
+              "transform": "ignore"
+            },
+            "samplingParams": {
+              "transform": "ignore"
+            }
+          }
+        },
+
+        "cosyvoice": {
+          "apiStructure": "flat",
+          "mappings": {
+            "voice": {
+              "providerPath": "voice",
+              "transform": "direct",
+              "source": "providerVoiceId"
+            },
+            "text": {
+              "providerPath": "text",
+              "transform": "direct"
+            },
+            "speed": {
+              "providerPath": "rate",
+              "transform": "rename"
+            },
+            "pitch": {
+              "providerPath": "pitch",
+              "transform": "direct"
+            },
+            "volume": {
+              "providerPath": "volume",
+              "transform": "linear",
+              "transformConfig": {
+                "inputRange": { "min": 0, "max": 10 },
+                "outputRange": { "min": 0, "max": 100 },
+                "formula": "value * 10"
+              }
+            },
+            "format": {
+              "providerPath": "format",
+              "transform": "direct"
+            },
+            "sampleRate": {
+              "providerPath": "sample_rate",
+              "transform": "rename"
+            },
+            "emotion": {
+              "transform": "ignore"
+            },
+            "expectedDurationSec": {
+              "transform": "ignore"
+            },
+            "samplingParams": {
+              "transform": "ignore"
+            },
+            "languageType": {
+              "transform": "ignore"
+            },
+            "model": {
+              "providerPath": "model",
+              "transform": "direct"
+            }
+          }
+        }
+      }
+    },
+
+    "tencent": {
+      "key": "tencent",
+      "apiStructure": "flat",
+      "mappings": {
+        "voice": {
+          "providerPath": "VoiceType",
+          "transform": "rename",
+          "source": "providerVoiceId",
+          "valueTransform": {
+            "type": "toInteger",
+            "description": "腾讯云音色ID为整数类型"
+          }
+        },
+        "text": {
+          "providerPath": "Text",
+          "transform": "rename"
+        },
+        "speed": {
+          "providerPath": "Speed",
+          "transform": "direct"
+        },
+        "volume": {
+          "providerPath": "Volume",
+          "transform": "direct"
+        },
+        "format": {
+          "providerPath": "Codec",
+          "transform": "enumMap",
+          "enumMap": {
+            "mp3": "mp3",
+            "wav": "wav",
+            "pcm": "pcm"
+          }
+        },
+        "sampleRate": {
+          "providerPath": "SampleRate",
+          "transform": "rename"
+        },
+        "pitch": {
+          "transform": "ignore"
+        },
+        "emotion": {
+          "transform": "ignore"
+        },
+        "expectedDurationSec": {
+          "transform": "ignore"
+        },
+        "samplingParams": {
+          "transform": "ignore"
+        },
+        "languageType": {
+          "transform": "ignore"
+        },
+        "model": {
+          "transform": "ignore"
+        }
+      }
+    },
+
+    "volcengine": {
+      "key": "volcengine",
+      "apiStructure": "flat",
+      "mappings": {
+        "voice": {
+          "providerPath": "voice_type",
+          "transform": "rename",
+          "source": "providerVoiceId"
+        },
+        "text": {
+          "providerPath": "text",
+          "transform": "direct"
+        },
+        "speed": {
+          "providerPath": "speed_ratio",
+          "transform": "rename"
+        },
+        "format": {
+          "providerPath": "format",
+          "transform": "direct"
+        },
+        "sampleRate": {
+          "providerPath": "sample_rate",
+          "transform": "rename"
+        },
+        "pitch": {
+          "transform": "ignore"
+        },
+        "volume": {
+          "transform": "ignore"
+        },
+        "emotion": {
+          "transform": "ignore"
+        },
+        "expectedDurationSec": {
+          "transform": "ignore"
+        },
+        "samplingParams": {
+          "transform": "ignore"
+        },
+        "languageType": {
+          "transform": "ignore"
+        },
+        "model": {
+          "transform": "ignore"
+        }
+      }
+    },
+
+    "minimax": {
+      "key": "minimax",
+      "apiStructure": "flat",
+      "mappings": {
+        "voice": {
+          "providerPath": "voice_id",
+          "transform": "rename",
+          "source": "providerVoiceId"
+        },
+        "text": {
+          "providerPath": "text",
+          "transform": "direct"
+        },
+        "format": {
+          "providerPath": "audio_format",
+          "transform": "rename"
+        },
+        "sampleRate": {
+          "providerPath": "sample_rate",
+          "transform": "rename"
+        },
+        "emotion": {
+          "providerPath": "emotion",
+          "transform": "direct"
+        },
+        "speed": {
+          "transform": "ignore"
+        },
+        "pitch": {
+          "transform": "ignore"
+        },
+        "volume": {
+          "transform": "ignore"
+        },
+        "expectedDurationSec": {
+          "transform": "ignore"
+        },
+        "samplingParams": {
+          "transform": "ignore"
+        },
+        "languageType": {
+          "transform": "ignore"
+        },
+        "model": {
+          "transform": "ignore"
+        }
+      }
+    }
+  }
+}

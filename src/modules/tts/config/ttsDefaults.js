@@ -1,9 +1,46 @@
 /**
  * TTS 默认值配置
  *
- * 集中管理所有 TTS 相关默认值
- * route 不允许再写默认值，resolver 统一从这里取
+ * @deprecated 此文件已废弃，请使用 CapabilitySchema
+ *
+ * 能力定义和默认值已迁移到：
+ * - src/modules/tts/schema/CapabilitySchema.js
+ * - src/modules/tts/application/CapabilityResolver.js
+ *
+ * 迁移说明：
+ * - common 默认值 → CapabilitySchema.platform
+ * - byService 默认值 → CapabilitySchema.services[].defaults
+ * - getDefaults() → CapabilitySchema.getServiceDefaults()
+ * - getDefaultVoiceId() → CapabilitySchema.getDefaultVoiceId()
  */
+
+const { CapabilitySchema, getServiceDefaults, getDefaultVoiceId } = require('../schema/CapabilitySchema');
+
+/**
+ * @deprecated 请使用 CapabilitySchema.platform
+ */
+const common = {
+  speed: 1.0,
+  pitch: 1.0,
+  volume: 50,
+  format: 'wav'
+};
+
+/**
+ * @deprecated 请使用 CapabilitySchema.services
+ */
+const byService = {
+  aliyun_qwen_http: {
+    defaultVoiceId: 'aliyun-qwen_http-cherry',
+    sampleRate: 24000,
+    model: 'qwen3-tts-instruct-flash-realtime'
+  },
+  moss_tts: {
+    defaultVoiceId: 'moss-tts-beijingnan',
+    sampleRate: 24000,
+    model: 'moss-tts'
+  }
+};
 
 module.exports = {
   /**
@@ -12,97 +49,40 @@ module.exports = {
   defaultService: 'aliyun_qwen_http',
 
   /**
-   * 通用默认值（适用于所有服务）
+   * @deprecated 请使用 CapabilitySchema.platform
    */
-  common: {
-    speed: 1.0,
-    pitch: 1.0,
-    volume: 50,
-    format: 'wav'
-  },
+  common,
 
   /**
-   * 按服务区分的默认值
-   *
-   * 注意：defaultVoiceId 必须与 voices/dist/voices.json 中的实际音色 ID 一致
-   * model 必须与音色 ttsConfig.model 一致
-   *
-   * 当前实际启用的音色库（根据 voices/dist/voices.json）：
-   * - aliyun: 49个音色 (qwen_http)
-   * - moss: 9个音色 (moss_tts)
-   * - minimax/tencent/volcengine: 0个音色（已禁用）
+   * @deprecated 请使用 CapabilitySchema.services
    */
-  byService: {
-    // 阿里云 Qwen HTTP - 实际存在的音色
-    aliyun_qwen_http: {
-      defaultVoiceId: 'aliyun-qwen_http-cherry',
-      sampleRate: 24000,
-      model: 'qwen3-tts-flash'
-    },
-
-    // 阿里云 CosyVoice - 待音色数据导入后配置
-    // aliyun_cosyvoice: {
-    //   defaultVoiceId: null,
-    //   sampleRate: 22050,
-    //   model: 'cosyvoice-v2'
-    // },
-
-    // 腾讯云 - 当前无音色数据（voices.json 中 count: 0, enabled: false）
-    // tencent_tts: {
-    //   defaultVoiceId: null,
-    //   sampleRate: 16000
-    // },
-
-    // 火山引擎 HTTP - 当前无音色数据（voices.json 中 count: 0, enabled: false）
-    // volcengine_http: {
-    //   defaultVoiceId: null,
-    //   sampleRate: 24000,
-    //   cluster: 'volcano_tts'
-    // },
-
-    // MiniMax - 当前无音色数据（voices.json 中 count: 0, enabled: false）
-    // minimax_tts: {
-    //   defaultVoiceId: null,
-    //   sampleRate: 32000,
-    //   model: 'speech-01-hd-preview'
-    // },
-
-    // MOSS TTS - 实际存在的音色（9个）
-    moss_tts: {
-      defaultVoiceId: 'moss-tts-beijingnan',  // 改为实际存在的音色ID
-      sampleRate: 24000,
-      model: 'moss-tts'
-    }
-  },
+  byService,
 
   /**
    * 文本限制
    */
   textLimits: {
     minLength: 1,
-    maxLength: 10000
+    maxLength: CapabilitySchema.platform.maxTextLength
   },
 
   /**
    * 获取服务的默认值
+   * @deprecated 请使用 CapabilitySchema.getServiceDefaults(serviceKey)
    * @param {string} serviceKey - 服务标识
    * @returns {Object} 合并后的默认值
    */
   getDefaults(serviceKey) {
-    const serviceDefaults = this.byService[serviceKey] || {};
-    return {
-      ...this.common,
-      ...serviceDefaults
-    };
+    return getServiceDefaults(serviceKey);
   },
 
   /**
    * 获取默认音色ID
+   * @deprecated 请使用 CapabilitySchema.getDefaultVoiceId(serviceKey)
    * @param {string} serviceKey - 服务标识
    * @returns {string|null}
    */
   getDefaultVoiceId(serviceKey) {
-    const serviceDefaults = this.byService[serviceKey];
-    return serviceDefaults?.defaultVoiceId || null;
+    return getDefaultVoiceId(serviceKey);
   }
 };

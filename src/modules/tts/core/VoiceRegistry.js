@@ -15,6 +15,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
+const VoiceNormalizer = require('../application/VoiceNormalizer');
 
 class VoiceRegistry {
   /**
@@ -82,54 +83,163 @@ class VoiceRegistry {
   // ==================== 查询（核心，O(1)） ====================
 
   get(id) {
-    return this.voices.get(id);
+    const raw = this.voices.get(id);
+    if (!raw) return null;
+
+    // 兼容层：自动转换旧格式
+    return VoiceNormalizer.fromLegacy(raw);
   }
 
   getByProvider(provider) {
     const ids = this.providerIndex.get(provider);
     if (!ids) return [];
-    return Array.from(ids).map(id => this.voices.get(id)).filter(Boolean);
+    return Array.from(ids)
+      .map(id => this.voices.get(id))
+      .filter(Boolean)
+      .map(voice => VoiceNormalizer.fromLegacy(voice));
   }
 
   getByProviderAndService(provider, service) {
     const key = `${provider}_${service}`;
     const ids = this.serviceIndex.get(key);
     if (!ids) return [];
-    return Array.from(ids).map(id => this.voices.get(id)).filter(Boolean);
+    return Array.from(ids)
+      .map(id => this.voices.get(id))
+      .filter(Boolean)
+      .map(voice => VoiceNormalizer.fromLegacy(voice));
   }
 
   getAll() {
-    return Array.from(this.voices.values());
+    return Array.from(this.voices.values())
+      .map(voice => VoiceNormalizer.fromLegacy(voice));
   }
 
-  // ==================== 运行时管理 ====================
+  // ==================== 写入（严格类型） ====================
 
-  add(voice) {
-    if (!voice.id || !voice.provider) {
-      throw new Error('Voice must have id and provider');
-    }
+  /**
+   * 添加已标准化的 StoredVoice
+   * 只接受 StoredVoice 结构，拒绝其他格式
+   *
+   * @param {Object} storedVoice - 必须是 StoredVoice 结构 (identity/profile/runtime/meta)
+   * @returns {Object} 存储的音色对象
+   * @throws {Error} 如果不是有效的 StoredVoice 结构
+   */
+  addStored(storedVoice) {
+    this._validateStoredVoice(storedVoice);
 
-    this.voices.set(voice.id, voice);
-    this._updateIndexes(voice);
+    const id = storedVoice.identity.id;
+    this.voices.set(id, storedVoice);
+    this._updateIndexes(storedVoice);
     this.lastUpdated = new Date();
 
-    return voice;
+    return storedVoice;
   }
 
-  addBatch(voices) {
+  /**
+   * 批量添加已标准化的 StoredVoice
+   * @param {Array} storedVoices - StoredVoice 数组
+   * @returns {Object} { added, errors, count }
+   */
+  addStoredBatch(storedVoices) {
     const added = [];
     const errors = [];
 
-    for (const voice of voices) {
+    for (const stored of storedVoices) {
       try {
-        this.add(voice);
-        added.push(voice.id);
+        this.addStored(stored);
+        added.push(stored.identity.id);
       } catch (e) {
-        errors.push({ voice, error: e.message });
+        errors.push({ id: stored?.identity?.id || 'unknown', error: e.message });
       }
     }
 
     return { added, errors, count: added.length };
+  }
+
+  /**
+   * 迁移入口：添加遗留格式音色（仅用于历史数据迁移）
+   * 内部调用 VoiceNormalizer.fromLegacy() 转换
+   *
+   * @param {Object} legacyVoice - 旧格式音色对象
+   * @returns {Object} 转换后的 StoredVoice
+   */
+  addLegacyForMigration(legacyVoice) {
+    const stored = VoiceNormalizer.fromLegacy(legacyVoice);
+    return this.addStored(stored);
+  }
+
+  /**
+   * 批量迁移遗留格式
+   * @param {Array} legacyVoices - 旧格式音色数组
+   * @returns {Object} { added, errors, count }
+   */
+  addLegacyBatchForMigration(legacyVoices) {
+    const added = [];
+    const errors = [];
+
+    for (const legacy of legacyVoices) {
+      try {
+        const stored = VoiceNormalizer.fromLegacy(legacy);
+        this.addStored(stored);
+        added.push(stored.identity.id);
+      } catch (e) {
+        errors.push({ id: legacy?.id || 'unknown', error: e.message });
+      }
+    }
+
+    return { added, errors, count: added.length };
+  }
+
+  /**
+   * 校验是否为有效的 StoredVoice 结构
+   * @private
+   */
+  _validateStoredVoice(voice) {
+    if (!voice || typeof voice !== 'object') {
+      throw new Error('VoiceRegistry: voice must be an object');
+    }
+
+    if (!voice.identity || !voice.profile || !voice.runtime) {
+      throw new Error(
+        'VoiceRegistry: voice must be StoredVoice structure with identity/profile/runtime layers. ' +
+        'Use VoiceWriteService for form submission or addLegacyForMigration() for legacy data.'
+      );
+    }
+
+    if (!voice.identity.id) {
+      throw new Error('VoiceRegistry: voice.identity.id is required');
+    }
+
+    if (!voice.identity.provider) {
+      throw new Error('VoiceRegistry: voice.identity.provider is required');
+    }
+  }
+
+  // ==================== 向后兼容（废弃） ====================
+
+  /**
+   * @deprecated Use addStored() instead
+   * 保留向后兼容，但会严格校验
+   */
+  add(voice) {
+    // 如果是新格式，调用 addStored
+    if (voice.identity && voice.profile && voice.runtime) {
+      return this.addStored(voice);
+    }
+
+    // 拒绝其他格式，提示正确用法
+    throw new Error(
+      'VoiceRegistry.add() only accepts StoredVoice structure. ' +
+      'Use VoiceWriteService.create() for form submission, ' +
+      'or addLegacyForMigration() for legacy data migration.'
+    );
+  }
+
+  /**
+   * @deprecated Use addStoredBatch() instead
+   */
+  addBatch(voices) {
+    return this.addStoredBatch(voices);
   }
 
   update(id, updates) {
@@ -138,14 +248,43 @@ class VoiceRegistry {
       throw new Error(`Voice not found: ${id}`);
     }
 
-    // 1. 先移除旧索引（使用旧的 provider/service）
+    // 1. 先移除旧索引
     this._removeFromIndexes(existing);
 
-    // 2. 更新数据
-    const updated = { ...existing, ...updates, id };
-    this.voices.set(id, updated);
+    // 2. 合并更新（支持新结构的深层合并）
+    let updated;
+    if (existing.identity && existing.profile && existing.runtime) {
+      // 新格式：分层合并
+      updated = {
+        ...existing,
+        identity: {
+          ...existing.identity,
+          ...(updates.identity || {})
+        },
+        profile: {
+          ...existing.profile,
+          ...(updates.profile || {})
+        },
+        runtime: {
+          ...existing.runtime,
+          ...(updates.runtime || {})
+        },
+        meta: {
+          ...existing.meta,
+          updatedAt: new Date().toISOString(),
+          ...(updates.meta || {})
+        }
+      };
+      // 删除嵌套更新对象，避免重复
+      delete updated.identity?.id; // id 不可变
+      updated.identity.id = id;
+    } else {
+      // 旧格式：平铺合并
+      updated = { ...existing, ...updates, id };
+    }
 
-    // 3. 重建新索引（使用新的 provider/service）
+    // 3. 存储并重建索引
+    this.voices.set(id, updated);
     this._updateIndexes(updated);
 
     this.lastUpdated = new Date();
@@ -250,38 +389,52 @@ class VoiceRegistry {
   // ==================== 私有方法 ====================
 
   _updateIndexes(voice) {
+    // 统一从 identity.* 或平铺字段取值（兼容新旧格式）
+    const id = voice.identity?.id || voice.id;
+    const provider = voice.identity?.provider || voice.provider;
+    const service = voice.identity?.service || voice.service;
+
+    if (!id || !provider) return;
+
     // 提供商索引
-    if (!this.providerIndex.has(voice.provider)) {
-      this.providerIndex.set(voice.provider, new Set());
+    if (!this.providerIndex.has(provider)) {
+      this.providerIndex.set(provider, new Set());
     }
-    this.providerIndex.get(voice.provider).add(voice.id);
+    this.providerIndex.get(provider).add(id);
 
     // 服务索引
-    if (voice.service) {
-      const key = `${voice.provider}_${voice.service}`;
+    if (service) {
+      const key = `${provider}_${service}`;
       if (!this.serviceIndex.has(key)) {
         this.serviceIndex.set(key, new Set());
       }
-      this.serviceIndex.get(key).add(voice.id);
+      this.serviceIndex.get(key).add(id);
     }
   }
 
   _removeFromIndexes(voice) {
+    // 统一从 identity.* 或平铺字段取值（兼容新旧格式）
+    const id = voice.identity?.id || voice.id;
+    const provider = voice.identity?.provider || voice.provider;
+    const service = voice.identity?.service || voice.service;
+
+    if (!id || !provider) return;
+
     // 从提供商索引删除
-    const providerIds = this.providerIndex.get(voice.provider);
+    const providerIds = this.providerIndex.get(provider);
     if (providerIds) {
-      providerIds.delete(voice.id);
+      providerIds.delete(id);
       if (providerIds.size === 0) {
-        this.providerIndex.delete(voice.provider);
+        this.providerIndex.delete(provider);
       }
     }
 
     // 从服务索引删除
-    if (voice.service) {
-      const key = `${voice.provider}_${voice.service}`;
+    if (service) {
+      const key = `${provider}_${service}`;
       const serviceIds = this.serviceIndex.get(key);
       if (serviceIds) {
-        serviceIds.delete(voice.id);
+        serviceIds.delete(id);
         if (serviceIds.size === 0) {
           this.serviceIndex.delete(key);
         }
@@ -316,9 +469,14 @@ class VoiceRegistry {
     }
 
     for (const voice of voices) {
-      if (!voice.id || !voice.provider) continue;
-      this.voices.set(voice.id, voice);
-      this._updateIndexes(voice);
+      // 支持新格式 (identity.id) 和旧格式 (id)
+      const id = voice.identity?.id || voice.id;
+      const provider = voice.identity?.provider || voice.provider;
+      const service = voice.identity?.service || voice.service;
+
+      if (!id || !provider) continue;
+      this.voices.set(id, voice);
+      this._updateIndexes({ id, provider, service });
     }
   }
 

@@ -227,12 +227,46 @@
       }
     },
     "2026-04-18": {
-      "totalCalls": 10,
+      "totalCalls": 54,
       "endpoints": {
+        "GET /api/tts/providers": 9,
+        "GET /api/tts/voices": 8,
+        "POST /api/tts/synthesize": 20,
+        "GET /api/tts/stats": 2,
+        "GET /api/tts/frontend": 1,
+        "POST /api/voices": 3,
+        "GET /api/voices": 4,
+        "GET /api/voices/stats/overview": 1,
+        "POST /api/voices/batch": 2,
+        "PUT /api/voices/moss-tts-test-voice": 2,
+        "GET /api/tts/voices/moss-tts-ashui/detail": 1,
+        "PUT /api/voices/moss-tts-ashui": 1
+      }
+    },
+    "2026-04-20": {
+      "totalCalls": 33,
+      "endpoints": {
+        "GET /api/tts/frontend": 9,
+        "GET /sdk/javascript/tts/TtsClient.js": 3,
+        "GET /sdk/javascript/tts/example.html": 4,
+        "GET /api": 2,
+        "GET /sdk/javascript/voices/VoiceLibraryClient.js": 1,
+        "POST /api/tts/synthesize": 12,
         "GET /api/tts/providers": 1,
-        "GET /api/tts/voices": 3,
-        "POST /api/tts/synthesize": 4,
-        "GET /api/tts/stats": 2
+        "GET /": 1
+      }
+    },
+    "2026-04-21": {
+      "totalCalls": 20,
+      "endpoints": {
+        "GET /api/tts/frontend": 2,
+        "GET /api/tts/catalog": 1,
+        "POST /api/tts/synthesize": 2,
+        "GET /api": 3,
+        "GET /hybridaction/zybTrackerStatisticsAction": 8,
+        "GET /apii/tts/frontend": 1,
+        "GET /api/tts/voices/:id/detail": 1,
+        "GET /api/tts/capabilities/:service": 2
       }
     }
   }

@@ -28,6 +28,20 @@ class ServiceContainer {
 
     console.log('[ServiceContainer] Initializing services...');
 
+    // 0. [新增] 初始化 FieldDefinitionSystem（字段定义单一事实源）
+    const FieldDefinitionSystem = require('../modules/tts/config/FieldDefinitionSystem');
+    FieldDefinitionSystem.initialize();
+    this._services.set('fieldDefinitionSystem', FieldDefinitionSystem);
+
+    // 0.1 [新增] 初始化 ProviderManagementService（统一服务商管理门面）
+    const { ProviderManagementService } = require('../modules/tts/provider-management');
+    ProviderManagementService.initialize();
+    this._services.set('providerManagementService', ProviderManagementService);
+
+    // 0.2 [前置] 加载单例服务（无异步初始化，可提前加载）
+    const { capabilityResolver } = require('../modules/tts/application/CapabilityResolver');
+    this._services.set('capabilityResolver', capabilityResolver);
+
     // 1. 初始化适配器
     await voiceCatalogAdapter.initialize();
     await ttsProviderAdapter.initialize();
@@ -36,8 +50,12 @@ class ServiceContainer {
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
-    // 3. 创建查询服务（无依赖）
-    const queryService = new TtsQueryService({ ttsProvider: ttsProviderAdapter });
+    // 3. 创建查询服务（注入依赖）
+    const queryService = new TtsQueryService({
+      ttsProvider: ttsProviderAdapter,
+      providerManagementService: ProviderManagementService,
+      capabilityResolver: capabilityResolver
+    });
     this._services.set('queryService', queryService);
 
     // 4. 创建领域服务（注入适配器）
@@ -50,26 +68,31 @@ class ServiceContainer {
     // 注入查询服务
     synthesisService.setQueryService(queryService);
 
-    // 5. 初始化并注入能力校验器和参数映射器
+    // 5. 初始化并注入能力校验器
     const { CapabilityValidator } = require('../modules/tts/domain/CapabilityValidator');
     const { ProviderCatalog } = require('../modules/tts/catalog/ProviderCatalog');
-    const { parameterMapper } = require('../modules/tts/config/ParameterMapper');
 
-    // 初始化参数映射器（当前 DISABLED - 与 adapter 不兼容，保留占位）
-    await parameterMapper.initialize();
-    this._services.set('parameterMapper', parameterMapper);
-
-    // 创建能力校验器
     const capabilityValidator = new CapabilityValidator(ProviderCatalog);
     this._services.set('capabilityValidator', capabilityValidator);
-
-    // 注入到领域服务
     synthesisService.setCapabilityValidator(capabilityValidator);
+
+    // 6. [新增] 注入 CapabilityResolver 和 ParameterResolutionService
+    // capabilityResolver 已在步骤 0.1 加载，直接使用
+    synthesisService.setCapabilityResolver(capabilityResolver);
+
+    const { parameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
+    this._services.set('parameterResolutionService', parameterResolutionService);
+    synthesisService.setParameterResolutionService(parameterResolutionService);
+
+    // 7. [启用] ParameterMapper - 参数映射器
+    const { parameterMapper } = require('../modules/tts/config/ParameterMapper');
+    await parameterMapper.initialize();
+    this._services.set('parameterMapper', parameterMapper);
     synthesisService.setParameterMapper(parameterMapper);
 
     this._services.set('synthesisService', synthesisService);
 
-    // 6. 创建HTTP适配器（注入领域服务）
+    // 8. 创建HTTP适配器（注入领域服务）
     const ttsHttpAdapter = new TtsHttpAdapter(synthesisService);
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 

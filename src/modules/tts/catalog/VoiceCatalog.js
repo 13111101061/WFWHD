@@ -5,269 +5,224 @@
  * - Convert raw voice records from VoiceRegistry into stable catalog objects
  * - Separate profile (display) and runtime (execution) concerns
  * - Provide a single query facade for voice metadata
+ *
+ * v3.0 更新：
+ * - 适配 StoredVoice 格式（identity/profile/runtime/meta）
+ * - VoiceNormalizer 自动转换旧格式
+ * - 只从 profile 读取展示信息，不暴露 runtime.voiceId
+ * - 展示字段标准化：preview → previewUrl
  */
 
 const { voiceRegistry } = require('../core/VoiceRegistry');
-
-function pickFirst(...values) {
-  for (const value of values) {
-    if (value !== undefined && value !== null && value !== '') {
-      return value;
-    }
-  }
-  return undefined;
-}
-
-function omit(obj = {}, keys = []) {
-  const keySet = new Set(keys);
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (!keySet.has(key) && value !== undefined) {
-      acc[key] = value;
-    }
-    return acc;
-  }, {});
-}
+const VoiceNormalizer = require('../application/VoiceNormalizer');
 
 /**
- * Normalize runtime fields to a canonical schema:
- * - voiceId: provider-side voice identifier
- * - model, sampleRate, cluster, voiceType: common execution fields
- * - providerOptions: provider-specific runtime fields
+ * 从 StoredVoice 构建展示 DTO（列表标准出口）
+ * 只包含前端展示所需字段，不暴露运行时敏感信息
  *
- * Backward compatibility:
- * - keep runtime.voice alias (same as voiceId when needed)
- * - keep _raw.ttsConfig in catalog object
+ * 标准字段（11个核心展示字段）：
+ * - id: 内部音色ID
+ * - voiceCode: 编码ID
+ * - provider: 服务商
+ * - service: 服务类型
+ * - displayName: 展示名称
+ * - gender: 性别
+ * - languages: 语言
+ * - tags: 风格标签
+ * - description: 简介
+ * - status: 状态
+ * - previewUrl: 试听地址
  */
-function normalizeRuntime(rawVoice = {}) {
-  const legacy = rawVoice.ttsConfig || {};
-  const rawRuntime = rawVoice.runtime || {};
+function toDisplayDto(storedVoice) {
+  if (!storedVoice) return null;
 
-  const fallbackVoiceId = pickFirst(
-    legacy.voiceId,
-    legacy.voiceName,
-    legacy.sourceId,
-    rawVoice.sourceId
-  );
-
-  const voiceId = pickFirst(
-    rawRuntime.voiceId,
-    rawRuntime.voice,
-    fallbackVoiceId
-  );
-
-  const legacyProviderOptions = omit(legacy, [
-    'voiceId',
-    'voiceName',
-    'sourceId',
-    'model',
-    'sampleRate',
-    'cluster',
-    'voiceType'
-  ]);
-
-  const runtimeProviderOptions = rawRuntime.providerOptions || {};
-
-  const runtimeExtras = omit(rawRuntime, [
-    'voice',
-    'voiceId',
-    'model',
-    'sampleRate',
-    'cluster',
-    'voiceType',
-    'providerOptions'
-  ]);
+  const identity = storedVoice.identity || {};
+  const profile = storedVoice.profile || {};
+  const runtime = storedVoice.runtime || {};
 
   return {
-    voiceId,
-    model: pickFirst(rawRuntime.model, legacy.model),
-    sampleRate: pickFirst(rawRuntime.sampleRate, legacy.sampleRate),
-    cluster: pickFirst(rawRuntime.cluster, legacy.cluster),
-    voiceType: pickFirst(rawRuntime.voiceType, legacy.voiceType),
-    providerOptions: {
-      ...legacyProviderOptions,
-      ...runtimeProviderOptions
-    },
-    ...runtimeExtras,
-    // Compatibility alias
-    voice: pickFirst(rawRuntime.voice, voiceId)
-  };
-}
+    // 核心展示字段
+    id: identity.id,
+    voiceCode: identity.voiceCode,
+    provider: identity.provider,
+    service: identity.service,
+    displayName: profile.displayName,
+    gender: profile.gender,
+    languages: profile.languages || ['zh-CN'],
+    tags: profile.tags || [],
+    description: profile.description || '',
+    status: profile.status || 'active',
+    previewUrl: profile.preview || null,
 
-/**
- * Convert raw voice from registry to catalog object (profile/runtime split)
- */
-function toCatalogVoice(rawVoice) {
-  if (!rawVoice) return null;
+    // 扩展展示信息
+    alias: profile.alias,
 
-  const profile = {
-    id: rawVoice.id,
-    provider: rawVoice.provider,
-    service: rawVoice.service,
-    displayName: rawVoice.displayName || rawVoice.name,
-    name: rawVoice.name,
-    sourceId: rawVoice.sourceId,
-    gender: rawVoice.gender,
-    languages: rawVoice.languages || ['zh-CN'],
-    description: rawVoice.description,
-    tags: rawVoice.tags || [],
-    category: rawVoice.category,
-    preview: rawVoice.preview,
-    status: rawVoice.status || 'active',
-    // 新增 voiceCode 字段
-    voiceCode: rawVoice.voiceCode || null
-  };
-
-  const runtime = normalizeRuntime(rawVoice);
-
-  return {
-    profile,
-    runtime,
-    _raw: {
-      ttsConfig: rawVoice.ttsConfig,
-      metadata: rawVoice.metadata
+    // 运行时预览（不暴露 voiceId）
+    runtimePreview: {
+      model: runtime.model,
+      hasProviderOptions: !!(runtime.providerOptions && Object.keys(runtime.providerOptions).length > 0)
     }
   };
 }
 
 /**
- * Display DTO without runtime internals
+ * 从 StoredVoice 构建详情 DTO（详情标准出口）
+ * 包含完整信息，但 voiceId 脱敏处理
  */
-function toDisplayDto(catalogVoice) {
-  if (!catalogVoice) return null;
+function toDetailDto(storedVoice) {
+  if (!storedVoice) return null;
 
-  const { profile } = catalogVoice;
-  return {
-    id: profile.id,
-    provider: profile.provider,
-    service: profile.service,
-    displayName: profile.displayName,
-    name: profile.name,
-    gender: profile.gender,
-    languages: profile.languages,
-    description: profile.description,
-    tags: profile.tags,
-    preview: profile.preview,
-    status: profile.status,
-    // 新增 voiceCode 字段
-    voiceCode: profile.voiceCode || null
-  };
-}
+  const identity = storedVoice.identity || {};
+  const profile = storedVoice.profile || {};
+  const runtime = storedVoice.runtime || {};
+  const meta = storedVoice.meta || {};
 
-/**
- * Detail DTO with profile/runtime split
- */
-function toDetailDto(catalogVoice) {
-  if (!catalogVoice) return null;
-
-  const { profile, runtime, _raw } = catalogVoice;
-
-  // provider_voice_id 脱敏处理（保留前4位和后4位）
-  const providerVoiceId = runtime?.voiceId || null;
-  const maskedProviderVoiceId = providerVoiceId
-    ? providerVoiceId.length > 8
-      ? `${providerVoiceId.substring(0, 4)}****${providerVoiceId.substring(providerVoiceId.length - 4)}`
-      : providerVoiceId
-    : null;
+  // voiceId 脱敏处理（保留前4位和后4位）
+  const voiceId = runtime.voiceId;
+  const maskedVoiceId = voiceId && voiceId.length > 8
+    ? `${voiceId.substring(0, 4)}****${voiceId.substring(voiceId.length - 4)}`
+    : voiceId;
 
   return {
-    profile: {
-      ...profile,
-      // 新增 voiceCode
-      voiceCode: profile.voiceCode || null
+    identity: {
+      id: identity.id,
+      voiceCode: identity.voiceCode,
+      sourceId: identity.sourceId,
+      provider: identity.provider,
+      service: identity.service
     },
-    runtime,
-    metadata: _raw?.metadata || {},
-    createdAt: _raw?.metadata?.registeredAt || null,
-    updatedAt: _raw?.metadata?.updatedAt || null,
-    // 脱敏的 provider_voice_id
-    providerVoiceId: maskedProviderVoiceId
+    profile: {
+      displayName: profile.displayName,
+      alias: profile.alias,
+      gender: profile.gender,
+      languages: profile.languages || ['zh-CN'],
+      description: profile.description,
+      tags: profile.tags || [],
+      status: profile.status || 'active',
+      previewUrl: profile.preview || null
+    },
+    runtimePreview: {
+      model: runtime.model,
+      maskedVoiceId,
+      hasProviderOptions: !!(runtime.providerOptions && Object.keys(runtime.providerOptions).length > 0)
+    },
+    meta: {
+      createdAt: meta.createdAt,
+      updatedAt: meta.updatedAt,
+      dataSource: meta.dataSource,
+      version: meta.version
+    }
   };
 }
 
 const VoiceCatalog = {
+  /**
+   * 获取单个音色的完整 catalog 对象
+   */
   get(voiceId) {
     const raw = voiceRegistry.get(voiceId);
-    return toCatalogVoice(raw);
+    if (!raw) return null;
+
+    // VoiceRegistry.get 已经过 VoiceNormalizer.fromLegacy 转换
+    return raw;
   },
 
+  /**
+   * 获取运行时配置（供 VoiceResolver 使用）
+   */
   getRuntime(voiceId) {
-    const catalog = this.get(voiceId);
-    return catalog?.runtime || null;
+    const stored = this.get(voiceId);
+    return stored ? VoiceNormalizer.toRuntime(stored) : null;
   },
 
+  /**
+   * 获取展示 DTO
+   */
   getDisplay(voiceId) {
-    const catalog = this.get(voiceId);
-    return toDisplayDto(catalog);
+    const stored = this.get(voiceId);
+    return toDisplayDto(stored);
   },
 
+  /**
+   * 获取详情 DTO
+   */
   getDetail(voiceId) {
-    const catalog = this.get(voiceId);
-    return toDetailDto(catalog);
+    const stored = this.get(voiceId);
+    return toDetailDto(stored);
   },
 
+  /**
+   * 获取所有音色的展示 DTO
+   */
   getAllDisplay() {
-    const rawVoices = voiceRegistry.getAll();
-    return rawVoices
-      .map(v => toCatalogVoice(v))
-      .filter(Boolean)
-      .map(toDisplayDto);
+    const voices = voiceRegistry.getAll();
+    return voices
+      .map(v => toDisplayDto(v))
+      .filter(Boolean);
   },
 
+  /**
+   * 按服务商获取
+   */
   getByProvider(provider) {
-    const rawVoices = voiceRegistry.getByProvider(provider);
-    return rawVoices
-      .map(v => toCatalogVoice(v))
-      .filter(Boolean)
-      .map(toDisplayDto);
+    const voices = voiceRegistry.getByProvider(provider);
+    return voices
+      .map(v => toDisplayDto(v))
+      .filter(Boolean);
   },
 
+  /**
+   * 按服务商和服务类型获取
+   */
   getByProviderAndService(provider, service) {
-    const rawVoices = voiceRegistry.getByProviderAndService(provider, service);
-    return rawVoices
-      .map(v => toCatalogVoice(v))
-      .filter(Boolean)
-      .map(toDisplayDto);
+    const voices = voiceRegistry.getByProviderAndService(provider, service);
+    return voices
+      .map(v => toDisplayDto(v))
+      .filter(Boolean);
   },
 
+  /**
+   * 查询过滤
+   */
   query(filters = {}) {
     const { provider, service, gender, tags, language } = filters;
 
-    let rawVoices;
+    let voices;
     if (provider && service) {
-      rawVoices = voiceRegistry.getByProviderAndService(provider, service);
+      voices = voiceRegistry.getByProviderAndService(provider, service);
     } else if (provider) {
-      rawVoices = voiceRegistry.getByProvider(provider);
+      voices = voiceRegistry.getByProvider(provider);
     } else {
-      rawVoices = voiceRegistry.getAll();
+      voices = voiceRegistry.getAll();
     }
 
-    let catalogVoices = rawVoices
-      .map(v => toCatalogVoice(v))
-      .filter(Boolean);
+    let results = voices;
 
     if (gender) {
-      catalogVoices = catalogVoices.filter(v => v.profile.gender === gender);
+      results = results.filter(v => v.profile?.gender === gender);
     }
 
     if (tags) {
       const tagList = tags.split(',').map(t => t.trim());
-      catalogVoices = catalogVoices.filter(v =>
-        v.profile.tags && tagList.some(t => v.profile.tags.includes(t))
+      results = results.filter(v =>
+        v.profile?.tags && tagList.some(t => v.profile.tags.includes(t))
       );
     }
 
     if (language) {
-      catalogVoices = catalogVoices.filter(v =>
-        v.profile.languages && v.profile.languages.includes(language)
+      results = results.filter(v =>
+        v.profile?.languages && v.profile.languages.includes(language)
       );
     }
 
-    return catalogVoices.map(toDisplayDto);
+    return results.map(toDisplayDto).filter(Boolean);
   },
 
+  /**
+   * 获取过滤选项元数据
+   */
   getFiltersMeta() {
-    const rawVoices = voiceRegistry.getAll();
-    const catalogVoices = rawVoices.map(v => toCatalogVoice(v)).filter(Boolean);
+    const voices = voiceRegistry.getAll();
 
     const providers = new Set();
     const services = new Set();
@@ -275,10 +230,12 @@ const VoiceCatalog = {
     const languages = new Set();
     const allTags = new Set();
 
-    catalogVoices.forEach(v => {
-      const { profile } = v;
-      if (profile.provider) providers.add(profile.provider);
-      if (profile.service) services.add(profile.service);
+    voices.forEach(v => {
+      const identity = v.identity || {};
+      const profile = v.profile || {};
+
+      if (identity.provider) providers.add(identity.provider);
+      if (identity.service) services.add(identity.service);
       if (profile.gender) genders.add(profile.gender);
       if (profile.languages) {
         profile.languages.forEach(l => languages.add(l));
@@ -297,6 +254,9 @@ const VoiceCatalog = {
     };
   },
 
+  /**
+   * 获取统计信息
+   */
   getStats() {
     const registryStats = voiceRegistry.getStats();
 
@@ -311,7 +271,6 @@ const VoiceCatalog = {
 
 module.exports = {
   VoiceCatalog,
-  toCatalogVoice,
   toDisplayDto,
   toDetailDto
 };

@@ -37,23 +37,29 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
     }
 
     try {
+      const mappedAudio = this._getNestedValue(params, 'audio') || {};
+      const audioPayload = {
+        ...mappedAudio,
+        voice_type: this._pickOption(params, ['audio.voice_type', 'voice']) || 'zh_female_shuangkuaisisi_moon_bigtts',
+        encoding: this._pickOption(params, ['audio.encoding', 'format']) || 'mp3',
+        speed_ratio: this._pickOption(params, ['audio.speed_ratio', 'speed']) ?? 1.0,
+        volume_ratio: this._pickOption(params, ['audio.volume_ratio']) ?? ((this._pickOption(params, ['volume']) ?? 50) / 100)
+      };
+
+      const requestPayload = {
+        user: { uid: 'tts-service' },
+        audio: audioPayload,
+        request: {
+          reqid: Date.now().toString(),
+          text,
+          operation: 'query'
+        }
+      };
+
       const response = await fetch(`${this.endpoint}?appid=${appId}&token=${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user: { uid: 'tts-service' },
-          audio: {
-            voice_type: params.voice || 'zh_female_shuangkuaisisi_moon_bigtts',
-            encoding: params.format || 'mp3',
-            speed_ratio: params.speed || 1.0,
-            volume_ratio: params.volume / 100 || 0.5
-          },
-          request: {
-            reqid: Date.now().toString(),
-            text,
-            operation: 'query'
-          }
-        })
+        body: JSON.stringify(requestPayload)
       });
 
       if (!response.ok) {
@@ -82,7 +88,7 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
 
       return {
         audio,
-        format: params.format || 'mp3',
+        format: audioPayload.encoding || 'mp3',
         provider: this.provider,
         serviceType: this.serviceType
       };

@@ -65,17 +65,34 @@ class AliyunQwenAdapter extends BaseTtsAdapter {
         'Content-Type': 'application/json'
       };
 
+      const mappedInput = this._getNestedValue(params, 'input') || {};
+      const requestBody = {
+        model: this._pickOption(params, ['model']) || 'qwen3-tts-instruct-flash-realtime',
+        input: {
+          text,
+          ...mappedInput
+        }
+      };
+
+      if (!requestBody.input.voice) {
+        requestBody.input.voice = this._pickOption(params, ['voice']) || 'Cherry';
+      }
+
+      const sampleRate = this._pickOption(params, ['input.sample_rate', 'sample_rate', 'sampleRate']);
+      if (sampleRate !== undefined && requestBody.input.sample_rate === undefined) {
+        requestBody.input.sample_rate = sampleRate;
+      }
+
+      const languageType = this._pickOption(params, ['input.language_type', 'language_type']);
+      if (languageType !== undefined && requestBody.input.language_type === undefined) {
+        requestBody.input.language_type = languageType;
+      }
+
       // 多模态生成端点请求格式
       const response = await fetch(this.endpoint, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          model: params.model || 'qwen3-tts-flash',
-          input: {
-            text,
-            voice: params.voice || 'Cherry'
-          }
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {

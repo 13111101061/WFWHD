@@ -37,18 +37,62 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
     }
 
     try {
+      const voiceSetting = {
+        ...(this._getNestedValue(params, 'voice_setting') || {})
+      };
+
+      if (!voiceSetting.voice_id) {
+        voiceSetting.voice_id = this._pickOption(params, ['voice']) || 'female-1';
+      }
+
+      const legacySpeed = this._pickOption(params, ['speed']);
+      if (voiceSetting.speed === undefined && legacySpeed !== undefined) {
+        voiceSetting.speed = legacySpeed;
+      }
+
+      const legacyVolume = this._pickOption(params, ['volume']);
+      if (voiceSetting.vol === undefined && legacyVolume !== undefined) {
+        voiceSetting.vol = legacyVolume;
+      }
+
+      const legacyPitch = this._pickOption(params, ['pitch']);
+      if (voiceSetting.pitch === undefined && legacyPitch !== undefined) {
+        voiceSetting.pitch = legacyPitch;
+      }
+
+      const legacyEmotion = this._pickOption(params, ['emotion']);
+      if (voiceSetting.emotion === undefined && legacyEmotion !== undefined) {
+        voiceSetting.emotion = legacyEmotion;
+      }
+
+      const audioSetting = {
+        ...(this._getNestedValue(params, 'audio_setting') || {})
+      };
+
+      const audioFormat = this._pickOption(params, ['audio_setting.format', 'format']) || 'mp3';
+      if (audioSetting.format === undefined) {
+        audioSetting.format = audioFormat;
+      }
+
+      const sampleRate = this._pickOption(params, ['audio_setting.sample_rate', 'sample_rate', 'sampleRate']);
+      if (sampleRate !== undefined && audioSetting.sample_rate === undefined) {
+        audioSetting.sample_rate = sampleRate;
+      }
+
+      const requestBody = {
+        text,
+        model: this._pickOption(params, ['model']) || 'speech-01-turbo',
+        voice_setting: voiceSetting,
+        audio_setting: audioSetting
+      };
+
       const response = await fetch(this.endpoint, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          text,
-          voice_id: params.voice || 'female-1',
-          model: params.model || 'speech-01-turbo',
-          audio_format: params.format || 'mp3'
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -63,7 +107,7 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
 
       return {
         audio,
-        format: params.format || 'mp3',
+        format: audioFormat,
         provider: this.provider,
         serviceType: this.serviceType
       };

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTS SDK 示例</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #eef5ff 0%, #f8fafc 100%);
+      color: #1f2937;
+    }
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+    h1 { margin: 0 0 8px; }
+    .desc { margin: 0 0 24px; color: #475569; }
+    .card {
+      background: #fff;
+      border: 1px solid #dbe4f0;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #475569;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    button {
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button.secondary { background: #475569; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .muted {
+      font-size: 13px;
+      color: #64748b;
+    }
+    pre {
+      margin: 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+      overflow: auto;
+      font-size: 12px;
+    }
+    audio {
+      width: 100%;
+      margin-top: 12px;
+    }
+    .status {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #0f766e;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>TTS SDK 示例</h1>
+    <p class="desc">这个页面只演示 JavaScript SDK 的核心调用：单条合成、批量合成、目录查询和健康检查。</p>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label for="apiBaseUrl">API Base URL</label>
+          <input id="apiBaseUrl" value="/api">
+        </div>
+        <div>
+          <label for="apiKey">API Key</label>
+          <input id="apiKey" placeholder="需要鉴权时填写">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="initBtn" type="button">初始化 SDK</button>
+        <button id="healthBtn" type="button" class="secondary">健康检查</button>
+        <button id="providersBtn" type="button" class="secondary">获取服务商</button>
+      </div>
+      <div id="initStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label for="identityType">身份方式</label>
+          <select id="identityType">
+            <option value="voiceCode">voiceCode</option>
+            <option value="systemId">systemId</option>
+            <option value="serviceVoice">service + voice</option>
+          </select>
+        </div>
+        <div>
+          <label for="voiceCodeInput">voiceCode</label>
+          <input id="voiceCodeInput" value="001000030000005">
+        </div>
+        <div>
+          <label for="systemIdInput">systemId</label>
+          <input id="systemIdInput" value="moss-tts-ashui">
+        </div>
+        <div>
+          <label for="serviceInput">service</label>
+          <input id="serviceInput" value="aliyun_qwen_http">
+        </div>
+        <div>
+          <label for="voiceInput">voice</label>
+          <input id="voiceInput" value="Cherry">
+        </div>
+        <div>
+          <label for="speedInput">speed</label>
+          <input id="speedInput" value="1">
+        </div>
+      </div>
+
+      <label for="textInput" style="margin-top: 16px;">文本</label>
+      <textarea id="textInput">你好，这是 TTS JavaScript SDK 调用测试。</textarea>
+
+      <label for="extraOptions" style="margin-top: 16px;">附加参数 JSON</label>
+      <textarea id="extraOptions">{}</textarea>
+
+      <div class="actions">
+        <button id="synthesizeBtn" type="button">单条合成</button>
+        <button id="batchBtn" type="button" class="secondary">批量合成</button>
+        <button id="voicesBtn" type="button" class="secondary">获取前端音色列表</button>
+        <button id="catalogBtn" type="button" class="secondary">获取完整目录</button>
+      </div>
+      <p class="muted">批量合成会按换行拆分文本。若使用 voiceCode/systemId，会自动走客户端批量模式。</p>
+    </div>
+
+    <div class="card">
+      <h2>结果</h2>
+      <div id="audioBox"></div>
+      <pre id="output">{}</pre>
+    </div>
+  </div>
+
+  <script src="./TtsClient.js"></script>
+  <script>
+    let client = null;
+
+    const output = document.getElementById('output');
+    const audioBox = document.getElementById('audioBox');
+    const initStatus = document.getElementById('initStatus');
+
+    function setOutput(data) {
+      output.textContent = JSON.stringify(data, null, 2);
+    }
+
+    function setAudio(url) {
+      if (!url) {
+        audioBox.innerHTML = '';
+        return;
+      }
+
+      audioBox.innerHTML = '<audio controls></audio>';
+      audioBox.querySelector('audio').src = url;
+    }
+
+    function getExtraOptions() {
+      const raw = document.getElementById('extraOptions').value.trim();
+      if (!raw) return {};
+      return JSON.parse(raw);
+    }
+
+    function getIdentity() {
+      const identityType = document.getElementById('identityType').value;
+
+      if (identityType === 'voiceCode') {
+        return { voiceCode: document.getElementById('voiceCodeInput').value.trim() };
+      }
+
+      if (identityType === 'systemId') {
+        return { systemId: document.getElementById('systemIdInput').value.trim() };
+      }
+
+      return {
+        service: document.getElementById('serviceInput').value.trim(),
+        voice: document.getElementById('voiceInput').value.trim()
+      };
+    }
+
+    function buildSynthesisParams() {
+      const speedValue = Number(document.getElementById('speedInput').value);
+      return {
+        text: document.getElementById('textInput').value.trim(),
+        ...getIdentity(),
+        ...getExtraOptions(),
+        speed: Number.isFinite(speedValue) ? speedValue : undefined
+      };
+    }
+
+    function ensureClient() {
+      if (!client) {
+        throw new Error('请先初始化 SDK');
+      }
+      return client;
+    }
+
+    async function run(action) {
+      setAudio(null);
+
+      try {
+        const result = await action();
+        setOutput(result);
+        if (result && result.audioUrl) {
+          setAudio(result.audioUrl);
+        }
+      } catch (error) {
+        setOutput({
+          success: false,
+          message: error.message,
+          code: error.code,
+          status: error.status,
+          response: error.response || null
+        });
+      }
+    }
+
+    document.getElementById('initBtn').addEventListener('click', () => {
+      client = new TtsClient({
+        apiBaseUrl: document.getElementById('apiBaseUrl').value.trim(),
+        apiKey: document.getElementById('apiKey').value.trim()
+      });
+
+      client.on('requestStart', ({ method, url }) => {
+        console.log('[requestStart]', method, url);
+      });
+
+      client.on('requestSuccess', ({ latency, url }) => {
+        console.log('[requestSuccess]', url, latency + 'ms');
+      });
+
+      client.on('requestError', ({ error, url }) => {
+        console.error('[requestError]', url, error);
+      });
+
+      initStatus.textContent = 'SDK 已初始化';
+      setOutput({ success: true, message: 'TtsClient initialized' });
+    });
+
+    document.getElementById('healthBtn').addEventListener('click', () => {
+      run(() => ensureClient().getHealth());
+    });
+
+    document.getElementById('providersBtn').addEventListener('click', () => {
+      run(() => ensureClient().getProviders({ forceRefresh: true }));
+    });
+
+    document.getElementById('synthesizeBtn').addEventListener('click', () => {
+      run(() => ensureClient().synthesize(buildSynthesisParams()));
+    });
+
+    document.getElementById('batchBtn').addEventListener('click', () => {
+      run(() => {
+        const params = buildSynthesisParams();
+        const texts = params.text
+          .split(/\n+/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+
+        return ensureClient().batchSynthesize({
+          ...params,
+          texts
+        });
+      });
+    });
+
+    document.getElementById('voicesBtn').addEventListener('click', () => {
+      run(() => ensureClient().getFrontendVoices({ forceRefresh: true }));
+    });
+
+    document.getElementById('catalogBtn').addEventListener('click', () => {
+      run(() => ensureClient().getCatalog());
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,15 @@
 /**
- * VoiceResolver unit tests (v2.0 格式)
+ * VoiceResolver unit tests (v3.0 - 重构后)
  * Run: node tests/unit/VoiceResolver.test.js
+ *
+ * VoiceResolver 新输出结构：
+ * - serviceKey: canonical service key (如 "aliyun_qwen_http")
+ * - providerKey: provider identifier (如 "aliyun")
+ * - modelKey: model identifier (可选)
+ * - systemId: 系统音色ID
+ * - voiceCode: 15位编码
+ * - providerVoiceId: 服务商真实音色ID
+ * - voiceRuntime: 音色运行时配置
  */
 
 const assert = require('assert');
@@ -8,7 +17,7 @@ const { VoiceResolver } = require('../../src/modules/tts/application/VoiceResolv
 const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
 
 async function runTests() {
-  console.log('\n=== VoiceResolver tests (VoiceCode v2.0) ===\n');
+  console.log('\n=== VoiceResolver tests (v3.0 - refactored) ===\n');
   await voiceRegistry.initialize();
 
   console.log('Test 1: resolve known service');
@@ -17,10 +26,9 @@ async function runTests() {
       service: 'aliyun_qwen_http',
       text: 'test'
     });
+    // serviceKey 是完整的 canonical key
     assert.strictEqual(result.providerKey, 'aliyun');
-    assert.strictEqual(result.serviceKey, 'qwen_http');
-    assert.strictEqual(result.adapterKey, 'aliyun_qwen_http');
-    assert.ok(result.runtimeOptions);
+    assert.strictEqual(result.serviceKey, 'aliyun_qwen_http');
   }
   console.log('✅ pass\n');
 
@@ -31,7 +39,7 @@ async function runTests() {
       service: 'moss',  // 别名，对应 canonical key: moss_tts
       text: 'test'
     });
-    assert.strictEqual(result.adapterKey, 'moss_tts');
+    assert.strictEqual(result.serviceKey, 'moss_tts');
     assert.strictEqual(result.providerKey, 'moss');
   }
   console.log('✅ pass\n');
@@ -49,100 +57,21 @@ async function runTests() {
   }
   console.log('✅ pass\n');
 
-  console.log('Test 4: explicit voiceId');
+  console.log('Test 4: explicit voiceId resolves to providerVoiceId');
   {
     const result = VoiceResolver.resolve({
       service: 'aliyun_qwen_http',
       voiceId: 'aliyun-qwen_http-cherry',  // systemId
       text: 'test'
     });
-    // VoiceResolver 会将 systemId 解析为 providerVoiceId（如 "Cherry"）
-    assert.ok(result.voiceId);  // 返回 provider 真实 voiceId
-    assert.ok(result.systemId);   // 返回 systemId
+    // VoiceResolver 会将 systemId 解析为 providerVoiceId
+    assert.ok(result.providerVoiceId);  // 服务商真实音色ID
+    assert.ok(result.systemId);         // 系统音色ID
     assert.ok(result.voiceRuntime);
   }
   console.log('✅ pass\n');
 
-  console.log('Test 5: option override');
-  {
-    const result = VoiceResolver.resolve({
-      service: 'aliyun_qwen_http',
-      options: { speed: 2.0, pitch: 0.5, format: 'mp3' },
-      text: 'test'
-    });
-    assert.strictEqual(result.runtimeOptions.speed, 2.0);
-    assert.strictEqual(result.runtimeOptions.pitch, 0.5);
-    assert.strictEqual(result.runtimeOptions.format, 'mp3');
-  }
-  console.log('✅ pass\n');
-
-  console.log('Test 6: validateText');
-  {
-    assert.throws(() => VoiceResolver.validateText(''), /Missing required parameter: text|Text must be a non-empty string/);
-    assert.throws(() => VoiceResolver.validateText(null), /Missing required parameter: text/);
-    assert.doesNotThrow(() => VoiceResolver.validateText('正常文本'));
-  }
-  console.log('✅ pass\n');
-
-  console.log('Test 7: getDefaults');
-  {
-    const defaults = VoiceResolver.getDefaults('aliyun_qwen_http');
-    assert.ok(defaults.speed !== undefined);
-    assert.ok(defaults.pitch !== undefined);
-    assert.ok(defaults.format !== undefined);
-  }
-  console.log('✅ pass\n');
-
-  console.log('Test 8: _buildRuntimeOptions priority and provider options flatten');
-  {
-    const defaults = { speed: 1.0, pitch: 1.0, format: 'wav' };
-    const voiceRuntime = {
-      voiceId: 'TestVoice',
-      speed: 1.2,
-      model: 'test-model',
-      providerOptions: {
-        samplingParams: {
-          temperature: 1.7,
-          top_p: 0.8,
-          top_k: 25
-        }
-      }
-    };
-    const options = { speed: 1.5, format: 'mp3' };
-
-    const merged = VoiceResolver._buildRuntimeOptions({
-      defaults,
-      voiceRuntime,
-      options
-    });
-
-    assert.strictEqual(merged.speed, 1.5);
-    assert.strictEqual(merged.format, 'mp3');
-    assert.strictEqual(merged.pitch, 1.0);
-    assert.strictEqual(merged.voice, 'TestVoice');
-    assert.strictEqual(merged.voiceId, 'TestVoice');
-    assert.strictEqual(merged.model, 'test-model');
-    assert.ok(merged.samplingParams);
-  }
-  console.log('✅ pass\n');
-
-  console.log('Test 9: normalizeRequest legacy compatibility');
-  {
-    const normalized = VoiceResolver.normalizeRequest({
-      text: 'test',
-      service: 'aliyun_qwen_http',
-      voice: 'aliyun-qwen_http-kai',
-      speed: 1.25,
-      options: { format: 'wav' }
-    });
-
-    assert.strictEqual(normalized.voiceId, 'aliyun-qwen_http-kai');
-    assert.strictEqual(normalized.options.speed, 1.25);
-    assert.strictEqual(normalized.options.format, 'wav');
-  }
-  console.log('✅ pass\n');
-
-  console.log('Test 10: VoiceCode v2.0 format - resolve with voiceCode');
+  console.log('Test 5: voiceCode v2.0 format');
   {
     // v2.0 格式编码: PPP(3) VVVVV(5) RRRRRR(6) C(1)
     // 示例: "002000010000005" = 阿里云(provider=002) 音色序号1(voiceNumber=00001)
@@ -150,12 +79,53 @@ async function runTests() {
       voiceCode: '002000010000005',  // v2.0 格式编码
       text: 'test'
     });
-    
+
     assert.strictEqual(result.providerKey, 'aliyun');
-    assert.strictEqual(result.serviceKey, 'qwen_http');
-    assert.strictEqual(result.adapterKey, 'aliyun_qwen_http');
+    assert.strictEqual(result.serviceKey, 'aliyun_qwen_http');
     assert.strictEqual(result.voiceCode, '002000010000005');
-    assert.ok(result.voiceId);  // 应该解析出 Cherry
+    assert.ok(result.providerVoiceId);  // 应该解析出 Cherry
+  }
+  console.log('✅ pass\n');
+
+  console.log('Test 6: MOSS voiceCode');
+  {
+    const result = VoiceResolver.resolve({
+      voiceCode: '001000030000005',  // MOSS 音色
+      text: 'test'
+    });
+
+    assert.strictEqual(result.providerKey, 'moss');
+    assert.strictEqual(result.serviceKey, 'moss_tts');
+    assert.ok(result.providerVoiceId);
+  }
+  console.log('✅ pass\n');
+
+  console.log('Test 7: voice option maps to voiceId (requires lookup)');
+  {
+    // voice 字段会被当作 voiceId 进行查找
+    // 如果要使用服务商音色ID，应该传 systemId
+    const result = VoiceResolver.resolve({
+      service: 'aliyun_qwen_http',
+      voice: 'aliyun-qwen_http-cherry',  // systemId 格式
+      text: 'test'
+    });
+
+    assert.strictEqual(result.serviceKey, 'aliyun_qwen_http');
+    assert.ok(result.providerVoiceId);
+    assert.strictEqual(result.systemId, 'aliyun-qwen_http-cherry');
+  }
+  console.log('✅ pass\n');
+
+  console.log('Test 8: systemId resolution');
+  {
+    const result = VoiceResolver.resolve({
+      systemId: 'aliyun-qwen_http-cherry',
+      text: 'test'
+    });
+
+    assert.strictEqual(result.serviceKey, 'aliyun_qwen_http');
+    assert.strictEqual(result.systemId, 'aliyun-qwen_http-cherry');
+    assert.ok(result.providerVoiceId);
   }
   console.log('✅ pass\n');
 

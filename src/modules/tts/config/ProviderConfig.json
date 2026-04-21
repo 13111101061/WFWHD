@@ -338,6 +338,52 @@
           }
         }
       }
+    },
+    "moss": {
+      "name": "MOSS",
+      "services": {
+        "tts": {
+          "name": "TTS",
+          "apiStructure": "flat",
+          "parameterMapping": {
+            "voice": {
+              "apiField": "voice_id",
+              "type": "string",
+              "required": true,
+              "description": "音色ID"
+            },
+            "speed": {
+              "supported": false,
+              "description": "MOSS不支持语速调整，可用expectedDurationSec控制语速"
+            },
+            "volume": {
+              "supported": false,
+              "description": "MOSS不支持音量调整"
+            },
+            "pitch": {
+              "supported": false,
+              "description": "MOSS不支持音调调整"
+            },
+            "expectedDurationSec": {
+              "apiField": "expected_duration_sec",
+              "type": "number",
+              "description": "期望音频时长（秒）"
+            },
+            "samplingParams": {
+              "apiField": "sampling_params",
+              "type": "object",
+              "description": "采样参数（temperature, topP, topK）"
+            },
+            "format": {
+              "apiField": "format",
+              "type": "enum",
+              "values": ["wav", "mp3"],
+              "default": "wav",
+              "description": "音频格式"
+            }
+          }
+        }
+      }
     }
   },
   "standardParameters": {
