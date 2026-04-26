@@ -1,13 +1,16 @@
 /**
- * AliyunQwenAdapter - 阿里云Qwen TTS适配器（HTTP方式）
+ * AliyunQwenAdapter - 阿里云 Qwen TTS 适配器（HTTP）
  *
- * 支持两种响应模式：
- * - url模式：API返回音频URL（推荐，节省服务器资源）
- * - binary模式：API返回音频二进制数据
+ * 基于阿里云百炼平台 Qwen TTS 官方 API:
+ *   POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation
  *
- * 支持凭证池化：
- * - 请求时选择最佳账号
- * - 报告成功/失败用于健康追踪
+ * 支持模型:
+ *   - qwen3-tts-instruct-flash  (默认)
+ *   - qwen3-tts-flash
+ *   - qwen-tts 系列
+ *
+ * 注意：本适配器仅负责基础语音合成（非流式 URL 模式），
+ * 声音复刻、声音设计等请走独立服务，不在此处理。
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
@@ -20,44 +23,35 @@ class AliyunQwenAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 初始化时获取凭证（向后兼容）
-    // 实际请求时可能会重新选择
     const creds = this._getCredentials();
     const serviceConfig = this._getServiceConfig();
+
     this.apiKey = config.apiKey || creds?.apiKey;
-    this.endpoint = config.endpoint || serviceConfig?.endpoint || 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation';
-    this.responseMode = config.responseMode || 'url';
+    this.endpoint = config.endpoint
+      || serviceConfig?.endpoint
+      || 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation';
   }
 
   async synthesize(text, options = {}) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 请求时获取凭证（支持池化选择和健康追踪）
     const creds = this._getCredentials();
     const apiKey = creds?.apiKey || this.apiKey;
-
     if (!apiKey) {
-      throw this._error('CONFIG_ERROR', 'Qwen TTS API密钥未配置');
+      throw this._error('CONFIG_ERROR', 'Qwen TTS API 密钥未配置');
     }
 
     try {
       const result = await this._executeRequest(text, params, apiKey);
-
-      // 报告成功
       this._reportSuccess();
-
       return result;
     } catch (error) {
-      // 报告失败
       this._reportFailure(error);
       throw error;
     }
   }
 
-  /**
-   * 执行API请求
-   */
   async _executeRequest(text, params, apiKey) {
     return this._retry(async () => {
       const headers = {
@@ -65,30 +59,34 @@ class AliyunQwenAdapter extends BaseTtsAdapter {
         'Content-Type': 'application/json'
       };
 
-      const mappedInput = this._getNestedValue(params, 'input') || {};
       const requestBody = {
-        model: this._pickOption(params, ['model']) || 'qwen3-tts-instruct-flash-realtime',
+        model: this._pickOption(params, ['model']) || 'qwen3-tts-instruct-flash',
         input: {
           text,
-          ...mappedInput
+          voice: this._pickOption(params, ['voice']) || 'Cherry'
         }
       };
 
-      if (!requestBody.input.voice) {
-        requestBody.input.voice = this._pickOption(params, ['voice']) || 'Cherry';
-      }
-
-      const sampleRate = this._pickOption(params, ['input.sample_rate', 'sample_rate', 'sampleRate']);
-      if (sampleRate !== undefined && requestBody.input.sample_rate === undefined) {
-        requestBody.input.sample_rate = sampleRate;
-      }
-
-      const languageType = this._pickOption(params, ['input.language_type', 'language_type']);
-      if (languageType !== undefined && requestBody.input.language_type === undefined) {
+      const languageType = this._pickOption(params, ['language_type', 'languageType']);
+      if (languageType !== undefined) {
         requestBody.input.language_type = languageType;
       }
 
-      // 多模态生成端点请求格式
+      const sampleRate = this._pickOption(params, ['sample_rate', 'sampleRate']);
+      if (sampleRate !== undefined) {
+        requestBody.input.sample_rate = sampleRate;
+      }
+
+      const instructions = this._pickOption(params, ['instructions']);
+      if (instructions !== undefined) {
+        requestBody.input.instructions = instructions;
+      }
+
+      const optimizeInstructions = this._pickOption(params, ['optimize_instructions', 'optimizeInstructions']);
+      if (optimizeInstructions !== undefined) {
+        requestBody.input.optimize_instructions = optimizeInstructions;
+      }
+
       const response = await fetch(this.endpoint, {
         method: 'POST',
         headers,
@@ -96,46 +94,33 @@ class AliyunQwenAdapter extends BaseTtsAdapter {
       });
 
       if (!response.ok) {
-        const err = await response.text();
-        throw this._error('API_ERROR', `Qwen TTS失败: ${err}`);
+        const errText = await response.text();
+        throw this._error('API_ERROR', `Qwen TTS 请求失败 (${response.status}): ${errText}`);
       }
 
-      // URL模式：解析JSON获取音频URL
-      if (this.responseMode === 'url') {
-        const result = await response.json();
+      const result = await response.json();
 
-        // 解析返回格式：output.audio.url
-        const audioUrl = result.output?.audio?.url;
-        if (!audioUrl) {
-          throw this._error('PARSE_ERROR', '未能获取音频URL', { response: result });
-        }
-
-        return {
-          audioUrl,  // 直接返回阿里云托管的音频URL
-          format: params.format || 'wav',
-          provider: this.provider,
-          serviceType: this.serviceType,
-          audioId: result.output?.audio?.id
-        };
+      const audioUrl = result.output?.audio?.url;
+      if (!audioUrl) {
+        throw this._error('PARSE_ERROR', '响应中未找到音频 URL', { response: result });
       }
-
-      // 二进制模式：返回Buffer
-      const audio = Buffer.from(await response.arrayBuffer());
 
       return {
-        audio,
+        audioUrl,
         format: params.format || 'wav',
         provider: this.provider,
-        serviceType: this.serviceType
+        serviceType: this.serviceType,
+        audioId: result.output?.audio?.id || null,
+        expiresAt: result.output?.audio?.expires_at || null
       };
     });
   }
 
   getFallbackVoices() {
     return [
-      { id: 'Cherry', name: '爱千月', gender: 'female' },
-      { id: 'Ethan', name: '伊森', gender: 'male' },
-      { id: 'Luna', name: '露娜', gender: 'female' }
+      { id: 'Cherry', name: '芊悦', gender: 'female' },
+      { id: 'Ethan',  name: '晨煦', gender: 'male' },
+      { id: 'Luna',   name: '露娜', gender: 'female' }
     ];
   }
 }

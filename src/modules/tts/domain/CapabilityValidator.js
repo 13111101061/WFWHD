@@ -1,11 +1,8 @@
 /**
- * CapabilityValidator - 能力校验器
+ * CapabilityValidator - 能力校验器 [已废弃]
  *
- * [重构] 代理 CapabilityResolver 进行能力校验
- * 保持 API 兼容性，但内部使用新的能力规则源
- *
- * 注意：新代码应直接使用 CapabilityResolver
- * 此类保留是为了向后兼容
+ * @deprecated 直接使用 CapabilityResolver.resolve() + validate() 即可。
+ *             此类保留仅防止遗留代码报错，不新增功能。
  */
 
 const { capabilityResolver } = require('../application/CapabilityResolver');
@@ -16,8 +13,8 @@ class CapabilityValidator {
    * @deprecated 请直接使用 CapabilityResolver
    */
   constructor(providerCatalog) {
+    console.warn('[CapabilityValidator] ⚠️ 已废弃，请直接使用 CapabilityResolver');
     this.providerCatalog = providerCatalog;
-    // 内部使用 CapabilityResolver
     this._resolver = capabilityResolver;
   }
 

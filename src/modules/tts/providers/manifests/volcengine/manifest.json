@@ -1,0 +1,44 @@
+{
+  "$schema": "ProviderManifest/v2",
+  "providerKey": "volcengine",
+  "provider": {
+    "displayName": "火山引擎",
+    "description": "火山引擎语音合成服务",
+    "status": "stable",
+    "protocolTypes": ["http"],
+    "credentialMode": "accessKey"
+  },
+  "services": {
+    "volcengine_http": {
+      "displayName": "火山引擎 HTTP",
+      "description": "火山引擎语音合成 HTTP 接口",
+      "status": "stable",
+      "aliases": ["volcengine", "volcengine_ws", "volcengine_http_legacy"],
+      "protocol": "http",
+      "supportsStreaming": false,
+      "supportsAsync": false,
+      "apiStructure": "flat",
+      "capabilities": {
+        "streaming": false, "realtime": false, "emotion": false,
+        "speedAdjustable": true, "pitchAdjustable": false, "volumeAdjustable": true
+      },
+      "defaults": { "format": "wav", "sampleRate": 24000, "speed": 1.0, "volume": 50 },
+      "lockedParams": ["voice", "model"],
+      "parameters": {
+        "voice":      {"status": "locked",   "source": "providerVoiceId",             "mapTo": "voice_type"},
+        "text":       {"status": "required",                                            "mapTo": "text"},
+        "speed":      {"status": "supported", "default": 1.0, "range": [0.5, 2.0],     "mapTo": "speed_ratio"},
+        "volume":     {"status": "unsupported", "onUserInput": "warn"},
+        "format":     {"status": "supported", "default": "mp3",                         "mapTo": "format"},
+        "sampleRate": {"status": "supported", "default": 24000,                         "mapTo": "sample_rate"},
+        "pitch":      {"status": "unsupported", "onUserInput": "warn"},
+        "emotion":    {"status": "unsupported", "onUserInput": "warn"},
+        "languageType":       {"status": "unsupported", "onUserInput": "warn"},
+        "expectedDurationSec":{"status": "unsupported", "onUserInput": "warn"},
+        "samplingParams":     {"status": "unsupported", "onUserInput": "warn"},
+        "model":      {"status": "unsupported", "onUserInput": "warn"}
+      }
+    }
+  },
+  "voiceCode": { "providerCode": "004", "serviceKey": "http" }
+}

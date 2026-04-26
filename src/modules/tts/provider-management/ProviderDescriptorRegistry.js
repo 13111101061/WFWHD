@@ -1,99 +1,37 @@
 /**
  * ProviderDescriptorRegistry - 服务商描述注册表
  *
+ * 从 ProviderManifest 统一加载配置（替代散落在多个文件中的定义）
+ *
  * 职责：
  * - 管理 provider/service 静态描述信息
  * - 维护 canonical key 与 alias 映射
  * - 对查询展示层提供稳定目录信息
- *
- * 设计原则：
- * - 只管理静态描述信息，不涉及运行时状态
- * - 不涉及 adapter 实例管理
- * - 不涉及凭证状态
- *
- * [重构] 数据来源统一：
- * - 从 adapters/providers/index.js 读取注册信息
- * - 不再重复定义 descriptors
  */
 
-// Provider 信息（服务商级别的元数据，与具体服务无关）
-const providers = {
-  aliyun: {
-    key: 'aliyun',
-    displayName: '阿里云',
-    description: '阿里云智能语音服务',
-    status: 'stable',
-    protocolTypes: ['http'],
-    credentialMode: 'apiKey'
-  },
-  tencent: {
-    key: 'tencent',
-    displayName: '腾讯云',
-    description: '腾讯云语音合成服务',
-    status: 'stable',
-    protocolTypes: ['http'],
-    credentialMode: 'secretKey'
-  },
-  volcengine: {
-    key: 'volcengine',
-    displayName: '火山引擎',
-    description: '火山引擎语音合成服务',
-    status: 'stable',
-    protocolTypes: ['http'],
-    credentialMode: 'accessKey'
-  },
-  minimax: {
-    key: 'minimax',
-    displayName: 'MiniMax',
-    description: 'MiniMax AI 语音服务',
-    status: 'beta',
-    protocolTypes: ['http'],
-    credentialMode: 'apiKey'
-  },
-  moss: {
-    key: 'moss',
-    displayName: 'MOSS',
-    description: 'MOSS 语音合成服务',
-    status: 'beta',
-    protocolTypes: ['http'],
-    credentialMode: 'apiKey'
-  }
-};
+const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
 
-// 延迟加载，避免循环依赖
-let _adaptersModule = null;
 let _aliasToCanonicalMap = null;
 let _canonicalToAliasesMap = null;
-
-function getAdaptersModule() {
-  if (!_adaptersModule) {
-    _adaptersModule = require('../adapters/providers');
-  }
-  return _adaptersModule;
-}
+let _initialized = false;
 
 function _ensureMapsInitialized() {
-  if (_aliasToCanonicalMap) return;
+  if (_initialized) return;
 
-  const adapters = getAdaptersModule();
-  const adapterMap = adapters.adapters || {};
+  ProviderManifest._ensureLoaded();
+  _aliasToCanonicalMap = ProviderManifest.buildAliasMap();
 
-  _aliasToCanonicalMap = new Map();
+  // Build canonical -> aliases reverse mapping
   _canonicalToAliasesMap = new Map();
+  const serviceKeys = ProviderManifest.getAllServiceKeys();
+  for (const key of serviceKeys) {
+    const cfg = ProviderManifest.getServiceConfig(key);
+    if (cfg?.aliases) {
+      _canonicalToAliasesMap.set(key, cfg.aliases);
+    }
+  }
 
-  Object.keys(adapterMap).forEach(canonicalKey => {
-    // canonical key 映射到自身
-    _aliasToCanonicalMap.set(canonicalKey, canonicalKey);
-
-    // 记录每个 canonical key 的别名列表
-    const aliases = adapterMap[canonicalKey].aliases || [];
-    _canonicalToAliasesMap.set(canonicalKey, aliases);
-
-    // 注册所有别名
-    aliases.forEach(alias => {
-      _aliasToCanonicalMap.set(alias, canonicalKey);
-    });
-  });
+  _initialized = true;
 }
 
 const ProviderDescriptorRegistry = {
@@ -107,14 +45,26 @@ const ProviderDescriptorRegistry = {
     const canonicalKey = _aliasToCanonicalMap.get(key);
     if (!canonicalKey) return null;
 
-    const adapters = getAdaptersModule();
-    return adapters.getDescriptor(canonicalKey);
+    const cfg = ProviderManifest.getServiceConfig(canonicalKey);
+    if (!cfg) return null;
+
+    return {
+      key: canonicalKey,
+      provider: cfg.providerKey,
+      service: cfg._canonicalKey,
+      displayName: cfg.displayName || canonicalKey,
+      description: cfg.description || '',
+      status: cfg.status || 'stable',
+      aliases: cfg.aliases || [],
+      protocol: cfg.protocol || 'http',
+      category: 'tts',
+      supportsStreaming: cfg.supportsStreaming || false,
+      supportsAsync: cfg.supportsAsync || false
+    };
   },
 
   /**
    * 解析为 canonical key
-   * @param {string} key - 任意有效的 key 或 alias
-   * @returns {string|null}
    */
   resolveCanonicalKey(key) {
     _ensureMapsInitialized();
@@ -123,8 +73,6 @@ const ProviderDescriptorRegistry = {
 
   /**
    * 检查 key 是否有效
-   * @param {string} key
-   * @returns {boolean}
    */
   has(key) {
     _ensureMapsInitialized();
@@ -133,26 +81,34 @@ const ProviderDescriptorRegistry = {
 
   /**
    * 获取所有服务描述列表
-   * @returns {Object[]}
    */
   getAll() {
-    const adapters = getAdaptersModule();
-    return adapters.getAllDescriptors();
+    _ensureMapsInitialized();
+    return ProviderManifest.getAllServiceDescriptors().map(cfg => ({
+      key: cfg._canonicalKey,
+      provider: cfg.providerKey,
+      service: cfg._canonicalKey,
+      displayName: cfg.displayName || cfg.key,
+      description: cfg.description || '',
+      status: cfg.status || 'stable',
+      aliases: cfg.aliases || [],
+      protocol: cfg.protocol || 'http',
+      category: 'tts',
+      supportsStreaming: cfg.supportsStreaming || false,
+      supportsAsync: cfg.supportsAsync || false
+    }));
   },
 
   /**
    * 获取所有 canonical keys
-   * @returns {string[]}
    */
   getAllCanonicalKeys() {
-    const adapters = getAdaptersModule();
-    return adapters.getCanonicalKeys();
+    _ensureMapsInitialized();
+    return ProviderManifest.getAllServiceKeys();
   },
 
   /**
    * 获取服务的别名列表
-   * @param {string} canonicalKey
-   * @returns {string[]}
    */
   getAliases(canonicalKey) {
     _ensureMapsInitialized();
@@ -161,91 +117,57 @@ const ProviderDescriptorRegistry = {
 
   /**
    * 按 provider 分组获取服务
-   * @returns {Object}
    */
   getByProvider() {
-    const adapters = getAdaptersModule();
-    const descriptors = adapters.getAllDescriptors();
+    _ensureMapsInitialized();
     const result = {};
-
-    descriptors.forEach(descriptor => {
+    const serviceKeys = ProviderManifest.getAllServiceKeys();
+    for (const key of serviceKeys) {
+      const descriptor = this.get(key);
+      if (!descriptor) continue;
       const { provider } = descriptor;
-      if (!result[provider]) {
-        result[provider] = [];
-      }
+      if (!result[provider]) result[provider] = [];
       result[provider].push(descriptor);
-    });
-
+    }
     return result;
   },
 
   // ==================== Provider 层操作 ====================
 
-  /**
-   * 获取 Provider 信息
-   * @param {string} providerKey
-   * @returns {Object|null}
-   */
   getProvider(providerKey) {
-    return providers[providerKey] || null;
+    return ProviderManifest.getProviderMeta(providerKey);
   },
 
-  /**
-   * 获取所有 Provider 列表
-   * @returns {Object[]}
-   */
   getAllProviders() {
-    return Object.values(providers);
+    return ProviderManifest.getAllProviders();
   },
 
-  /**
-   * 获取 Provider 下的所有服务
-   * @param {string} providerKey
-   * @returns {Object[]}
-   */
   getServicesByProvider(providerKey) {
-    const adapters = getAdaptersModule();
-    const descriptors = adapters.getAllDescriptors();
-    return descriptors.filter(d => d.provider === providerKey);
+    _ensureMapsInitialized();
+    const services = ProviderManifest.getProviderServices(providerKey);
+    return services.map(cfg => ({
+      key: cfg.key,
+      provider: cfg.providerKey || providerKey,
+      service: cfg.key,   // getProviderServices 返回的 entries 中 key 就是 serviceKey
+      displayName: cfg.displayName || cfg.key,
+      description: cfg.description || '',
+      status: cfg.status || 'stable',
+      aliases: cfg.aliases || [],
+      protocol: cfg.protocol || 'http',
+      category: 'tts',
+      supportsStreaming: cfg.supportsStreaming || false,
+      supportsAsync: cfg.supportsAsync || false
+    }));
   },
 
   // ==================== 状态统计 ====================
 
-  /**
-   * 获取统计信息
-   * @returns {Object}
-   */
   getStats() {
-    const adapters = getAdaptersModule();
-    const descriptors = adapters.getAllDescriptors();
-
-    const stats = {
-      totalServices: descriptors.length,
-      totalProviders: Object.keys(providers).length,
-      byStatus: {},
-      byProvider: {},
-      byProtocol: {}
-    };
-
-    descriptors.forEach(descriptor => {
-      // 按状态统计
-      const status = descriptor.status || 'unknown';
-      stats.byStatus[status] = (stats.byStatus[status] || 0) + 1;
-
-      // 按 provider 统计
-      const { provider } = descriptor;
-      stats.byProvider[provider] = (stats.byProvider[provider] || 0) + 1;
-
-      // 按协议统计
-      const protocol = descriptor.protocol || 'unknown';
-      stats.byProtocol[protocol] = (stats.byProtocol[protocol] || 0) + 1;
-    });
-
-    return stats;
+    _ensureMapsInitialized();
+    return ProviderManifest.getStats();
   }
 };
 
 module.exports = {
-  ProviderDescriptorRegistry,
-  providers
+  ProviderDescriptorRegistry
 };

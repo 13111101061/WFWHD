@@ -1,0 +1,44 @@
+{
+  "$schema": "ProviderManifest/v2",
+  "providerKey": "minimax",
+  "provider": {
+    "displayName": "MiniMax",
+    "description": "MiniMax AI 语音服务",
+    "status": "beta",
+    "protocolTypes": ["http"],
+    "credentialMode": "apiKey"
+  },
+  "services": {
+    "minimax_tts": {
+      "displayName": "MiniMax TTS",
+      "description": "MiniMax 语音合成",
+      "status": "beta",
+      "aliases": ["minimax"],
+      "protocol": "http",
+      "supportsStreaming": false,
+      "supportsAsync": false,
+      "apiStructure": "flat",
+      "capabilities": {
+        "streaming": false, "realtime": false, "emotion": true,
+        "speedAdjustable": true, "pitchAdjustable": true, "volumeAdjustable": true
+      },
+      "defaults": { "format": "mp3", "sampleRate": 32000, "speed": 1.0, "pitch": 0, "volume": 1.0, "model": "speech-01-hd-preview", "emotion": "neutral" },
+      "lockedParams": ["voice", "model"],
+      "parameters": {
+        "voice":    {"status": "locked",   "source": "providerVoiceId",                               "mapTo": "voice_id"},
+        "text":     {"status": "required",                                                            "mapTo": "text"},
+        "emotion":  {"status": "supported", "default": "neutral", "values": ["neutral","happy","sad","angry","fearful"], "mapTo": "emotion"},
+        "format":   {"status": "supported", "default": "mp3",                                         "mapTo": "audio_format"},
+        "sampleRate":{"status": "supported", "default": 32000, "values": [16000,24000,32000],          "mapTo": "sample_rate"},
+        "speed":    {"status": "supported", "default": 1.0, "range": [0.1, 2.0],                      "mapTo": "speed"},
+        "pitch":    {"status": "supported", "default": 0,   "range": [-12, 12],                       "mapTo": "pitch"},
+        "volume":   {"status": "supported", "default": 1.0, "range": [0.0, 1.0],                      "mapTo": "volume"},
+        "model":    {"status": "supported", "default": "speech-01-hd-preview",                        "mapTo": "model"},
+        "languageType":       {"status": "unsupported", "onUserInput": "warn"},
+        "expectedDurationSec":{"status": "unsupported", "onUserInput": "warn"},
+        "samplingParams":     {"status": "unsupported", "onUserInput": "warn"}
+      }
+    }
+  },
+  "voiceCode": { "providerCode": "005", "serviceKey": "tts" }
+}

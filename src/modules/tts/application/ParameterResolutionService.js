@@ -417,7 +417,7 @@ class ParameterResolutionService {
    * @returns {Object}
    */
   buildFinalParams(resolvedParams, context = null) {
-    const { parameters } = resolvedParams;
+    const { parameters, warnings } = resolvedParams;
 
     // 提取额外的 providerOptions（传递 context 支持动态字段）
     const extraProviderOptions = this.extractProviderOptions(parameters, context);
@@ -435,6 +435,11 @@ class ParameterResolutionService {
       for (const key of Object.keys(extraProviderOptions)) {
         delete final[key];
       }
+    }
+
+    // 保留 warnings 以支持端到端传递
+    if (warnings && warnings.length > 0) {
+      final.__warnings = warnings;
     }
 
     return final;

@@ -87,28 +87,8 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * GET /api/voices/:id
- * 精确查询
- */
-router.get('/:id', (req, res) => {
-  const voice = voiceRegistry.get(req.params.id);
-
-  if (!voice) {
-    return res.status(404).json({
-      success: false,
-      error: `Voice not found: ${req.params.id}`
-    });
-  }
-
-  res.json({
-    success: true,
-    data: voice
-  });
-});
-
-/**
  * GET /api/voices/stats/overview
- * 统计信息
+ * 统计信息 — 必须在 /:id 之前声明以避免被 (:id) 吞噬
  */
 router.get('/stats/overview', (req, res) => {
   res.json({
@@ -119,7 +99,7 @@ router.get('/stats/overview', (req, res) => {
 
 /**
  * GET /api/voices/providers/status
- * 服务商状态
+ * 服务商状态 — 必须在 /:id 之前
  */
 router.get('/providers/status', (req, res) => {
   res.json({
@@ -134,7 +114,7 @@ router.get('/providers/status', (req, res) => {
 
 /**
  * GET /api/voices/providers/:provider/enabled
- * 检查服务商是否启用
+ * 检查服务商是否启用 — 必须在 /:id 之前
  */
 router.get('/providers/:provider/enabled', (req, res) => {
   const enabled = voiceRegistry.isProviderEnabled(req.params.provider);
@@ -144,6 +124,26 @@ router.get('/providers/:provider/enabled', (req, res) => {
       provider: req.params.provider,
       enabled
     }
+  });
+});
+
+/**
+ * GET /api/voices/:id
+ * 精确查询 — 通配路由，放在所有静态路由之后
+ */
+router.get('/:id', (req, res) => {
+  const voice = voiceRegistry.get(req.params.id);
+
+  if (!voice) {
+    return res.status(404).json({
+      success: false,
+      error: `Voice not found: ${req.params.id}`
+    });
+  }
+
+  res.json({
+    success: true,
+    data: voice
   });
 });
 

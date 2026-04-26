@@ -35,7 +35,7 @@ class TtsHttpAdapter {
       const request = SynthesisRequest.fromJSON(req.body);
       const result = await this.synthesisService.synthesize(request);
 
-      res.json({
+      const response = {
         success: true,
         data: result.toApiResponse(),
         service: request.getServiceKey(),
@@ -47,7 +47,13 @@ class TtsHttpAdapter {
           requestId: request.requestId
         },
         timestamp: result.timestamp
-      });
+      };
+
+      if (result.warnings && result.warnings.length > 0) {
+        response.warnings = result.warnings;
+      }
+
+      res.json(response);
 
     } catch (error) {
       this._handleError(error, res);
@@ -71,13 +77,14 @@ class TtsHttpAdapter {
       const { results, errors } = await this.synthesisService.batchSynthesize(requests);
 
       res.json({
-        success: true,
+        success: errors.length === 0,
         data: {
           results: results.map(r => ({
             index: r.index,
             text: requests[r.index].text,
             success: true,
-            data: r.data.toApiResponse()
+            data: r.data.toApiResponse(),
+            warnings: r.warnings || undefined
           })),
           errors,
           summary: {

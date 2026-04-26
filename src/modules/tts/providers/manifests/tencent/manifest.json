@@ -1,0 +1,44 @@
+{
+  "$schema": "ProviderManifest/v2",
+  "providerKey": "tencent",
+  "provider": {
+    "displayName": "腾讯云",
+    "description": "腾讯云语音合成服务",
+    "status": "stable",
+    "protocolTypes": ["http"],
+    "credentialMode": "secretKey"
+  },
+  "services": {
+    "tencent_tts": {
+      "displayName": "腾讯云 TTS",
+      "description": "腾讯云语音合成",
+      "status": "stable",
+      "aliases": ["tencent"],
+      "protocol": "http",
+      "supportsStreaming": false,
+      "supportsAsync": false,
+      "apiStructure": "flat",
+      "capabilities": {
+        "streaming": false, "realtime": false, "emotion": false,
+        "speedAdjustable": true, "pitchAdjustable": false, "volumeAdjustable": true
+      },
+      "defaults": { "format": "wav", "sampleRate": 16000, "speed": 0, "volume": 5 },
+      "lockedParams": ["voice", "model"],
+      "parameters": {
+        "voice":      {"status": "locked",   "source": "providerVoiceId",            "mapTo": "VoiceType",  "valueTransform": "toInteger"},
+        "text":       {"status": "required",                                          "mapTo": "Text"},
+        "speed":      {"status": "supported", "default": 0,  "range": [-2, 6],       "mapTo": "Speed"},
+        "volume":     {"status": "supported", "default": 5,  "range": [-10, 10],     "mapTo": "Volume"},
+        "format":     {"status": "supported", "default": "wav", "values": ["wav","mp3","pcm"], "mapTo": "Codec"},
+        "sampleRate": {"status": "supported", "default": 16000,                      "mapTo": "SampleRate"},
+        "pitch":      {"status": "unsupported", "onUserInput": "warn"},
+        "emotion":    {"status": "unsupported", "onUserInput": "warn"},
+        "languageType":       {"status": "unsupported", "onUserInput": "warn"},
+        "expectedDurationSec":{"status": "unsupported", "onUserInput": "warn"},
+        "samplingParams":     {"status": "unsupported", "onUserInput": "warn"},
+        "model":      {"status": "unsupported", "onUserInput": "warn"}
+      }
+    }
+  },
+  "voiceCode": { "providerCode": "003", "serviceKey": "tts" }
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "ProviderManifest/v2",
+  "providerKey": "moss",
+  "provider": {
+    "displayName": "MOSS",
+    "description": "MOSS 语音合成服务",
+    "status": "beta",
+    "protocolTypes": ["http"],
+    "credentialMode": "apiKey"
+  },
+  "services": {
+    "moss_tts": {
+      "displayName": "MOSS TTS",
+      "description": "MOSS 语音合成服务",
+      "status": "beta",
+      "aliases": ["moss"],
+      "protocol": "http",
+      "supportsStreaming": false,
+      "supportsAsync": false,
+      "apiStructure": "flat",
+      "capabilities": {
+        "streaming": false, "realtime": false, "emotion": false,
+        "speedAdjustable": false, "pitchAdjustable": false, "volumeAdjustable": false,
+        "samplingParams": true, "expectedDuration": true
+      },
+      "defaults": { "format": "wav", "sampleRate": 24000, "model": "moss-tts" },
+      "defaultVoiceId": "moss-tts-beijingnan",
+      "lockedParams": ["voice", "model"],
+      "parameters": {
+        "voice":        {"status": "locked",   "source": "providerVoiceId",                     "mapTo": "voice_id"},
+        "text":         {"status": "required",                                                   "mapTo": "text"},
+        "speed":        {"status": "unsupported", "reason": "MOSS 不支持语速调整，可用 expectedDurationSec 替代", "onUserInput": "warn"},
+        "pitch":        {"status": "unsupported", "reason": "MOSS 不支持音调调整",               "onUserInput": "warn"},
+        "volume":       {"status": "unsupported", "reason": "MOSS 不支持音量调整",               "onUserInput": "warn"},
+        "emotion":      {"status": "unsupported", "onUserInput": "warn"},
+        "languageType": {"status": "unsupported", "onUserInput": "warn"},
+        "model":        {"status": "locked",   "lockedValue": "moss-tts"},
+        "format":       {"status": "supported", "default": "wav",                                "mapTo": "format"},
+        "sampleRate":   {"status": "supported", "default": 24000, "values": [16000, 24000],      "mapTo": "sample_rate"},
+        "expectedDurationSec": {"status": "supported", "ui": {"highlight": true},                "mapTo": "expected_duration_sec"},
+        "samplingParams": {
+          "status": "supported",
+          "ui": {"collapsed": true},
+          "nested": {
+            "temperature":  {"default": 1.7, "range": [0.1, 3.0], "mapTo": "sampling_params.temperature"},
+            "topP":         {"default": 0.8, "range": [0, 1.0],   "mapTo": "sampling_params.top_p"},
+            "topK":         {"default": 25,  "range": [1, 100],   "mapTo": "sampling_params.top_k"},
+            "maxNewTokens": {"default": 20000,                      "mapTo": "sampling_params.max_new_tokens"}
+          }
+        }
+      }
+    }
+  },
+  "voiceCode": { "providerCode": "001", "serviceKey": "tts" }
+}

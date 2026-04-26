@@ -278,9 +278,9 @@ function generateMapper(compiledField, apiStructure) {
         result[providerPath] = value;
     }
 
-    // 处理值来源
-    if (mapping.source && context?.[mapping.source]) {
-      result[providerPath] = context[mapping.source];
+    // 处理值来源 — 仅在无 transform 时使用 source
+    if (mapping.source && !mapping.transform) {
+      result[providerPath] = context?.[mapping.source];
     }
 
     return result;
@@ -398,7 +398,8 @@ const CapabilityCompiler = {
    * @returns {Object<string, Object>} 服务标识 -> CompiledCapability
    */
   compileAll() {
-    const serviceKeys = registry.getAllServiceKeys();
+    const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+    const serviceKeys = ProviderManifest.getAllServiceKeys();
     const results = {};
     const errors = [];
 
