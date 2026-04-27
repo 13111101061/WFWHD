@@ -48,6 +48,48 @@ node scripts/model-manager.js
 node scripts/clear-cache.js
 ```
 
+## Manifest 配置体系（唯一事实源）
+
+新增或修改服务商，只需改 **一个文件**：`src/modules/tts/providers/manifests/<provider>/manifest.json`
+
+已删除的旧配置文件（不再读取，不可恢复）：
+- `src/modules/tts/config/service-field-overrides.json`
+- `src/modules/tts/config/provider-field-mappings.json`
+- `src/modules/tts/config/ProviderConfig.json`
+
+**如果这些文件被重新创建，启动审计会直接报错停止。**
+
+### 新增服务商三步流程
+1. 写 Adapter：`src/modules/tts/adapters/providers/<NewAdapter>.js`
+2. 写 Manifest：`src/modules/tts/providers/manifests/<provider>/manifest.json`
+3. 注册 Adapter：`src/modules/tts/adapters/providers/index.js` 加一行
+
+### Manifest 填写规范
+| 字段 | 要求 |
+|------|------|
+| `voiceCode.serviceKey` | 短后缀（如 `tts`、`http`），**不是**完整 canonical key |
+| 一个服务商多个接口 | 应声明为 **独立的 service**（`services.xxx` 下多条），**不得用 alias 伪装成不同服务** |
+| `parameters.<p>.status` | `supported` / `unsupported` / `locked` / `hidden` |
+| unsupported 参数 | 必须加 `"onUserInput": "warn"` 和 `"reason": "xxx"` |
+| `mapTo` | 所有 supported/locked 参数必须有，映射到 Adapter 实际请求字段名 |
+| `lockedValue` 或 `source` | locked 参数必须填写至少一个 |
+
+### 启动审计
+启动时自动运行 `ConfigConsistencyChecker`，检查：
+- L1：旧配置文件是否残留 → 直接报错
+- L2a：服务 key 是否重复 / alias 是否冲突
+- L2b：voiceCode 映射是否正确
+- L2c：locked 参数是否有值来源
+- L2d：mapTo 路径是否完整
+- L3：defaultVoiceId 是否在音色库中存在 / 每个服务是否有音色
+
+`CONFIG_MODE=strict`（默认）：任一级别发现 error → 启动失败
+`CONFIG_MODE=migration`：仅 warn，不阻止启动
+
+### ParameterMapper 降级策略
+`CONFIG_MODE=strict`（默认）：映射失败 → **直接抛错**，不降级透传
+`CONFIG_MODE=migration` / `TTS_STRICT_MAPPER=false`：映射失败 → 强 WARNING + 原样透传
+
 ## Architecture Overview
 
 ### Directory Structure

@@ -32,7 +32,7 @@
         "volume":     {"status": "supported", "default": 50,  "range": [0, 100],                        "mapTo": "volume"},
         "format":     {"status": "supported", "default": "mp3", "values": ["mp3","wav","pcm","flac"],    "mapTo": "format"},
         "sampleRate": {"status": "supported", "default": 22050, "values": [8000,16000,22050,24000],     "mapTo": "sample_rate"},
-        "model":      {"status": "supported"},
+        "model":      {"status": "supported", "default": "cosyvoice-v1", "mapTo": "model"},
         "emotion":           {"status": "unsupported", "onUserInput": "warn"},
         "languageType":      {"status": "unsupported", "onUserInput": "warn"},
         "expectedDurationSec":{"status": "unsupported", "onUserInput": "warn"},

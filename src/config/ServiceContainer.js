@@ -68,6 +68,12 @@ class ServiceContainer {
     await voiceCatalogAdapter.initialize();
     await ttsProviderAdapter.initialize();
 
+    // 4.1 L3 音色一致性审计（需音色数据就绪）
+    if (process.env.CONFIG_AUDIT !== 'false') {
+      const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
+      await auditVoiceCoverage();
+    }
+
     // 5. 创建 ExecutionPolicy
     const executionPolicy = new ExecutionPolicy();
     this._services.set('executionPolicy', executionPolicy);
