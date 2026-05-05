@@ -103,6 +103,9 @@ function compileField(fieldKey, platformField, serviceOverride, providerMapping)
     // Provider 映射
     mapping: providerMapping || null,
 
+    // 嵌套字段定义（编译前：平台基线 + manifest 覆盖）
+    platformNested: platformField?.nestedFields || null,
+
     // 原因说明
     reason: serviceOverride?.reason,
 
@@ -119,27 +122,36 @@ function compileField(fieldKey, platformField, serviceOverride, providerMapping)
 
 /**
  * 编译嵌套字段
- * @param {Object} parentField - 父字段定义
- * @param {Object} parentOverride - 父字段覆盖
- * @param {Object} parentMapping - 父字段映射
+ * 合并平台定义和 manifest 覆盖：取并集，平台基线 + manifest 独有字段都纳入
+ * @param {Object} platformNested - 平台嵌套定义 (platform-fields.json -> nestedFields)
+ * @param {Object} manifestNested - manifest 嵌套覆盖 (getFieldOverrides -> entry.nestedFields)
+ * @param {Object} parentMapping - 父字段的 providerMapping（含 nestedMappings）
  * @returns {Object[]} 编译后的嵌套字段列表
  */
-function compileNestedFields(parentField, parentOverride, parentMapping) {
-  const nestedFields = [];
-  const nestedDefs = parentField?.nestedFields || {};
+function compileNestedFields(platformNested, manifestNested, parentMapping) {
+  const allKeys = new Set([
+    ...Object.keys(platformNested || {}),
+    ...Object.keys(manifestNested || {})
+  ]);
 
-  for (const [nestedKey, nestedDef] of Object.entries(nestedDefs)) {
-    const nestedOverride = parentOverride?.nestedFields?.[nestedKey];
+  const nestedFields = [];
+
+  for (const nestedKey of allKeys) {
+    const platformDef = platformNested?.[nestedKey] || {};
+    const manifestDef = manifestNested?.[nestedKey] || {};
     const nestedMapping = parentMapping?.nestedMappings?.[nestedKey];
 
     nestedFields.push({
       key: nestedKey,
-      parentKey: parentField.key,
-      fullKey: `${parentField.key}.${nestedKey}`,
-      ...nestedDef,
-      status: nestedOverride?.status || SupportStatus.SUPPORTED,
-      defaultValue: nestedOverride?.defaultOverride ?? nestedDef.platformDefault,
-      range: nestedOverride?.rangeOverride ?? nestedDef.platformRange,
+      fullKey: nestedKey,
+      displayName: manifestDef.displayName || platformDef.displayName || nestedKey,
+      description: platformDef.description || '',
+      type: platformDef.type || 'number',
+      status: manifestDef.status || SupportStatus.SUPPORTED,
+      defaultValue: manifestDef.defaultOverride ?? platformDef.platformDefault,
+      range: manifestDef.rangeOverride ?? platformDef.platformRange,
+      values: manifestDef.validationOverride?.enum ?? platformDef.platformValues,
+      ui: { ...platformDef.ui, ...manifestDef.ui },
       mapping: nestedMapping || null
     });
   }
@@ -278,9 +290,10 @@ function generateMapper(compiledField, apiStructure) {
         result[providerPath] = value;
     }
 
-    // 处理值来源 — 仅在无 transform 时使用 source
-    if (mapping.source && !mapping.transform) {
-      result[providerPath] = context?.[mapping.source];
+    // 处理值来源：locked 字段的 source 覆盖 transform 结果
+    // 如 voice(transform=rename,source=providerVoiceId) → 从 context 取值
+    if (mapping.source && context?.[mapping.source] !== undefined) {
+      result[providerPath] = context[mapping.source];
     }
 
     return result;
@@ -338,11 +351,12 @@ const CapabilityCompiler = {
       compiled.validator = generateValidator(compiled);
       compiled.mapper = generateMapper(compiled, apiStructure);
 
-      // 编译嵌套字段
-      if (platformField.type === 'object' && platformField.nestedFields) {
+      // 编译嵌套字段 — 合并平台定义和 manifest 覆盖
+      if (platformField.type === 'object' &&
+          (platformField.nestedFields || serviceOverride?.nestedFields)) {
         compiled.nestedFields = compileNestedFields(
-          compiled,
-          serviceOverride,
+          platformField?.nestedFields,
+          serviceOverride?.nestedFields,
           providerMapping
         );
       }
@@ -481,6 +495,22 @@ const CapabilityCompiler = {
 
     for (const [fieldKey, field] of Object.entries(compiledFields)) {
       if (field.status === SupportStatus.UNSUPPORTED) continue;
+
+      // 嵌套字段：递归提取子字段默认值到一个 object
+      if (field.nestedFields && Array.isArray(field.nestedFields)) {
+        const nestedDefaults = {};
+        for (const nestedField of field.nestedFields) {
+          if (nestedField.status === SupportStatus.UNSUPPORTED) continue;
+          if (nestedField.defaultValue !== undefined) {
+            nestedDefaults[nestedField.key] = nestedField.defaultValue;
+          }
+        }
+        if (Object.keys(nestedDefaults).length > 0) {
+          defaults[fieldKey] = nestedDefaults;
+        }
+        continue;
+      }
+
       if (field.defaultValue !== undefined) {
         defaults[fieldKey] = field.defaultValue;
       }

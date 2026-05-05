@@ -84,7 +84,7 @@ const adapters = {
     displayName: '火山引擎 HTTP',
     description: '火山引擎语音合成 HTTP 接口',
     status: 'stable',
-    aliases: ['volcengine', 'volcengine_ws', 'volcengine_http_legacy'],
+    aliases: ['volcengine', 'volcengine_http_legacy'],
     protocol: 'http',
     supportsStreaming: false,
     supportsAsync: false

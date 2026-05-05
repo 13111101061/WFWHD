@@ -313,13 +313,7 @@ router.post('/reset-stats',
   async (req, res, next) => {
     try {
       const adapter = await getAdapter();
-      adapter.synthesisService.resetStats();
-
-      res.json({
-        success: true,
-        message: 'Statistics reset successfully',
-        timestamp: new Date().toISOString()
-      });
+      await adapter.resetStats(req, res);
     } catch (error) {
       next(error);
     }
@@ -349,12 +343,13 @@ const createServiceRoute = (serviceName) => {
   return [
     unifiedAuth.createMiddleware({ service: 'tts' }),
     securityLogger,
-    validateTtsParams,
-    createUnifiedTtsMiddleware(),
+    // [顺序修正] service 覆盖必须在参数校验和统一中间件之前执行
     (req, res, next) => {
       req.body.service = serviceName;
       next();
     },
+    validateTtsParams,
+    createUnifiedTtsMiddleware(),
     async (req, res, next) => {
       try {
         const adapter = await getAdapter();
@@ -378,8 +373,9 @@ router.post('/tencent', ...createServiceRoute('tencent'));
 // 火山引擎HTTP专用
 router.post('/volcengine/http', ...createServiceRoute('volcengine_http'));
 
-// 火山引擎WebSocket专用 - 修复：使用volcengine_http适配器（同一Provider）
-router.post('/volcengine/websocket', ...createServiceRoute('volcengine_http'));
+// [已移除] 火山引擎WebSocket快捷路由
+// volcengine_ws 不稳定且未注册为独立 service，不应作为快捷路由。
+// 如需使用 WebSocket 接口，请通过 /api/tts/synthesize 显式指定 service。
 
 // MiniMax专用
 router.post('/minimax', ...createServiceRoute('minimax_tts'));
@@ -414,7 +410,7 @@ router.use('*', (req, res) => {
       'POST /api/tts/aliyun/qwen',
       'POST /api/tts/tencent',
       'POST /api/tts/volcengine/http',
-      'POST /api/tts/volcengine/websocket',
+
       'POST /api/tts/minimax',
       'POST /api/tts/moss'
     ],

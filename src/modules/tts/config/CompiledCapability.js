@@ -408,6 +408,29 @@ class CompiledCapability {
       if (value === undefined) continue;
 
       const field = schema[fieldKey];
+      if (!field) continue;
+
+      // 嵌套字段处理：遍历子字段，使用各自的 nestedMapping.providerPath
+      if (field.nestedFields && Array.isArray(field.nestedFields) && typeof value === 'object') {
+        for (const nestedField of field.nestedFields) {
+          const nestedValue = value[nestedField.key];
+          if (nestedValue === undefined) continue;
+          if (!nestedField.mapping?.providerPath) continue;
+
+          const paths = nestedField.mapping.providerPath.split('.');
+          let current = result;
+          for (let i = 0; i < paths.length - 1; i++) {
+            if (!current[paths[i]]) {
+              current[paths[i]] = {};
+            }
+            current = current[paths[i]];
+          }
+          current[paths[paths.length - 1]] = nestedValue;
+        }
+        continue;
+      }
+
+      // 普通字段映射（原有逻辑）
       if (!field?.mapper) continue;
 
       const mapped = field.mapper(value, context);

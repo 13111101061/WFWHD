@@ -165,7 +165,7 @@ const ProviderManifest = {
     const params = svc?.parameters || {};
     const mappings = {};
     for (const [k, p] of Object.entries(params)) {
-      if (p.mapTo || p.status === 'unsupported') {
+      if (p.mapTo || p.status === 'unsupported' || p.nested) {
         mappings[k] = {
           providerPath: p.mapTo || undefined,
           transform: p.status === 'unsupported' ? 'ignore'
