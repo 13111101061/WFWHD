@@ -1,11 +1,10 @@
 /**
- * TTS统一路由 (v3.1 - 整改版)
+ * TTS统一路由 (v3.2 - 动态注册版)
  *
- * 整改内容：
- * - 修复批量合成链路：分离校验逻辑，允许texts数组
- * - 修复volcengine_ws路由：添加对应provider注册
- * - 统一服务标识：路由、解析器、注册表完全一致
- * - 统一响应契约：所有查询接口输出结构稳定
+ * 改进：
+ * - 业务参数范围校验从中间件移至 CompiledCapability（服务商感知）
+ * - 快捷路由从 manifest 动态注册，新增服务商无需手动加行
+ * - 中间件只负责安全层（XSS/注入/结构校验）
  */
 
 const express = require('express');
@@ -13,15 +12,13 @@ const serviceContainer = require('../../../src/config/ServiceContainer');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
 const { validateTtsParams, securityLogger } = require('../../../src/shared/middleware/securityMiddleware');
 const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
+const { ProviderManifest } = require('../../../src/modules/tts/providers/manifests/ProviderManifest');
 
 const router = express.Router();
 
 // 延迟初始化标记
 let adapterInitialized = false;
 
-/**
- * 获取HTTP适配器（懒加载）
- */
 async function getAdapter() {
   if (!adapterInitialized) {
     await serviceContainer.initialize();
@@ -337,13 +334,12 @@ router.post('/clear-cache',
   }
 );
 
-// ==================== 服务专用路由（快捷访问） ====================
+// ==================== 服务专用路由（动态注册） ====================
 
 const createServiceRoute = (serviceName) => {
   return [
     unifiedAuth.createMiddleware({ service: 'tts' }),
     securityLogger,
-    // [顺序修正] service 覆盖必须在参数校验和统一中间件之前执行
     (req, res, next) => {
       req.body.service = serviceName;
       next();
@@ -361,31 +357,61 @@ const createServiceRoute = (serviceName) => {
   ];
 };
 
-// 阿里云CosyVoice专用
-router.post('/aliyun/cosyvoice', ...createServiceRoute('aliyun_cosyvoice'));
+/**
+ * 从 manifest 动态注册快捷路由
+ * 规则：provider/service → /provider/service-path
+ *       如 aliyun_cosyvoice → /aliyun/cosyvoice
+ *       如 moss_tts → /moss
+ *       别名也注册，
+ *       如 cosyvoice → /cosyvoice
+ */
+function registerDynamicServiceRoutes() {
+  ProviderManifest._ensureLoaded();
+  const serviceKeys = ProviderManifest.getAllServiceKeys();
 
-// 阿里云Qwen专用
-router.post('/aliyun/qwen', ...createServiceRoute('aliyun_qwen_http'));
+  const routeMap = new Map();
 
-// 腾讯云TTS专用
-router.post('/tencent', ...createServiceRoute('tencent'));
+  for (const serviceKey of serviceKeys) {
+    const cfg = ProviderManifest.getServiceConfig(serviceKey);
+    if (!cfg || cfg.status === 'deprecated') continue;
 
-// 火山引擎HTTP专用
-router.post('/volcengine/http', ...createServiceRoute('volcengine_http'));
+    const parts = serviceKey.split('_');
+    const providerKey = cfg.providerKey || parts[0];
+    const serviceSuffix = parts.slice(1).join('_');
 
-// [已移除] 火山引擎WebSocket快捷路由
-// volcengine_ws 不稳定且未注册为独立 service，不应作为快捷路由。
-// 如需使用 WebSocket 接口，请通过 /api/tts/synthesize 显式指定 service。
+    // 主路由: /provider/service (如 /aliyun/cosyvoice, /moss)
+    const primaryPath = `/${providerKey}/${serviceSuffix}`;
+    if (!routeMap.has(primaryPath)) {
+      routeMap.set(primaryPath, serviceKey);
+    }
 
-// MiniMax专用
-router.post('/minimax', ...createServiceRoute('minimax_tts'));
+    // 别名路由（如 cosyvoice, moss, tencent 等）
+    if (cfg.aliases && Array.isArray(cfg.aliases)) {
+      for (const alias of cfg.aliases) {
+        // 避免与主路由重复
+        if (alias === serviceKey) continue;
+        const aliasPath = `/${alias.replace(/_/g, '/')}`;
+        if (!routeMap.has(aliasPath)) {
+          routeMap.set(aliasPath, serviceKey);
+        }
+      }
+    }
+  }
 
-// MOSS-TTS专用
-router.post('/moss', ...createServiceRoute('moss_tts'));
+  for (const [path, serviceKey] of routeMap) {
+    router.post(path, ...createServiceRoute(serviceKey));
+  }
+
+  return routeMap;
+}
+
+const dynamicRoutes = registerDynamicServiceRoutes();
 
 // ==================== 404处理 ====================
 
 router.use('*', (req, res) => {
+  const dynamicEndpoints = Array.from(dynamicRoutes.keys()).map(p => `POST ${p}`);
+
   res.status(404).json({
     success: false,
     error: 'TTS endpoint not found',
@@ -406,13 +432,7 @@ router.use('*', (req, res) => {
       'GET /api/tts/stats - Statistics',
       'POST /api/tts/reset-stats - Reset stats',
       'POST /api/tts/clear-cache - Clear cache',
-      'POST /api/tts/aliyun/cosyvoice',
-      'POST /api/tts/aliyun/qwen',
-      'POST /api/tts/tencent',
-      'POST /api/tts/volcengine/http',
-
-      'POST /api/tts/minimax',
-      'POST /api/tts/moss'
+      ...dynamicEndpoints
     ],
     timestamp: new Date().toISOString()
   });

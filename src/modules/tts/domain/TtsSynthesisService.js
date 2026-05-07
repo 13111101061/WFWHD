@@ -416,10 +416,25 @@ class TtsSynthesisService {
       if (!support.supported) {
         errors.push(support.reason || `参数 ${param} 不被 ${serviceKey} 支持`);
       }
+      // 服务商特定范围校验 — 支持 [min,max] 和 {min,max} 两种格式
+      if (support.supported && support.config?.range && typeof value === 'number') {
+        const range = support.config.range;
+        const min = Array.isArray(range) ? range[0] : range.min;
+        const max = Array.isArray(range) ? range[1] : range.max;
+        if (typeof min === 'number' && typeof max === 'number' && (value < min || value > max)) {
+          errors.push(`参数 ${param} 超出范围 [${min}, ${max}]，当前值: ${value}`);
+        }
+      }
+      // 服务商特定枚举校验
+      if (support.supported && support.config?.values && Array.isArray(support.config.values)) {
+        if (!support.config.values.includes(value)) {
+          errors.push(`参数 ${param} 值 ${value} 不在允许列表 [${support.config.values.join(', ')}] 中`);
+        }
+      }
     }
     if (errors.length > 0) {
       this.metrics.capabilityValidationFailures++;
-      // 只记录 metric，不 throw — unsupported 参数由 checkUnsupportedInput 统一 warn
+      // 只记录 metric，不 throw — unsupported/越界参数由 warnings 链路统一反馈
     }
   }
 
@@ -436,10 +451,17 @@ class TtsSynthesisService {
       if (support.supported === false) {
         errors.push(support.reason || `参数 ${param} 不被当前服务支持`);
       }
+      if (support.supported && support.config?.range && typeof value === 'number') {
+        const range = support.config.range;
+        const min = Array.isArray(range) ? range[0] : range.min;
+        const max = Array.isArray(range) ? range[1] : range.max;
+        if (typeof min === 'number' && typeof max === 'number' && (value < min || value > max)) {
+          errors.push(`参数 ${param} 超出范围 [${min}, ${max}]，当前值: ${value}`);
+        }
+      }
     }
     if (errors.length > 0) {
       this.metrics.capabilityValidationFailures++;
-      // 只记录 metric，不 throw — unsupported 参数由 checkUnsupportedInput 统一 warn
     }
   }
 

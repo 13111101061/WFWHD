@@ -172,6 +172,7 @@ const ProviderManifest = {
             : p.transform || (p.mapTo && p.mapTo !== k ? 'rename' : 'direct'),
           transformConfig: p.transformConfig || null,
           source: p.source || null,
+          valueTransform: p.valueTransform || null,
           nestedMappings: p.nested ? Object.fromEntries(
             Object.entries(p.nested).map(([nk, nv]) => [nk, { providerPath: nv.mapTo || nk }])
           ) : undefined

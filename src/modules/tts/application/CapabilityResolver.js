@@ -75,13 +75,43 @@ class CapabilityResolver {
     for (const [k, v] of Object.entries(userParams)) {
       if (v === undefined || v === null) continue;
       const support = context.parameterSupport[k];
-      if (support && !support.supported) {
+      if (!support) continue;
+
+      if (!support.supported) {
         warnings.push({
           field: k,
           value: v,
           reason: support.reason || `${k} 不被 ${serviceKey} 支持`,
           action: 'ignored'
         });
+        continue;
+      }
+
+      // Range validation (服务商感知) — 支持 [min,max] 和 {min,max} 两种格式
+      if (support.config?.range && typeof v === 'number') {
+        const range = support.config.range;
+        const min = Array.isArray(range) ? range[0] : range.min;
+        const max = Array.isArray(range) ? range[1] : range.max;
+        if (typeof min === 'number' && typeof max === 'number' && (v < min || v > max)) {
+          warnings.push({
+            field: k,
+            value: v,
+            reason: `${k} 超出范围 [${min}, ${max}]，当前值: ${v}`,
+            action: 'clamped_or_rejected'
+          });
+        }
+      }
+
+      // Enum validation
+      if (support.config?.values && Array.isArray(support.config.values)) {
+        if (!support.config.values.includes(v)) {
+          warnings.push({
+            field: k,
+            value: v,
+            reason: `${k} 值 ${v} 不在允许列表 [${support.config.values.join(', ')}] 中`,
+            action: 'rejected'
+          });
+        }
       }
     }
     return warnings;

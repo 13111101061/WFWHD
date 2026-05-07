@@ -158,54 +158,98 @@ class TtsQueryService {
   /**
    * 获取服务能力
    *
-   * [改造] 通过 CapabilityResolver 获取能力数据
-   * 确保前端能力查询与后端执行使用相同的规则源
+   * 返回 CompiledCapability 的完整信息，前端可据此渲染参数表单：
+   * - schema: 每个字段的完整定义（status/type/default/range/values/ui/nestedFields/mapping）
+   * - defaults: 合并后的默认值（含嵌套）
+   * - lockedParams: 锁定参数及其值来源
+   * - uiSchema: 分组/排序/折叠等 UI 元数据
+   * - fieldIndex: supported/unsupported/locked 分类索引
+   * - metadata: 服务商元信息
    */
   getCapabilities(serviceKey) {
-    const config = ProviderCatalog.get(serviceKey);
-    if (!config) {
-      return {
-        success: false,
-        error: `Service not found: ${serviceKey}`
-      };
+    const canonicalKey = this._resolveCanonicalKey(serviceKey);
+    if (!canonicalKey) {
+      return { success: false, error: `Service not found: ${serviceKey}` };
     }
 
-    if (!this._hasVisibleVoicesFor(config.provider, config.service)) {
-      return {
-        success: false,
-        error: `Service disabled: ${serviceKey}`
-      };
+    const resolver = this._ensureCapabilityResolver();
+    const context = resolver.resolve(canonicalKey);
+    const compiled = context.compiled;
+
+    if (!compiled) {
+      return { success: false, error: `No compiled capability for: ${canonicalKey}` };
     }
 
-    return this._getCapabilitiesFromResolver(this._ensureCapabilityResolver(), serviceKey);
-  }
+    const schema = compiled.getSchema();
+    const defaults = compiled.getDefaults();
+    const lockedParams = compiled.getLockedParams();
+    const uiSchema = compiled.getUiSchema();
+    const fieldIndex = compiled.getFieldIndex();
 
-  /**
-   * 从 CapabilityResolver 获取能力数据
-   * @private
-   */
-  _getCapabilitiesFromResolver(resolver, serviceKey) {
-    const context = resolver.resolve(serviceKey);
+    // 从 schema 构建 parameterSupport（保持向后兼容）
+    const parameterSupport = context.parameterSupport;
 
     return {
       success: true,
       data: {
-        // 前端展示用
-        displayName: context.metadata?.displayName,
-        defaultVoiceId: context.metadata?.defaultVoiceId,
-        status: context.metadata?.status,
+        serviceKey: canonicalKey,
+        providerKey: compiled.providerKey,
+        apiStructure: compiled.apiStructure,
 
-        // 参数能力（前端判断哪些参数可用）
-        parameters: context.parameterSupport,
+        // 完整字段 Schema（前端渲染表单的主数据源）
+        schema: this._serializeSchema(schema),
 
-        // 可执行默认值（前端默认填充）
-        defaults: context.resolvedDefaults,
+        // 合并后的默认值
+        defaults,
 
-        // 锁定参数（前端禁止修改）
-        lockedParams: context.lockedParams
+        // 锁定参数及值来源
+        lockedParams,
+
+        // UI Schema（分组/排序/折叠）
+        uiSchema,
+
+        // 字段分类索引
+        fieldIndex,
+
+        // 向后兼容：保留旧的 parameterSupport 平面结构
+        parameterSupport,
+
+        // 元信息
+        defaultVoiceId: context.defaultVoiceId
       },
       timestamp: new Date().toISOString()
     };
+  }
+
+  /**
+   * 将 CompiledCapability schema 序列化为前端友好的结构
+   * 去掉 mapper 函数（不可序列化），保留所有渲染所需信息
+   */
+  _serializeSchema(schema) {
+    const result = {};
+    for (const [key, field] of Object.entries(schema)) {
+      const { mapper, ...rest } = field;
+      // 序列化嵌套字段
+      if (rest.nestedFields && Array.isArray(rest.nestedFields)) {
+        result[key] = {
+          ...rest,
+          nestedFields: rest.nestedFields.map(nf => {
+            const { mapper: nm, ...nrest } = nf;
+            return nrest;
+          })
+        };
+      } else {
+        result[key] = rest;
+      }
+    }
+    return result;
+  }
+
+  _resolveCanonicalKey(serviceKey) {
+    const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
+    const desc = ProviderDescriptorRegistry.get(serviceKey);
+    if (desc) return desc.key;
+    return ProviderDescriptorRegistry.resolveCanonicalKey(serviceKey) || serviceKey;
   }
 
   // ==================== 前端展示 ====================

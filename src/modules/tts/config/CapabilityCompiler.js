@@ -70,10 +70,14 @@ function compileField(fieldKey, platformField, serviceOverride, providerMapping)
     description: platformField?.description || '',
     type: platformField?.type || 'string',
     category: platformField?.category || 'core',
-    required: platformField?.required || false,
 
-    // 支持状态
-    status: serviceOverride?.status || SupportStatus.SUPPORTED,
+    // 支持状态 — manifest 的 required 映射为 SUPPORTED，同时 required 标记置 true
+    status: serviceOverride?.status === 'required'
+      ? SupportStatus.SUPPORTED
+      : (serviceOverride?.status || SupportStatus.SUPPORTED),
+
+    // required 标记（manifest 的 status=required 或平台定义中的 required）
+    required: serviceOverride?.status === 'required' || platformField?.required || false,
 
     // 默认值（服务覆盖 > 平台默认）
     defaultValue: serviceOverride?.defaultOverride ?? platformField?.platformDefault,
@@ -294,6 +298,16 @@ function generateMapper(compiledField, apiStructure) {
     // 如 voice(transform=rename,source=providerVoiceId) → 从 context 取值
     if (mapping.source && context?.[mapping.source] !== undefined) {
       result[providerPath] = context[mapping.source];
+    }
+
+    // 值格式化转换（如 toInteger）
+    if (mapping.valueTransform && result[providerPath] !== undefined) {
+      switch (mapping.valueTransform) {
+        case 'toInteger':
+          result[providerPath] = parseInt(result[providerPath], 10);
+          break;
+        // 可扩展更多 valueTransform 类型
+      }
     }
 
     return result;
