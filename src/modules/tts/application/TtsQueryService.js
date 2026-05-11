@@ -186,9 +186,6 @@ class TtsQueryService {
     const uiSchema = compiled.getUiSchema();
     const fieldIndex = compiled.getFieldIndex();
 
-    // 从 schema 构建 parameterSupport（保持向后兼容）
-    const parameterSupport = context.parameterSupport;
-
     return {
       success: true,
       data: {
@@ -210,9 +207,6 @@ class TtsQueryService {
 
         // 字段分类索引
         fieldIndex,
-
-        // 向后兼容：保留旧的 parameterSupport 平面结构
-        parameterSupport,
 
         // 元信息
         defaultVoiceId: context.defaultVoiceId

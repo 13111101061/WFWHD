@@ -18,10 +18,12 @@ const AudioResult = require('../../domain/AudioResult');
 
 class TtsHttpAdapter {
   /**
-   * @param {Object} synthesisService - TtsSynthesisService 领域服务
+   * @param {Object} synthesisService - TtsSynthesisService 领域服务（合成职责）
+   * @param {Object} queryService - TtsQueryService 查询服务（查询职责）
    */
-  constructor(synthesisService) {
+  constructor(synthesisService, queryService) {
     this.synthesisService = synthesisService;
+    this.queryService = queryService;
   }
 
   // ==================== HTTP入口方法 ====================
@@ -111,7 +113,7 @@ class TtsHttpAdapter {
       const { service } = req.query;
 
       if (!service) {
-        const allVoices = await this.synthesisService.getAllVoices();
+        const allVoices = await this.queryService.getAllVoices();
         return res.json({
           success: true,
           data: allVoices,
@@ -122,7 +124,7 @@ class TtsHttpAdapter {
 
       const tempRequest = SynthesisRequest.fromJSON({ text: '', service });
       const { provider, serviceType } = tempRequest.parseServiceIdentifier();
-      const voices = await this.synthesisService.getVoices(provider, serviceType);
+      const voices = await this.queryService.getVoices(provider, serviceType);
 
       res.json({
         success: true,
@@ -146,7 +148,7 @@ class TtsHttpAdapter {
    */
   async getProviders(req, res) {
     try {
-      const providersResult = this.synthesisService.getProviders();
+      const providersResult = this.queryService.getProviders();
 
       // Backward compatible: support both array and { success, data } structures.
       const providers = Array.isArray(providersResult)
@@ -250,7 +252,7 @@ class TtsHttpAdapter {
   async getVoiceById(req, res) {
     try {
       const { id } = req.params;
-      const voice = this.synthesisService.getVoice(id);
+      const voice = this.queryService.getVoice(id);
 
       if (!voice) {
         return res.status(404).json({
@@ -277,7 +279,7 @@ class TtsHttpAdapter {
   async getVoiceDetail(req, res) {
     try {
       const { id } = req.params;
-      const detail = this.synthesisService.getVoiceDetail(id);
+      const detail = this.queryService.getVoiceDetail(id);
 
       if (!detail) {
         return res.status(404).json({
@@ -304,7 +306,7 @@ class TtsHttpAdapter {
   async getCapabilities(req, res) {
     try {
       const { service } = req.params;
-      const result = this.synthesisService.getCapabilities(service);
+      const result = this.queryService.getCapabilities(service);
 
       const statusCode = result.success ? 200 : 404;
       res.status(statusCode).json(result);
@@ -320,7 +322,7 @@ class TtsHttpAdapter {
    */
   async getFilterOptions(req, res) {
     try {
-      const result = this.synthesisService.getFilterOptions();
+      const result = this.queryService.getFilterOptions();
       res.json(result);
 
     } catch (error) {
@@ -334,7 +336,7 @@ class TtsHttpAdapter {
    */
   async getFrontendCatalog(req, res) {
     try {
-      const result = this.synthesisService.getFrontendCatalog();
+      const result = this.queryService.getFrontendCatalog();
       res.json(result);
 
     } catch (error) {
@@ -348,7 +350,7 @@ class TtsHttpAdapter {
    */
   async getFrontendVoices(req, res) {
     try {
-      const result = this.synthesisService.getFrontendVoices();
+      const result = this.queryService.getFrontendVoices();
       res.json(result);
 
     } catch (error) {

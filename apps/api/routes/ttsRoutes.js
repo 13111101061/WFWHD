@@ -10,21 +10,20 @@
 const express = require('express');
 const serviceContainer = require('../../../src/config/ServiceContainer');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
-const { validateTtsParams, securityLogger } = require('../../../src/shared/middleware/securityMiddleware');
+const { validateTtsParams, securityLogger, sanitizeInput, detectMaliciousContent } = require('../../../src/shared/middleware/securityMiddleware');
 const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
 const { ProviderManifest } = require('../../../src/modules/tts/providers/manifests/ProviderManifest');
 
 const router = express.Router();
 
-// 延迟初始化标记
-let adapterInitialized = false;
+// 延迟初始化 — 使用 Promise 缓存避免并发重复初始化
+let initPromise = null;
 
 async function getAdapter() {
-  if (!adapterInitialized) {
-    await serviceContainer.initialize();
-    adapterInitialized = true;
+  if (!initPromise) {
+    initPromise = serviceContainer.initialize().then(() => serviceContainer.get('ttsHttpAdapter'));
   }
-  return serviceContainer.get('ttsHttpAdapter');
+  return initPromise;
 }
 
 // 请求日志中间件
@@ -61,6 +60,14 @@ const validateBatchParams = (req, res, next) => {
         errors.push(`texts[${index}]不能为空`);
       } else if (text.length > 5000) {
         errors.push(`texts[${index}]长度不能超过5000字符`);
+      } else {
+        if (sanitizeInput(text) !== text) {
+          errors.push(`texts[${index}]包含不安全的HTML/脚本内容`);
+        }
+        const maliciousCheck = detectMaliciousContent(text);
+        if (maliciousCheck.detected) {
+          errors.push(`texts[${index}]检测到恶意内容 (威胁级别: ${maliciousCheck.severity})`);
+        }
       }
     });
   }
@@ -73,6 +80,10 @@ const validateBatchParams = (req, res, next) => {
       requestId: req.requestId,
       timestamp: new Date().toISOString()
     });
+  }
+
+  if (body.texts) {
+    req.body.texts = body.texts.map(text => sanitizeInput(text));
   }
 
   next();
@@ -207,6 +218,7 @@ router.get('/providers',
  * GET /api/tts/capabilities/:service
  */
 router.get('/capabilities/:service',
+  unifiedAuth.createMiddleware({ service: 'tts' }),
   async (req, res, next) => {
     try {
       const adapter = await getAdapter();

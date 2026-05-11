@@ -159,7 +159,7 @@ const ProviderManifest = {
     return svc?.parameters || {};
   },
 
-  /** 获取参数映射（mapTo / transform），兼容旧的 getFieldMappings 接口 */
+  /** 获取参数映射（供 FieldDefinitionRegistry 和 CapabilityCompiler 调用） */
   getFieldMappings(providerKey, serviceKey) {
     const svc = this.getServiceConfig(serviceKey);
     const params = svc?.parameters || {};
@@ -186,7 +186,7 @@ const ProviderManifest = {
     };
   },
 
-  /** 获取字段覆盖（兼容旧的 getFieldOverrides 接口） */
+  /** 获取字段覆盖（供 FieldDefinitionRegistry 调用） */
   getFieldOverrides(serviceKey) {
     const svc = this.getServiceConfig(serviceKey);
     const params = svc?.parameters || {};

@@ -4,14 +4,14 @@
  */
 
 const crypto = require('crypto');
-const { sanitizeInput, generateRequestFingerprint } = require('./securityMiddleware');
+const { generateRequestFingerprint } = require('./securityMiddleware');
 
 /**
  * 统一的TTS请求中间件
  *
- * 只负责：请求ID生成、日志、安全过滤、性能计时。
- * 业务参数范围校验已移至 CompiledCapability.validate()，
- * 由 TtsSynthesisService 在解析 serviceKey 后按服务商实际范围校验。
+ * 只负责：请求ID生成、日志、Content-Type/大小检查、性能计时。
+ * 安全过滤由上游 validateTtsParams (sanitizeInput) 完成，此处不做重复清理。
+ * 业务参数范围校验已移至 CompiledCapability，由 TtsSynthesisService 按服务商实际范围校验。
  */
 const createUnifiedTtsMiddleware = (options = {}) => {
   const { maxSize = 512 * 1024, service = 'tts' } = options;
@@ -47,14 +47,7 @@ const createUnifiedTtsMiddleware = (options = {}) => {
       // 4. 统一日志记录
       console.log(`[${req.requestId}] ${req.method} ${req.path} | IP: ${req.ip} | Service: ${req.body.service} | TextLength: ${req.body.text?.length || 0} | Fingerprint: ${req.securityFingerprint}`);
 
-      // 5. 安全过滤（仅做必要的HTML清理，不clamp业务参数范围）
-      if (req.body.text && typeof req.body.text === 'string') {
-        req.body.text = req.body.text
-          .replace(/<[^>]*>/g, '')
-          .trim();
-      }
-
-      // 6. 性能监控钩子
+      // 5. 性能监控钩子
       res.on('finish', () => {
         const duration = Date.now() - startTime;
         console.log(`[${req.requestId}] Completed | Status: ${res.statusCode} | Duration: ${duration}ms`);

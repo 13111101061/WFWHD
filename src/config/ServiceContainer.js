@@ -107,13 +107,12 @@ class ServiceContainer {
       capabilityResolver: capabilityResolver,
       parameterResolutionService: parameterResolutionService,
       parameterMapper: parameterMapper,
-      queryService: queryService,
       executionPolicy: executionPolicy
     });
     this._services.set('synthesisService', synthesisService);
 
-    // 11. HTTP 适配器
-    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService);
+    // 11. HTTP 适配器（合成服务 + 查询服务双注入）
+    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService);
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 
     this._initialized = true;

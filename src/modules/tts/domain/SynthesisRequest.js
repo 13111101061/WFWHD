@@ -126,18 +126,10 @@ class SynthesisRequest {
 
     if (this.service) {
       const parts = this.service.split('_');
-
       if (parts.length === 1) {
         return { provider: parts[0], serviceType: null };
       }
-
-      if (parts.length === 2) {
-        return { provider: parts[0], serviceType: parts[1] };
-      }
-
-      if (parts.length === 3) {
-        return { provider: parts[0], serviceType: `${parts[1]}_${parts[2]}` };
-      }
+      return { provider: parts[0], serviceType: parts.slice(1).join('_') };
     }
 
     return { provider: null, serviceType: null };
@@ -154,7 +146,7 @@ class SynthesisRequest {
 
   /**
    * 归一化选项参数
-   * 支持旧版参数名映射
+   * @deprecated v3.2 — 旧合成链路已移除，参数归一化由 ParameterResolutionService 处理
    */
   getNormalizedOptions() {
     const normalized = { ...this.options };

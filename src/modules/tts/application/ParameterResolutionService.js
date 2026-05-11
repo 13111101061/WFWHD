@@ -135,14 +135,8 @@ class ParameterResolutionService {
    * @returns {ResolvedParameters}
    */
   mergeFromContext(userOptions, capabilityContext, voiceIdentity) {
-    // [优先] 使用 CompiledCapability
     _ensureCompiledCapability();
-    if (capabilityContext.compiled && CompiledCapability) {
-      return this._mergeFromCompiled(userOptions, capabilityContext, voiceIdentity);
-    }
-
-    // [回退] 使用旧的 mergedDefaults 逻辑
-    return this._mergeFromLegacy(userOptions, capabilityContext, voiceIdentity);
+    return this._mergeFromCompiled(userOptions, capabilityContext, voiceIdentity);
   }
 
   /**
@@ -204,7 +198,8 @@ class ParameterResolutionService {
   }
 
   /**
-   * 从旧逻辑合并参数（回退路径）
+   * 从旧逻辑合并参数
+   * @deprecated v3.2 → 已由 _mergeFromCompiled 替代，不再在主链路中调用
    * @private
    */
   _mergeFromLegacy(userOptions, capabilityContext, voiceIdentity) {
@@ -387,7 +382,8 @@ class ParameterResolutionService {
       return providerOptions;
     }
 
-    // [回退] 使用硬编码列表（保持向后兼容）
+    // [回退] 使用硬编码列表（保持向后兼容，主链路已不走此路径）
+    // @deprecated v3.2 — 主链路通过 context.compiled.getSchema() 动态获取
     const knownParams = new Set([
       'text', 'voice', 'model', 'speed', 'pitch', 'volume',
       'format', 'sampleRate', 'emotion', 'style',
@@ -437,12 +433,7 @@ class ParameterResolutionService {
       }
     }
 
-    // 保留 warnings 以支持端到端传递
-    if (warnings && warnings.length > 0) {
-      final.__warnings = warnings;
-    }
-
-    return final;
+    return { params: final, warnings: warnings || [] };
   }
 }
 

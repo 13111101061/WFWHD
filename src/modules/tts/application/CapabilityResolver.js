@@ -119,6 +119,7 @@ class CapabilityResolver {
 
   /**
    * 从 CompiledCapability 构建参数支持状态
+   * @deprecated v3.2 → v4.0 — 请使用 CompiledCapability.getSchema() 替代
    */
   _buildParamSupport(compiled) {
     const support = {};

@@ -203,20 +203,13 @@ const VoiceResolver = {
     // 返回 VoiceIdentity（不再包含 runtimeOptions）
     // 参数合并逻辑已迁移到 ParameterResolutionService
     return {
-      // 新字段（主要）
       serviceKey: finalServiceKey,
       providerKey: finalProviderConfig.provider,
       modelKey: resolvedVoice.runtime?.model || 'default',
       systemId: resolvedVoice.systemId,
       voiceCode: resolvedVoice.voiceCode,
       providerVoiceId: resolvedVoice.providerVoiceId,
-      voiceRuntime: resolvedVoice.runtime,
-
-      // 兼容字段（deprecated，后续版本移除）
-      // @deprecated - 使用 providerVoiceId
-      voiceId: resolvedVoice.providerVoiceId,
-      // @deprecated - 使用 serviceKey
-      adapterKey: finalServiceKey
+      voiceRuntime: resolvedVoice.runtime
     };
   },
 

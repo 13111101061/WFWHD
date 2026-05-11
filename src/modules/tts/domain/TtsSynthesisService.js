@@ -29,7 +29,6 @@ class TtsSynthesisService {
    * @param {Object} deps.capabilityResolver - 能力解析器
    * @param {Object} deps.parameterResolutionService - 参数解析服务
    * @param {Object} deps.parameterMapper - 参数映射器
-   * @param {Object} deps.queryService - 查询服务 (延迟注入)
    * @param {Object} deps.executionPolicy - 执行策略 (可选)
    */
   constructor({
@@ -39,7 +38,6 @@ class TtsSynthesisService {
     capabilityResolver = null,
     parameterResolutionService = null,
     parameterMapper = null,
-    queryService = null,
     executionPolicy = null
   }) {
     this.ttsProvider = ttsProvider;
@@ -48,10 +46,8 @@ class TtsSynthesisService {
     this.capabilityResolver = capabilityResolver;
     this.parameterResolutionService = parameterResolutionService;
     this.parameterMapper = parameterMapper;
-    this.queryService = queryService;
     this.executionPolicy = executionPolicy || new ExecutionPolicy();
 
-    // TTS 特有指标（ExecutionPolicy 管理基本指标）
     this.metrics = {
       credentialErrors: 0,
       audioSaveErrors: 0,
@@ -59,25 +55,6 @@ class TtsSynthesisService {
       parameterMappingErrors: 0
     };
   }
-
-  // ==================== 查询服务委托 ====================
-
-  _ensureQueryService() {
-    if (!this.queryService) {
-      throw new Error('TtsQueryService not injected');
-    }
-  }
-
-  queryVoices(filters)   { this._ensureQueryService(); return this.queryService.queryVoices(filters); }
-  getFrontendCatalog()   { this._ensureQueryService(); return this.queryService.getFrontendCatalog(); }
-  getVoice(voiceId)       { this._ensureQueryService(); return this.queryService.getVoice(voiceId); }
-  getVoiceDetail(voiceId) { this._ensureQueryService(); return this.queryService.getVoiceDetail(voiceId); }
-  getCapabilities(key)    { this._ensureQueryService(); return this.queryService.getCapabilities(key); }
-  getFilterOptions()      { this._ensureQueryService(); return this.queryService.getFilterOptions(); }
-  getFrontendVoices()     { this._ensureQueryService(); return this.queryService.getFrontendVoices(); }
-  getVoices(p, s)          { this._ensureQueryService(); return this.queryService.getVoices(p, s); }
-  getAllVoices()           { this._ensureQueryService(); return this.queryService.getAllVoices(); }
-  getProviders()           { this._ensureQueryService(); return this.queryService.getProviders(); }
 
   // ==================== 核心合成 ====================
 
@@ -95,24 +72,18 @@ class TtsSynthesisService {
     const { resolvedRequest, voiceIdentity } = await this._resolveServiceIdentifier(sr);
     const resolvedServiceKey = this._buildServiceKey(resolvedRequest);
 
-    // 2.5 检查用户输入中不支持的参数
-    const warnings = [];
-    if (this.capabilityResolver) {
-      const userParamWarnings = this.capabilityResolver.checkUnsupportedInput(
-        resolvedServiceKey,
-        resolvedRequest.options || {}
-      );
-      warnings.push(...userParamWarnings);
-    }
-
     // 3. 委托 ExecutionPolicy 执行（限流/熔断/重试/超时）
+    const warnings = [];
     const result = await this.executionPolicy.execute(resolvedServiceKey, async () => {
       return this._doSynthesize(resolvedRequest, voiceIdentity);
     });
 
-    // 3.5 收集新链路上的内部 warnings
+    // 3.5 收集新链路上的内部 warnings，同步更新校验失败计数
     if (result._warnings) {
       warnings.push(...result._warnings);
+      if (result._warnings.length > 0) {
+        this.metrics.capabilityValidationFailures++;
+      }
       delete result._warnings;
     }
 
@@ -137,22 +108,7 @@ class TtsSynthesisService {
    * 实际合成逻辑（在 ExecutionPolicy 保护下执行）
    */
   async _doSynthesize(resolvedRequest, voiceIdentity) {
-    // 新调用链
-    if (this.capabilityResolver && this.parameterResolutionService) {
-      return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
-    }
-
-    // 旧调用链（向后兼容）
-    const normalizedOptions = resolvedRequest.getNormalizedOptions();
-    const adapterKey = `${resolvedRequest.provider}_${resolvedRequest.serviceType}`;
-    this._validateCapabilitiesLegacy(adapterKey, normalizedOptions);
-    const mappedOptions = await this._translateParameters(adapterKey, normalizedOptions, {});
-    return this.ttsProvider.synthesize(
-      resolvedRequest.provider,
-      resolvedRequest.serviceType,
-      resolvedRequest.text,
-      mappedOptions
-    );
+    return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
   }
 
   /**
@@ -182,31 +138,28 @@ class TtsSynthesisService {
       identity
     );
 
-    // 4. 能力校验 — 只做强制校验，unsupported 参数已在 checkUnsupportedInput 处理
-    this._validateCapabilities(identity.serviceKey, resolvedParams.parameters, capabilityContext);
+    // 4. 清理元数据字段（使用 CompiledCapability schema 动态判断，不再硬编码字段列表）
+    const cleanParams = this._cleanProviderParams(resolvedParams.parameters, capabilityContext);
 
-    // 5. 清理元数据字段
-    const cleanParams = this._cleanProviderParams(resolvedParams.parameters);
-
-    // 6. 构建最终参数
-    const finalParams = this.parameterResolutionService.buildFinalParams({
+    // 5. 构建最终参数
+    const buildResult = this.parameterResolutionService.buildFinalParams({
       parameters: cleanParams,
       warnings: resolvedParams.warnings,
       lockedParams: resolvedParams.lockedParams,
       filtered: resolvedParams.filtered
     }, capabilityContext);
+    const finalParams = buildResult.params;
 
-    // 6.5 收集参数解析链路上的 warnings
+    // 5.5 收集参数解析链路上的 warnings
     const chainWarnings = [];
     if (resolvedParams.warnings?.length) {
       chainWarnings.push(...resolvedParams.warnings);
     }
-    if (finalParams.__warnings?.length) {
-      chainWarnings.push(...finalParams.__warnings);
-      delete finalParams.__warnings;
+    if (buildResult.warnings?.length) {
+      chainWarnings.push(...buildResult.warnings);
     }
 
-    // 7. 合并 providerOptions
+    // 6. 合并 providerOptions
     if (capabilityContext.providerOptions && Object.keys(capabilityContext.providerOptions).length > 0) {
       finalParams.providerOptions = {
         ...(finalParams.providerOptions || {}),
@@ -214,14 +167,14 @@ class TtsSynthesisService {
       };
     }
 
-    // 8. 映射到 Provider 参数
+    // 7. 映射到 Provider 参数
     const providerParams = await this._translateParameters(
       identity.serviceKey,
       finalParams,
       { providerVoiceId: identity.providerVoiceId }
     );
 
-    // 9. 调用 Provider
+    // 8. 调用 Provider
     const serviceType = this._extractServiceType(identity.serviceKey);
     const providerResult = await this.ttsProvider.synthesize(
       identity.providerKey,
@@ -318,61 +271,23 @@ class TtsSynthesisService {
   }
 
   async _resolveServiceIdentifier(request) {
-    const VoiceResolver = require('../application/VoiceResolver');
-    if (request.voiceCode) return this._resolveFromVoiceCode(request);
-    if (request.systemId) return this._resolveFromSystemId(request);
-    return this._resolveViaVoiceResolver(request);
-  }
+    const resolveInput = {
+      text: request.text,
+      service: request.service,
+      options: request.options
+    };
 
-  async _resolveFromVoiceCode(request) {
-    try {
-      const resolved = VoiceResolver.resolve({
-        text: request.text, service: request.service,
-        voiceCode: request.voiceCode, options: request.options
-      });
-      const serviceType = this._extractServiceType(resolved.serviceKey);
-      const SynthesisRequest = require('./SynthesisRequest');
-      const resolvedRequest = new SynthesisRequest({
-        text: request.text, service: request.service,
-        voiceCode: resolved.voiceCode, systemId: resolved.systemId,
-        provider: resolved.providerKey, serviceType,
-        options: { ...request.options, voice: resolved.providerVoiceId, voiceId: resolved.providerVoiceId }
-      });
-      return { resolvedRequest, voiceIdentity: resolved };
-    } catch (error) {
-      if (!error.code) error.code = 'VOICE_NOT_FOUND';
-      throw error;
+    if (request.voiceCode) {
+      resolveInput.voiceCode = request.voiceCode;
+    } else if (request.systemId) {
+      resolveInput.systemId = request.systemId;
+    } else {
+      resolveInput.voice = request.options?.voice || request.options?.voiceId;
+      resolveInput.voiceId = request.options?.voiceId;
     }
-  }
 
-  async _resolveFromSystemId(request) {
     try {
-      const resolved = VoiceResolver.resolve({
-        text: request.text, service: request.service,
-        systemId: request.systemId, options: request.options
-      });
-      const serviceType = this._extractServiceType(resolved.serviceKey);
-      const SynthesisRequest = require('./SynthesisRequest');
-      const resolvedRequest = new SynthesisRequest({
-        text: request.text, service: request.service,
-        voiceCode: resolved.voiceCode, systemId: resolved.systemId,
-        provider: resolved.providerKey, serviceType,
-        options: { ...request.options, voice: resolved.providerVoiceId, voiceId: resolved.providerVoiceId }
-      });
-      return { resolvedRequest, voiceIdentity: resolved };
-    } catch (error) {
-      if (!error.code) error.code = 'VOICE_NOT_FOUND';
-      throw error;
-    }
-  }
-
-  async _resolveViaVoiceResolver(request) {
-    try {
-      const resolved = VoiceResolver.resolve({
-        text: request.text, service: request.service,
-        voice: request.options?.voice || request.options?.voiceId,
-        voiceId: request.options?.voiceId, options: request.options
-      });
+      const resolved = VoiceResolver.resolve(resolveInput);
       const serviceType = this._extractServiceType(resolved.serviceKey);
       const SynthesisRequest = require('./SynthesisRequest');
       const resolvedRequest = new SynthesisRequest({
@@ -405,74 +320,13 @@ class TtsSynthesisService {
     return canonicalKey.split('_').slice(1).join('_');
   }
 
-  _validateCapabilities(serviceKey, params, capabilityContext) {
-    if (!this.capabilityResolver) return;
-    const { parameterSupport } = capabilityContext;
-    const errors = [];
-    for (const [param, value] of Object.entries(params)) {
-      if (value === undefined || value === null) continue;
-      const support = parameterSupport[param];
-      if (!support) continue;
-      if (!support.supported) {
-        errors.push(support.reason || `参数 ${param} 不被 ${serviceKey} 支持`);
-      }
-      // 服务商特定范围校验 — 支持 [min,max] 和 {min,max} 两种格式
-      if (support.supported && support.config?.range && typeof value === 'number') {
-        const range = support.config.range;
-        const min = Array.isArray(range) ? range[0] : range.min;
-        const max = Array.isArray(range) ? range[1] : range.max;
-        if (typeof min === 'number' && typeof max === 'number' && (value < min || value > max)) {
-          errors.push(`参数 ${param} 超出范围 [${min}, ${max}]，当前值: ${value}`);
-        }
-      }
-      // 服务商特定枚举校验
-      if (support.supported && support.config?.values && Array.isArray(support.config.values)) {
-        if (!support.config.values.includes(value)) {
-          errors.push(`参数 ${param} 值 ${value} 不在允许列表 [${support.config.values.join(', ')}] 中`);
-        }
-      }
-    }
-    if (errors.length > 0) {
-      this.metrics.capabilityValidationFailures++;
-      // 只记录 metric，不 throw — unsupported/越界参数由 warnings 链路统一反馈
-    }
-  }
-
-  _validateCapabilitiesLegacy(adapterKey, options) {
-    if (!this.capabilityResolver) return;
-    const context = this.capabilityResolver.resolve(adapterKey);
-    const { parameterSupport } = context;
-    if (!parameterSupport || Object.keys(parameterSupport).length === 0) return;
-    const errors = [];
-    for (const [param, value] of Object.entries(options)) {
-      if (value === undefined || value === null) continue;
-      const support = parameterSupport[param];
-      if (!support) continue;
-      if (support.supported === false) {
-        errors.push(support.reason || `参数 ${param} 不被当前服务支持`);
-      }
-      if (support.supported && support.config?.range && typeof value === 'number') {
-        const range = support.config.range;
-        const min = Array.isArray(range) ? range[0] : range.min;
-        const max = Array.isArray(range) ? range[1] : range.max;
-        if (typeof min === 'number' && typeof max === 'number' && (value < min || value > max)) {
-          errors.push(`参数 ${param} 超出范围 [${min}, ${max}]，当前值: ${value}`);
-        }
-      }
-    }
-    if (errors.length > 0) {
-      this.metrics.capabilityValidationFailures++;
-    }
-  }
-
-  _cleanProviderParams(params) {
-    const metadataFields = new Set([
-      'defaultVoiceId', 'displayName', 'alias', 'description', 'tags',
-      'preview', 'previewUrl', 'status', 'createdAt', 'updatedAt', 'styleStrength'
-    ]);
+  _cleanProviderParams(params, capabilityContext) {
+    const schema = capabilityContext?.compiled?.getSchema();
+    if (!schema) return params; // 无 compiled schema 时不过滤
+    const validKeys = new Set(Object.keys(schema));
     const cleaned = {};
     for (const [key, value] of Object.entries(params)) {
-      if (metadataFields.has(key) || value === undefined || value === null) continue;
+      if (!validKeys.has(key) || value === undefined || value === null) continue;
       cleaned[key] = value;
     }
     return cleaned;
