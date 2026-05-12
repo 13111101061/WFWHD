@@ -28,7 +28,7 @@
  */
 
 const ServiceContainer = require('../../config/ServiceContainer');
-const { voiceRegistry, VoiceRegistry } = require('./core/VoiceRegistry');
+const { getVoiceRegistry, VoiceRegistry } = require('./core/VoiceRegistry');
 
 // 状态
 let _initialized = false;
@@ -80,8 +80,8 @@ function getValidationService() {
 /**
  * 获取音色注册中心
  */
-function getVoiceRegistry() {
-  return voiceRegistry;
+function getVoiceRegistryFn() {
+  return getVoiceRegistry();
 }
 
 /**
@@ -110,10 +110,10 @@ module.exports = {
   getSynthesisService,
   getHttpAdapter,
   getValidationService,
-  getVoiceRegistry,
+  getVoiceRegistry: getVoiceRegistryFn,
 
   // 音色管理
-  voiceRegistry,
+  getVoiceRegistry,
   VoiceRegistry,
 
   // 类型导出（用于扩展）

@@ -105,7 +105,7 @@ class ServiceContainer {
     // 7.1 音色一致性审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
-      await auditVoiceCoverage(console, voiceRegistry);
+      await auditVoiceCoverage(voiceRegistry, console);
     }
 
     // 8. ExecutionPolicy

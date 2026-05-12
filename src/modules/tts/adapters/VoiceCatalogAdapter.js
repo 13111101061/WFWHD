@@ -23,7 +23,7 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
    * 初始化
    */
   async initialize() {
-    await this.registry.initialize();
+    if (!this.registry.isReady) await this.registry.initialize();
   }
 
   /**

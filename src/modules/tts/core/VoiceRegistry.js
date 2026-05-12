@@ -40,6 +40,9 @@ class VoiceRegistry {
     // 服务商状态
     this.providerStatus = new Map();  // provider -> { enabled, service }
 
+    // CompatMap 懒缓存
+    this._compatMapCache = null;
+
     // 状态
     this.isReady = false;
     this.lastUpdated = null;
@@ -130,6 +133,7 @@ class VoiceRegistry {
     const id = storedVoice.identity.id;
     this.voices.set(id, storedVoice);
     this._updateIndexes(storedVoice);
+    this._invalidateCompatMap();
     this.lastUpdated = new Date();
 
     return storedVoice;
@@ -158,13 +162,13 @@ class VoiceRegistry {
 
   /**
    * 迁移入口：添加遗留格式音色（仅用于历史数据迁移）
-   * 内部调用 VoiceNormalizer.fromLegacy() 转换
+   * 内部调用 VoiceNormalizer.normalize() 转换
    *
    * @param {Object} legacyVoice - 旧格式音色对象
    * @returns {Object} 转换后的 StoredVoice
    */
   addLegacyForMigration(legacyVoice) {
-    const stored = VoiceNormalizer.fromLegacy(legacyVoice);
+    const stored = VoiceNormalizer.normalize(legacyVoice);
     return this.addStored(stored);
   }
 
@@ -179,7 +183,7 @@ class VoiceRegistry {
 
     for (const legacy of legacyVoices) {
       try {
-        const stored = VoiceNormalizer.fromLegacy(legacy);
+        const stored = VoiceNormalizer.normalize(legacy);
         this.addStored(stored);
         added.push(stored.identity.id);
       } catch (e) {
@@ -215,32 +219,7 @@ class VoiceRegistry {
     }
   }
 
-  // ==================== 向后兼容（废弃） ====================
-
-  /**
-   * @deprecated Use addStored() instead
-   * 保留向后兼容，但会严格校验
-   */
-  add(voice) {
-    // 如果是新格式，调用 addStored
-    if (voice.identity && voice.profile && voice.runtime) {
-      return this.addStored(voice);
-    }
-
-    // 拒绝其他格式，提示正确用法
-    throw new Error(
-      'VoiceRegistry.add() only accepts StoredVoice structure. ' +
-      'Use VoiceWriteService.create() for form submission, ' +
-      'or addLegacyForMigration() for legacy data migration.'
-    );
-  }
-
-  /**
-   * @deprecated Use addStoredBatch() instead
-   */
-  addBatch(voices) {
-    return this.addStoredBatch(voices);
-  }
+  // ==================== 更新/删除 ====================
 
   update(id, updates) {
     const existing = this.voices.get(id);
@@ -251,41 +230,34 @@ class VoiceRegistry {
     // 1. 先移除旧索引
     this._removeFromIndexes(existing);
 
-    // 2. 合并更新（支持新结构的深层合并）
-    let updated;
-    if (existing.identity && existing.profile && existing.runtime) {
-      // 新格式：分层合并
-      updated = {
-        ...existing,
-        identity: {
-          ...existing.identity,
-          ...(updates.identity || {})
-        },
-        profile: {
-          ...existing.profile,
-          ...(updates.profile || {})
-        },
-        runtime: {
-          ...existing.runtime,
-          ...(updates.runtime || {})
-        },
-        meta: {
-          ...existing.meta,
-          updatedAt: new Date().toISOString(),
-          ...(updates.meta || {})
-        }
-      };
-      // 删除嵌套更新对象，避免重复
-      delete updated.identity?.id; // id 不可变
-      updated.identity.id = id;
-    } else {
-      // 旧格式：平铺合并
-      updated = { ...existing, ...updates, id };
-    }
+    // 合并更新（仅 StoredVoice 分层合并）
+    const updated = {
+      ...existing,
+      identity: {
+        ...existing.identity,
+        ...(updates.identity || {})
+      },
+      profile: {
+        ...existing.profile,
+        ...(updates.profile || {})
+      },
+      runtime: {
+        ...existing.runtime,
+        ...(updates.runtime || {})
+      },
+      meta: {
+        ...existing.meta,
+        updatedAt: new Date().toISOString(),
+        ...(updates.meta || {})
+      }
+    };
+    delete updated.identity.id; // id 不可变
+    updated.identity.id = id;
 
-    // 3. 存储并重建索引
+    // 存储并重建索引
     this.voices.set(id, updated);
     this._updateIndexes(updated);
+    this._invalidateCompatMap();
 
     this.lastUpdated = new Date();
 
@@ -298,6 +270,7 @@ class VoiceRegistry {
 
     this.voices.delete(id);
     this._removeFromIndexes(voice);
+    this._invalidateCompatMap();
     this.lastUpdated = new Date();
 
     return true;
@@ -308,6 +281,7 @@ class VoiceRegistry {
     this.providerIndex.clear();
     this.serviceIndex.clear();
     this.voiceCodeIndex.clear();
+    this._invalidateCompatMap();
     this.lastUpdated = new Date();
   }
 
@@ -382,6 +356,8 @@ class VoiceRegistry {
    * 从已加载的音色数据自动构建兼容映射（替代手写 VoiceCodeCompatMap.json）
    */
   buildCompatMap() {
+    if (this._compatMapCache) return this._compatMapCache;
+
     const legacyToVoiceCode = {};
     const voiceCodeIndex = {};
 
@@ -390,17 +366,14 @@ class VoiceRegistry {
       const runtime = voice.runtime || {};
       const vc = identity.voiceCode;
 
-      // legacy systemId → voiceCode
       if (vc) {
         legacyToVoiceCode[id] = vc;
-        // also map short names
         const sourceId = identity.sourceId;
         if (sourceId && sourceId !== id) {
           legacyToVoiceCode[sourceId] = vc;
         }
       }
 
-      // voiceCode → { id, providerVoiceId }
       if (vc && runtime.voiceId) {
         voiceCodeIndex[vc] = {
           id,
@@ -409,7 +382,12 @@ class VoiceRegistry {
       }
     }
 
-    return { legacyToVoiceCode, voiceCodeIndex };
+    this._compatMapCache = { legacyToVoiceCode, voiceCodeIndex };
+    return this._compatMapCache;
+  }
+
+  _invalidateCompatMap() {
+    this._compatMapCache = null;
   }
 
   /**
@@ -501,6 +479,7 @@ class VoiceRegistry {
     this.providerIndex.clear();
     this.serviceIndex.clear();
     this.voiceCodeIndex.clear();
+    this._invalidateCompatMap();
     this.providerStatus.clear();
 
     // 从meta中读取服务商状态

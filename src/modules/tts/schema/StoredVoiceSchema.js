@@ -9,7 +9,7 @@
  * {
  *   identity: { id, voiceCode, sourceId, provider, service },
  *   profile: { displayName, alias, gender, languages, description, tags, status },
- *   runtime: { voiceId, model, providerOptions },
+ *   runtime: { voiceId, providerOptions },
  *   meta: { createdAt, updatedAt, dataSource, version }
  * }
  */

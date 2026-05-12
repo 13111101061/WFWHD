@@ -469,8 +469,8 @@ describe('Voice Structure Regression Tests', function() {
         };
 
         assert.throws(
-          () => voiceRegistry.add(formDTO),
-          /only accepts StoredVoice/
+          () => voiceRegistry.addStored(formDTO),
+          /must be StoredVoice structure|Form validation|identity is required/
         );
       });
 
@@ -483,8 +483,8 @@ describe('Voice Structure Regression Tests', function() {
         };
 
         assert.throws(
-          () => voiceRegistry.add(legacy),
-          /only accepts StoredVoice/
+          () => voiceRegistry.addStored(legacy),
+          /must be StoredVoice/
         );
       });
 

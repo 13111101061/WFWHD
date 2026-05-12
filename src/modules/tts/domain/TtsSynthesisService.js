@@ -106,7 +106,7 @@ class TtsSynthesisService {
 
     const capabilityContext = this.capabilityResolver.resolve(
       identity.serviceKey,
-      identity.modelKey,
+      null,
       identity.voiceRuntime
     );
 

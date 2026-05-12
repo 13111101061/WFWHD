@@ -88,7 +88,6 @@ const VoiceNormalizer = {
       },
       runtime: {
         voiceId: form.providerVoiceId,
-        model: form.model || 'default',
         providerOptions: form.providerOptions || {}
       },
       meta: {
@@ -138,7 +137,6 @@ const VoiceNormalizer = {
       provider: stored.identity?.provider,
       service: stored.identity?.service,
       voiceId: stored.runtime?.voiceId,
-      model: stored.runtime?.model,
       providerOptions: stored.runtime?.providerOptions || {}
     };
   },
@@ -209,7 +207,6 @@ const VoiceNormalizer = {
       },
       runtime: {
         voiceId,
-        model: pickFirst(runtime.model, ttsConfig.model, 'default'),
         providerOptions
       },
       meta: {
@@ -305,9 +302,7 @@ const VoiceNormalizer = {
       languages: profile.languages || voice.languages || ['zh-CN'],
       language: (profile.languages || voice.languages || ['zh-CN'])[0],
       voiceId: runtime.voiceId || null,
-      model: runtime.model || null,
       providerOptions: runtime.providerOptions || {},
-      ttsConfig: voice._compat?.ttsConfig || voice.ttsConfig || {},
       tags: profile.tags || voice.tags || [],
       description: profile.description || voice.description
     };
@@ -330,9 +325,5 @@ const VoiceNormalizer = {
     return this.toRuntime(voice);
   }
 };
-
-// backward compat aliases
-VoiceNormalizer.fromLegacy = VoiceNormalizer.normalize;
-VoiceNormalizer.fromLegacyBatch = VoiceNormalizer.normalizeBatch;
 
 module.exports = VoiceNormalizer;

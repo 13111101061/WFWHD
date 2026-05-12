@@ -82,14 +82,17 @@ function extractRuntime({ ttsConfig = {}, runtime = {}, fallbackVoiceId }) {
     providerOptions.samplingParams = ttsConfig.samplingParams;
   }
 
+  // 影子字段归入 providerOptions
+  const sampleRate = pickFirst(runtime.sampleRate, ttsConfig.sampleRate);
+  if (sampleRate != null) providerOptions.sampleRate = sampleRate;
+  const cluster = pickFirst(runtime.cluster, ttsConfig.cluster);
+  if (cluster != null) providerOptions.cluster = cluster;
+  const voiceType = pickFirst(runtime.voiceType, ttsConfig.voiceType);
+  if (voiceType != null) providerOptions.voiceType = voiceType;
+
   return {
     voiceId,
-    model: pickFirst(runtime.model, ttsConfig.model, 'default'),
-    providerOptions,
-    // 保留其他运行时字段
-    sampleRate: pickFirst(runtime.sampleRate, ttsConfig.sampleRate),
-    cluster: pickFirst(runtime.cluster, ttsConfig.cluster),
-    voiceType: pickFirst(runtime.voiceType, ttsConfig.voiceType)
+    providerOptions
   };
 }
 

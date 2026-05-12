@@ -41,7 +41,6 @@ function toDisplayDto(storedVoice) {
     previewUrl: profile.preview || null,
     alias: profile.alias,
     runtimePreview: {
-      model: runtime.model,
       hasProviderOptions: !!(runtime.providerOptions && Object.keys(runtime.providerOptions).length > 0)
     }
   };

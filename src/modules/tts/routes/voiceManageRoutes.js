@@ -252,7 +252,7 @@ router.post('/save', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Saved ${getVoiceRegistry().voices.size} voices to file`
+      message: `Saved ${getVoiceRegistry().getStats().total} voices to file`
     });
 
   } catch (error) {

@@ -5,16 +5,22 @@
 
 /**
  * @typedef {Object} Voice
- * @property {string} id - 系统唯一ID
- * @property {string} sourceId - 提供商原始ID
- * @property {string} provider - 提供商
- * @property {string} service - 服务类型
- * @property {string} displayName - 显示名称
- * @property {string} gender - 性别
- * @property {string[]} languages - 支持语言
- * @property {string[]} tags - 标签
- * @property {string} [description] - 描述
- * @property {Object} [ttsConfig] - TTS配置
+ * @property {Object} identity - 身份标识层
+ * @property {string} identity.id - 系统唯一ID
+ * @property {string} identity.sourceId - 提供商原始ID
+ * @property {string} identity.provider - 提供商
+ * @property {string} identity.service - 服务类型
+ * @property {string} [identity.voiceCode] - 15位编码
+ * @property {Object} profile - 展示信息层
+ * @property {string} profile.displayName - 显示名称
+ * @property {string} profile.gender - 性别
+ * @property {string[]} profile.languages - 支持语言
+ * @property {string[]} profile.tags - 标签
+ * @property {string} [profile.description] - 描述
+ * @property {Object} runtime - 运行时层
+ * @property {string} runtime.voiceId - 服务商真实音色ID
+ * @property {Object} [runtime.providerOptions] - 服务商特有参数
+ * @property {Object} meta - 元数据层
  */
 
 /**

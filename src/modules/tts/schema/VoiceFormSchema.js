@@ -8,7 +8,7 @@
  * 表单字段分组：
  * - 基础身份：provider, service, sourceId（必填）
  * - 展示资料：displayName, alias, gender, languages, description, tags, status, preview
- * - 运行配置：providerVoiceId, model, providerOptions
+ * - 运行配置：providerVoiceId, providerOptions
  *
  * 字段映射说明：
  * - 表单字段: preview（试听地址）

@@ -6,7 +6,7 @@
  * - 支持 voice_code/voiceCode、system_id/systemId、voice_id/voiceId 多种字段名
  * - 与 ProviderCatalog 协作校验 service matching
  *
- * 输出：VoiceIdentity { serviceKey, providerKey, modelKey, systemId, voiceCode, providerVoiceId, voiceRuntime }
+ * 输出：VoiceIdentity { serviceKey, providerKey, systemId, voiceCode, providerVoiceId, voiceRuntime }
  *
  * 参数合并逻辑已迁移到 ParameterResolutionService。
  */
@@ -44,12 +44,11 @@ function pickFirst(...values) {
  * @typedef {Object} VoiceIdentity - VoiceResolver 输出结构
  *
  * @property {string} serviceKey - canonical service key (如 "moss_tts")
- * @property {string} providerKey - 服务商标识 (如 "moss")
- * @property {string} modelKey - 模型标识 (如 "moss-tts")
- * @property {string} systemId - 系统音色ID (如 "moss-tts-ashui")
- * @property {string} voiceCode - 15位音色编码 (如 "001000030000005")
- * @property {string} providerVoiceId - 服务商真实音色ID (如 "2001257729754140672")
- * @property {Object} voiceRuntime - 音色运行时配置（来自音色数据，供 ParameterResolutionService 使用）
+   * @property {string} providerKey - 服务商标识 (如 "moss")
+   * @property {string} systemId - 系统音色ID (如 "moss-tts-ashui")
+   * @property {string} voiceCode - 15位音色编码 (如 "001000030000005")
+   * @property {string} providerVoiceId - 服务商真实音色ID (如 "2001257729754140672")
+   * @property {Object} voiceRuntime - 音色运行时配置（来自音色数据，供 ParameterResolutionService 使用）
  */
 
 function extractTopLevelOptions(request = {}) {
@@ -170,7 +169,6 @@ class VoiceResolver {
     return {
       serviceKey: finalServiceKey,
       providerKey: finalProviderConfig.provider,
-      modelKey: resolvedVoice.runtime?.model || 'default',
       systemId: resolvedVoice.systemId,
       voiceCode: resolvedVoice.voiceCode,
       providerVoiceId: resolvedVoice.providerVoiceId,

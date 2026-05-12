@@ -6,7 +6,6 @@
  */
 
 const TtsProviderPort = require('../ports/TtsProviderPort');
-const { VoiceRegistry } = require('../core/VoiceRegistry');
 
 class TtsProviderAdapter extends TtsProviderPort {
   /**
@@ -23,7 +22,9 @@ class TtsProviderAdapter extends TtsProviderPort {
 
   async initialize() {
     if (this._initialized) return;
-    if (this._voiceRegistry) await this._voiceRegistry.initialize();
+    if (this._voiceRegistry && !this._voiceRegistry.isReady) {
+      await this._voiceRegistry.initialize();
+    }
     this._initialized = true;
   }
 
