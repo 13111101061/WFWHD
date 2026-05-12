@@ -10,7 +10,6 @@ const TtsHttpAdapter = require('../modules/tts/adapters/http/TtsHttpAdapter');
 const { ttsProviderAdapter } = require('../modules/tts/adapters/TtsProviderAdapter');
 const { voiceCatalogAdapter } = require('../modules/tts/adapters/VoiceCatalogAdapter');
 
-// [新增] ProviderManifest 确保配置已加载
 const { ProviderManifest } = require('../modules/tts/providers/manifests/ProviderManifest');
 const { ExecutionPolicy } = require('../modules/tts/infrastructure/ExecutionPolicy');
 
@@ -21,9 +20,6 @@ class ServiceContainer {
     this._initPromise = null;
   }
 
-  /**
-   * 初始化所有服务
-   */
   async initialize() {
     if (this._initialized) return this;
     if (this._initPromise) return this._initPromise;
@@ -35,11 +31,11 @@ class ServiceContainer {
   async _doInitialize() {
     console.log('[ServiceContainer] Initializing services...');
 
-    // 0. 加载 Provider Manifest（取代散落的配置加载）
+    // 0. 加载 Provider Manifest
     ProviderManifest._ensureLoaded();
     this._services.set('providerManifest', ProviderManifest);
 
-    // 0.1 [新增] 启动配置审计
+    // 0.1 启动配置审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       try {
         const { audit } = require('../modules/tts/config/ConfigConsistencyChecker');
@@ -60,7 +56,6 @@ class ServiceContainer {
     await ProviderManagementService.initialize();
     this._services.set('providerManagementService', ProviderManagementService);
 
-    // 将已初始化的 PMS 注入到 TtsProviderAdapter（消除其内部的延迟加载）
     ttsProviderAdapter.setProviderManagementService(ProviderManagementService);
 
     // 3. CapabilityResolver（单例）
@@ -71,7 +66,7 @@ class ServiceContainer {
     await voiceCatalogAdapter.initialize();
     await ttsProviderAdapter.initialize();
 
-    // 4.1 L3 音色一致性审计（需音色数据就绪）
+    // 4.1 L3 音色一致性审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
       await auditVoiceCoverage();
@@ -94,28 +89,22 @@ class ServiceContainer {
     });
     this._services.set('queryService', queryService);
 
-    // 8. 参数映射器
-    const { parameterMapper } = require('../modules/tts/config/ParameterMapper');
-    await parameterMapper.initialize();
-    this._services.set('parameterMapper', parameterMapper);
-
-    // 9. 参数解析服务
+    // 8. 参数解析服务
     const { parameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
     this._services.set('parameterResolutionService', parameterResolutionService);
 
-    // 10. 创建合成服务（构造函数注入，消除 setter 时间耦合）
+    // 9. 创建合成服务
     const synthesisService = new TtsSynthesisService({
       ttsProvider: ttsProviderAdapter,
       voiceCatalog: voiceCatalogAdapter,
       validator: validationService,
       capabilityResolver: capabilityResolver,
       parameterResolutionService: parameterResolutionService,
-      parameterMapper: parameterMapper,
       executionPolicy: executionPolicy
     });
     this._services.set('synthesisService', synthesisService);
 
-    // 11. HTTP 适配器（合成服务 + 查询服务双注入）
+    // 10. HTTP 适配器
     const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService);
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 
@@ -124,30 +113,17 @@ class ServiceContainer {
     return this;
   }
 
-  /**
-   * 获取服务
-   */
   get(name) {
     if (!this._initialized) {
       throw new Error('ServiceContainer not initialized. Call initialize() first.');
     }
     const service = this._services.get(name);
-    if (!service) {
-      throw new Error(`Service not found: ${name}`);
-    }
+    if (!service) throw new Error(`Service not found: ${name}`);
     return service;
   }
 
-  /**
-   * 注册服务（用于测试覆盖）
-   */
-  register(name, service) {
-    this._services.set(name, service);
-  }
-
-  isInitialized() {
-    return this._initialized;
-  }
+  register(name, service) { this._services.set(name, service); }
+  isInitialized() { return this._initialized; }
 
   reset() {
     this._services.clear();
@@ -155,9 +131,7 @@ class ServiceContainer {
     this._initPromise = null;
   }
 
-  getRegisteredServices() {
-    return Array.from(this._services.keys());
-  }
+  getRegisteredServices() { return Array.from(this._services.keys()); }
 }
 
 const serviceContainer = new ServiceContainer();

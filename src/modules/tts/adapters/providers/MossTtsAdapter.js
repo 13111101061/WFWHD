@@ -8,9 +8,9 @@
  * - 报告成功/失败用于健康追踪
  *
  * [改造后] 入参约定：
- * - 接收已映射的服务商参数（由 ParameterMapper 输出）
+ * - 接收已映射的服务商参数（由 CompiledCapability.mapToProvider() 输出）
  * - 不再处理平台标准参数到服务商参数的转换
- * - 所有默认值由 CapabilitySchema 提供，通过 ParameterResolutionService 合并
+ * - 所有默认值由 CompiledCapability 提供，通过 ParameterResolutionService 合并
  * - 期望参数格式：
  *   {
  *     voice_id: '2001257729754140672',
@@ -214,7 +214,7 @@ class MossTtsAdapter extends BaseTtsAdapter {
   /**
    * [已移除] validateOptions 自定义实现
    *
-   * 参数格式转换已迁移到 ParameterMapper
+   * 参数格式转换已迁移到 CompiledCapability.mapToProvider()
    * Adapter 现在直接接收已映射的服务商参数
    */
 

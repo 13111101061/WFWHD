@@ -11,7 +11,13 @@
  * 多进程架构：
  *   Master 进程：只接收连接，分发给 Worker
  *   Worker 进程：处理完整的 HTTP 请求/响应生命周期
- *   每个 Worker 独立运行 TTS 服务栈（不共享内存缓存）
+ *   每个 Worker 独立运行 TTS 服务栈
+ *
+ * 缓存不共享注意事项：
+ *   每个 Worker 各自维护 CompiledCapability / VoiceRegistry /
+ *   服务商 adapter 实例等内存缓存，多进程下内存占用 = Worker数 × 单份。
+ *   并行需求高时建议将 CompiledCapability 和 VoiceRegistry
+ *   放入 Redis 共享缓存，避免重复加载和内存膨胀。
  */
 
 const cluster = require('cluster');

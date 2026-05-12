@@ -77,17 +77,15 @@ const ProviderCatalog = {
 
   /**
    * 获取服务商能力
-   * @deprecated 请使用 CapabilityResolver.resolve(serviceKey).parameterSupport
    * @param {string} key
    * @returns {Object|null}
    */
   getCapabilities(key) {
-    // 委托给 CapabilityResolver
     try {
       const { capabilityResolver } = require('../application/CapabilityResolver');
       const context = capabilityResolver.resolve(key);
       return {
-        parameterSupport: context.parameterSupport,
+        compiled: context.compiled,
         defaults: context.resolvedDefaults,
         lockedParams: context.lockedParams
       };

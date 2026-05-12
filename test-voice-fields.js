@@ -96,8 +96,8 @@ testCases.forEach((tc, idx) => {
     console.log('  locked.voice = providerVoiceId:', voiceIdentity.providerVoiceId);
     console.log('  locked.model = modelKey:', voiceIdentity.modelKey);
 
-    // Step 5: 模拟 ParameterMapper 映射结果
-    console.log('\n[Step 5] ParameterMapper 映射后（平台标准 → 服务商参数）:');
+    // Step 5: 模拟 CompiledCapability.mapToProvider() 映射结果
+    console.log('\n[Step 5] CompiledCapability.mapToProvider() 映射后（平台标准 → 服务商参数）:');
     if (voiceIdentity.providerKey === 'aliyun') {
       if (voiceIdentity.serviceKey === 'aliyun_qwen_http') {
         console.log('  { input: { voice: "' + voiceIdentity.providerVoiceId + '" } }');
@@ -146,7 +146,7 @@ console.log(`
   - voice  = providerVoiceId（最高优先级，用户传入的 voice 会被覆盖）
   - model  = modelKey
 
-【ParameterMapper】映射到服务商参数:
+【CompiledCapability.mapToProvider()】映射到服务商参数:
   - aliyun_qwen_http   → { input: { voice: providerVoiceId } }
   - aliyun_cosyvoice   → { voice: providerVoiceId }
   - tencent_tts        → { VoiceType: parseInt(providerVoiceId) }

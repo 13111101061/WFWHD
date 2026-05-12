@@ -2,7 +2,7 @@
  * ProviderManifest - 服务商配置加载器
  *
  * 从 providers/manifests/<provider>/manifest.json 加载统一配置。
- * 这是服务商配置的唯一事实源 — 不可与旧 JSON 同时维护。
+ * 这是服务商配置的唯一事实源。
  *
  * 新增服务商只需：新增 manifests/<服务商>/manifest.json
  */
@@ -15,8 +15,6 @@ const MANIFESTS_DIR = path.join(__dirname);
 let manifests = null;
 let _serviceIndex = null;
 let _providerIndex = null;
-
-
 
 function loadAllManifests() {
   if (manifests !== null) return manifests;
@@ -54,12 +52,31 @@ function loadAllManifests() {
       }
     } catch (err) {
       console.error(`[ProviderManifest] Failed to load ${manifestPath}: ${err.message}`);
-      throw err; // fail-fast: manifest is the sole source
+      throw err;
     }
   }
 
   console.log(`[ProviderManifest] Loaded ${manifests.size} providers`);
   return manifests;
+}
+
+/**
+ * 公共参数遍历器 — 遍历 svc.parameters 并为每个参数调用 visitor
+ * getFieldMappings 和 getFieldOverrides 共用此遍历逻辑
+ *
+ * @param {string} serviceKey
+ * @param {Function} visitor - (key, paramDef) => entry | null
+ * @returns {Object} entries by key
+ */
+function _traverseParams(serviceKey, visitor) {
+  const svc = ProviderManifest.getServiceConfig(serviceKey);
+  const params = svc?.parameters || {};
+  const entries = {};
+  for (const [k, p] of Object.entries(params)) {
+    const entry = visitor(k, p);
+    if (entry !== null) entries[k] = entry;
+  }
+  return entries;
 }
 
 const ProviderManifest = {
@@ -68,7 +85,6 @@ const ProviderManifest = {
     if (manifests === null) loadAllManifests();
   },
 
-  /** 获取审计信息 — 自 manifest 成为唯一事实源后，始终返回空 */
   getWarnings() { return []; },
 
   // ====== Service-level ======
@@ -86,7 +102,6 @@ const ProviderManifest = {
 
   getAllServiceKeys() {
     this._ensureLoaded();
-    // return canonical keys only (exclude alias-only entries)
     const keys = [];
     for (const [k, v] of _serviceIndex.entries()) {
       if (v._canonicalKey === k) keys.push(k);
@@ -137,48 +152,43 @@ const ProviderManifest = {
       service: svc._canonicalKey,
       capabilities: svc.capabilities || {},
       defaults: svc.defaults || {},
-      parameters: svc.parameters || {},   // ← new unified structure
+      parameters: svc.parameters || {},
       lockedParams: svc.lockedParams || ['voice', 'model'],
       defaultVoiceId: svc.defaultVoiceId || null,
       status: svc.status || 'stable'
     };
   },
 
-  // ====== Unified parameter access (v2 structure) ======
+  // ====== Unified parameter access ======
 
-  /** 获取单个参数的定义（合并后的简化结构） */
   getParameterDef(serviceKey, paramName) {
     const svc = this.getServiceConfig(serviceKey);
     if (!svc?.parameters) return null;
     return svc.parameters[paramName] || null;
   },
 
-  /** 批量获取参数定义 */
   getParameters(serviceKey) {
     const svc = this.getServiceConfig(serviceKey);
     return svc?.parameters || {};
   },
 
-  /** 获取参数映射（供 FieldDefinitionRegistry 和 CapabilityCompiler 调用） */
+  /** 获取参数映射（公共遍历器生成） */
   getFieldMappings(providerKey, serviceKey) {
     const svc = this.getServiceConfig(serviceKey);
-    const params = svc?.parameters || {};
-    const mappings = {};
-    for (const [k, p] of Object.entries(params)) {
-      if (p.mapTo || p.status === 'unsupported' || p.nested) {
-        mappings[k] = {
-          providerPath: p.mapTo || undefined,
-          transform: p.status === 'unsupported' ? 'ignore'
-            : p.transform || (p.mapTo && p.mapTo !== k ? 'rename' : 'direct'),
-          transformConfig: p.transformConfig || null,
-          source: p.source || null,
-          valueTransform: p.valueTransform || null,
-          nestedMappings: p.nested ? Object.fromEntries(
-            Object.entries(p.nested).map(([nk, nv]) => [nk, { providerPath: nv.mapTo || nk }])
-          ) : undefined
-        };
-      }
-    }
+    const mappings = _traverseParams(serviceKey, (k, p) => {
+      if (!p.mapTo && p.status !== 'unsupported' && !p.nested) return null;
+      return {
+        providerPath: p.mapTo || undefined,
+        transform: p.status === 'unsupported' ? 'ignore'
+          : p.transform || (p.mapTo && p.mapTo !== k ? 'rename' : 'direct'),
+        transformConfig: p.transformConfig || null,
+        source: p.source || null,
+        valueTransform: p.valueTransform || null,
+        nestedMappings: p.nested ? Object.fromEntries(
+          Object.entries(p.nested).map(([nk, nv]) => [nk, { providerPath: nv.mapTo || nk }])
+        ) : undefined
+      };
+    });
     return {
       mappings,
       apiStructure: svc?.apiStructure || 'flat',
@@ -186,12 +196,9 @@ const ProviderManifest = {
     };
   },
 
-  /** 获取字段覆盖（供 FieldDefinitionRegistry 调用） */
+  /** 获取字段覆盖（公共遍历器生成） */
   getFieldOverrides(serviceKey) {
-    const svc = this.getServiceConfig(serviceKey);
-    const params = svc?.parameters || {};
-    const overrides = {};
-    for (const [k, p] of Object.entries(params)) {
+    return _traverseParams(serviceKey, (k, p) => {
       const entry = { status: p.status || 'supported', reason: p.reason || '' };
       if (p.status === 'locked') {
         entry.lockedValue = p.lockedValue;
@@ -212,12 +219,10 @@ const ProviderManifest = {
           };
         }
       }
-      overrides[k] = entry;
-    }
-    return overrides;
+      return entry;
+    });
   },
 
-  /** 获取所有 Service 描述符列表（兼容 ProviderDescriptorRegistry.getAll） */
   getAllServiceDescriptors() {
     return this.getAllServiceKeys().map(key => this.getServiceConfig(key)).filter(Boolean);
   },

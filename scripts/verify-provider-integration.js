@@ -184,10 +184,10 @@ async function verifyProvider(serviceKey) {
         results.warnings.push('metadata 字段缺失');
       }
 
-      if (context.parameterSupport) {
-        results.passed.push('parameterSupport 字段存在');
+      if (context.compiled) {
+        results.passed.push('compiled (CompiledCapability) 字段存在');
       } else {
-        results.warnings.push('parameterSupport 字段缺失');
+        results.warnings.push('compiled 字段缺失');
       }
     } else {
       results.failed.push('CapabilityResolver 解析失败');

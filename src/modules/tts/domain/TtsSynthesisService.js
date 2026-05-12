@@ -9,7 +9,7 @@
  * 1. VoiceResolver 解析身份 → VoiceIdentity
  * 2. CapabilityResolver 获取能力上下文 → CapabilityContext
  * 3. ParameterResolutionService 合并参数 → 平台标准参数
- * 4. ParameterMapper 映射参数 → 服务商参数
+ * 4. CompiledCapability.mapToProvider() 映射参数 → 服务商参数
  * 5. ProviderAdapter 调用 API
  *
  * 所有依赖通过构造函数注入，消除 setter 时间耦合。
@@ -30,7 +30,6 @@ class TtsSynthesisService {
    * @param {Object} deps.validator - 验证服务
    * @param {Object} deps.capabilityResolver - 能力解析器
    * @param {Object} deps.parameterResolutionService - 参数解析服务
-   * @param {Object} deps.parameterMapper - 参数映射器
    * @param {Object} deps.executionPolicy - 执行策略 (可选)
    */
   constructor({
@@ -39,7 +38,6 @@ class TtsSynthesisService {
     validator,
     capabilityResolver = null,
     parameterResolutionService = null,
-    parameterMapper = null,
     executionPolicy = null
   }) {
     this.ttsProvider = ttsProvider;
@@ -47,7 +45,6 @@ class TtsSynthesisService {
     this.validator = validator;
     this.capabilityResolver = capabilityResolver;
     this.parameterResolutionService = parameterResolutionService;
-    this.parameterMapper = parameterMapper;
     this.executionPolicy = executionPolicy || new ExecutionPolicy();
 
     this.metrics = {
@@ -60,35 +57,24 @@ class TtsSynthesisService {
 
   // ==================== 核心合成 ====================
 
-  /**
-   * 执行TTS合成
-   */
   async synthesize(request) {
     const sr = request instanceof SynthesisRequest ? request : SynthesisRequest.fromJSON(request);
 
-    // 1. 验证请求
     this._validateRequest(sr);
 
-    // 2. 解析服务标识
     const { resolvedRequest, voiceIdentity } = await this._resolveServiceIdentifier(sr);
     const resolvedServiceKey = this._buildServiceKey(resolvedRequest);
 
-    // 3. 委托 ExecutionPolicy 执行（限流/熔断/重试/超时）
-    const warnings = [];
-    const result = await this.executionPolicy.execute(resolvedServiceKey, async () => {
+    const { result, warnings: chainWarnings } = await this.executionPolicy.execute(resolvedServiceKey, async () => {
       return this._doSynthesize(resolvedRequest, voiceIdentity);
     });
 
-    // 3.5 收集新链路上的内部 warnings，同步更新校验失败计数
-    if (result._warnings) {
-      warnings.push(...result._warnings);
-      if (result._warnings.length > 0) {
-        this.metrics.capabilityValidationFailures++;
-      }
-      delete result._warnings;
+    const warnings = [];
+    if (chainWarnings?.length) {
+      warnings.push(...chainWarnings);
+      this.metrics.capabilityValidationFailures++;
     }
 
-    // 4. 构建结果
     const audioResult = AudioResult.fromServiceResult(result, {
       provider: resolvedRequest.provider,
       serviceType: resolvedRequest.serviceType,
@@ -96,7 +82,6 @@ class TtsSynthesisService {
       latency: 0
     });
 
-    // 5. 附上 warnings
     if (warnings.length > 0) {
       audioResult.warnings = warnings;
     }
@@ -104,18 +89,11 @@ class TtsSynthesisService {
     return audioResult;
   }
 
-  /**
-   * 实际合成逻辑（在 ExecutionPolicy 保护下执行）
-   */
   async _doSynthesize(resolvedRequest, voiceIdentity) {
     return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
   }
 
-  /**
-   * 新调用链
-   */
   async _synthesizeWithNewChain(resolvedRequest, voiceIdentity) {
-    // 1. 解析身份（如有缓存则复用）
     const identity = voiceIdentity || VoiceResolver.resolve({
       text: resolvedRequest.text,
       service: resolvedRequest.service,
@@ -124,24 +102,20 @@ class TtsSynthesisService {
       options: resolvedRequest.options
     });
 
-    // 2. 获取能力上下文
     const capabilityContext = this.capabilityResolver.resolve(
       identity.serviceKey,
       identity.modelKey,
       identity.voiceRuntime
     );
 
-    // 3. 参数合并
     const resolvedParams = this.parameterResolutionService.mergeFromContext(
       resolvedRequest.options,
       capabilityContext,
       identity
     );
 
-    // 4. 清理元数据字段（使用 CompiledCapability schema 动态判断，不再硬编码字段列表）
     const cleanParams = this._cleanProviderParams(resolvedParams.parameters, capabilityContext);
 
-    // 5. 构建最终参数
     const buildResult = this.parameterResolutionService.buildFinalParams({
       parameters: cleanParams,
       warnings: resolvedParams.warnings,
@@ -150,16 +124,10 @@ class TtsSynthesisService {
     }, capabilityContext);
     const finalParams = buildResult.params;
 
-    // 5.5 收集参数解析链路上的 warnings
     const chainWarnings = [];
-    if (resolvedParams.warnings?.length) {
-      chainWarnings.push(...resolvedParams.warnings);
-    }
-    if (buildResult.warnings?.length) {
-      chainWarnings.push(...buildResult.warnings);
-    }
+    if (resolvedParams.warnings?.length) chainWarnings.push(...resolvedParams.warnings);
+    if (buildResult.warnings?.length) chainWarnings.push(...buildResult.warnings);
 
-    // 6. 合并 providerOptions
     if (capabilityContext.providerOptions && Object.keys(capabilityContext.providerOptions).length > 0) {
       finalParams.providerOptions = {
         ...(finalParams.providerOptions || {}),
@@ -167,14 +135,11 @@ class TtsSynthesisService {
       };
     }
 
-    // 7. 映射到 Provider 参数
-    const providerParams = await this._translateParameters(
-      identity.serviceKey,
+    const providerParams = capabilityContext.compiled.mapToProvider(
       finalParams,
       { providerVoiceId: identity.providerVoiceId }
     );
 
-    // 8. 调用 Provider
     const serviceType = this._extractServiceType(identity.serviceKey);
     const providerResult = await this.ttsProvider.synthesize(
       identity.providerKey,
@@ -183,19 +148,13 @@ class TtsSynthesisService {
       providerParams
     );
 
-    if (chainWarnings.length > 0) {
-      providerResult._warnings = chainWarnings;
-    }
-
-    return providerResult;
+    return { result: providerResult, warnings: chainWarnings };
   }
 
+  // ==================== 批量合成 ====================
+
   /**
-   * 批量合成（并发执行，控制并发上限）
-   *
-   * @param {SynthesisRequest[]} requests
-   * @param {Object} [opts]
-   * @param {number} [opts.concurrency] - 最大并发数，默认 5，可通过环境变量 TTS_BATCH_CONCURRENCY 覆盖
+   * 批量合成（流式并发：完成一个立即补下一个，始终保持 concurrency 个飞行中）
    */
   async batchSynthesize(requests, opts = {}) {
     const concurrency = opts.concurrency
@@ -204,25 +163,26 @@ class TtsSynthesisService {
 
     const results = [];
     const errors = [];
+    const inFlight = new Set();
+    let cursor = 0;
 
-    for (let chunkStart = 0; chunkStart < requests.length; chunkStart += concurrency) {
-      const chunk = requests.slice(chunkStart, chunkStart + concurrency);
-      const chunkPromises = chunk.map((req, ci) => {
-        const globalIndex = chunkStart + ci;
-        return this.synthesize(req)
-          .then(result => ({ index: globalIndex, success: true, data: result, warnings: result.warnings || undefined }))
-          .catch(error => ({ index: globalIndex, success: false, error: error.message, code: error.code }));
-      });
+    const runOne = async (index) => {
+      try {
+        const result = await this.synthesize(requests[index]);
+        results.push({ index, success: true, data: result, warnings: result.warnings || undefined });
+      } catch (error) {
+        errors.push({ index, success: false, error: error.message, code: error.code });
+      }
+    };
 
-      const chunkResults = await Promise.all(chunkPromises);
-
-      for (const cr of chunkResults) {
-        if (cr.success) {
-          results.push(cr);
-        } else {
-          const { success, data, warnings, ...err } = cr;
-          errors.push(err);
-        }
+    while (cursor < requests.length || inFlight.size > 0) {
+      while (inFlight.size < concurrency && cursor < requests.length) {
+        const idx = cursor++;
+        const p = runOne(idx).finally(() => inFlight.delete(p));
+        inFlight.add(p);
+      }
+      if (inFlight.size > 0) {
+        await Promise.race(inFlight);
       }
     }
 
@@ -265,7 +225,6 @@ class TtsSynthesisService {
       capabilityValidationFailures: 0,
       parameterMappingErrors: 0
     };
-    console.log('📊 TTS服务统计已重置');
   }
 
   // ==================== 私有方法 ====================
@@ -340,7 +299,7 @@ class TtsSynthesisService {
 
   _cleanProviderParams(params, capabilityContext) {
     const schema = capabilityContext?.compiled?.getSchema();
-    if (!schema) return params; // 无 compiled schema 时不过滤
+    if (!schema) return params;
     const validKeys = new Set(Object.keys(schema));
     const cleaned = {};
     for (const [key, value] of Object.entries(params)) {
@@ -348,20 +307,6 @@ class TtsSynthesisService {
       cleaned[key] = value;
     }
     return cleaned;
-  }
-
-  async _translateParameters(serviceKey, platformParams, context = {}) {
-    if (!this.parameterMapper) {
-      console.warn(`[TtsSynthesisService] No parameter mapper, using raw params for ${serviceKey}`);
-      return platformParams;
-    }
-    try {
-      return this.parameterMapper.mapToProvider(serviceKey, platformParams, context);
-    } catch (error) {
-      this.metrics.parameterMappingErrors++;
-      if (!error.code) error.code = 'PARAMETER_MAPPING_ERROR';
-      throw error;
-    }
   }
 }
 

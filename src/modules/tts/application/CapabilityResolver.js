@@ -5,7 +5,7 @@
  * 不再直接读 manifest 原始数据。
  *
  * 输入：serviceKey, modelKey, voiceRuntime
- * 输出：CapabilityContext + 参数支持检查 + unsupported 用户输入检测
+ * 输出：CapabilityContext（包含 compiled、默认值、锁定参数、apiStructure）
  */
 
 const CapabilitySchema = require('../schema/CapabilitySchema');
@@ -44,7 +44,7 @@ class CapabilityResolver {
    * 解析能力上下文（运行时入口）
    */
   resolve(serviceKey, modelKey = null, voiceRuntime = null) {
-    const cacheKey = serviceKey;  // modelKey 不影响当前的能力上下文解析，服务级缓存即可
+    const cacheKey = serviceKey;
 
     if (this.cache.has(cacheKey)) return this._enrich(this.cache.get(cacheKey), voiceRuntime);
 
@@ -56,89 +56,12 @@ class CapabilityResolver {
       resolvedDefaults: compiled.getDefaults(),
       lockedParams: Object.keys(compiled.getLockedParams()),
       lockedParamsMap: compiled.getLockedParams(),
-      parameterSupport: this._buildParamSupport(compiled),
       defaultVoiceId: CapabilitySchema.getDefaultVoiceId(serviceKey) || null,
       apiStructure: compiled.apiStructure
     };
 
     this.cache.set(cacheKey, context);
     return this._enrich(context, voiceRuntime);
-  }
-
-  /**
-   * 检查用户输入中是否有服务商不支持的参数
-   * @returns {Array<{field, reason}>} warnings
-   */
-  checkUnsupportedInput(serviceKey, userParams = {}) {
-    const context = this.resolve(serviceKey);
-    const warnings = [];
-    for (const [k, v] of Object.entries(userParams)) {
-      if (v === undefined || v === null) continue;
-      const support = context.parameterSupport[k];
-      if (!support) continue;
-
-      if (!support.supported) {
-        warnings.push({
-          field: k,
-          value: v,
-          reason: support.reason || `${k} 不被 ${serviceKey} 支持`,
-          action: 'ignored'
-        });
-        continue;
-      }
-
-      // Range validation (服务商感知) — 支持 [min,max] 和 {min,max} 两种格式
-      if (support.config?.range && typeof v === 'number') {
-        const range = support.config.range;
-        const min = Array.isArray(range) ? range[0] : range.min;
-        const max = Array.isArray(range) ? range[1] : range.max;
-        if (typeof min === 'number' && typeof max === 'number' && (v < min || v > max)) {
-          warnings.push({
-            field: k,
-            value: v,
-            reason: `${k} 超出范围 [${min}, ${max}]，当前值: ${v}`,
-            action: 'clamped_or_rejected'
-          });
-        }
-      }
-
-      // Enum validation
-      if (support.config?.values && Array.isArray(support.config.values)) {
-        if (!support.config.values.includes(v)) {
-          warnings.push({
-            field: k,
-            value: v,
-            reason: `${k} 值 ${v} 不在允许列表 [${support.config.values.join(', ')}] 中`,
-            action: 'rejected'
-          });
-        }
-      }
-    }
-    return warnings;
-  }
-
-  /**
-   * 从 CompiledCapability 构建参数支持状态
-   * @deprecated v3.2 → v4.0 — 请使用 CompiledCapability.getSchema() 替代
-   */
-  _buildParamSupport(compiled) {
-    const support = {};
-    const schema = compiled.getSchema();
-    for (const [param, field] of Object.entries(schema)) {
-      support[param] = {
-        supported: field.status !== 'unsupported',
-        status: field.status,
-        config: {
-          type: field.type,
-          range: field.range,
-          values: field.values
-        },
-        reason: field.reason || '',
-        onUserInput: field.onUserInput || (field.status === 'unsupported' ? 'warn' : null),
-        mapTo: field.mapping?.providerPath || null
-      };
-    }
-    return support;
   }
 
   _enrich(context, voiceRuntime) {
@@ -150,12 +73,10 @@ class CapabilityResolver {
     };
   }
 
-  /** 获取服务的默认值 */
   getDefaults(serviceKey) {
     return this.resolve(serviceKey).resolvedDefaults;
   }
 
-  /** 清理缓存 */
   clearCache() { this.cache.clear(); }
 }
 
