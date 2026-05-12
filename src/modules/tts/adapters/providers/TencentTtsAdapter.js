@@ -7,6 +7,7 @@
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
+const { decodeAudio } = require('../../../../shared/utils/audioDecoder');
 
 class TencentTtsAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
@@ -78,8 +79,10 @@ class TencentTtsAdapter extends BaseTtsAdapter {
       // 报告成功
       this._reportSuccess();
 
+      const audio = await decodeAudio(response.Audio);
+
       return {
-        audio: Buffer.from(response.Audio, 'base64'),
+        audio,
         format: codec,
         provider: this.provider,
         serviceType: this.serviceType,

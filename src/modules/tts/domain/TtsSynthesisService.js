@@ -19,6 +19,8 @@
 const { VoiceResolver } = require('../application/VoiceResolver');
 const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
+const SynthesisRequest = require('./SynthesisRequest');
+const AudioResult = require('./AudioResult');
 
 class TtsSynthesisService {
   /**
@@ -62,7 +64,6 @@ class TtsSynthesisService {
    * 执行TTS合成
    */
   async synthesize(request) {
-    const SynthesisRequest = require('./SynthesisRequest');
     const sr = request instanceof SynthesisRequest ? request : SynthesisRequest.fromJSON(request);
 
     // 1. 验证请求
@@ -88,7 +89,6 @@ class TtsSynthesisService {
     }
 
     // 4. 构建结果
-    const AudioResult = require('./AudioResult');
     const audioResult = AudioResult.fromServiceResult(result, {
       provider: resolvedRequest.provider,
       serviceType: resolvedRequest.serviceType,
@@ -191,22 +191,41 @@ class TtsSynthesisService {
   }
 
   /**
-   * 批量合成
+   * 批量合成（并发执行，控制并发上限）
+   *
+   * @param {SynthesisRequest[]} requests
+   * @param {Object} [opts]
+   * @param {number} [opts.concurrency] - 最大并发数，默认 5，可通过环境变量 TTS_BATCH_CONCURRENCY 覆盖
    */
-  async batchSynthesize(requests) {
+  async batchSynthesize(requests, opts = {}) {
+    const concurrency = opts.concurrency
+      || parseInt(process.env.TTS_BATCH_CONCURRENCY, 10)
+      || 5;
+
     const results = [];
     const errors = [];
-    for (let i = 0; i < requests.length; i++) {
-      try {
-        const result = await this.synthesize(requests[i]);
-        results.push({
-          index: i, success: true, data: result,
-          warnings: result.warnings || undefined
-        });
-      } catch (error) {
-        errors.push({ index: i, success: false, error: error.message, code: error.code });
+
+    for (let chunkStart = 0; chunkStart < requests.length; chunkStart += concurrency) {
+      const chunk = requests.slice(chunkStart, chunkStart + concurrency);
+      const chunkPromises = chunk.map((req, ci) => {
+        const globalIndex = chunkStart + ci;
+        return this.synthesize(req)
+          .then(result => ({ index: globalIndex, success: true, data: result, warnings: result.warnings || undefined }))
+          .catch(error => ({ index: globalIndex, success: false, error: error.message, code: error.code }));
+      });
+
+      const chunkResults = await Promise.all(chunkPromises);
+
+      for (const cr of chunkResults) {
+        if (cr.success) {
+          results.push(cr);
+        } else {
+          const { success, data, warnings, ...err } = cr;
+          errors.push(err);
+        }
       }
     }
+
     return { results, errors };
   }
 
@@ -289,7 +308,6 @@ class TtsSynthesisService {
     try {
       const resolved = VoiceResolver.resolve(resolveInput);
       const serviceType = this._extractServiceType(resolved.serviceKey);
-      const SynthesisRequest = require('./SynthesisRequest');
       const resolvedRequest = new SynthesisRequest({
         text: request.text, service: request.service,
         voiceCode: resolved.voiceCode, systemId: resolved.systemId,

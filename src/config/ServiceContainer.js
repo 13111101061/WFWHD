@@ -60,6 +60,9 @@ class ServiceContainer {
     await ProviderManagementService.initialize();
     this._services.set('providerManagementService', ProviderManagementService);
 
+    // 将已初始化的 PMS 注入到 TtsProviderAdapter（消除其内部的延迟加载）
+    ttsProviderAdapter.setProviderManagementService(ProviderManagementService);
+
     // 3. CapabilityResolver（单例）
     const { capabilityResolver } = require('../modules/tts/application/CapabilityResolver');
     this._services.set('capabilityResolver', capabilityResolver);
@@ -86,7 +89,8 @@ class ServiceContainer {
     const queryService = new TtsQueryService({
       ttsProvider: ttsProviderAdapter,
       providerManagementService: ProviderManagementService,
-      capabilityResolver: capabilityResolver
+      capabilityResolver: capabilityResolver,
+      voiceCatalog: voiceCatalogAdapter
     });
     this._services.set('queryService', queryService);
 

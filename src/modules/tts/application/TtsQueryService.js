@@ -22,11 +22,13 @@ class TtsQueryService {
    * @param {Object} [options.ttsProvider] - TTS Provider 适配器
    * @param {Object} [options.providerManagementService] - 服务商管理服务（统一服务商信息入口）
    * @param {Object} [options.capabilityResolver] - 能力解析器（统一能力规则源）
+   * @param {Object} [options.voiceCatalog] - 音色目录适配器（可选，用于上报分组逻辑）
    */
-  constructor({ ttsProvider, providerManagementService, capabilityResolver } = {}) {
+  constructor({ ttsProvider, providerManagementService, capabilityResolver, voiceCatalog } = {}) {
     this.ttsProvider = ttsProvider;
     this.providerManagementService = providerManagementService;
     this.capabilityResolver = capabilityResolver;
+    this.voiceCatalog = voiceCatalog;
   }
 
   // ==================== 音色查询 ====================
@@ -92,8 +94,13 @@ class TtsQueryService {
 
   /**
    * 获取所有可用音色（按服务分组）
+   * 优先委托 VoiceCatalogAdapter，回退到直接查询（向后兼容）
    */
   async getAllVoices() {
+    if (this.voiceCatalog) {
+      return this.voiceCatalog.getAllGroupedByService();
+    }
+
     const stats = voiceRegistry.getStats();
     const result = {};
 
@@ -108,7 +115,6 @@ class TtsQueryService {
         if (!services[key]) {
           services[key] = { provider, service, voices: [] };
         }
-        // 使用统一的展示 DTO
         services[key].voices.push(toDisplayDto(voice));
       }
 
@@ -240,10 +246,8 @@ class TtsQueryService {
   }
 
   _resolveCanonicalKey(serviceKey) {
-    const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
-    const desc = ProviderDescriptorRegistry.get(serviceKey);
-    if (desc) return desc.key;
-    return ProviderDescriptorRegistry.resolveCanonicalKey(serviceKey) || serviceKey;
+    const pms = this._ensureProviderManagementService();
+    return pms.resolveCanonicalKey(serviceKey) || serviceKey;
   }
 
   // ==================== 前端展示 ====================

@@ -8,22 +8,31 @@
 const TtsProviderPort = require('../ports/TtsProviderPort');
 const { voiceRegistry } = require('../core/VoiceRegistry');
 
-// 延迟加载 ProviderManagementService，避免循环依赖
-let _providerManagementService = null;
-let _pmsInitialized = false;
-
-function getProviderManagementService() {
-  if (!_providerManagementService) {
-    const { ProviderManagementService } = require('../provider-management');
-    _providerManagementService = ProviderManagementService;
-  }
-  return _providerManagementService;
-}
-
 class TtsProviderAdapter extends TtsProviderPort {
-  constructor() {
+  /**
+   * @param {Object} [opts]
+   * @param {Object} [opts.providerManagementService] - 服务商管理服务（构造函数注入）
+   */
+  constructor(opts = {}) {
     super();
+    this._pms = opts.providerManagementService || null;
     this._initialized = false;
+  }
+
+  _ensurePms() {
+    if (!this._pms) {
+      const { ProviderManagementService } = require('../provider-management');
+      this._pms = ProviderManagementService;
+    }
+    return this._pms;
+  }
+
+  /**
+   * 由 ServiceContainer 在 PMS 初始化后注入（消除内部延迟加载）
+   * @param {Object} pms - 已初始化的 ProviderManagementService
+   */
+  setProviderManagementService(pms) {
+    this._pms = pms;
   }
 
   /**
@@ -32,17 +41,8 @@ class TtsProviderAdapter extends TtsProviderPort {
    */
   async initialize() {
     if (this._initialized) return;
-
-    // 1. 初始化 VoiceRegistry
     await voiceRegistry.initialize();
-
-    // 2. 初始化 ProviderManagementService
-    const pms = getProviderManagementService();
-    if (!_pmsInitialized) {
-      pms.initialize();
-      _pmsInitialized = true;
-    }
-
+    this._ensurePms().initialize();
     this._initialized = true;
   }
 
@@ -80,12 +80,7 @@ class TtsProviderAdapter extends TtsProviderPort {
   _ensureInitialized() {
     if (!this._initialized) {
       console.warn('[TtsProviderAdapter] Warning: initialize() not called. Auto-initializing...');
-      // 同步初始化（只初始化 ProviderManagementService，VoiceRegistry 可能需要异步）
-      const pms = getProviderManagementService();
-      if (!_pmsInitialized) {
-        pms.initialize();
-        _pmsInitialized = true;
-      }
+      this._ensurePms().initialize();
       this._initialized = true;
     }
   }
@@ -96,18 +91,16 @@ class TtsProviderAdapter extends TtsProviderPort {
    */
   _getAdapter(key) {
     this._ensureInitialized();
-    const pms = getProviderManagementService();
-    return pms.getAdapter(key);
+    return this._ensurePms().getAdapter(key);
   }
 
   /**
    * 获取可用服务提供商列表
    * [重构] 使用 ProviderManagementService
    */
-  getAvailableProviders() {
+getAvailableProviders() {
     this._ensureInitialized();
-
-    const pms = getProviderManagementService();
+    const pms = this._ensurePms();
     const allInfo = pms.getAllServiceInfo();
 
     return allInfo
@@ -128,8 +121,7 @@ class TtsProviderAdapter extends TtsProviderPort {
    */
   async getHealthStatus() {
     this._ensureInitialized();
-
-    const pms = getProviderManagementService();
+    const pms = this._ensurePms();
     const allInfo = pms.getAllServiceInfo();
 
     const health = {
@@ -158,23 +150,15 @@ class TtsProviderAdapter extends TtsProviderPort {
    * 检查服务是否可用
    * [重构] 使用 ProviderManagementService
    */
-  async isAvailable(provider, serviceType) {
+async isAvailable(provider, serviceType) {
     this._ensureInitialized();
-
     const key = serviceType ? `${provider}_${serviceType}` : provider;
-    const pms = getProviderManagementService();
-    const availability = pms.checkServiceAvailability(key);
-    return availability.available;
+    return this._ensurePms().checkServiceAvailability(key).available;
   }
 
-  /**
-   * 获取服务统计
-   */
   getStats() {
     this._ensureInitialized();
-
-    const pms = getProviderManagementService();
-    const stats = pms.getStats();
+    const stats = this._ensurePms().getStats();
 
     return {
       cachedInstances: stats.runtime.cachedInstances,
@@ -187,10 +171,9 @@ class TtsProviderAdapter extends TtsProviderPort {
    * 清理缓存
    */
   clearCache() {
-    const pms = getProviderManagementService();
-    if (pms.clearRuntimeCache) {
-      pms.clearRuntimeCache();
-    }
+    const pms = this._ensurePms();
+    pms.clearRuntimeCache?.();
+    this._initialized = false;
   }
 }
 

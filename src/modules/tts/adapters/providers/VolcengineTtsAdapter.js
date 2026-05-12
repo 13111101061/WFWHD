@@ -7,6 +7,7 @@
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
+const { decodeAudio } = require('../../../../shared/utils/audioDecoder');
 
 class VolcengineTtsAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
@@ -78,7 +79,7 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
         throw this._error('PARSE_ERROR', '火山引擎TTS: data字段不是Base64字符串');
       }
 
-      const audio = Buffer.from(result.data, 'base64');
+      const audio = await decodeAudio(result.data);
       if (audio.length === 0) {
         throw this._error('PARSE_ERROR', '火山引擎TTS: 解码Base64后音频数据为空');
       }

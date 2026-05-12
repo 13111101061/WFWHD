@@ -24,6 +24,7 @@
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
+const { decodeAudio } = require('../../../../shared/utils/audioDecoder');
 
 // 错误码映射
 const ERROR_CODES = {
@@ -78,8 +79,8 @@ class MossTtsAdapter extends BaseTtsAdapter {
     try {
       const result = await this._callApi(text, providerParams, apiKey);
 
-      // 解码 Base64 音频数据
-      const audio = Buffer.from(result.audio_data, 'base64');
+      // 解码 Base64 音频数据（大音频走 Worker 线程，不阻塞主线程）
+      const audio = await decodeAudio(result.audio_data);
 
       // 报告成功
       this._reportSuccess();
