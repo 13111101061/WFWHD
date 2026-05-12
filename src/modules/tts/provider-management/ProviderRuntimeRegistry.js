@@ -210,10 +210,9 @@ const ProviderRuntimeRegistry = {
   // ==================== 初始化 ====================
 
   /**
-   * 从现有 adapters/providers/index.js 初始化
-   * 用于向后兼容
+   * 从 adapters/providers/index.js 加载 adapter class 注册表
    */
-  initializeFromLegacy() {
+  initialize() {
     if (runtimeInitialized) {
       return;
     }

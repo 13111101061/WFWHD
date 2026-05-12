@@ -1,13 +1,15 @@
 /**
  * ServiceContainer - 服务容器
- * 依赖注入容器，管理所有服务的创建和生命周期
+ * 依赖注入容器，管理所有服务的创建和生命周期。
+ * 全部通过构造函数注入，无 setter，无模块级延迟加载。
  */
 
 const { TtsSynthesisService } = require('../modules/tts/domain/TtsSynthesisService');
 const TtsQueryService = require('../modules/tts/application/TtsQueryService');
 const TtsValidationService = require('../modules/tts/domain/TtsValidationService');
 const TtsHttpAdapter = require('../modules/tts/adapters/http/TtsHttpAdapter');
-const { ttsProviderAdapter } = require('../modules/tts/adapters/TtsProviderAdapter');
+const { TtsProviderAdapter } = require('../modules/tts/adapters/TtsProviderAdapter');
+const { CapabilityResolver } = require('../modules/tts/application/CapabilityResolver');
 const { voiceCatalogAdapter } = require('../modules/tts/adapters/VoiceCatalogAdapter');
 
 const { ProviderManifest } = require('../modules/tts/providers/manifests/ProviderManifest');
@@ -35,7 +37,7 @@ class ServiceContainer {
     ProviderManifest._ensureLoaded();
     this._services.set('providerManifest', ProviderManifest);
 
-    // 0.1 启动配置审计
+    // 0.1 配置审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       try {
         const { audit } = require('../modules/tts/config/ConfigConsistencyChecker');
@@ -46,41 +48,47 @@ class ServiceContainer {
       }
     }
 
-    // 1. 初始化 FieldDefinitionSystem
+    // 1. FieldDefinitionSystem
     const FieldDefinitionSystem = require('../modules/tts/config/FieldDefinitionSystem');
     await FieldDefinitionSystem.initialize();
     this._services.set('fieldDefinitionSystem', FieldDefinitionSystem);
 
-    // 2. 初始化 ProviderManagementService
+    // 2. ProviderManagementService
     const { ProviderManagementService } = require('../modules/tts/provider-management');
-    await ProviderManagementService.initialize();
+    ProviderManagementService.initialize();
     this._services.set('providerManagementService', ProviderManagementService);
 
-    ttsProviderAdapter.setProviderManagementService(ProviderManagementService);
+    // 3. 创建 TtsProviderAdapter（构造函数注入 PMS）
+    const ttsProviderAdapter = new TtsProviderAdapter({
+      providerManagementService: ProviderManagementService
+    });
+    this._services.set('ttsProviderAdapter', ttsProviderAdapter);
 
-    // 3. CapabilityResolver（单例）
-    const { capabilityResolver } = require('../modules/tts/application/CapabilityResolver');
+    // 4. 创建 CapabilityResolver（构造函数注入 getCompiledCapability）
+    const capabilityResolver = new CapabilityResolver({
+      getCompiledCapability: FieldDefinitionSystem.getCompiledCapability
+    });
     this._services.set('capabilityResolver', capabilityResolver);
 
-    // 4. 初始化适配器
+    // 5. 初始化适配器
     await voiceCatalogAdapter.initialize();
     await ttsProviderAdapter.initialize();
 
-    // 4.1 L3 音色一致性审计
+    // 5.1 音色一致性审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
       await auditVoiceCoverage();
     }
 
-    // 5. 创建 ExecutionPolicy
+    // 6. ExecutionPolicy
     const executionPolicy = new ExecutionPolicy();
     this._services.set('executionPolicy', executionPolicy);
 
-    // 6. 验证服务
+    // 7. 验证服务
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
-    // 7. 查询服务
+    // 8. 查询服务
     const queryService = new TtsQueryService({
       ttsProvider: ttsProviderAdapter,
       providerManagementService: ProviderManagementService,
@@ -89,11 +97,11 @@ class ServiceContainer {
     });
     this._services.set('queryService', queryService);
 
-    // 8. 参数解析服务
+    // 9. 参数解析服务
     const { parameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
     this._services.set('parameterResolutionService', parameterResolutionService);
 
-    // 9. 创建合成服务
+    // 10. 合成服务
     const synthesisService = new TtsSynthesisService({
       ttsProvider: ttsProviderAdapter,
       voiceCatalog: voiceCatalogAdapter,
@@ -104,7 +112,7 @@ class ServiceContainer {
     });
     this._services.set('synthesisService', synthesisService);
 
-    // 10. HTTP 适配器
+    // 11. HTTP 适配器
     const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService);
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 

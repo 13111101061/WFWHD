@@ -1,7 +1,7 @@
 const { audioStorageManager } = require('../../../../shared/utils/audioStorage');
 const { voiceRegistry } = require('../../core/VoiceRegistry');
 const credentials = require('../../../credentials');
-const ttsDefaults = require('../../config/ttsDefaults');
+const { CapabilitySchema } = require('../../schema/CapabilitySchema');
 const VoiceMapper = require('../../application/VoiceMapper');
 
 class BaseTtsAdapter {
@@ -127,7 +127,7 @@ class BaseTtsAdapter {
   }
 
   validateText(text) {
-    const maxLength = ttsDefaults.textLimits?.maxLength || 10000;
+    const maxLength = CapabilitySchema.platform.maxTextLength || 10000;
 
     if (!text || typeof text !== 'string') {
       const error = new Error('Text must be a non-empty string');

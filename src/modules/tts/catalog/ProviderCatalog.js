@@ -76,25 +76,6 @@ const ProviderCatalog = {
   },
 
   /**
-   * 获取服务商能力
-   * @param {string} key
-   * @returns {Object|null}
-   */
-  getCapabilities(key) {
-    try {
-      const { capabilityResolver } = require('../application/CapabilityResolver');
-      const context = capabilityResolver.resolve(key);
-      return {
-        compiled: context.compiled,
-        defaults: context.resolvedDefaults,
-        lockedParams: context.lockedParams
-      };
-    } catch (e) {
-      return null;
-    }
-  },
-
-  /**
    * 按 provider 分组获取
    * @returns {Object}
    */
@@ -127,18 +108,5 @@ const ProviderCatalog = {
 };
 
 module.exports = {
-  ProviderCatalog,
-  // 向后兼容：暴露 descriptor 数据（但建议使用 ProviderDescriptorRegistry）
-  providers: ProviderDescriptorRegistry.getAll().reduce((acc, d) => {
-    acc[d.key] = {
-      provider: d.provider,
-      service: d.service,
-      displayName: d.displayName,
-      description: d.description,
-      aliases: d.aliases,
-      status: d.status
-    };
-    return acc;
-  }, {}),
-  aliasMap: null // 已废弃，使用 ProviderDescriptorRegistry.resolveCanonicalKey
+  ProviderCatalog
 };
