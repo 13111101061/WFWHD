@@ -14,7 +14,6 @@
     "tencent_tts": {
       "displayName": "腾讯云 TTS",
       "description": "腾讯云语音合成",
-      "status": "stable",
       "aliases": [
         "tencent"
       ],
@@ -29,12 +28,6 @@
         "speedAdjustable": true,
         "pitchAdjustable": false,
         "volumeAdjustable": true
-      },
-      "defaults": {
-        "format": "wav",
-        "sampleRate": 16000,
-        "speed": 0,
-        "volume": 5
       },
       "lockedParams": [
         "voice",
@@ -52,7 +45,6 @@
           "mapTo": "Text"
         },
         "speed": {
-          "status": "supported",
           "default": 0,
           "range": [
             -2,
@@ -61,7 +53,6 @@
           "mapTo": "Speed"
         },
         "volume": {
-          "status": "supported",
           "default": 5,
           "range": [
             -10,
@@ -70,7 +61,6 @@
           "mapTo": "Volume"
         },
         "format": {
-          "status": "supported",
           "default": "wav",
           "values": [
             "wav",
@@ -80,33 +70,8 @@
           "mapTo": "Codec"
         },
         "sampleRate": {
-          "status": "supported",
           "default": 16000,
           "mapTo": "SampleRate"
-        },
-        "pitch": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "emotion": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "languageType": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "expectedDurationSec": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "samplingParams": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "model": {
-          "status": "unsupported",
-          "onUserInput": "warn"
         }
       },
       "adapter": "./TencentTtsAdapter.js"

@@ -94,6 +94,11 @@ function applyValueTransform(resultValue, valueTransform) {
 // ==================== 编译函数 ====================
 
 function compileField(fieldKey, platformField, serviceOverride, providerMapping) {
+  // 状态推断：manifest 中声明的字段默认 supported；未声明的默认 unsupported
+  const implicitStatus = serviceOverride
+    ? SupportStatus.SUPPORTED   // 字段在 manifest 中（有覆盖/映射/锁定值）→ 默认支持
+    : SupportStatus.UNSUPPORTED; // 字段不在 manifest 中 → 默认不支持
+
   const compiled = {
     key: fieldKey,
     displayName: platformField?.displayName || fieldKey,
@@ -103,7 +108,7 @@ function compileField(fieldKey, platformField, serviceOverride, providerMapping)
 
     status: serviceOverride?.status === 'required'
       ? SupportStatus.SUPPORTED
-      : (serviceOverride?.status || SupportStatus.SUPPORTED),
+      : (serviceOverride?.status || implicitStatus),
 
     required: serviceOverride?.status === 'required' || platformField?.required || false,
 
@@ -175,10 +180,8 @@ function checkConflicts(compiledField) {
 function generateValidator(compiledField) {
   return (value) => {
     if (compiledField.status === SupportStatus.UNSUPPORTED && value !== undefined) {
-      return {
-        valid: false,
-        error: `字段 ${compiledField.key} 不被支持: ${compiledField.reason || ''}`
-      };
+      const msg = compiledField.reason || `此服务商不支持参数 ${compiledField.key}`;
+      return { valid: false, error: msg };
     }
 
     if (value === undefined || value === null) return { valid: true };

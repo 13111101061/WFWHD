@@ -118,7 +118,7 @@ class CompiledCapability {
           type: 'unsupported',
           param: key,
           value,
-          message: field?.reason || `参数 ${key} 不被支持`
+          message: field?.reason || `此服务商不支持参数 ${key}`
         });
         continue;
       }

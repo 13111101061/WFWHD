@@ -14,7 +14,6 @@
     "moss_tts": {
       "displayName": "MOSS TTS",
       "description": "MOSS 语音合成服务",
-      "status": "beta",
       "aliases": [
         "moss"
       ],
@@ -32,11 +31,6 @@
         "samplingParams": true,
         "expectedDuration": true
       },
-      "defaults": {
-        "format": "wav",
-        "sampleRate": 24000,
-        "model": "moss-tts"
-      },
       "defaultVoiceId": "moss-tts-beijingnan",
       "lockedParams": [
         "voice",
@@ -52,41 +46,16 @@
           "status": "required",
           "mapTo": "text"
         },
-        "speed": {
-          "status": "unsupported",
-          "reason": "MOSS 不支持语速调整，可用 expectedDurationSec 替代",
-          "onUserInput": "warn"
-        },
-        "pitch": {
-          "status": "unsupported",
-          "reason": "MOSS 不支持音调调整",
-          "onUserInput": "warn"
-        },
-        "volume": {
-          "status": "unsupported",
-          "reason": "MOSS 不支持音量调整",
-          "onUserInput": "warn"
-        },
-        "emotion": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "languageType": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
         "model": {
           "status": "locked",
           "lockedValue": "moss-tts",
           "mapTo": "model"
         },
         "format": {
-          "status": "supported",
           "default": "wav",
           "mapTo": "format"
         },
         "sampleRate": {
-          "status": "supported",
           "default": 24000,
           "values": [
             16000,
@@ -95,14 +64,12 @@
           "mapTo": "sample_rate"
         },
         "expectedDurationSec": {
-          "status": "supported",
           "ui": {
             "highlight": true
           },
           "mapTo": "expected_duration_sec"
         },
         "samplingParams": {
-          "status": "supported",
           "ui": {
             "collapsed": true
           },

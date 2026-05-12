@@ -14,7 +14,6 @@
     "minimax_tts": {
       "displayName": "MiniMax TTS",
       "description": "MiniMax 语音合成",
-      "status": "beta",
       "aliases": [
         "minimax"
       ],
@@ -29,15 +28,6 @@
         "speedAdjustable": true,
         "pitchAdjustable": true,
         "volumeAdjustable": true
-      },
-      "defaults": {
-        "format": "mp3",
-        "sampleRate": 32000,
-        "speed": 1,
-        "pitch": 0,
-        "volume": 1,
-        "model": "speech-01-hd-preview",
-        "emotion": "neutral"
       },
       "lockedParams": [
         "voice",
@@ -54,7 +44,6 @@
           "mapTo": "text"
         },
         "emotion": {
-          "status": "supported",
           "default": "neutral",
           "values": [
             "neutral",
@@ -66,12 +55,10 @@
           "mapTo": "emotion"
         },
         "format": {
-          "status": "supported",
           "default": "mp3",
           "mapTo": "audio_format"
         },
         "sampleRate": {
-          "status": "supported",
           "default": 32000,
           "values": [
             16000,
@@ -81,7 +68,6 @@
           "mapTo": "sample_rate"
         },
         "speed": {
-          "status": "supported",
           "default": 1,
           "range": [
             0.1,
@@ -90,7 +76,6 @@
           "mapTo": "speed"
         },
         "pitch": {
-          "status": "supported",
           "default": 0,
           "range": [
             -12,
@@ -99,7 +84,6 @@
           "mapTo": "pitch"
         },
         "volume": {
-          "status": "supported",
           "default": 1,
           "range": [
             0,
@@ -108,21 +92,8 @@
           "mapTo": "volume"
         },
         "model": {
-          "status": "supported",
           "default": "speech-01-hd-preview",
           "mapTo": "model"
-        },
-        "languageType": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "expectedDurationSec": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "samplingParams": {
-          "status": "unsupported",
-          "onUserInput": "warn"
         }
       },
       "adapter": "./MinimaxTtsAdapter.js"

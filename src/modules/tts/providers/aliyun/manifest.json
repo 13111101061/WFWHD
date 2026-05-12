@@ -14,7 +14,6 @@
     "aliyun_cosyvoice": {
       "displayName": "阿里云 CosyVoice",
       "description": "阿里云 CosyVoice 语音合成",
-      "status": "stable",
       "aliases": [
         "cosyvoice"
       ],
@@ -29,13 +28,6 @@
         "speedAdjustable": true,
         "pitchAdjustable": true,
         "volumeAdjustable": true
-      },
-      "defaults": {
-        "format": "wav",
-        "sampleRate": 22050,
-        "speed": 1,
-        "pitch": 1,
-        "volume": 50
       },
       "lockedParams": [
         "voice",
@@ -52,7 +44,6 @@
           "mapTo": "text"
         },
         "speed": {
-          "status": "supported",
           "default": 1,
           "range": [
             0.5,
@@ -61,7 +52,6 @@
           "mapTo": "rate"
         },
         "pitch": {
-          "status": "supported",
           "default": 1,
           "range": [
             0.5,
@@ -70,7 +60,6 @@
           "mapTo": "pitch"
         },
         "volume": {
-          "status": "supported",
           "default": 50,
           "range": [
             0,
@@ -79,7 +68,6 @@
           "mapTo": "volume"
         },
         "format": {
-          "status": "supported",
           "default": "mp3",
           "values": [
             "mp3",
@@ -90,7 +78,6 @@
           "mapTo": "format"
         },
         "sampleRate": {
-          "status": "supported",
           "default": 22050,
           "values": [
             8000,
@@ -101,25 +88,8 @@
           "mapTo": "sample_rate"
         },
         "model": {
-          "status": "supported",
           "default": "cosyvoice-v1",
           "mapTo": "model"
-        },
-        "emotion": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "languageType": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "expectedDurationSec": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "samplingParams": {
-          "status": "unsupported",
-          "onUserInput": "warn"
         }
       },
       "adapter": "./AliyunCosyVoiceAdapter.js"
@@ -127,7 +97,6 @@
     "aliyun_qwen_http": {
       "displayName": "阿里云 Qwen HTTP",
       "description": "阿里云通义千问语音合成 HTTP 接口",
-      "status": "stable",
       "aliases": [
         "aliyun_qwen",
         "qwen_http"
@@ -145,12 +114,6 @@
         "pitchAdjustable": false,
         "volumeAdjustable": false
       },
-      "defaults": {
-        "format": "wav",
-        "sampleRate": 24000,
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "languageType": "Auto"
-      },
       "defaultVoiceId": "aliyun-qwen_http-cherry",
       "lockedParams": [
         "voice",
@@ -167,12 +130,10 @@
           "mapTo": "input.text"
         },
         "model": {
-          "status": "supported",
           "default": "qwen3-tts-instruct-flash",
           "mapTo": "model"
         },
         "languageType": {
-          "status": "supported",
           "default": "Auto",
           "values": [
             "Auto",
@@ -190,12 +151,10 @@
           "mapTo": "input.language_type"
         },
         "format": {
-          "status": "supported",
           "default": "wav",
           "mapTo": "input.format"
         },
         "sampleRate": {
-          "status": "supported",
           "default": 24000,
           "values": [
             8000,
@@ -204,33 +163,6 @@
             48000
           ],
           "mapTo": "input.sample_rate"
-        },
-        "speed": {
-          "status": "unsupported",
-          "reason": "Qwen HTTP 不支持语速调整",
-          "onUserInput": "warn"
-        },
-        "pitch": {
-          "status": "unsupported",
-          "reason": "Qwen HTTP 不支持音调调整",
-          "onUserInput": "warn"
-        },
-        "volume": {
-          "status": "unsupported",
-          "reason": "Qwen HTTP 不支持音量调整",
-          "onUserInput": "warn"
-        },
-        "emotion": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "expectedDurationSec": {
-          "status": "unsupported",
-          "onUserInput": "warn"
-        },
-        "samplingParams": {
-          "status": "unsupported",
-          "onUserInput": "warn"
         }
       },
       "adapter": "./AliyunQwenAdapter.js"

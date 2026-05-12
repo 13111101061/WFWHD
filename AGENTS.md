@@ -17,14 +17,18 @@ src/modules/tts/index.js:tts_module_entry
 src/modules/tts/adapters/http/TtsHttpAdapter.js:http_to_domain_translation
 src/modules/tts/adapters/TtsProviderAdapter.js:provider_port_implementation
 src/modules/tts/adapters/VoiceCatalogAdapter.js:voice_catalog_port
-src/modules/tts/adapters/providers/index.js:adapter_registry_canonical_keys
-src/modules/tts/adapters/providers/BaseTtsAdapter.js:base_adapter_credentials_audioStorage
-src/modules/tts/adapters/providers/AliyunCosyVoiceAdapter.js:aliyun_cosyvoice_implementation
-src/modules/tts/adapters/providers/AliyunQwenAdapter.js:aliyun_qwen_http_implementation
-src/modules/tts/adapters/providers/TencentTtsAdapter.js:tencent_tts_implementation
-src/modules/tts/adapters/providers/VolcengineTtsAdapter.js:volcengine_http_implementation
-src/modules/tts/adapters/providers/MinimaxTtsAdapter.js:minimax_tts_implementation
-src/modules/tts/adapters/providers/MossTtsAdapter.js:moss_tts_implementation
+src/modules/tts/providers/BaseTtsAdapter.js:base_adapter_credentials_audioStorage
+src/modules/tts/providers/moss/MossTtsAdapter.js:moss_tts_implementation
+src/modules/tts/providers/moss/manifest.json:moss_provider_manifest
+src/modules/tts/providers/aliyun/AliyunCosyVoiceAdapter.js:aliyun_cosyvoice_implementation
+src/modules/tts/providers/aliyun/AliyunQwenAdapter.js:aliyun_qwen_http_implementation
+src/modules/tts/providers/aliyun/manifest.json:aliyun_provider_manifest
+src/modules/tts/providers/tencent/TencentTtsAdapter.js:tencent_tts_implementation
+src/modules/tts/providers/tencent/manifest.json:tencent_provider_manifest
+src/modules/tts/providers/volcengine/VolcengineTtsAdapter.js:volcengine_http_implementation
+src/modules/tts/providers/volcengine/manifest.json:volcengine_provider_manifest
+src/modules/tts/providers/minimax/MinimaxTtsAdapter.js:minimax_tts_implementation
+src/modules/tts/providers/minimax/manifest.json:minimax_provider_manifest
 src/modules/tts/application/VoiceResolver.js:voice_identity_resolution_priority
 src/modules/tts/application/ParameterResolutionService.js:parameter_merge_priority_layers
 src/modules/tts/application/CapabilityResolver.js:compiled_capability_runtime_resolution
@@ -48,17 +52,11 @@ src/modules/tts/config/VoiceCodeGenerator.js:15_digit_encode_decode_luhn
 src/modules/tts/config/VoiceCodeConfig.json:provider_code_mappings
 src/modules/tts/config/ttsDefaults.js:deprecated_defaults_capabilitySchema
 src/modules/tts/config/generate-voice-categories.js:category_generation_script
+src/modules/tts/provider-management/ProviderRegistry.js:unified_registry_descriptor_runtime
+src/modules/tts/provider-management/ProviderManagementService.js:credential_aware_facade
 src/modules/tts/providers/manifests/ProviderManifest.js:manifest_loader_singleton
-src/modules/tts/providers/manifests/aliyun/manifest.json:aliyun_provider_manifest
-src/modules/tts/providers/manifests/tencent/manifest.json:tencent_provider_manifest
-src/modules/tts/providers/manifests/volcengine/manifest.json:volcengine_provider_manifest
-src/modules/tts/providers/manifests/minimax/manifest.json:minimax_provider_manifest
-src/modules/tts/providers/manifests/moss/manifest.json:moss_provider_manifest
-src/modules/tts/infrastructure/ExecutionPolicy.js:resilience_rate_limit_circuit_breaker_retry_timeout
-src/modules/tts/provider-management/ProviderManagementService.js:unified_provider_facade
-src/modules/tts/provider-management/ProviderDescriptorRegistry.js:static_config_from_manifests
-src/modules/tts/provider-management/ProviderRuntimeRegistry.js:runtime_adapter_instances
 src/modules/tts/schema/CapabilitySchema.js:capability_schema_definitions
+src/modules/tts/infrastructure/ExecutionPolicy.js:resilience_rate_limit_circuit_breaker_retry_timeout
 src/modules/credentials/index.js:credential_pool_health_selector
 src/modules/auth/index.js:authentication_api_key_permissions
 voices/build.js:voice_data_build_pipeline
@@ -614,3 +612,82 @@ Q12:Provider_Adapter_contract
     adapter_receives_mapped_provider_params:from_ParameterMapper/CompiledCapability
     no_platform_to_provider_conversion_in_adapter
     all_defaults_merged_by_ParameterResolutionService_upstream
+
+## OnboardingNewProvider:ConfigurationChecklist
+
+new_provider_name:<providerKey>
+directory:src/modules/tts/providers/<providerKey>/
+
+### MustHave:4_files
+
+file_1:providers/<providerKey>/manifest.json
+  schema:ProviderManifest/v2
+  fields:
+    providerKey:string:unique
+    provider:{displayName,description,status,protocolTypes[],credentialMode}
+    provider.credentialMode:apiKey|secretKey|accessKey
+    services.{serviceKey}:
+      displayName:string
+      description:string
+      status:stable|beta|deprecated
+      aliases:string[]
+      protocol:http|ws
+      apiStructure:flat|nested
+      basePath:string:if_nested
+      capabilities:{streaming:bool,realtime:bool,emotion:bool,speedAdjustable:bool,pitchAdjustable:bool,volumeAdjustable:bool}
+      defaults:{format,sampleRate,speed?,pitch?,volume?,model?}
+      lockedParams:string[]:usually_[voice,model]
+      parameters.{paramKey}:
+        status:supported|unsupported|locked|required
+        mapTo:string:provider_API_param_path
+        source:string:if_locked_dynamic_providerVoiceId
+        lockedValue:any:if_locked_static
+        default:any
+        range:[min,max]
+        values:any[]
+        reason:string:if_unsupported
+        onUserInput:warn:if_unsupported
+        valueTransform:string:toInteger
+        nested:{subKey:{default,range,mapTo}}
+      adapter:string:relative_path_to_Adapter.js:"./XxxAdapter.js"
+    voiceCode:{providerCode:string_3_digit,serviceKey:string}
+
+file_2:providers/<providerKey>/XxxAdapter.js
+  extends:BaseTtsAdapter(providers/BaseTtsAdapter.js)
+  must_implement:
+    synthesize(text,options):returns_{audio:Buffer,format,provider,serviceType}
+  optional_override:
+    validateOptions(options):returns_validated_options
+    validateText(text):returns_{valid,errors}
+    getAvailableVoices():returns_voice_list
+    getFallbackVoices():fallback_when_no_registry
+    getStatus():returns_{provider,serviceType,status,timestamp}
+
+file_3:modules/credentials configuration
+  env_vars:<PROVIDER>_API_KEY|<PROVIDER>_SECRET_ID|<PROVIDER>_SECRET_KEY
+  or_yaml:credentials.yml under provider.<providerKey>
+
+file_4:modules/tts/config/VoiceCodeConfig.json
+  action:add entry to providerCodes
+  format:{"XXX":{"providerKey":"<providerKey>","serviceKey":"<serviceKey>","displayName":"<displayName>"}}
+  note:XXX is 3-digit numeric string matching manifest.json voiceCode.providerCode
+
+### MustHave:2_dataSources
+
+data_1:VoiceRegistry voice records
+  format:StoredVoice_v3{identity:{id,voiceCode,sourceId,provider,service},profile:{displayName,gender,languages[],...},runtime:{voiceId,model,providerOptions},meta:{createdAt,updatedAt,dataSource,version}}
+  entry_method:VoiceRegistry.addStored(storedVoice)|VoiceWriteService.create(formDTO)
+
+data_2:VoiceCodeCompatMap.json(optional but recommended)
+  path:src/modules/tts/config/VoiceCodeCompatMap.json
+  structure:{legacyToVoiceCode:{"<systemId>":"<15digitVoiceCode>"},voiceCodeIndex:{"<15digitVoiceCode>":{"id":"<systemId>","providerVoiceId":"<realId>"}}}
+  note:needed for legacy systemId → voiceCode resolution in VoiceResolver
+
+### CheckAfterAdding
+
+check:startup ConfigConsistencyChecker.audit passes
+check:getProviderRegistry().get('<serviceKey>') returns descriptor
+check:getProviderRegistry().getOrCreateAdapter('<serviceKey>') returns adapter instance
+check:voiceRegistry.getByProviderAndService('<providerKey>','<serviceType>') returns non-empty array
+check:VoiceCodeGenerator.parse('<15digitVoiceCode>') returns {providerKey,serviceKey}
+check:ProviderManagementService.checkServiceAvailability('<serviceKey>').available === true

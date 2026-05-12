@@ -224,10 +224,7 @@
           "type": "number",
           "platformRange": { "min": 0, "max": 1 },
           "platformDefault": 0.9,
-          "ui": {
-            "inputType": "slider",
-            "step": 0.05
-          }
+          "ui": { "inputType": "slider", "step": 0.05 }
         },
         "temperature": {
           "key": "samplingParams.temperature",
@@ -236,10 +233,22 @@
           "type": "number",
           "platformRange": { "min": 0, "max": 2 },
           "platformDefault": 1.0,
-          "ui": {
-            "inputType": "slider",
-            "step": 0.1
-          }
+          "ui": { "inputType": "slider", "step": 0.1 }
+        },
+        "topK": {
+          "key": "samplingParams.topK",
+          "displayName": "Top K",
+          "description": "Top-K 采样参数",
+          "type": "number",
+          "platformRange": { "min": 1, "max": 100 },
+          "ui": { "inputType": "number", "advanced": true }
+        },
+        "maxNewTokens": {
+          "key": "samplingParams.maxNewTokens",
+          "displayName": "Max New Tokens",
+          "description": "最大生成令牌数",
+          "type": "number",
+          "ui": { "inputType": "number", "advanced": true }
         }
       }
     },
