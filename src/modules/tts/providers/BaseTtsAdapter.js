@@ -1,5 +1,4 @@
 const { audioStorageManager } = require('../../../shared/utils/audioStorage');
-const { VoiceRegistry } = require('../core/VoiceRegistry');
 const credentials = require('../../credentials');
 const { CapabilitySchema } = require('../schema/CapabilitySchema');
 const VoiceNormalizer = require('../application/VoiceNormalizer');

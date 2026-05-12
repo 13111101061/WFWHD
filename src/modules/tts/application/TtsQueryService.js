@@ -73,25 +73,6 @@ class TtsQueryService {
     return this._isProviderVisible(voice.provider) ? voice : null;
   }
 
-  getVoiceDetail(voiceId) {
-    const vc = this._ensureVoiceCatalogQuery();
-    const detail = vc.getDetail(voiceId);
-    if (!detail) return null;
-
-    return this._isProviderVisible(detail.identity?.provider) ? detail : null;
-  }
-
-  async getVoices(provider, serviceType) {
-    const vc = this._ensureVoiceCatalogQuery();
-    if (provider && serviceType) {
-      return vc.getByProviderAndService(provider, serviceType);
-    }
-    if (provider) {
-      return vc.getByProvider(provider);
-    }
-    return vc.getAllDisplay();
-  }
-
   /**
    * 获取音色详情
    */

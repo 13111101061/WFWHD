@@ -13,7 +13,6 @@
 
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
 const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
-const VoiceNormalizer = require('./VoiceNormalizer');
 const CapabilitySchema = require('../schema/CapabilitySchema');
 
 // 支持字段别名：voice_code/voiceCode, system_id/systemId, voice_id/voiceId, voice
@@ -225,12 +224,11 @@ class VoiceResolver {
       throw error;
     }
 
-    const stored = VoiceNormalizer.normalize(rawVoice);
     return {
       voiceCode,
       systemId: voiceIdByCode,
-      providerVoiceId: stored.runtime.voiceId,
-      runtime: stored.runtime,
+      providerVoiceId: rawVoice.runtime?.voiceId,
+      runtime: rawVoice.runtime,
       expectedServiceKey
     };
   }
@@ -243,28 +241,27 @@ class VoiceResolver {
       throw error;
     }
 
-    const stored = VoiceNormalizer.normalize(rawVoice);
-    const compatMap = this.registry.buildCompatMap();
-    const mappedVoiceCode = compatMap.legacyToVoiceCode[systemId];
+    const identity = rawVoice.identity || {};
+    const runtime = rawVoice.runtime || {};
+
+    // voiceCode 优先从 identity.voiceCode 获取，回退到 compatMap（向后兼容旧数据）
+    const voiceCode = identity.voiceCode || null;
 
     let expectedServiceKey = null;
-    if (stored.identity.provider && stored.identity.service) {
-      expectedServiceKey = `${stored.identity.provider}_${stored.identity.service}`;
+    if (identity.provider && identity.service) {
+      expectedServiceKey = `${identity.provider}_${identity.service}`;
     }
 
     return {
-      voiceCode: mappedVoiceCode || stored.identity.voiceCode || null,
+      voiceCode,
       systemId,
-      providerVoiceId: stored.runtime.voiceId,
-      runtime: stored.runtime,
+      providerVoiceId: runtime.voiceId,
+      runtime,
       expectedServiceKey
     };
   }
 
   _resolveByLegacyVoice(voiceId) {
-    const compatMap = this.registry.buildCompatMap();
-    const mappedVoiceCode = compatMap.legacyToVoiceCode[voiceId];
-
     const rawVoice = this.registry.get(voiceId);
     if (!rawVoice) {
       const error = new Error(`Voice not found: ${voiceId}`);
@@ -272,13 +269,17 @@ class VoiceResolver {
       throw error;
     }
 
-    const stored = VoiceNormalizer.normalize(rawVoice);
+    const identity = rawVoice.identity || {};
+    const runtime = rawVoice.runtime || {};
+
+    // voiceCode 优先从 identity.voiceCode 获取（数据已在 _buildIndex 中标准化）
+    const voiceCode = identity.voiceCode || null;
 
     return {
-      voiceCode: mappedVoiceCode || stored.identity.voiceCode || null,
+      voiceCode,
       systemId: voiceId,
-      providerVoiceId: stored.runtime.voiceId,
-      runtime: stored.runtime,
+      providerVoiceId: runtime.voiceId,
+      runtime,
       expectedServiceKey: null
     };
   }
