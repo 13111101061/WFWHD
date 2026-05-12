@@ -11,7 +11,7 @@
  */
 
 const CapabilitySchema = require('../schema/CapabilitySchema');
-const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
+const { getProviderRegistry } = require('../provider-management');
 
 class CapabilityResolver {
   /**
@@ -32,7 +32,7 @@ class CapabilityResolver {
 
     if (this.cache.has(cacheKey)) return this._enrich(this.cache.get(cacheKey), voiceRuntime);
 
-    const desc = ProviderDescriptorRegistry.get(serviceKey);
+    const desc = getProviderRegistry().get(serviceKey);
     if (!desc) throw new Error(`[CapabilityResolver] Unknown service: ${serviceKey}`);
 
     const compiled = this._getCompiledCapability(serviceKey, desc.provider);

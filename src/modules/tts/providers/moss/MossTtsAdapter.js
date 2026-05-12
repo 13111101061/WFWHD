@@ -23,7 +23,7 @@
  * - 缺少必要参数时直接报错，而不是静默使用默认值
  */
 
-const BaseTtsAdapter = require('./BaseTtsAdapter');
+const BaseTtsAdapter = require('../BaseTtsAdapter');
 const { decodeAudio } = require('../../../../shared/utils/audioDecoder');
 
 // 错误码映射

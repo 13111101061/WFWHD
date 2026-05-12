@@ -1,8 +1,8 @@
-const { audioStorageManager } = require('../../../../shared/utils/audioStorage');
-const { voiceRegistry } = require('../../core/VoiceRegistry');
-const credentials = require('../../../credentials');
-const { CapabilitySchema } = require('../../schema/CapabilitySchema');
-const VoiceMapper = require('../../application/VoiceMapper');
+const { audioStorageManager } = require('../../../shared/utils/audioStorage');
+const { voiceRegistry } = require('../core/VoiceRegistry');
+const credentials = require('../../credentials');
+const { CapabilitySchema } = require('../schema/CapabilitySchema');
+const VoiceMapper = require('../application/VoiceMapper');
 
 class BaseTtsAdapter {
   constructor(config = {}) {

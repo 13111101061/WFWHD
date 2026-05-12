@@ -13,7 +13,7 @@
  * 声音复刻、声音设计等请走独立服务，不在此处理。
  */
 
-const BaseTtsAdapter = require('./BaseTtsAdapter');
+const BaseTtsAdapter = require('../BaseTtsAdapter');
 
 class AliyunQwenAdapter extends BaseTtsAdapter {
   constructor(config = {}) {

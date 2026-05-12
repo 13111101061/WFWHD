@@ -9,7 +9,7 @@
  *
  * 数据流：
  * 表单提交 -> VoiceFormSchema.validate() -> VoiceNormalizer.fromForm() -> StoredVoice
- * 旧数据读取 -> VoiceNormalizer.fromLegacy() -> StoredVoice
+ * 旧数据读取 -> VoiceNormalizer.normalize() -> StoredVoice
  * 运行时调用 -> VoiceNormalizer.toRuntime() -> RuntimeVoice
  */
 
@@ -144,92 +144,60 @@ const VoiceNormalizer = {
   },
 
   /**
-   * 旧格式兼容转换
-   * 自动检测新格式或转换旧格式
+   * 标准化音色数据（兼容新旧格式）
    *
-   * @param {Object} legacy - 旧格式音色对象
+   * 自动检测新格式或转换旧格式。
+   * @param {Object} rawVoice - 音色对象（新旧格式均可）
    * @returns {Object} StoredVoice
-   *
-   * 旧格式示例：
-   * {
-   *   id: "moss-tts-ashui",
-   *   provider: "moss",
-   *   service: "tts",
-   *   sourceId: "ashui",
-   *   displayName: "阿树",
-   *   name: "阿树",
-   *   gender: "female",
-   *   languages: ["zh-CN"],
-   *   description: "...",
-   *   tags: ["治愈"],
-   *   runtime: { voiceId: "...", model: "...", providerOptions: {} },
-   *   ttsConfig: { sourceId: "...", model: "...", ... }
-   * }
    */
-  fromLegacy(legacy) {
-    if (!legacy) return null;
+  normalize(rawVoice) {
+    if (!rawVoice) return null;
 
-    // 检测是否已经是新格式
-    if (legacy.identity && legacy.profile && legacy.runtime) {
-      return legacy;
+    if (rawVoice.identity && rawVoice.profile && rawVoice.runtime) {
+      return rawVoice;
     }
 
-    // 旧格式转换
     const now = new Date().toISOString();
-    const runtime = legacy.runtime || {};
-    const ttsConfig = legacy.ttsConfig || {};
-    const voiceCodeMeta = legacy.voiceCodeMeta || {};
+    const runtime = rawVoice.runtime || {};
+    const ttsConfig = rawVoice.ttsConfig || {};
+    const voiceCodeMeta = rawVoice.voiceCodeMeta || {};
 
-    // 从 ttsConfig/runtime 中提取 voiceId
-    // 优先级: runtime.voiceId > runtime.voice > ttsConfig.voiceId > ttsConfig.voiceName > ttsConfig.sourceId
     const voiceId = pickFirst(
-      runtime.voiceId,
-      runtime.voice,
-      ttsConfig.voiceId,
-      ttsConfig.voiceName,
-      ttsConfig.sourceId,
-      legacy.sourceId  // 最后备选
+      runtime.voiceId, runtime.voice,
+      ttsConfig.voiceId, ttsConfig.voiceName, ttsConfig.sourceId,
+      rawVoice.sourceId
     );
 
-    // 从 ttsConfig 中提取 providerOptions（排除已知字段）
     const ttsConfigProviderOptions = omit(ttsConfig, [
-      'voiceId',
-      'voiceName',
-      'sourceId',
-      'model',
-      'sampleRate',
-      'cluster',
-      'voiceType'
+      'voiceId', 'voiceName', 'sourceId', 'model', 'sampleRate', 'cluster', 'voiceType'
     ]);
 
-    // 合并 providerOptions
     const providerOptions = {
       ...ttsConfigProviderOptions,
       ...(runtime.providerOptions || {})
     };
 
-    // 如果 ttsConfig 有其他字段（如 samplingParams），也合并进去
     if (ttsConfig.samplingParams) {
       providerOptions.samplingParams = ttsConfig.samplingParams;
     }
 
     return {
       identity: {
-        id: legacy.id,
-        voiceCode: legacy.voiceCode || null,
-        sourceId: legacy.sourceId,
-        provider: legacy.provider,
-        service: legacy.service
+        id: rawVoice.id,
+        voiceCode: rawVoice.voiceCode || null,
+        sourceId: rawVoice.sourceId,
+        provider: rawVoice.provider,
+        service: rawVoice.service
       },
       profile: {
-        displayName: legacy.displayName,
-        alias: legacy.name || legacy.displayName,
-        gender: legacy.gender,
-        languages: legacy.languages || ['zh-CN'],
-        description: legacy.description || '',
-        tags: legacy.tags || [],
+        displayName: rawVoice.displayName,
+        alias: rawVoice.name || rawVoice.displayName,
+        gender: rawVoice.gender,
+        languages: rawVoice.languages || ['zh-CN'],
+        description: rawVoice.description || '',
+        tags: rawVoice.tags || [],
         status: 'active',
-        preview: legacy.preview || null
+        preview: rawVoice.preview || null
       },
       runtime: {
         voiceId,
@@ -252,13 +220,13 @@ const VoiceNormalizer = {
   },
 
   /**
-   * 批量转换旧格式
-   * @param {Array} legacyVoices - 旧格式音色数组
+   * 批量标准化音色数据
+   * @param {Array} voices - 音色数组
    * @returns {Array} StoredVoice 数组
    */
-  fromLegacyBatch(legacyVoices) {
-    if (!Array.isArray(legacyVoices)) return [];
-    return legacyVoices.map(v => this.fromLegacy(v)).filter(Boolean);
+  normalizeBatch(voices) {
+    if (!Array.isArray(voices)) return [];
+    return voices.map(v => this.normalize(v)).filter(Boolean);
   },
 
   /**
@@ -308,5 +276,9 @@ const VoiceNormalizer = {
     );
   }
 };
+
+// backward compat aliases
+VoiceNormalizer.fromLegacy = VoiceNormalizer.normalize;
+VoiceNormalizer.fromLegacyBatch = VoiceNormalizer.normalizeBatch;
 
 module.exports = VoiceNormalizer;

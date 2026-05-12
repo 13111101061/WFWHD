@@ -331,11 +331,11 @@ const CapabilityCompiler = {
     const results = {};
     const errors = [];
 
-    const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
+    const { getProviderRegistry } = require('../provider-management');
 
     for (const serviceKey of serviceKeys) {
       try {
-        const descriptor = ProviderDescriptorRegistry.get(serviceKey);
+        const descriptor = getProviderRegistry().get(serviceKey);
         if (!descriptor) {
           errors.push({ serviceKey, error: '服务描述未找到' });
           continue;

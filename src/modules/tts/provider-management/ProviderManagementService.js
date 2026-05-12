@@ -1,86 +1,37 @@
 /**
  * ProviderManagementService - 服务商管理服务
  *
- * 职责：
- * - 统一服务商 canonical key 解析
- * - 统一 adapter 注册与实例管理
- * - 汇总 provider 元信息 / 凭证状态 / 健康状态
- *
- * 设计原则：
- * - 作为服务商管理的唯一门面
- * - 启动时强制 init → 运行时只做断言，不自动修复
+ * 薄层包装：委托 ProviderRegistry 做查询 + 运行时，叠加凭证检查。
+ * 构造函数注入 ProviderRegistry + credentials。
  */
 
-const { ProviderDescriptorRegistry } = require('./ProviderDescriptorRegistry');
-const { ProviderRuntimeRegistry } = require('./ProviderRuntimeRegistry');
-const credentialsModule = require('../../credentials');
-
-let _initialized = false;
-
-function _assertInitialized() {
-  if (!_initialized) {
-    throw new Error(
-      '[ProviderManagementService] Not initialized. Call ProviderManagementService.initialize() at startup.'
-    );
+class ProviderManagementService {
+  /**
+   * @param {Object} deps
+   * @param {Object} deps.providerRegistry - 已初始化的 ProviderRegistry
+   * @param {Object} deps.credentials - credentials 模块
+   */
+  constructor({ providerRegistry, credentials }) {
+    this._registry = providerRegistry;
+    this._credentials = credentials;
   }
-}
 
-const ProviderManagementService = {
+  // ==================== 代理查询 ====================
 
-  // ==================== Key 解析 ====================
+  resolveCanonicalKey(key) { return this._registry.resolveCanonicalKey(key); }
+  isValidKey(key) { return this._registry.has(key); }
+  getServiceDescriptor(key) { return this._registry.get(key); }
+  getAllServices(options) { return this._registry.getAll(); }
+  getServicesByProvider() { return this._registry.getByProvider(); }
+  getProvider(key) { return this._registry.getProvider(key); }
+  getAllProviders() { return this._registry.getAllProviders(); }
+  getProviderServices(key) { return this._registry.getServicesByProvider(key); }
+  getAdapter(key, config) { return this._registry.getOrCreateAdapter(key, config); }
+  clearRuntimeCache(key) { this._registry.clearCachedAdapters(key); }
 
-  resolveCanonicalKey(key) {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.resolveCanonicalKey(key);
-  },
-
-  isValidKey(key) {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.has(key);
-  },
-
-  // ==================== 服务信息查询 ====================
-
-  getServiceDescriptor(serviceKey) {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.get(serviceKey);
-  },
-
-  getAllServices(options = {}) {
-    _assertInitialized();
-    let services = ProviderDescriptorRegistry.getAll();
-    if (options.status) services = services.filter(s => s.status === options.status);
-    if (options.provider) services = services.filter(s => s.provider === options.provider);
-    if (options.protocol) services = services.filter(s => s.protocol === options.protocol);
-    return services;
-  },
-
-  getServicesByProvider() {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.getByProvider();
-  },
-
-  // ==================== Provider 信息查询 ====================
-
-  getProvider(providerKey) {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.getProvider(providerKey);
-  },
-
-  getAllProviders() {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.getAllProviders();
-  },
-
-  getProviderServices(providerKey) {
-    _assertInitialized();
-    return ProviderDescriptorRegistry.getServicesByProvider(providerKey);
-  },
-
-  // ==================== 运行时管理 ====================
+  // ==================== 凭证感知 ====================
 
   checkServiceAvailability(serviceKey) {
-    _assertInitialized();
     const canonicalKey = this.resolveCanonicalKey(serviceKey);
     const result = { available: false, reason: 'unknown', details: {} };
 
@@ -88,45 +39,35 @@ const ProviderManagementService = {
 
     const descriptor = this.getServiceDescriptor(canonicalKey);
     result.details.descriptor = descriptor;
-
+    if (!descriptor) { result.reason = 'service_not_found'; return result; }
     if (descriptor.status === 'disabled') { result.reason = 'service_disabled'; return result; }
 
-    const adapterAvailable = ProviderRuntimeRegistry.hasAdapterClass(canonicalKey);
-    result.details.adapterRegistered = adapterAvailable;
-    if (!adapterAvailable) { result.reason = 'adapter_not_registered'; return result; }
+    if (!this._registry.hasAdapterClass(canonicalKey)) {
+      result.reason = 'adapter_not_registered'; return result;
+    }
+    result.details.adapterRegistered = true;
 
-    const credentialStatus = this._checkCredentialStatus(descriptor.provider);
-    result.details.credentials = credentialStatus;
-    if (!credentialStatus.configured) { result.reason = 'credentials_not_configured'; return result; }
+    const credStatus = this._checkCredentialStatus(descriptor.provider);
+    result.details.credentials = credStatus;
+    if (!credStatus.configured) { result.reason = 'credentials_not_configured'; return result; }
 
     result.available = true;
     result.reason = 'ok';
     return result;
-  },
+  }
 
   _checkCredentialStatus(providerKey) {
     try {
-      const configured = credentialsModule.isConfigured(providerKey);
+      const configured = this._credentials.isConfigured(providerKey);
       return { configured, reason: configured ? 'ok' : 'not_configured' };
     } catch (e) {
       return { configured: false, reason: 'error', error: e.message };
     }
-  },
+  }
 
-  getAdapter(serviceKey, config = {}) {
-    _assertInitialized();
-    return ProviderRuntimeRegistry.getOrCreateAdapter(serviceKey, config);
-  },
-
-  clearRuntimeCache(serviceKey) {
-    _assertInitialized();
-    ProviderRuntimeRegistry.clearCachedAdapters(serviceKey);
-  },
-
-  // ==================== 综合信息查询 ====================
+  // ==================== 综合信息 ====================
 
   getServiceInfo(serviceKey) {
-    _assertInitialized();
     const canonicalKey = this.resolveCanonicalKey(serviceKey);
     if (!canonicalKey) return null;
 
@@ -151,40 +92,25 @@ const ProviderManagementService = {
         adapterRegistered: availability.details.adapterRegistered,
         credentialsConfigured: availability.details.credentials?.configured || false
       },
-      aliases: ProviderDescriptorRegistry.getAliases(canonicalKey)
+      aliases: this._registry.getAliases(canonicalKey)
     };
-  },
+  }
 
   getAllServiceInfo(options = {}) {
-    _assertInitialized();
     return this.getAllServices(options).map(s => this.getServiceInfo(s.key)).filter(Boolean);
-  },
+  }
 
   // ==================== 统计 ====================
 
   getStats() {
-    _assertInitialized();
     return {
-      services: ProviderDescriptorRegistry.getStats(),
-      runtime: ProviderRuntimeRegistry.getRuntimeStats(),
+      services: this._registry.getStats(),
+      runtime: this._registry.getRuntimeStats(),
       timestamp: new Date().toISOString()
     };
-  },
+  }
 
-  // ==================== 初始化 ====================
+  isInitialized() { return this._registry.isInitialized(); }
+}
 
-  initialize() {
-    if (_initialized) return;
-    ProviderRuntimeRegistry.initialize();
-    _initialized = true;
-    console.log('[ProviderManagementService] Initialized');
-  },
-
-  isInitialized() { return _initialized; }
-};
-
-module.exports = {
-  ProviderManagementService,
-  ProviderDescriptorRegistry,
-  ProviderRuntimeRegistry
-};
+module.exports = { ProviderManagementService };

@@ -4,23 +4,20 @@ const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
 const VoiceNormalizer = require('./VoiceNormalizer');
 const CapabilitySchema = require('../schema/CapabilitySchema');
 
-// 兼容映射缓存（懒加载）
-let _compatMap = null;
-
-function loadCompatMap() {
-  if (_compatMap === null) {
-    try {
-      const fs = require('fs');
-      const path = require('path');
-      const compatPath = path.join(__dirname, '../config/VoiceCodeCompatMap.json');
-      const raw = fs.readFileSync(compatPath, 'utf8');
-      _compatMap = JSON.parse(raw);
-    } catch (e) {
-      _compatMap = { legacyToVoiceCode: {}, voiceCodeIndex: {} };
-    }
+// 兼容映射（启动时同步加载，JSON 较小，无需懒加载）
+let _compatMap;
+{
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const compatPath = path.join(__dirname, '../config/VoiceCodeCompatMap.json');
+    const raw = fs.readFileSync(compatPath, 'utf8');
+    _compatMap = JSON.parse(raw);
+  } catch (e) {
+    _compatMap = { legacyToVoiceCode: {}, voiceCodeIndex: {} };
   }
-  return _compatMap;
 }
+function loadCompatMap() { return _compatMap; }
 
 // 支持字段别名：voice_code/voiceCode, system_id/systemId, voice_id/voiceId, voice
 const RESERVED_REQUEST_KEYS = new Set([
@@ -254,7 +251,7 @@ const VoiceResolver = {
         v.voiceCode === voiceCode || v.identity?.voiceCode === voiceCode
       );
       if (matched) {
-        const stored = VoiceNormalizer.fromLegacy(matched);
+        const stored = VoiceNormalizer.normalize(matched);
         return { voiceCode, systemId: stored.identity.id, providerVoiceId: stored.runtime.voiceId, runtime: stored.runtime, expectedServiceKey };
       }
       const error = new Error(`voiceCode not found: ${voiceCode}`);
@@ -269,7 +266,7 @@ const VoiceResolver = {
       throw error;
     }
 
-    const stored = VoiceNormalizer.fromLegacy(rawVoice);
+    const stored = VoiceNormalizer.normalize(rawVoice);
     return {
       voiceCode,
       systemId: voiceInfo.id,
@@ -288,7 +285,7 @@ const VoiceResolver = {
       throw error;
     }
 
-    const stored = VoiceNormalizer.fromLegacy(rawVoice);
+    const stored = VoiceNormalizer.normalize(rawVoice);
     const compatMap = loadCompatMap();
     const mappedVoiceCode = compatMap.legacyToVoiceCode[systemId];
 
@@ -318,7 +315,7 @@ const VoiceResolver = {
       throw error;
     }
 
-    const stored = VoiceNormalizer.fromLegacy(rawVoice);
+    const stored = VoiceNormalizer.normalize(rawVoice);
 
     return {
       voiceCode: mappedVoiceCode || stored.identity.voiceCode || null,
@@ -336,7 +333,7 @@ const VoiceResolver = {
 
   /**
    * [已移除] _buildRuntimeFromConfig
-   * 已废弃：使用 VoiceNormalizer.fromLegacy 代替
+   * 已废弃：使用 VoiceNormalizer.normalize 代替
    */
 
   /**

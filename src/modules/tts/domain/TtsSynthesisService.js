@@ -17,7 +17,7 @@
  */
 
 const { VoiceResolver } = require('../application/VoiceResolver');
-const { ProviderDescriptorRegistry } = require('../provider-management/ProviderDescriptorRegistry');
+const { getProviderRegistry } = require('../provider-management');
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
 const AudioResult = require('./AudioResult');
@@ -288,8 +288,9 @@ class TtsSynthesisService {
 
   _extractServiceType(serviceKey) {
     if (!serviceKey) return 'default';
-    const descriptor = ProviderDescriptorRegistry.get(serviceKey);
-    const canonicalKey = descriptor?.key || ProviderDescriptorRegistry.resolveCanonicalKey(serviceKey) || serviceKey;
+    const reg = getProviderRegistry();
+    const descriptor = reg.get(serviceKey);
+    const canonicalKey = descriptor?.key || reg.resolveCanonicalKey(serviceKey) || serviceKey;
     const providerKey = descriptor?.provider || canonicalKey.split('_')[0];
     const prefix = `${providerKey}_`;
     if (canonicalKey.startsWith(prefix) && canonicalKey.length > prefix.length) return canonicalKey.slice(prefix.length);

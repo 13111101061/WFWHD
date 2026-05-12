@@ -1,16 +1,17 @@
 /**
  * ProviderManifest - 服务商配置加载器
  *
- * 从 providers/manifests/<provider>/manifest.json 加载统一配置。
+ * 从 providers/<provider>/manifest.json 加载统一配置。
  * 这是服务商配置的唯一事实源。
  *
- * 新增服务商只需：新增 manifests/<服务商>/manifest.json
+ * 新增服务商只需：在 providers/<服务商>/ 下创建 manifest.json + Adapter.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const MANIFESTS_DIR = path.join(__dirname);
+// 扫描 providers/ 目录（manifest.js 的同级目录），跳过本目录
+const PROVIDERS_DIR = path.join(__dirname, '..');
 
 let manifests = null;
 let _serviceIndex = null;
@@ -23,12 +24,16 @@ function loadAllManifests() {
   _serviceIndex = new Map();
   _providerIndex = new Map();
 
-  const entries = fs.readdirSync(MANIFESTS_DIR, { withFileTypes: true });
+  // 扫描 providers/ 目录下的子目录（跳过 manifests/ 和 ProviderManifest.js）
+  const entries = fs.readdirSync(PROVIDERS_DIR, { withFileTypes: true });
   for (const entry of entries) {
-    if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'ProviderManifest') continue;
-    const manifestPath = path.join(MANIFESTS_DIR, entry.name, 'manifest.json');
+    if (!entry.isDirectory()) continue;
+    if (entry.name === 'manifests' || entry.name.startsWith('.')) continue;
+    if (entry.name === 'ProviderManifest') continue;
+
+    const manifestPath = path.join(PROVIDERS_DIR, entry.name, 'manifest.json');
     if (!fs.existsSync(manifestPath)) {
-      console.warn(`[ProviderManifest] No manifest.json in ${entry.name}`);
+      console.warn(`[ProviderManifest] No manifest.json in providers/${entry.name}`);
       continue;
     }
 

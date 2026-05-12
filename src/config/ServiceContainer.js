@@ -48,26 +48,36 @@ class ServiceContainer {
       }
     }
 
-    // 1. FieldDefinitionSystem
+    // 1. ProviderRegistry（统一注册表：manifest 解析 + adapter 自动加载）
+    // 必须在 FieldDefinitionSystem 之前初始化（CapabilityCompiler 依赖它）
+    const { ProviderRegistry, ProviderManagementService, setProviderRegistry } = require('../modules/tts/provider-management');
+    const credentials = require('../modules/credentials');
+
+    const providerRegistry = new ProviderRegistry();
+    providerRegistry.initialize();
+    setProviderRegistry(providerRegistry);
+    this._services.set('providerRegistry', providerRegistry);
+
+    // 2. ProviderManagementService（凭证感知包装）
+    const pms = new ProviderManagementService({ providerRegistry, credentials });
+    this._services.set('providerManagementService', pms);
+
+    // 3. FieldDefinitionSystem
     const FieldDefinitionSystem = require('../modules/tts/config/FieldDefinitionSystem');
     await FieldDefinitionSystem.initialize();
     this._services.set('fieldDefinitionSystem', FieldDefinitionSystem);
 
-    // 2. ProviderManagementService
-    const { ProviderManagementService } = require('../modules/tts/provider-management');
-    ProviderManagementService.initialize();
-    this._services.set('providerManagementService', ProviderManagementService);
-
-    // 3. 创建 TtsProviderAdapter（构造函数注入 PMS）
+    // 3. TtsProviderAdapter（构造函数注入 PMS）
     const ttsProviderAdapter = new TtsProviderAdapter({
-      providerManagementService: ProviderManagementService
+      providerManagementService: pms
     });
     this._services.set('ttsProviderAdapter', ttsProviderAdapter);
 
-    // 4. 创建 CapabilityResolver（构造函数注入 getCompiledCapability）
+    // 4. CapabilityResolver（构造函数注入 getCompiledCapability + reload 自动清缓存）
     const capabilityResolver = new CapabilityResolver({
       getCompiledCapability: FieldDefinitionSystem.getCompiledCapability
     });
+    FieldDefinitionSystem.onReload(() => capabilityResolver.clearCache());
     this._services.set('capabilityResolver', capabilityResolver);
 
     // 5. 初始化适配器
@@ -91,7 +101,7 @@ class ServiceContainer {
     // 8. 查询服务
     const queryService = new TtsQueryService({
       ttsProvider: ttsProviderAdapter,
-      providerManagementService: ProviderManagementService,
+      providerManagementService: pms,
       capabilityResolver: capabilityResolver,
       voiceCatalog: voiceCatalogAdapter
     });

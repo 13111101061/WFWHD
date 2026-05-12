@@ -8,7 +8,7 @@
 
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
-const BaseTtsAdapter = require('./BaseTtsAdapter');
+const BaseTtsAdapter = require('../BaseTtsAdapter');
 
 class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
   constructor(config = {}) {

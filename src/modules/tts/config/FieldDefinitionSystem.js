@@ -35,6 +35,13 @@ const {
 // fail-fast 配置（可通过环境变量控制）
 const FAIL_FAST = process.env.TTS_FIELD_SYSTEM_FAIL_FAST !== 'false';
 
+// reload 监听器（CapabilityResolver 等缓存消费方在 reload 时清缓存）
+const _reloadListeners = [];
+
+function onReload(fn) {
+  _reloadListeners.push(fn);
+}
+
 /**
  * 初始化字段定义系统
  * 在服务启动时调用
@@ -78,7 +85,9 @@ function initialize(options = {}) {
  */
 function reload() {
   registry.reload();
-  return CapabilityCompiler.compileAll();
+  const result = CapabilityCompiler.compileAll();
+  _reloadListeners.forEach(fn => fn());
+  return result;
 }
 
 /**
@@ -98,6 +107,7 @@ module.exports = {
   registry,
   initialize,
   reload,
+  onReload,
   getStats,
 
   // 工厂方法

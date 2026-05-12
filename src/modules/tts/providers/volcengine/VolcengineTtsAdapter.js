@@ -6,7 +6,7 @@
  * - 报告成功/失败用于健康追踪
  */
 
-const BaseTtsAdapter = require('./BaseTtsAdapter');
+const BaseTtsAdapter = require('../BaseTtsAdapter');
 const { decodeAudio } = require('../../../../shared/utils/audioDecoder');
 
 class VolcengineTtsAdapter extends BaseTtsAdapter {
