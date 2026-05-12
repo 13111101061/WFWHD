@@ -10,17 +10,13 @@ const assert = require('assert');
 
 // 测试前准备 - 通过 ServiceContainer 获取服务实例
 const serviceContainer = require('../../src/config/ServiceContainer');
-const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
 
 // ==================== 测试开始 ====================
 
 async function runTests() {
   console.log('\n=== TtsSynthesisService 测试 ===\n');
 
-  // 初始化 registry 和 ServiceContainer
-  console.log('初始化 VoiceRegistry...');
-  await voiceRegistry.initialize();
-
+  // 初始化 ServiceContainer（内部会自动创建并初始化 VoiceRegistry）
   console.log('初始化 ServiceContainer...');
   await serviceContainer.initialize();
 

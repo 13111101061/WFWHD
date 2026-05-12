@@ -16,7 +16,11 @@ const path = require('path');
 const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
 
 class ProviderRegistry {
-  constructor() {
+  /**
+   * @param {Object} options
+   * @param {Object} options.voiceRegistry - VoiceRegistry 实例（用于 adapter 查询音色）
+   */
+  constructor({ voiceRegistry } = {}) {
     /** @type {Map<string, Object>} alias → canonical key */
     this._aliasToCanonical = null;
 
@@ -28,6 +32,8 @@ class ProviderRegistry {
 
     /** @type {Map<string, Object>} adapter 实例缓存 */
     this._adapterInstances = new Map();
+
+    this._voiceRegistry = voiceRegistry || null;
 
     this._initialized = false;
   }
@@ -49,30 +55,46 @@ class ProviderRegistry {
     }
 
     // 从 manifest 自动加载 adapter class
+    let fromManifest = 0;
+    let fromGeneric = 0;
+
     for (const key of serviceKeys) {
       const cfg = ProviderManifest.getServiceConfig(key);
-      if (!cfg?.adapter) continue;
+      if (!cfg) continue;
 
-      const providerDir = cfg.providerKey;
-      const adapterPath = path.join(
-        __dirname, '..', 'providers', providerDir, cfg.adapter
-      );
+      const registration = {
+        provider: cfg.providerKey,
+        service: cfg._canonicalKey
+      };
 
-      try {
-        // eslint-disable-next-line global-require
-        const AdapterClass = require(adapterPath);
-        this._adapterClasses.set(key, {
-          AdapterClass,
-          provider: cfg.providerKey,
-          service: cfg._canonicalKey
-        });
-      } catch (e) {
-        console.warn(`[ProviderRegistry] Failed to load adapter for ${key}: ${e.message}`);
+      if (cfg.adapter) {
+        // 自定义 Adapter（如 WebSocket/复杂协议）
+        const adapterPath = path.join(
+          __dirname, '..', 'providers', cfg.providerKey, cfg.adapter
+        );
+        try {
+          registration.AdapterClass = require(adapterPath);
+          this._adapterClasses.set(key, registration);
+          fromManifest++;
+        } catch (e) {
+          console.warn(`[ProviderRegistry] Failed to load adapter for ${key}: ${e.message}`);
+        }
+      } else if (cfg.api) {
+        // 声明式 HTTP 服务商 → 使用 GenericHttpAdapter
+        try {
+          const GenericHttpAdapter = require('../providers/GenericHttpAdapter');
+          registration.AdapterClass = GenericHttpAdapter;
+          registration.apiConfig = cfg.api;
+          this._adapterClasses.set(key, registration);
+          fromGeneric++;
+        } catch (e) {
+          console.warn(`[ProviderRegistry] Generic adapter load failed for ${key}: ${e.message}`);
+        }
       }
     }
 
     this._initialized = true;
-    console.log(`[ProviderRegistry] Initialized ${this._adapterClasses.size} adapters from manifests`);
+    console.log(`[ProviderRegistry] Initialized ${fromManifest} custom + ${fromGeneric} generic = ${this._adapterClasses.size} adapters from manifests`);
   }
 
   isInitialized() { return this._initialized; }
@@ -204,6 +226,8 @@ class ProviderRegistry {
     const instance = new registration.AdapterClass({
       provider: registration.provider,
       serviceType: registration.service,
+      api: registration.apiConfig,
+      voiceRegistry: this._voiceRegistry,
       ...config
     });
 

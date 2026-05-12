@@ -1,23 +1,20 @@
+/**
+ * VoiceResolver - 音色身份解析器
+ *
+ * 职责：
+ * - 从请求中解析音色身份（voiceCode > systemId > legacy voiceId）
+ * - 支持 voice_code/voiceCode、system_id/systemId、voice_id/voiceId 多种字段名
+ * - 与 ProviderCatalog 协作校验 service matching
+ *
+ * 输出：VoiceIdentity { serviceKey, providerKey, modelKey, systemId, voiceCode, providerVoiceId, voiceRuntime }
+ *
+ * 参数合并逻辑已迁移到 ParameterResolutionService。
+ */
+
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
-const { voiceRegistry } = require('../core/VoiceRegistry');
 const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
 const VoiceNormalizer = require('./VoiceNormalizer');
 const CapabilitySchema = require('../schema/CapabilitySchema');
-
-// 兼容映射（启动时同步加载，JSON 较小，无需懒加载）
-let _compatMap;
-{
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const compatPath = path.join(__dirname, '../config/VoiceCodeCompatMap.json');
-    const raw = fs.readFileSync(compatPath, 'utf8');
-    _compatMap = JSON.parse(raw);
-  } catch (e) {
-    _compatMap = { legacyToVoiceCode: {}, voiceCodeIndex: {} };
-  }
-}
-function loadCompatMap() { return _compatMap; }
 
 // 支持字段别名：voice_code/voiceCode, system_id/systemId, voice_id/voiceId, voice
 const RESERVED_REQUEST_KEYS = new Set([
@@ -47,9 +44,6 @@ function pickFirst(...values) {
 /**
  * @typedef {Object} VoiceIdentity - VoiceResolver 输出结构
  *
- * VoiceResolver 职责已收缩为"身份解析"，不再负责参数合并。
- * 参数合并逻辑已迁移到 ParameterResolutionService。
- *
  * @property {string} serviceKey - canonical service key (如 "moss_tts")
  * @property {string} providerKey - 服务商标识 (如 "moss")
  * @property {string} modelKey - 模型标识 (如 "moss-tts")
@@ -60,11 +54,7 @@ function pickFirst(...values) {
  */
 
 function extractTopLevelOptions(request = {}) {
-  // 主保留字集合（驼峰形式），用于判断
-  const coreReserved = new Set(['text', 'service', 'options', 'voiceCode', 'systemId', 'voiceId', 'voice']);
-
   return Object.entries(request).reduce((acc, [key, value]) => {
-    // 跳过所有保留字段（包括下划线别名）
     if (RESERVED_REQUEST_KEYS.has(key) && value !== undefined) {
       return acc;
     }
@@ -73,13 +63,17 @@ function extractTopLevelOptions(request = {}) {
   }, {});
 }
 
-const VoiceResolver = {
+class VoiceResolver {
+  /**
+   * @param {Object} options
+   * @param {Object} options.voiceRegistry - VoiceRegistry 实例
+   */
+  constructor({ voiceRegistry }) {
+    this.registry = voiceRegistry;
+  }
+
   /**
    * Normalize request shape to a single internal contract.
-   * Supports:
-   * - voice -> voiceId compatibility
-   * - legacy top-level options (model/speed/...)
-   * - options object (preferred)
    */
   normalizeRequest(request = {}) {
     const topLevelOptions = extractTopLevelOptions(request);
@@ -92,14 +86,12 @@ const VoiceResolver = {
       ...nestedOptions
     };
 
-    // 使用字段提取函数支持下划线/驼峰命名（voice_code/voiceCode）
     const voiceCode = extractField(request, 'voiceCode', 'voice_code') ||
                       extractField(normalizedOptions, 'voiceCode', 'voice_code');
 
     const systemId = extractField(request, 'systemId', 'system_id') ||
                      extractField(normalizedOptions, 'systemId', 'system_id');
 
-    // voiceId 解析优先级：voice_id > voiceId > voice（下划线优先）
     const voiceId = pickFirst(
       extractField(request, 'voiceId', 'voice_id'),
       request.voice,
@@ -107,21 +99,15 @@ const VoiceResolver = {
       normalizedOptions.voice
     );
 
-    // 关键修复：如果传入了 voiceCode 或 systemId，先尝试从编码/音色解析服务
-    // 而不是直接使用默认服务
     let service = request.service;
     if (!service && voiceCode) {
-      // 尝试从 voiceCode 解析服务 (v2.0 格式，直接使用 serviceKey)
       const parsed = VoiceCodeGenerator.parse(voiceCode);
       if (parsed && parsed.providerKey && parsed.serviceKey) {
-        // v2.0 格式直接返回 providerKey + serviceKey
         service = `${parsed.providerKey}_${parsed.serviceKey}`;
       }
     }
     if (!service && systemId) {
-      // 尝试从 systemId 对应音色解析服务
-      const rawVoice = voiceRegistry.get(systemId);
-      // 支持新结构 (identity.provider/identity.service) 和旧结构
+      const rawVoice = this.registry.get(systemId);
       const provider = rawVoice?.identity?.provider || rawVoice?.provider;
       const serviceType = rawVoice?.identity?.service || rawVoice?.service;
       if (provider && serviceType) {
@@ -137,20 +123,12 @@ const VoiceResolver = {
       voiceId,
       options: normalizedOptions
     };
-  },
+  }
 
-  /**
-   * 从 voiceCode 解析结果构建服务标识符 (v2.0 简化版)
-   * @param {Object} parsed - VoiceCodeGenerator.parse 结果
-   * @returns {string|null} canonical service key
-   */
-  _buildServiceKeyFromVoiceCode(parsed) {
+  buildServiceKeyFromVoiceCode(parsed) {
     if (!parsed || !parsed.providerKey || !parsed.serviceKey) return null;
-
-    // v2.0 格式直接返回 providerKey + serviceKey
-    // 例如: providerKey="aliyun", serviceKey="qwen_http" → "aliyun_qwen_http"
     return `${parsed.providerKey}_${parsed.serviceKey}`;
-  },
+  }
 
   resolve(request) {
     const normalized = this.normalizeRequest(request);
@@ -170,13 +148,9 @@ const VoiceResolver = {
       throw error;
     }
 
-    // 核心解析逻辑：voiceCode > systemId > legacy voice
-    // 关键修复：如果原始请求没有指定 service，使用从 voiceCode/systemId 解析出的服务
     const targetService = voiceCode || systemId ? service : canonicalKey;
     const resolvedVoice = this._resolveVoice({ voiceCode, systemId, voiceId, service: targetService });
 
-    // 校验：如果请求明确指定了 service，且与 voiceCode/systemId 解析出的服务不一致，返回 400 错误
-    // 关键修复：先将 request.service 转换为 canonical key 再比较（支持别名）
     if (request.service && (voiceCode || systemId) && resolvedVoice.expectedServiceKey) {
       const requestedCanonicalKey = ProviderCatalog.resolveCanonicalKey(request.service);
       if (requestedCanonicalKey && resolvedVoice.expectedServiceKey !== requestedCanonicalKey) {
@@ -189,15 +163,11 @@ const VoiceResolver = {
       }
     }
 
-    // 关键修复：使用实际目标服务的配置（确保使用 canonical key）
-    // 优先使用从 voiceCode/systemId 解析出的服务，其次是用户请求的服务
     const finalServiceKey = resolvedVoice.expectedServiceKey ||
                             ProviderCatalog.resolveCanonicalKey(targetService) ||
                             canonicalKey;
     const finalProviderConfig = ProviderCatalog.get(finalServiceKey) || providerConfig;
 
-    // 返回 VoiceIdentity（不再包含 runtimeOptions）
-    // 参数合并逻辑已迁移到 ParameterResolutionService
     return {
       serviceKey: finalServiceKey,
       providerKey: finalProviderConfig.provider,
@@ -207,12 +177,10 @@ const VoiceResolver = {
       providerVoiceId: resolvedVoice.providerVoiceId,
       voiceRuntime: resolvedVoice.runtime
     };
-  },
+  }
 
-  /**
-   * 核心音色解析方法 — 优先级：voiceCode > systemId > legacy voice
-   * @returns {{ voiceCode, systemId, providerVoiceId, runtime, expectedServiceKey }}
-   */
+  // ==================== 私有方法 ====================
+
   _resolveVoice({ voiceCode, systemId, voiceId, service }) {
     if (voiceCode) return this._resolveByVoiceCode(voiceCode);
     if (systemId) return this._resolveBySystemId(systemId);
@@ -224,9 +192,8 @@ const VoiceResolver = {
     const error = new Error(`No voice specified and no default available for: ${service}`);
     error.code = 'VOICE_NOT_FOUND';
     throw error;
-  },
+  }
 
-  /** 15位 voiceCode 解析 */
   _resolveByVoiceCode(voiceCode) {
     if (!VoiceCodeGenerator.isValid(voiceCode)) {
       const error = new Error(`Invalid voiceCode format: ${voiceCode}`);
@@ -241,27 +208,19 @@ const VoiceResolver = {
       throw error;
     }
 
-    const expectedServiceKey = this._buildServiceKeyFromVoiceCode(parsed);
-    const compatMap = loadCompatMap();
-    const voiceInfo = compatMap.voiceCodeIndex[voiceCode];
+    const expectedServiceKey = this.buildServiceKeyFromVoiceCode(parsed);
 
-    if (!voiceInfo) {
-      const allVoices = voiceRegistry.getAll();
-      const matched = allVoices.find(v =>
-        v.voiceCode === voiceCode || v.identity?.voiceCode === voiceCode
-      );
-      if (matched) {
-        const stored = VoiceNormalizer.normalize(matched);
-        return { voiceCode, systemId: stored.identity.id, providerVoiceId: stored.runtime.voiceId, runtime: stored.runtime, expectedServiceKey };
-      }
+    // O(1) 查找：使用 voiceCodeIndex
+    const voiceIdByCode = this.registry.voiceCodeIndex.get(voiceCode);
+    if (!voiceIdByCode) {
       const error = new Error(`voiceCode not found: ${voiceCode}`);
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
 
-    const rawVoice = voiceRegistry.get(voiceInfo.id);
+    const rawVoice = this.registry.get(voiceIdByCode);
     if (!rawVoice) {
-      const error = new Error(`Voice not found in registry: ${voiceInfo.id}`);
+      const error = new Error(`Voice not found in registry: ${voiceIdByCode}`);
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
@@ -269,16 +228,15 @@ const VoiceResolver = {
     const stored = VoiceNormalizer.normalize(rawVoice);
     return {
       voiceCode,
-      systemId: voiceInfo.id,
-      providerVoiceId: voiceInfo.providerVoiceId || stored.runtime.voiceId,
+      systemId: voiceIdByCode,
+      providerVoiceId: stored.runtime.voiceId,
       runtime: stored.runtime,
       expectedServiceKey
     };
-  },
+  }
 
-  /** systemId 音色解析 */
   _resolveBySystemId(systemId) {
-    const rawVoice = voiceRegistry.get(systemId);
+    const rawVoice = this.registry.get(systemId);
     if (!rawVoice) {
       const error = new Error(`System ID not found: ${systemId}`);
       error.code = 'VOICE_NOT_FOUND';
@@ -286,7 +244,7 @@ const VoiceResolver = {
     }
 
     const stored = VoiceNormalizer.normalize(rawVoice);
-    const compatMap = loadCompatMap();
+    const compatMap = this.registry.buildCompatMap();
     const mappedVoiceCode = compatMap.legacyToVoiceCode[systemId];
 
     let expectedServiceKey = null;
@@ -301,14 +259,13 @@ const VoiceResolver = {
       runtime: stored.runtime,
       expectedServiceKey
     };
-  },
+  }
 
-  /** legacy voiceId 路径 */
   _resolveByLegacyVoice(voiceId) {
-    const compatMap = loadCompatMap();
+    const compatMap = this.registry.buildCompatMap();
     const mappedVoiceCode = compatMap.legacyToVoiceCode[voiceId];
 
-    const rawVoice = voiceRegistry.get(voiceId);
+    const rawVoice = this.registry.get(voiceId);
     if (!rawVoice) {
       const error = new Error(`Voice not found: ${voiceId}`);
       error.code = 'VOICE_NOT_FOUND';
@@ -324,34 +281,7 @@ const VoiceResolver = {
       runtime: stored.runtime,
       expectedServiceKey: null
     };
-  },
+  }
+}
 
-  /**
-   * [已移除] _normalizeVoiceRuntime
-   * 参数标准化逻辑已迁移到 ParameterResolutionService
-   */
-
-  /**
-   * [已移除] _buildRuntimeFromConfig
-   * 已废弃：使用 VoiceNormalizer.normalize 代替
-   */
-
-  /**
-   * [已移除] _buildRuntimeOptions
-   * 参数合并逻辑已迁移到 ParameterResolutionService
-   */
-
-  /**
-   * [已移除] validateText
-   * 文本校验逻辑已在 TtsValidationService 中实现
-   */
-
-  /**
-   * [已移除] getDefaults
-   * 默认值获取已迁移到 CapabilityResolver
-   */
-};
-
-module.exports = {
-  VoiceResolver
-};
+module.exports = { VoiceResolver };

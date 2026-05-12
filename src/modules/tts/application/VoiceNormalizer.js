@@ -181,6 +181,14 @@ const VoiceNormalizer = {
       providerOptions.samplingParams = ttsConfig.samplingParams;
     }
 
+    // 影子字段归入 providerOptions（sampleRate/cluster/voiceType 不属于 Schema Runtime 字段）
+    const sampleRate = pickFirst(runtime.sampleRate, ttsConfig.sampleRate);
+    if (sampleRate != null) providerOptions.sampleRate = sampleRate;
+    const cluster = pickFirst(runtime.cluster, ttsConfig.cluster);
+    if (cluster != null) providerOptions.cluster = cluster;
+    const voiceType = pickFirst(runtime.voiceType, ttsConfig.voiceType);
+    if (voiceType != null) providerOptions.voiceType = voiceType;
+
     return {
       identity: {
         id: rawVoice.id,
@@ -202,11 +210,7 @@ const VoiceNormalizer = {
       runtime: {
         voiceId,
         model: pickFirst(runtime.model, ttsConfig.model, 'default'),
-        providerOptions,
-        // 保留其他运行时字段
-        sampleRate: pickFirst(runtime.sampleRate, ttsConfig.sampleRate),
-        cluster: pickFirst(runtime.cluster, ttsConfig.cluster),
-        voiceType: pickFirst(runtime.voiceType, ttsConfig.voiceType)
+        providerOptions
       },
       meta: {
         createdAt: now,
@@ -274,6 +278,56 @@ const VoiceNormalizer = {
       voice.ttsConfig?.sourceId,
       voice.sourceId
     );
+  },
+
+  /**
+   * 映射为适配器格式（用于 BaseTtsAdapter.getAvailableVoices()）
+   * 包含运行时完整信息，供 provider 调用使用
+   * （原 VoiceMapper.toAdapterFormat，合并到此）
+   */
+  toAdapterFormat(voice) {
+    if (!voice) return null;
+
+    const identity = voice.identity || {};
+    const profile = voice.profile || {};
+    const runtime = voice.runtime || {};
+
+    return {
+      id: identity.id || voice.id,
+      systemId: identity.id || voice.id,
+      sourceId: identity.sourceId || voice.sourceId,
+      provider: identity.provider || voice.provider,
+      service: identity.service || voice.service,
+      voiceCode: identity.voiceCode || voice.voiceCode,
+      displayName: profile.displayName || voice.displayName,
+      name: profile.displayName || voice.displayName || voice.name,
+      gender: profile.gender || voice.gender,
+      languages: profile.languages || voice.languages || ['zh-CN'],
+      language: (profile.languages || voice.languages || ['zh-CN'])[0],
+      voiceId: runtime.voiceId || null,
+      model: runtime.model || null,
+      providerOptions: runtime.providerOptions || {},
+      ttsConfig: voice._compat?.ttsConfig || voice.ttsConfig || {},
+      tags: profile.tags || voice.tags || [],
+      description: profile.description || voice.description
+    };
+  },
+
+  /**
+   * 批量映射为适配器格式
+   * （原 VoiceMapper.mapAllToAdapter，合并到此）
+   */
+  mapAllToAdapter(voices) {
+    if (!Array.isArray(voices)) return [];
+    return voices.map(v => this.toAdapterFormat(v)).filter(Boolean);
+  },
+
+  /**
+   * 旧格式兼容别名（原 VoiceMapper.toRuntimeConfig）
+   * 与 toRuntime() 等价，保留名称以保持向后兼容
+   */
+  toRuntimeConfig(voice) {
+    return this.toRuntime(voice);
   }
 };
 

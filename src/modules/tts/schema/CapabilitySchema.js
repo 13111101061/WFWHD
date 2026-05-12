@@ -78,8 +78,8 @@ function getServiceDefaults(serviceKey) {
 }
 
 function getDefaultVoiceId(serviceKey) {
-  const service = getServiceCapabilities(serviceKey);
-  return service?.defaultVoiceId || null;
+  const svc = ProviderManifest.getServiceConfig(serviceKey);
+  return svc?.defaultVoiceId || null;
 }
 
 function getParameterConfig(serviceKey, paramName) {

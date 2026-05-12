@@ -317,6 +317,9 @@ const CapabilityCompiler = {
       compiledLockedParams: this._extractLockedParams(compiledFields),
       compiledFieldIndex: fieldIndex,
       apiStructure,
+      // streaming flags（从 manifest 读取，供 getCapabilities() 推导）
+      capabilityStreaming: this._getStreamingFlag(serviceKey, 'supportsStreaming'),
+      capabilityRealtime: this._getStreamingFlag(serviceKey, 'supportsRealtime'),
       compiledAt: new Date().toISOString(),
       version: '1.0.0'
     };
@@ -431,6 +434,14 @@ const CapabilityCompiler = {
       }
     }
     return locked;
+  },
+
+  _getStreamingFlag(serviceKey, flagKey) {
+    try {
+      const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+      const svc = ProviderManifest.getServiceConfig(serviceKey);
+      return svc?.[flagKey] || false;
+    } catch (e) { return false; }
   }
 };
 

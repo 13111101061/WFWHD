@@ -90,6 +90,31 @@ class CompiledCapability {
   getSupportedFields() { return this._data.compiledFieldIndex.supported || []; }
   getUnsupportedFields() { return this._data.compiledFieldIndex.unsupported || []; }
 
+  // ==================== 能力推导 ====================
+
+  /**
+   * 从编译后的字段索引自动推导 capabilities（替代 manifest 中手写的 capabilities 块）
+   */
+  getCapabilities() {
+    const supported = new Set(this.getSupportedFields());
+    return {
+      streaming: this._data.capabilityStreaming || false,
+      realtime: this._data.capabilityRealtime || false,
+      emotion: supported.has('emotion'),
+      speedAdjustable: supported.has('speed'),
+      pitchAdjustable: supported.has('pitch'),
+      volumeAdjustable: supported.has('volume'),
+      languageSelectable: supported.has('languageType'),
+      samplingParams: supported.has('samplingParams'),
+      expectedDuration: supported.has('expectedDurationSec')
+    };
+  }
+
+  /** 从编译字段推导锁定参数列表（替代 manifest 中手写的 lockedParams） */
+  getLockedParamsKeys() {
+    return Object.keys(this.getLockedParams());
+  }
+
   // ==================== 参数解析（单一入口）====================
 
   /**

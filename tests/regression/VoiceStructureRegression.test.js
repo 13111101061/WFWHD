@@ -13,13 +13,14 @@
  */
 
 const assert = require('assert');
-const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
 const VoiceNormalizer = require('../../src/modules/tts/application/VoiceNormalizer');
-const VoiceMapper = require('../../src/modules/tts/application/VoiceMapper');
 const VoiceFormSchema = require('../../src/modules/tts/schema/VoiceFormSchema');
 const StoredVoiceSchema = require('../../src/modules/tts/schema/StoredVoiceSchema');
 const { VoiceWriteService } = require('../../src/modules/tts/application/VoiceWriteService');
 const { VoiceCatalog } = require('../../src/modules/tts/catalog/VoiceCatalog');
+
+const voiceRegistry = getVoiceRegistry();
 
 describe('Voice Structure Regression Tests', function() {
   this.timeout(10000);
@@ -221,7 +222,7 @@ describe('Voice Structure Regression Tests', function() {
 
   // ==================== 2. VoiceMapper 测试（运行时专用） ====================
 
-  describe('VoiceMapper (Runtime)', function() {
+  describe('VoiceNormalizer (Runtime/Adapter)', function() {
 
     const testVoice = {
       identity: {
@@ -247,7 +248,7 @@ describe('Voice Structure Regression Tests', function() {
 
     describe('toAdapterFormat()', function() {
       it('应返回适配器格式，包含运行时信息', function() {
-        const adapter = VoiceMapper.toAdapterFormat(testVoice);
+        const adapter = VoiceNormalizer.toAdapterFormat(testVoice);
 
         assert.strictEqual(adapter.id, 'mapper_test');
         assert.strictEqual(adapter.systemId, 'mapper_test');
@@ -262,7 +263,7 @@ describe('Voice Structure Regression Tests', function() {
 
     describe('toRuntimeConfig()', function() {
       it('应只返回运行时必要字段', function() {
-        const runtime = VoiceMapper.toRuntimeConfig(testVoice);
+        const runtime = VoiceNormalizer.toRuntimeConfig(testVoice);
 
         assert.strictEqual(runtime.provider, 'mapper_provider');
         assert.strictEqual(runtime.service, 'mapper_service');

@@ -16,7 +16,6 @@
  * 限流/熔断/重试/超时 → 委托 ExecutionPolicy。
  */
 
-const { VoiceResolver } = require('../application/VoiceResolver');
 const { getProviderRegistry } = require('../provider-management');
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
@@ -28,9 +27,10 @@ class TtsSynthesisService {
    * @param {Object} deps.ttsProvider - TTS提供者端口
    * @param {Object} deps.voiceCatalog - 音色目录端口
    * @param {Object} deps.validator - 验证服务
-   * @param {Object} deps.capabilityResolver - 能力解析器
-   * @param {Object} deps.parameterResolutionService - 参数解析服务
-   * @param {Object} deps.executionPolicy - 执行策略 (可选)
+   * @param {Object} [deps.capabilityResolver] - 能力解析器
+   * @param {Object} [deps.parameterResolutionService] - 参数解析服务
+   * @param {Object} [deps.executionPolicy] - 执行策略 (可选)
+   * @param {Object} [deps.voiceResolver] - 音色解析器
    */
   constructor({
     ttsProvider,
@@ -38,7 +38,8 @@ class TtsSynthesisService {
     validator,
     capabilityResolver = null,
     parameterResolutionService = null,
-    executionPolicy = null
+    executionPolicy = null,
+    voiceResolver = null
   }) {
     this.ttsProvider = ttsProvider;
     this.voiceCatalog = voiceCatalog;
@@ -46,6 +47,7 @@ class TtsSynthesisService {
     this.capabilityResolver = capabilityResolver;
     this.parameterResolutionService = parameterResolutionService;
     this.executionPolicy = executionPolicy || new ExecutionPolicy();
+    this.voiceResolver = voiceResolver;
 
     this.metrics = {
       credentialErrors: 0,
@@ -94,7 +96,7 @@ class TtsSynthesisService {
   }
 
   async _synthesizeWithNewChain(resolvedRequest, voiceIdentity) {
-    const identity = voiceIdentity || VoiceResolver.resolve({
+    const identity = voiceIdentity || this.voiceResolver.resolve({
       text: resolvedRequest.text,
       service: resolvedRequest.service,
       voiceCode: resolvedRequest.voiceCode,
@@ -265,7 +267,7 @@ class TtsSynthesisService {
     }
 
     try {
-      const resolved = VoiceResolver.resolve(resolveInput);
+      const resolved = this.voiceResolver.resolve(resolveInput);
       const serviceType = this._extractServiceType(resolved.serviceKey);
       const resolvedRequest = new SynthesisRequest({
         text: request.text, service: request.service,

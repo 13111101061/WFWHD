@@ -246,13 +246,22 @@ function _doAudit(logger) {
 /**
  * L3: 音色一致性审计（需 voiceRegistry 就绪后才调用）
  */
-async function auditVoiceCoverage(logger = console) {
+async function auditVoiceCoverage(loggerOrRegistry = console) {
   const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
-  const { voiceRegistry } = require('../core/VoiceRegistry');
+
+  // 支持旧接口 (logger) 和新接口 (voiceRegistry)，根据参数类型判断
+  let logger, voiceRegistry;
+  if (loggerOrRegistry && typeof loggerOrRegistry.log === 'function') {
+    logger = loggerOrRegistry;
+    voiceRegistry = arguments[1]; // 第二个参数
+  } else {
+    voiceRegistry = loggerOrRegistry;
+    logger = console;
+  }
 
   logger.log('\n========== [VOICE COVERAGE AUDIT] ==========');
 
-  if (voiceRegistry.getAll().length === 0) {
+  if (!voiceRegistry || voiceRegistry.getAll().length === 0) {
     logger.log('Voice registry empty — skipping');
     logger.log('============================================\n');
     return { errors: 0, warnings: 0 };

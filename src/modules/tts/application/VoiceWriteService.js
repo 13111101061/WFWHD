@@ -13,7 +13,7 @@
  * - 导入脚本
  */
 
-const { voiceRegistry } = require('../core/VoiceRegistry');
+const { getVoiceRegistry } = require('../core/VoiceRegistry');
 const VoiceFormSchema = require('../schema/VoiceFormSchema');
 const StoredVoiceSchema = require('../schema/StoredVoiceSchema');
 const VoiceNormalizer = require('./VoiceNormalizer');
@@ -21,10 +21,10 @@ const VoiceNormalizer = require('./VoiceNormalizer');
 class VoiceWriteService {
   /**
    * @param {Object} options
-   * @param {Object} options.registry - VoiceRegistry 实例（用于依赖注入）
+   * @param {Object} [options.registry] - VoiceRegistry 实例（用于依赖注入）
    */
   constructor(options = {}) {
-    this.registry = options.registry || voiceRegistry;
+    this.registry = options.registry || getVoiceRegistry();
   }
 
   // ==================== 新增 ====================
@@ -311,7 +311,7 @@ class VoiceWriteService {
   }
 }
 
-// 导出单例和类
+// 导出类（单例通过 ServiceContainer 管理；此实例为向后兼容保留）
 const voiceWriteService = new VoiceWriteService();
 
 module.exports = {

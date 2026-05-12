@@ -21,23 +21,30 @@
       "supportsStreaming": false,
       "supportsAsync": false,
       "apiStructure": "flat",
-      "capabilities": {
-        "streaming": false,
-        "realtime": false,
-        "emotion": true,
-        "speedAdjustable": true,
-        "pitchAdjustable": true,
-        "volumeAdjustable": true
+      "api": {
+        "endpoint": "https://api.minimax.chat/v1/text_to_speech",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer ${credential.apiKey}",
+          "Content-Type": "application/json"
+        },
+        "bodyTemplate": {
+          "model": "${params.model}",
+          "text": "${text}",
+          "voice_setting": "${params.voice_setting}",
+          "audio_setting": "${params.audio_setting}"
+        },
+        "responseMapping": {
+          "audioPath": "audio",
+          "audioEncoding": "binary"
+        },
+        "timeoutMs": 30000
       },
-      "lockedParams": [
-        "voice",
-        "model"
-      ],
       "parameters": {
         "voice": {
           "status": "locked",
           "source": "providerVoiceId",
-          "mapTo": "voice_id"
+          "mapTo": "voice_setting.voice_id"
         },
         "text": {
           "status": "required",
@@ -45,58 +52,38 @@
         },
         "emotion": {
           "default": "neutral",
-          "values": [
-            "neutral",
-            "happy",
-            "sad",
-            "angry",
-            "fearful"
-          ],
-          "mapTo": "emotion"
+          "values": ["neutral", "happy", "sad", "angry", "fearful"],
+          "mapTo": "voice_setting.emotion"
         },
         "format": {
           "default": "mp3",
-          "mapTo": "audio_format"
+          "mapTo": "audio_setting.format"
         },
         "sampleRate": {
           "default": 32000,
-          "values": [
-            16000,
-            24000,
-            32000
-          ],
-          "mapTo": "sample_rate"
+          "values": [16000, 24000, 32000],
+          "mapTo": "audio_setting.sample_rate"
         },
         "speed": {
           "default": 1,
-          "range": [
-            0.1,
-            2
-          ],
-          "mapTo": "speed"
+          "range": [0.1, 2],
+          "mapTo": "voice_setting.speed"
         },
         "pitch": {
           "default": 0,
-          "range": [
-            -12,
-            12
-          ],
-          "mapTo": "pitch"
+          "range": [-12, 12],
+          "mapTo": "voice_setting.pitch"
         },
         "volume": {
           "default": 1,
-          "range": [
-            0,
-            1
-          ],
-          "mapTo": "volume"
+          "range": [0, 1],
+          "mapTo": "voice_setting.vol"
         },
         "model": {
           "default": "speech-01-hd-preview",
           "mapTo": "model"
         }
-      },
-      "adapter": "./MinimaxTtsAdapter.js"
+      }
     }
   },
   "voiceCode": {

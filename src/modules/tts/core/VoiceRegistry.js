@@ -35,6 +35,7 @@ class VoiceRegistry {
     this.voices = new Map();
     this.providerIndex = new Map();
     this.serviceIndex = new Map();
+    this.voiceCodeIndex = new Map();  // voiceCode → id
 
     // 服务商状态
     this.providerStatus = new Map();  // provider -> { enabled, service }
@@ -83,11 +84,13 @@ class VoiceRegistry {
   // ==================== 查询（核心，O(1)） ====================
 
   get(id) {
-    const raw = this.voices.get(id);
-    if (!raw) return null;
+    return this.voices.get(id) || null;
+  }
 
-    // 兼容层：自动转换旧格式
-    return VoiceNormalizer.fromLegacy(raw);
+  getByVoiceCode(voiceCode) {
+    const id = this.voiceCodeIndex.get(voiceCode);
+    if (!id) return null;
+    return this.voices.get(id) || null;
   }
 
   getByProvider(provider) {
@@ -95,8 +98,7 @@ class VoiceRegistry {
     if (!ids) return [];
     return Array.from(ids)
       .map(id => this.voices.get(id))
-      .filter(Boolean)
-      .map(voice => VoiceNormalizer.fromLegacy(voice));
+      .filter(Boolean);
   }
 
   getByProviderAndService(provider, service) {
@@ -105,13 +107,11 @@ class VoiceRegistry {
     if (!ids) return [];
     return Array.from(ids)
       .map(id => this.voices.get(id))
-      .filter(Boolean)
-      .map(voice => VoiceNormalizer.fromLegacy(voice));
+      .filter(Boolean);
   }
 
   getAll() {
-    return Array.from(this.voices.values())
-      .map(voice => VoiceNormalizer.fromLegacy(voice));
+    return Array.from(this.voices.values());
   }
 
   // ==================== 写入（严格类型） ====================
@@ -307,6 +307,7 @@ class VoiceRegistry {
     this.voices.clear();
     this.providerIndex.clear();
     this.serviceIndex.clear();
+    this.voiceCodeIndex.clear();
     this.lastUpdated = new Date();
   }
 
@@ -378,6 +379,47 @@ class VoiceRegistry {
   }
 
   /**
+   * 从已加载的音色数据自动构建兼容映射（替代手写 VoiceCodeCompatMap.json）
+   */
+  buildCompatMap() {
+    const legacyToVoiceCode = {};
+    const voiceCodeIndex = {};
+
+    for (const [id, voice] of this.voices.entries()) {
+      const identity = voice.identity || {};
+      const runtime = voice.runtime || {};
+      const vc = identity.voiceCode;
+
+      // legacy systemId → voiceCode
+      if (vc) {
+        legacyToVoiceCode[id] = vc;
+        // also map short names
+        const sourceId = identity.sourceId;
+        if (sourceId && sourceId !== id) {
+          legacyToVoiceCode[sourceId] = vc;
+        }
+      }
+
+      // voiceCode → { id, providerVoiceId }
+      if (vc && runtime.voiceId) {
+        voiceCodeIndex[vc] = {
+          id,
+          providerVoiceId: runtime.voiceId
+        };
+      }
+    }
+
+    return { legacyToVoiceCode, voiceCodeIndex };
+  }
+
+  /**
+   * 检查 voiceCode 是否存在（利用 voiceCodeIndex 实现 O(1)）
+   */
+  hasVoiceCode(voiceCode) {
+    return this.voiceCodeIndex.has(voiceCode);
+  }
+
+  /**
    * 获取所有禁用的服务商
    */
   getDisabledProviders() {
@@ -393,6 +435,7 @@ class VoiceRegistry {
     const id = voice.identity?.id || voice.id;
     const provider = voice.identity?.provider || voice.provider;
     const service = voice.identity?.service || voice.service;
+    const voiceCode = voice.identity?.voiceCode || voice.voiceCode;
 
     if (!id || !provider) return;
 
@@ -410,6 +453,11 @@ class VoiceRegistry {
       }
       this.serviceIndex.get(key).add(id);
     }
+
+    // voiceCode 反向索引（O(1) 查找）
+    if (voiceCode) {
+      this.voiceCodeIndex.set(voiceCode, id);
+    }
   }
 
   _removeFromIndexes(voice) {
@@ -417,6 +465,7 @@ class VoiceRegistry {
     const id = voice.identity?.id || voice.id;
     const provider = voice.identity?.provider || voice.provider;
     const service = voice.identity?.service || voice.service;
+    const voiceCode = voice.identity?.voiceCode || voice.voiceCode;
 
     if (!id || !provider) return;
 
@@ -440,12 +489,18 @@ class VoiceRegistry {
         }
       }
     }
+
+    // 从 voiceCode 索引删除
+    if (voiceCode) {
+      this.voiceCodeIndex.delete(voiceCode);
+    }
   }
 
   _buildIndex(voices, meta = {}) {
     this.voices.clear();
     this.providerIndex.clear();
     this.serviceIndex.clear();
+    this.voiceCodeIndex.clear();
     this.providerStatus.clear();
 
     // 从meta中读取服务商状态
@@ -469,14 +524,15 @@ class VoiceRegistry {
     }
 
     for (const voice of voices) {
-      // 支持新格式 (identity.id) 和旧格式 (id)
-      const id = voice.identity?.id || voice.id;
-      const provider = voice.identity?.provider || voice.provider;
-      const service = voice.identity?.service || voice.service;
+      const normalized = VoiceNormalizer.normalize(voice);
+      if (!normalized) continue;
 
+      const id = normalized.identity.id;
+      const provider = normalized.identity.provider;
       if (!id || !provider) continue;
-      this.voices.set(id, voice);
-      this._updateIndexes({ id, provider, service });
+
+      this.voices.set(id, normalized);
+      this._updateIndexes(normalized);
     }
   }
 
@@ -631,7 +687,7 @@ class VoiceRegistry {
           enabled: this.isProviderEnabled(provider)
         }))
       },
-      voices: this.getAll()
+      voices: Array.from(this.voices.values())
     };
 
     await fs.writeFile(this.configPath, JSON.stringify(data, null, 2));
@@ -648,17 +704,22 @@ class VoiceRegistry {
   }
 }
 
-// 默认实例：自动检测Redis配置
-const defaultRedisConfig = process.env.REDIS_HOST ? {
-  host: process.env.REDIS_HOST,
-  port: parseInt(process.env.REDIS_PORT || '6379')
-} : null;
+// 全局引用（由 ServiceContainer 设置；独立脚本自动初始化）
+let _defaultRegistry = null;
 
-const voiceRegistry = new VoiceRegistry({
-  redis: defaultRedisConfig
-});
+function getVoiceRegistry() {
+  if (!_defaultRegistry) {
+    const defaultRedisConfig = process.env.REDIS_HOST ? {
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT || '6379')
+    } : null;
+    _defaultRegistry = new VoiceRegistry({ redis: defaultRedisConfig });
+  }
+  return _defaultRegistry;
+}
 
-module.exports = {
-  VoiceRegistry,
-  voiceRegistry
-};
+function setVoiceRegistry(registry) {
+  _defaultRegistry = registry;
+}
+
+module.exports = { VoiceRegistry, getVoiceRegistry, setVoiceRegistry };

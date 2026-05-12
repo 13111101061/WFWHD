@@ -21,18 +21,6 @@
       "supportsStreaming": true,
       "supportsAsync": true,
       "apiStructure": "flat",
-      "capabilities": {
-        "streaming": true,
-        "realtime": true,
-        "emotion": false,
-        "speedAdjustable": true,
-        "pitchAdjustable": true,
-        "volumeAdjustable": true
-      },
-      "lockedParams": [
-        "voice",
-        "model"
-      ],
       "parameters": {
         "voice": {
           "status": "locked",
@@ -106,19 +94,7 @@
       "supportsAsync": false,
       "apiStructure": "nested",
       "basePath": "input",
-      "capabilities": {
-        "streaming": false,
-        "realtime": false,
-        "emotion": false,
-        "speedAdjustable": false,
-        "pitchAdjustable": false,
-        "volumeAdjustable": false
-      },
       "defaultVoiceId": "aliyun-qwen_http-cherry",
-      "lockedParams": [
-        "voice",
-        "model"
-      ],
       "parameters": {
         "voice": {
           "status": "locked",

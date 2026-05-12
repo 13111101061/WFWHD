@@ -7,13 +7,12 @@
  * - 服务能力查询
  * - 前端展示数据组装
  *
- * 展示 DTO 统一由 VoiceCatalog.toDisplayDto() / toDetailDto() 生成
+ * 展示 DTO 统一由 this._ensureVoiceCatalogQuery().toDisplayDto() / toDetailDto() 生成
  * 本服务只做组装和过滤，不再手写字段映射
  */
 
-const { VoiceCatalog, toDisplayDto } = require('../catalog/VoiceCatalog');
 const { ProviderCatalog } = require('../catalog/ProviderCatalog');
-const { voiceRegistry } = require('../core/VoiceRegistry');
+const { toDisplayDto } = require('../catalog/VoiceCatalog');
 
 class TtsQueryService {
   /**
@@ -23,12 +22,15 @@ class TtsQueryService {
    * @param {Object} [options.providerManagementService] - 服务商管理服务（统一服务商信息入口）
    * @param {Object} [options.capabilityResolver] - 能力解析器（统一能力规则源）
    * @param {Object} [options.voiceCatalog] - 音色目录适配器（可选，用于上报分组逻辑）
+   * @param {Object} [options.voiceRegistry] - VoiceRegistry 实例（备用）
    */
-  constructor({ ttsProvider, providerManagementService, capabilityResolver, voiceCatalog } = {}) {
+  constructor({ ttsProvider, providerManagementService, capabilityResolver, voiceCatalog, voiceCatalogQuery, voiceRegistry } = {}) {
     this.ttsProvider = ttsProvider;
     this.providerManagementService = providerManagementService;
     this.capabilityResolver = capabilityResolver;
     this.voiceCatalog = voiceCatalog;
+    this._voiceCatalogQuery = voiceCatalogQuery;
+    this._voiceRegistry = voiceRegistry;
   }
 
   // ==================== 音色查询 ====================
@@ -39,7 +41,8 @@ class TtsQueryService {
   queryVoices(filters = {}) {
     const { includeCounts = true } = filters;
 
-    const items = VoiceCatalog.query(filters);
+    const vc = this._ensureVoiceCatalogQuery();
+    const items = vc.query(filters);
     const visibleItems = this._filterVisibleVoices(items);
     const filtersMeta = this._buildFiltersMeta(visibleItems);
 
@@ -63,17 +66,37 @@ class TtsQueryService {
    * 获取单个音色
    */
   getVoice(voiceId) {
-    const voice = VoiceCatalog.getDisplay(voiceId);
+    const vc = this._ensureVoiceCatalogQuery();
+    const voice = vc.getDisplay(voiceId);
     if (!voice) return null;
 
     return this._isProviderVisible(voice.provider) ? voice : null;
+  }
+
+  getVoiceDetail(voiceId) {
+    const vc = this._ensureVoiceCatalogQuery();
+    const detail = vc.getDetail(voiceId);
+    if (!detail) return null;
+
+    return this._isProviderVisible(detail.identity?.provider) ? detail : null;
+  }
+
+  async getVoices(provider, serviceType) {
+    const vc = this._ensureVoiceCatalogQuery();
+    if (provider && serviceType) {
+      return vc.getByProviderAndService(provider, serviceType);
+    }
+    if (provider) {
+      return vc.getByProvider(provider);
+    }
+    return vc.getAllDisplay();
   }
 
   /**
    * 获取音色详情
    */
   getVoiceDetail(voiceId) {
-    const detail = VoiceCatalog.getDetail(voiceId);
+    const detail = this._ensureVoiceCatalogQuery().getDetail(voiceId);
     if (!detail) return null;
 
     return this._isProviderVisible(detail.identity?.provider) ? detail : null;
@@ -84,12 +107,12 @@ class TtsQueryService {
    */
   async getVoices(provider, serviceType) {
     if (provider && serviceType) {
-      return VoiceCatalog.getByProviderAndService(provider, serviceType);
+      return this._ensureVoiceCatalogQuery().getByProviderAndService(provider, serviceType);
     }
     if (provider) {
-      return VoiceCatalog.getByProvider(provider);
+      return this._ensureVoiceCatalogQuery().getByProvider(provider);
     }
-    return VoiceCatalog.getAllDisplay();
+    return this._ensureVoiceCatalogQuery().getAllDisplay();
   }
 
   /**
@@ -101,11 +124,12 @@ class TtsQueryService {
       return this.voiceCatalog.getAllGroupedByService();
     }
 
-    const stats = voiceRegistry.getStats();
+    const reg = this._ensureVoiceRegistry();
+    const stats = reg.getStats();
     const result = {};
 
     for (const [provider] of Object.entries(stats.providers)) {
-      const voices = voiceRegistry.getByProvider(provider);
+      const voices = reg.getByProvider(provider);
 
       const services = {};
       for (const voice of voices) {
@@ -257,7 +281,7 @@ class TtsQueryService {
    * 使用统一的 VoiceListItemDTO
    */
   getFrontendCatalog() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+    const items = this._filterVisibleVoices(this._ensureVoiceCatalogQuery().query({}));
     const filters = this._buildFiltersMeta(items);
     const counts = this._buildCounts(items);
     const index = this._buildIndex(items);
@@ -289,7 +313,7 @@ class TtsQueryService {
    * 不能独立定义另一套字段语义
    */
   getFrontendVoices() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+    const items = this._filterVisibleVoices(this._ensureVoiceCatalogQuery().query({}));
 
     // 从标准展示 DTO 裁剪字段（不独立定义字段语义）
     const voices = items.map(item => ({
@@ -333,7 +357,7 @@ class TtsQueryService {
    * 获取筛选选项
    */
   getFilterOptions() {
-    const items = this._filterVisibleVoices(VoiceCatalog.query({}));
+    const items = this._filterVisibleVoices(this._ensureVoiceCatalogQuery().query({}));
     const filters = this._buildFiltersMeta(items);
 
     return {
@@ -346,12 +370,12 @@ class TtsQueryService {
   // ==================== 辅助方法 ====================
 
   _isProviderVisible(provider) {
-    return voiceRegistry.isProviderEnabled(provider);
+    return this._ensureVoiceRegistry().isProviderEnabled(provider);
   }
 
   _hasVisibleVoicesFor(provider, service) {
     if (!this._isProviderVisible(provider)) return false;
-    return voiceRegistry.getByProviderAndService(provider, service).length > 0;
+    return this._ensureVoiceRegistry().getByProviderAndService(provider, service).length > 0;
   }
 
   _filterVisibleVoices(items = []) {
@@ -476,6 +500,26 @@ class TtsQueryService {
     }
 
     return this.capabilityResolver;
+  }
+
+  _ensureVoiceCatalogQuery() {
+    if (!this._voiceCatalogQuery) {
+      throw new Error(
+        'VoiceCatalog not injected into TtsQueryService. ' +
+        'Ensure ServiceContainer.initialize() is called before using voice query methods.'
+      );
+    }
+    return this._voiceCatalogQuery;
+  }
+
+  _ensureVoiceRegistry() {
+    if (!this._voiceRegistry) {
+      throw new Error(
+        'VoiceRegistry not injected into TtsQueryService. ' +
+        'Ensure ServiceContainer.initialize() is called.'
+      );
+    }
+    return this._voiceRegistry;
   }
 }
 

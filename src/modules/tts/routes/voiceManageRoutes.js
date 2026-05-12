@@ -19,7 +19,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { voiceRegistry } = require('../core/VoiceRegistry');
+const { getVoiceRegistry } = require('../core/VoiceRegistry');
 const { voiceWriteService } = require('../application/VoiceWriteService');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
@@ -42,16 +42,16 @@ router.get('/', async (req, res) => {
   try {
     const { provider, service, tags, gender } = req.query;
 
-    let voices = voiceRegistry.getAll();
+    let voices = getVoiceRegistry().getAll();
 
     // 按提供商过滤
     if (provider) {
-      voices = voiceRegistry.getByProvider(provider);
+      voices = getVoiceRegistry().getByProvider(provider);
     }
 
     // 按服务过滤
     if (provider && service) {
-      voices = voiceRegistry.getByProviderAndService(provider, service);
+      voices = getVoiceRegistry().getByProviderAndService(provider, service);
     }
 
     // 按性别过滤
@@ -93,7 +93,7 @@ router.get('/', async (req, res) => {
 router.get('/stats/overview', (req, res) => {
   res.json({
     success: true,
-    data: voiceRegistry.getStats()
+    data: getVoiceRegistry().getStats()
   });
 });
 
@@ -105,9 +105,9 @@ router.get('/providers/status', (req, res) => {
   res.json({
     success: true,
     data: {
-      enabled: voiceRegistry.getEnabledProviders(),
-      disabled: voiceRegistry.getDisabledProviders(),
-      all: voiceRegistry.getStats().providers
+      enabled: getVoiceRegistry().getEnabledProviders(),
+      disabled: getVoiceRegistry().getDisabledProviders(),
+      all: getVoiceRegistry().getStats().providers
     }
   });
 });
@@ -117,7 +117,7 @@ router.get('/providers/status', (req, res) => {
  * 检查服务商是否启用 — 必须在 /:id 之前
  */
 router.get('/providers/:provider/enabled', (req, res) => {
-  const enabled = voiceRegistry.isProviderEnabled(req.params.provider);
+  const enabled = getVoiceRegistry().isProviderEnabled(req.params.provider);
   res.json({
     success: true,
     data: {
@@ -132,7 +132,7 @@ router.get('/providers/:provider/enabled', (req, res) => {
  * 精确查询 — 通配路由，放在所有静态路由之后
  */
 router.get('/:id', (req, res) => {
-  const voice = voiceRegistry.get(req.params.id);
+  const voice = getVoiceRegistry().get(req.params.id);
 
   if (!voice) {
     return res.status(404).json({
@@ -252,7 +252,7 @@ router.post('/save', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Saved ${voiceRegistry.voices.size} voices to file`
+      message: `Saved ${getVoiceRegistry().voices.size} voices to file`
     });
 
   } catch (error) {
@@ -273,8 +273,8 @@ router.post('/reload', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Reloaded ${voiceRegistry.voices.size} voices`,
-      stats: voiceRegistry.getStats()
+      message: `Reloaded ${getVoiceRegistry().voices.size} voices`,
+      stats: getVoiceRegistry().getStats()
     });
 
   } catch (error) {

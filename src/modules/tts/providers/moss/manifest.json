@@ -21,21 +21,28 @@
       "supportsStreaming": false,
       "supportsAsync": false,
       "apiStructure": "flat",
-      "capabilities": {
-        "streaming": false,
-        "realtime": false,
-        "emotion": false,
-        "speedAdjustable": false,
-        "pitchAdjustable": false,
-        "volumeAdjustable": false,
-        "samplingParams": true,
-        "expectedDuration": true
-      },
       "defaultVoiceId": "moss-tts-beijingnan",
-      "lockedParams": [
-        "voice",
-        "model"
-      ],
+      "api": {
+        "endpoint": "https://studio.mosi.cn/api/v1/audio/speech",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer ${credential.apiKey}",
+          "Content-Type": "application/json"
+        },
+        "bodyTemplate": {
+          "model": "${params.model}",
+          "text": "${text}",
+          "voice_id": "${params.voice_id}",
+          "expected_duration_sec": "${params.expected_duration_sec}",
+          "sampling_params": "${params.sampling_params}",
+          "meta_info": true
+        },
+        "responseMapping": {
+          "audioPath": "audio_data",
+          "audioEncoding": "base64"
+        },
+        "timeoutMs": 30000
+      },
       "parameters": {
         "voice": {
           "status": "locked",
@@ -104,8 +111,7 @@
             }
           }
         }
-      },
-      "adapter": "./MossTtsAdapter.js"
+      }
     }
   },
   "voiceCode": {

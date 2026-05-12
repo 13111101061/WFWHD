@@ -1,7 +1,7 @@
 /**
  * VoiceCatalog 单元测试
  *
- * 运行方式: node tests/unit/VoiceCatalog.test.js
+ * 运行方式: node tests/unit/voiceCatalog.test.js
  */
 
 const assert = require('assert');
@@ -9,7 +9,9 @@ const path = require('path');
 
 // 测试前准备
 const { VoiceCatalog, toDisplayDto, toDetailDto } = require('../../src/modules/tts/catalog/VoiceCatalog');
-const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+const voiceRegistry = getVoiceRegistry();
+const voiceCatalog = new VoiceCatalog({ voiceRegistry });
 
 // ==================== 测试数据 ====================
 
@@ -94,8 +96,8 @@ async function runCatalogTests() {
   await voiceRegistry.initialize();
 
   // 测试 6: get()
-  console.log('测试 6: VoiceCatalog.get() 返回目录对象');
-  const voice = VoiceCatalog.get('aliyun-qwen_http-cherry');
+  console.log('测试 6: voiceCatalog.get() 返回目录对象');
+  const voice = voiceCatalog.get('aliyun-qwen_http-cherry');
   if (voice) {
     assert.ok(voice.profile, '应该有 profile');
     assert.ok(voice.runtime, '应该有 runtime');
@@ -105,8 +107,8 @@ async function runCatalogTests() {
   }
 
   // 测试 7: getRuntime()
-  console.log('测试 7: VoiceCatalog.getRuntime() 返回运行时配置');
-  const runtime = VoiceCatalog.getRuntime('aliyun-qwen_http-cherry');
+  console.log('测试 7: voiceCatalog.getRuntime() 返回运行时配置');
+  const runtime = voiceCatalog.getRuntime('aliyun-qwen_http-cherry');
   if (runtime) {
     assert.ok(runtime.voiceId, 'runtime 应该有 voiceId 字段');
     console.log('✅ 通过\n');
@@ -115,8 +117,8 @@ async function runCatalogTests() {
   }
 
   // 测试 8: getDisplay()
-  console.log('测试 8: VoiceCatalog.getDisplay() 返回展示 DTO');
-  const display = VoiceCatalog.getDisplay('aliyun-qwen_http-cherry');
+  console.log('测试 8: voiceCatalog.getDisplay() 返回展示 DTO');
+  const display = voiceCatalog.getDisplay('aliyun-qwen_http-cherry');
   if (display) {
     assert.ok(!('runtime' in display), '展示 DTO 不应包含 runtime');
     console.log('✅ 通过\n');
@@ -125,8 +127,8 @@ async function runCatalogTests() {
   }
 
   // 测试 9: getDetail()
-  console.log('测试 9: VoiceCatalog.getDetail() 返回详情 DTO');
-  const detail = VoiceCatalog.getDetail('aliyun-qwen_http-cherry');
+  console.log('测试 9: voiceCatalog.getDetail() 返回详情 DTO');
+  const detail = voiceCatalog.getDetail('aliyun-qwen_http-cherry');
   if (detail) {
     assert.ok(detail.profile, '应该有 profile');
     assert.ok(detail.runtimePreview, '应该有 runtimePreview');
@@ -136,31 +138,31 @@ async function runCatalogTests() {
   }
 
   // 测试 10: query()
-  console.log('测试 10: VoiceCatalog.query() 过滤功能');
-  const allVoices = VoiceCatalog.query({});
+  console.log('测试 10: voiceCatalog.query() 过滤功能');
+  const allVoices = voiceCatalog.query({});
   assert.ok(Array.isArray(allVoices), '应该返回数组');
   assert.ok(allVoices.length > 0, '应该有音色');
 
   // 测试 provider 过滤
-  const aliyunVoices = VoiceCatalog.query({ provider: 'aliyun' });
+  const aliyunVoices = voiceCatalog.query({ provider: 'aliyun' });
   assert.ok(Array.isArray(aliyunVoices), 'provider 过滤应该返回数组');
 
   // 测试 gender 过滤
-  const femaleVoices = VoiceCatalog.query({ gender: 'female' });
+  const femaleVoices = voiceCatalog.query({ gender: 'female' });
   assert.ok(Array.isArray(femaleVoices), 'gender 过滤应该返回数组');
   console.log('✅ 通过\n');
 
   // 测试 11: getFiltersMeta()
-  console.log('测试 11: VoiceCatalog.getFiltersMeta() 返回筛选元数据');
-  const filters = VoiceCatalog.getFiltersMeta();
+  console.log('测试 11: voiceCatalog.getFiltersMeta() 返回筛选元数据');
+  const filters = voiceCatalog.getFiltersMeta();
   assert.ok(Array.isArray(filters.providers), '应该有 providers 数组');
   assert.ok(Array.isArray(filters.genders), '应该有 genders 数组');
   assert.ok(Array.isArray(filters.tags), '应该有 tags 数组');
   console.log('✅ 通过\n');
 
   // 测试 12: getStats()
-  console.log('测试 12: VoiceCatalog.getStats() 返回统计信息');
-  const stats = VoiceCatalog.getStats();
+  console.log('测试 12: voiceCatalog.getStats() 返回统计信息');
+  const stats = voiceCatalog.getStats();
   assert.ok(typeof stats.total === 'number', '应该有 total 数字');
   assert.ok(typeof stats.providers === 'object', 'providers 应该是对象');
   console.log(`  total: ${stats.total}, providers: ${Object.keys(stats.providers).length}个`);

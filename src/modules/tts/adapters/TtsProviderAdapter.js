@@ -6,22 +6,24 @@
  */
 
 const TtsProviderPort = require('../ports/TtsProviderPort');
-const { voiceRegistry } = require('../core/VoiceRegistry');
+const { VoiceRegistry } = require('../core/VoiceRegistry');
 
 class TtsProviderAdapter extends TtsProviderPort {
   /**
    * @param {Object} deps
    * @param {Object} deps.providerManagementService - 已初始化的 ProviderManagementService
+   * @param {Object} [deps.voiceRegistry] - VoiceRegistry 实例
    */
-  constructor({ providerManagementService }) {
+  constructor({ providerManagementService, voiceRegistry }) {
     super();
     this._pms = providerManagementService;
+    this._voiceRegistry = voiceRegistry || null;
     this._initialized = false;
   }
 
   async initialize() {
     if (this._initialized) return;
-    await voiceRegistry.initialize();
+    if (this._voiceRegistry) await this._voiceRegistry.initialize();
     this._initialized = true;
   }
 
@@ -94,7 +96,7 @@ class TtsProviderAdapter extends TtsProviderPort {
     return {
       cachedInstances: stats.runtime.cachedInstances,
       registeredProviders: stats.runtime.registeredClasses,
-      voiceStats: voiceRegistry.getStats()
+      voiceStats: this._voiceRegistry ? this._voiceRegistry.getStats() : { total: 0 }
     };
   }
 

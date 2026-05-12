@@ -21,18 +21,6 @@
       "supportsStreaming": false,
       "supportsAsync": false,
       "apiStructure": "flat",
-      "capabilities": {
-        "streaming": false,
-        "realtime": false,
-        "emotion": false,
-        "speedAdjustable": true,
-        "pitchAdjustable": false,
-        "volumeAdjustable": true
-      },
-      "lockedParams": [
-        "voice",
-        "model"
-      ],
       "parameters": {
         "voice": {
           "status": "locked",

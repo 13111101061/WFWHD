@@ -101,7 +101,14 @@ async function runTests() {
   // ==================== 2. 兼容映射测试 ====================
   console.log('\n📦 兼容映射测试\n');
 
-  const compatMap = require('../src/modules/tts/config/VoiceCodeCompatMap.json');
+  const _vr = require('../src/modules/tts/core/VoiceRegistry').getVoiceRegistry();
+  let compatMap;
+  try {
+    await _vr.initialize();
+    compatMap = _vr.buildCompatMap();
+  } catch (e) {
+    compatMap = { legacyToVoiceCode: {}, voiceCodeIndex: {} };
+  }
 
   test('兼容映射文件可加载', () => {
     assert(compatMap.legacyToVoiceCode, '应有 legacyToVoiceCode 字段');
@@ -175,7 +182,8 @@ async function runTests() {
   console.log('\n📦 VoiceResolver 测试\n');
 
   // 初始化 VoiceRegistry
-  const { voiceRegistry } = require('../src/modules/tts/core/VoiceRegistry');
+  const { getVoiceRegistry } = require('../src/modules/tts/core/VoiceRegistry');
+  const voiceRegistry = getVoiceRegistry();
   await voiceRegistry.initialize();
   console.log(`   VoiceRegistry 已加载: ${voiceRegistry.getStats().total} 个音色\n`);
 

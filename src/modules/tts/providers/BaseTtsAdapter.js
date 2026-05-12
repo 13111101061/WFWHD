@@ -1,8 +1,8 @@
 const { audioStorageManager } = require('../../../shared/utils/audioStorage');
-const { voiceRegistry } = require('../core/VoiceRegistry');
+const { VoiceRegistry } = require('../core/VoiceRegistry');
 const credentials = require('../../credentials');
 const { CapabilitySchema } = require('../schema/CapabilitySchema');
-const VoiceMapper = require('../application/VoiceMapper');
+const VoiceNormalizer = require('../application/VoiceNormalizer');
 
 class BaseTtsAdapter {
   constructor(config = {}) {
@@ -17,6 +17,7 @@ class BaseTtsAdapter {
     this.provider = config.provider || 'unknown';
     this.serviceType = config.serviceType || 'default';
     this._currentAccountId = null;
+    this.voiceRegistry = config.voiceRegistry || null;
   }
 
   _getCredentials(context = {}) {
@@ -108,9 +109,10 @@ class BaseTtsAdapter {
   }
 
   async getAvailableVoices() {
-    const voices = voiceRegistry.getByProviderAndService(this.provider, this.serviceType);
+    if (!this.voiceRegistry) return this.getFallbackVoices();
+    const voices = this.voiceRegistry.getByProviderAndService(this.provider, this.serviceType);
     if (voices.length === 0) return this.getFallbackVoices();
-    return voices.map(v => VoiceMapper.toAdapterFormat(v));
+    return voices.map(v => VoiceNormalizer.toAdapterFormat(v));
   }
 
   getFallbackVoices() {

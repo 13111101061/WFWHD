@@ -7,11 +7,14 @@
  */
 
 const VoiceCatalogPort = require('../ports/VoiceCatalogPort');
-const { voiceRegistry } = require('../core/VoiceRegistry');
 const { toDisplayDto } = require('../catalog/VoiceCatalog');
 
 class VoiceCatalogAdapter extends VoiceCatalogPort {
-  constructor() {
+  /**
+   * @param {Object} options
+   * @param {Object} options.voiceRegistry - VoiceRegistry 实例
+   */
+  constructor({ voiceRegistry }) {
     super();
     this.registry = voiceRegistry;
   }
@@ -105,10 +108,4 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
   }
 }
 
-// 导出单例
-const voiceCatalogAdapter = new VoiceCatalogAdapter();
-
-module.exports = {
-  VoiceCatalogAdapter,
-  voiceCatalogAdapter
-};
+module.exports = { VoiceCatalogAdapter };

@@ -1,6 +1,6 @@
 /**
  * VoiceResolver unit tests (v3.0 - 重构后)
- * Run: node tests/unit/VoiceResolver.test.js
+ * Run: node tests/unit/voiceResolver.test.js
  *
  * VoiceResolver 新输出结构：
  * - serviceKey: canonical service key (如 "aliyun_qwen_http")
@@ -14,15 +14,17 @@
 
 const assert = require('assert');
 const { VoiceResolver } = require('../../src/modules/tts/application/VoiceResolver');
-const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
 
 async function runTests() {
   console.log('\n=== VoiceResolver tests (v3.0 - refactored) ===\n');
+  const voiceRegistry = getVoiceRegistry();
   await voiceRegistry.initialize();
+  const voiceResolver = new VoiceResolver({ voiceRegistry });
 
   console.log('Test 1: resolve known service');
   {
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       service: 'aliyun_qwen_http',
       text: 'test'
     });
@@ -35,7 +37,7 @@ async function runTests() {
   console.log('Test 2: resolve alias');
   {
     // 使用 moss 别名测试（实际有默认音色配置）
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       service: 'moss',  // 别名，对应 canonical key: moss_tts
       text: 'test'
     });
@@ -48,7 +50,7 @@ async function runTests() {
   {
     let err = null;
     try {
-      VoiceResolver.resolve({ service: 'unknown_service', text: 'test' });
+      voiceResolver.resolve({ service: 'unknown_service', text: 'test' });
     } catch (e) {
       err = e;
     }
@@ -59,7 +61,7 @@ async function runTests() {
 
   console.log('Test 4: explicit voiceId resolves to providerVoiceId');
   {
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       service: 'aliyun_qwen_http',
       voiceId: 'aliyun-qwen_http-cherry',  // systemId
       text: 'test'
@@ -75,7 +77,7 @@ async function runTests() {
   {
     // v2.0 格式编码: PPP(3) VVVVV(5) RRRRRR(6) C(1)
     // 示例: "002000010000005" = 阿里云(provider=002) 音色序号1(voiceNumber=00001)
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       voiceCode: '002000010000005',  // v2.0 格式编码
       text: 'test'
     });
@@ -89,7 +91,7 @@ async function runTests() {
 
   console.log('Test 6: MOSS voiceCode');
   {
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       voiceCode: '001000030000005',  // MOSS 音色
       text: 'test'
     });
@@ -104,7 +106,7 @@ async function runTests() {
   {
     // voice 字段会被当作 voiceId 进行查找
     // 如果要使用服务商音色ID，应该传 systemId
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       service: 'aliyun_qwen_http',
       voice: 'aliyun-qwen_http-cherry',  // systemId 格式
       text: 'test'
@@ -118,7 +120,7 @@ async function runTests() {
 
   console.log('Test 8: systemId resolution');
   {
-    const result = VoiceResolver.resolve({
+    const result = voiceResolver.resolve({
       systemId: 'aliyun-qwen_http-cherry',
       text: 'test'
     });
