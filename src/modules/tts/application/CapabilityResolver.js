@@ -11,19 +11,20 @@
  */
 
 const CapabilitySchema = require('../schema/CapabilitySchema');
-const { getProviderRegistry } = require('../provider-management');
 
 class CapabilityResolver {
   /**
    * @param {Object} deps
    * @param {Function} deps.getCompiledCapability - FieldDefinitionSystem.getCompiledCapability
+   * @param {Object} [deps.providerRegistry] - ProviderRegistry 实例
    * @param {Object} [deps.cache] - 可选的缓存 Map（测试用）
    */
-  constructor({ getCompiledCapability, cache }) {
+  constructor({ getCompiledCapability, providerRegistry, cache }) {
     if (!getCompiledCapability || typeof getCompiledCapability !== 'function') {
       throw new Error('[CapabilityResolver] 需要 getCompiledCapability 函数');
     }
     this._getCompiledCapability = getCompiledCapability;
+    this._providerRegistry = providerRegistry;
     this.cache = cache || new Map();
   }
 
@@ -32,7 +33,7 @@ class CapabilityResolver {
 
     if (this.cache.has(cacheKey)) return this._enrich(this.cache.get(cacheKey), voiceRuntime);
 
-    const desc = getProviderRegistry().get(serviceKey);
+    const desc = this._providerRegistry.get(serviceKey);
     if (!desc) throw new Error(`[CapabilityResolver] Unknown service: ${serviceKey}`);
 
     const compiled = this._getCompiledCapability(serviceKey, desc.provider);

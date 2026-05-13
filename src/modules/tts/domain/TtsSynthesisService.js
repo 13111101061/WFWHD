@@ -16,7 +16,6 @@
  * 限流/熔断/重试/超时 → 委托 ExecutionPolicy。
  */
 
-const { getProviderRegistry } = require('../provider-management');
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
 const AudioResult = require('./AudioResult');
@@ -31,6 +30,7 @@ class TtsSynthesisService {
    * @param {Object} [deps.parameterResolutionService] - 参数解析服务
    * @param {Object} [deps.executionPolicy] - 执行策略 (可选)
    * @param {Object} [deps.voiceResolver] - 音色解析器
+   * @param {Object} [deps.providerRegistry] - ProviderRegistry 实例
    */
   constructor({
     ttsProvider,
@@ -39,7 +39,8 @@ class TtsSynthesisService {
     capabilityResolver = null,
     parameterResolutionService = null,
     executionPolicy = null,
-    voiceResolver = null
+    voiceResolver = null,
+    providerRegistry = null
   }) {
     this.ttsProvider = ttsProvider;
     this.voiceCatalog = voiceCatalog;
@@ -48,6 +49,7 @@ class TtsSynthesisService {
     this.parameterResolutionService = parameterResolutionService;
     this.executionPolicy = executionPolicy || new ExecutionPolicy();
     this.voiceResolver = voiceResolver;
+    this._providerRegistry = providerRegistry;
 
     this.metrics = {
       credentialErrors: 0,
@@ -68,7 +70,7 @@ class TtsSynthesisService {
     const resolvedServiceKey = this._buildServiceKey(resolvedRequest);
 
     const { result, warnings: chainWarnings } = await this.executionPolicy.execute(resolvedServiceKey, async () => {
-      return this._doSynthesize(resolvedRequest, voiceIdentity);
+      return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
     });
 
     const warnings = [];
@@ -89,10 +91,6 @@ class TtsSynthesisService {
     }
 
     return audioResult;
-  }
-
-  async _doSynthesize(resolvedRequest, voiceIdentity) {
-    return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
   }
 
   async _synthesizeWithNewChain(resolvedRequest, voiceIdentity) {
@@ -290,7 +288,7 @@ class TtsSynthesisService {
 
   _extractServiceType(serviceKey) {
     if (!serviceKey) return 'default';
-    const reg = getProviderRegistry();
+    const reg = this._providerRegistry;
     const descriptor = reg.get(serviceKey);
     const canonicalKey = descriptor?.key || reg.resolveCanonicalKey(serviceKey) || serviceKey;
     const providerKey = descriptor?.provider || canonicalKey.split('_')[0];

@@ -1,13 +1,19 @@
 /**
  * ProviderCatalog - 服务商目录
- * 委托 ProviderRegistry
+ * 薄封装，委托 ProviderRegistry，构造函数注入。
  */
 
-const { getProviderRegistry } = require('../provider-management');
+class ProviderCatalog {
+  /**
+   * @param {Object} options
+   * @param {Object} options.providerRegistry - ProviderRegistry 实例
+   */
+  constructor({ providerRegistry }) {
+    this._reg = providerRegistry;
+  }
 
-const ProviderCatalog = {
   get(key) {
-    const descriptor = getProviderRegistry().get(key);
+    const descriptor = this._reg.get(key);
     if (!descriptor) return null;
     return {
       provider: descriptor.provider,
@@ -17,19 +23,23 @@ const ProviderCatalog = {
       aliases: descriptor.aliases,
       status: descriptor.status
     };
-  },
-  resolveCanonicalKey(key) { return getProviderRegistry().resolveCanonicalKey(key); },
+  }
+
+  resolveCanonicalKey(key) { return this._reg.resolveCanonicalKey(key); }
+
   getAll() {
-    return getProviderRegistry().getAll().map(d => ({
+    return this._reg.getAll().map(d => ({
       key: d.key, provider: d.provider, service: d.service,
       displayName: d.displayName, description: d.description,
       aliases: d.aliases, status: d.status
     }));
-  },
-  getAllCanonicalKeys() { return getProviderRegistry().getAllCanonicalKeys(); },
-  has(key) { return getProviderRegistry().has(key); },
+  }
+
+  getAllCanonicalKeys() { return this._reg.getAllCanonicalKeys(); }
+  has(key) { return this._reg.has(key); }
+
   getByProvider() {
-    const grouped = getProviderRegistry().getByProvider();
+    const grouped = this._reg.getByProvider();
     const result = {};
     Object.entries(grouped).forEach(([provider, descriptors]) => {
       result[provider] = descriptors.map(d => ({
@@ -39,10 +49,9 @@ const ProviderCatalog = {
       }));
     });
     return result;
-  },
-  getStats() { return getProviderRegistry().getStats(); }
-};
+  }
 
-module.exports = {
-  ProviderCatalog
-};
+  getStats() { return this._reg.getStats(); }
+}
+
+module.exports = { ProviderCatalog };

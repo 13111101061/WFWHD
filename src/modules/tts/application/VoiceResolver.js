@@ -11,9 +11,8 @@
  * 参数合并逻辑已迁移到 ParameterResolutionService。
  */
 
-const { ProviderCatalog } = require('../catalog/ProviderCatalog');
-const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
 const CapabilitySchema = require('../schema/CapabilitySchema');
+const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
 
 // 支持字段别名：voice_code/voiceCode, system_id/systemId, voice_id/voiceId, voice
 const RESERVED_REQUEST_KEYS = new Set([
@@ -65,9 +64,11 @@ class VoiceResolver {
   /**
    * @param {Object} options
    * @param {Object} options.voiceRegistry - VoiceRegistry 实例
+   * @param {Object} options.providerCatalog - ProviderCatalog 实例
    */
-  constructor({ voiceRegistry }) {
+  constructor({ voiceRegistry, providerCatalog }) {
     this.registry = voiceRegistry;
+    this.providerCatalog = providerCatalog;
   }
 
   /**
@@ -132,14 +133,14 @@ class VoiceResolver {
     const normalized = this.normalizeRequest(request);
     const { service, voiceId, voiceCode, systemId, options = {} } = normalized;
 
-    const canonicalKey = ProviderCatalog.resolveCanonicalKey(service);
+    const canonicalKey = this.providerCatalog.resolveCanonicalKey(service);
     if (!canonicalKey) {
       const error = new Error(`Unknown service: ${service}`);
       error.code = 'UNKNOWN_SERVICE';
       throw error;
     }
 
-    const providerConfig = ProviderCatalog.get(canonicalKey);
+    const providerConfig = this.providerCatalog.get(canonicalKey);
     if (!providerConfig) {
       const error = new Error(`Provider config not found: ${canonicalKey}`);
       error.code = 'CONFIG_ERROR';
@@ -150,7 +151,7 @@ class VoiceResolver {
     const resolvedVoice = this._resolveVoice({ voiceCode, systemId, voiceId, service: targetService });
 
     if (request.service && (voiceCode || systemId) && resolvedVoice.expectedServiceKey) {
-      const requestedCanonicalKey = ProviderCatalog.resolveCanonicalKey(request.service);
+      const requestedCanonicalKey = this.providerCatalog.resolveCanonicalKey(request.service);
       if (requestedCanonicalKey && resolvedVoice.expectedServiceKey !== requestedCanonicalKey) {
         const error = new Error(
           `Service mismatch: ${voiceCode ? 'voiceCode' : 'systemId'} ${voiceCode || systemId} belongs to ${resolvedVoice.expectedServiceKey}, ` +
@@ -162,9 +163,9 @@ class VoiceResolver {
     }
 
     const finalServiceKey = resolvedVoice.expectedServiceKey ||
-                            ProviderCatalog.resolveCanonicalKey(targetService) ||
+                            this.providerCatalog.resolveCanonicalKey(targetService) ||
                             canonicalKey;
-    const finalProviderConfig = ProviderCatalog.get(finalServiceKey) || providerConfig;
+    const finalProviderConfig = this.providerCatalog.get(finalServiceKey) || providerConfig;
 
     return {
       serviceKey: finalServiceKey,

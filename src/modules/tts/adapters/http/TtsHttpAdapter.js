@@ -15,6 +15,7 @@
 
 const SynthesisRequest = require('../../domain/SynthesisRequest');
 const AudioResult = require('../../domain/AudioResult');
+const { clearAllCache } = require('../../../../shared/utils/audioCache');
 
 class TtsHttpAdapter {
   /**
@@ -230,7 +231,6 @@ class TtsHttpAdapter {
    */
   async clearCache(req, res) {
     try {
-      const { clearAllCache } = require('../../../../shared/utils/audioCache');
       const clearedCount = clearAllCache();
 
       res.json({

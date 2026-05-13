@@ -32,7 +32,7 @@ class AudioResult {
     duration,
     fileSize,
     format = 'mp3',
-    sampleRate = 32000,
+    sampleRate,
     traceId,
     fromCache = false
   }) {
@@ -71,7 +71,7 @@ class AudioResult {
       duration: serviceResult.duration,
       fileSize: serviceResult.size || serviceResult.fileSize,
       format: serviceResult.format || 'mp3',
-      sampleRate: serviceResult.sampleRate || 32000,
+      sampleRate: serviceResult.sampleRate,
       traceId: serviceResult.traceId,
       fromCache: serviceResult.fromCache || false
     });

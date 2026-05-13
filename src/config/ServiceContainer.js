@@ -75,9 +75,9 @@ class ServiceContainer {
     const pms = new ProviderManagementService({ providerRegistry, credentials });
     this._services.set('providerManagementService', pms);
 
-    // 3. FieldDefinitionSystem
+    // 3. FieldDefinitionSystem（传入 providerRegistry 供 CapabilityCompiler 使用）
     const FieldDefinitionSystem = require('../modules/tts/config/FieldDefinitionSystem');
-    await FieldDefinitionSystem.initialize();
+    await FieldDefinitionSystem.initialize({ providerRegistry });
     this._services.set('fieldDefinitionSystem', FieldDefinitionSystem);
 
     // 4. TtsProviderAdapter（构造函数注入 PMS + voiceRegistry）
@@ -92,9 +92,10 @@ class ServiceContainer {
     await voiceCatalogAdapter.initialize();
     this._services.set('voiceCatalogAdapter', voiceCatalogAdapter);
 
-    // 6. CapabilityResolver（构造函数注入 getCompiledCapability + reload 自动清缓存）
+    // 6. CapabilityResolver（构造函数注入 getCompiledCapability + providerRegistry）
     const capabilityResolver = new CapabilityResolver({
-      getCompiledCapability: FieldDefinitionSystem.getCompiledCapability
+      getCompiledCapability: FieldDefinitionSystem.getCompiledCapability,
+      providerRegistry
     });
     FieldDefinitionSystem.onReload(() => capabilityResolver.clearCache());
     this._services.set('capabilityResolver', capabilityResolver);
@@ -120,8 +121,13 @@ class ServiceContainer {
     const voiceCatalogQuery = new VoiceCatalog({ voiceRegistry });
     this._services.set('voiceCatalogQuery', voiceCatalogQuery);
 
-    // 11. VoiceResolver（音色解析器，构造函数注入 voiceRegistry）
-    const voiceResolver = new VoiceResolver({ voiceRegistry });
+    // 10.1 ProviderCatalog（服务商目录，构造函数注入 providerRegistry）
+    const { ProviderCatalog } = require('../modules/tts/catalog/ProviderCatalog');
+    const providerCatalog = new ProviderCatalog({ providerRegistry });
+    this._services.set('providerCatalog', providerCatalog);
+
+    // 11. VoiceResolver（音色解析器，构造函数注入 voiceRegistry + providerCatalog）
+    const voiceResolver = new VoiceResolver({ voiceRegistry, providerCatalog });
     this._services.set('voiceResolver', voiceResolver);
 
     // 12. 查询服务
@@ -136,7 +142,8 @@ class ServiceContainer {
     this._services.set('queryService', queryService);
 
     // 13. 参数解析服务
-    const { parameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
+    const { ParameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
+    const parameterResolutionService = new ParameterResolutionService();
     this._services.set('parameterResolutionService', parameterResolutionService);
 
     // 14. 合成服务
@@ -147,7 +154,8 @@ class ServiceContainer {
       capabilityResolver: capabilityResolver,
       parameterResolutionService: parameterResolutionService,
       executionPolicy: executionPolicy,
-      voiceResolver
+      voiceResolver,
+      providerRegistry
     });
     this._services.set('synthesisService', synthesisService);
 

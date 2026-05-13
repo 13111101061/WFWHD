@@ -273,7 +273,7 @@ router.post('/reload', async (req, res) => {
 
     res.json({
       success: true,
-      message: `Reloaded ${getVoiceRegistry().voices.size} voices`,
+      message: `Reloaded ${getVoiceRegistry().getStats().total} voices`,
       stats: getVoiceRegistry().getStats()
     });
 

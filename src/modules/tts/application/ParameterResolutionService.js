@@ -112,9 +112,4 @@ class ParameterResolutionService {
   }
 }
 
-const parameterResolutionService = new ParameterResolutionService();
-
-module.exports = {
-  ParameterResolutionService,
-  parameterResolutionService
-};
+module.exports = { ParameterResolutionService };

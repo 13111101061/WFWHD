@@ -145,36 +145,6 @@ class SynthesisRequest {
   }
 
   /**
-   * 归一化选项参数
-   * @deprecated v3.2 — 旧合成链路已移除，参数归一化由 ParameterResolutionService 处理
-   */
-  getNormalizedOptions() {
-    const normalized = { ...this.options };
-
-    // voice 参数别名归一化
-    if (normalized.voiceType !== undefined && normalized.voice === undefined) {
-      normalized.voice = normalized.voiceType;
-      delete normalized.voiceType;
-    }
-    if (normalized.voice_id !== undefined && normalized.voice === undefined) {
-      normalized.voice = normalized.voice_id;
-      delete normalized.voice_id;
-    }
-    if (normalized.voice_type !== undefined && normalized.voice === undefined) {
-      normalized.voice = normalized.voice_type;
-      delete normalized.voice_type;
-    }
-
-    // format 参数别名归一化
-    if (normalized.encoding !== undefined && normalized.format === undefined) {
-      normalized.format = normalized.encoding;
-      delete normalized.encoding;
-    }
-
-    return Object.freeze(normalized);
-  }
-
-  /**
    * 验证请求基本字段
    * @returns {{ valid: boolean, errors: string[] }}
    */
