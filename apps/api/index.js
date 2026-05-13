@@ -93,7 +93,11 @@ async function initializeTTSModule() {
 initializeTTSModule();
 app.use('/api/tts', require('./routes/ttsRoutes'));
 // Voice models (音色管理)
-app.use('/api/voices', require('../../src/modules/tts/routes/voiceManageRoutes'));
+app.use('/api/voices', (() => {
+  const { createVoiceManageRoutes } = require('../../src/modules/tts/routes/voiceManageRoutes');
+  const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+  return createVoiceManageRoutes(getVoiceRegistry());
+})());
 // Credentials (凭证管理)
 app.use('/api/credentials', require('../../src/modules/credentials/routes/credentialsRoutes'));
 // Audio storage

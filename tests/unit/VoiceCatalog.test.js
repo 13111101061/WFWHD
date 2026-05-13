@@ -20,28 +20,30 @@ const mockStoredVoice = {
     id: 'test-voice-001',
     provider: 'aliyun',
     service: 'qwen_http',
-    voiceCode: '002000010000005'
+    voiceCode: '002000010000005',
+    sourceId: 'cherry'
   },
   profile: {
     displayName: '测试音色',
+    alias: '测试',
     gender: 'female',
     languages: ['zh-CN', 'en-US'],
     description: '这是一个测试音色',
     tags: ['温柔', '自然'],
-    category: 'standard'
+    status: 'active',
+    preview: null
   },
   runtime: {
     voiceId: 'TestVoice',
-    model: 'test-model',
-    sampleRate: 24000
+    providerOptions: {
+      sampleRate: 24000
+    }
   },
-  status: 'active',
-  preview: {
-    url: 'https://example.com/preview.mp3'
-  },
-  metadata: {
+  meta: {
     createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-06-01T00:00:00Z'
+    updatedAt: '2024-06-01T00:00:00Z',
+    dataSource: 'test',
+    version: 'v1'
   }
 };
 

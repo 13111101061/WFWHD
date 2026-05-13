@@ -68,5 +68,13 @@
   "voiceCode": {
     "providerCode": "003",
     "serviceKey": "tts"
+  },
+  "executionPolicy": {
+    "timeoutMs": 30000,
+    "retryTimes": 1,
+    "rateLimit": {
+      "maxRequests": 50,
+      "windowMs": 60000
+    }
   }
 }

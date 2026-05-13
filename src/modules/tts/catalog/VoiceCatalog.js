@@ -81,7 +81,6 @@ function toDetailDto(storedVoice) {
       previewUrl: profile.preview || null
     },
     runtimePreview: {
-      model: runtime.model,
       maskedVoiceId,
       hasProviderOptions: !!(runtime.providerOptions && Object.keys(runtime.providerOptions).length > 0)
     },

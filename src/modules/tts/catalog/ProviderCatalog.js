@@ -1,19 +1,13 @@
-/**
- * ProviderCatalog - 服务商目录
- * 薄封装，委托 ProviderRegistry，构造函数注入。
- */
-
 class ProviderCatalog {
-  /**
-   * @param {Object} options
-   * @param {Object} options.providerRegistry - ProviderRegistry 实例
-   */
   constructor({ providerRegistry }) {
-    this._reg = providerRegistry;
+    if (!providerRegistry) {
+      throw new Error('[ProviderCatalog] 需要 providerRegistry 实例');
+    }
+    this._registry = providerRegistry;
   }
 
   get(key) {
-    const descriptor = this._reg.get(key);
+    const descriptor = this._registry.get(key);
     if (!descriptor) return null;
     return {
       provider: descriptor.provider,
@@ -25,21 +19,21 @@ class ProviderCatalog {
     };
   }
 
-  resolveCanonicalKey(key) { return this._reg.resolveCanonicalKey(key); }
+  resolveCanonicalKey(key) { return this._registry.resolveCanonicalKey(key); }
 
   getAll() {
-    return this._reg.getAll().map(d => ({
+    return this._registry.getAll().map(d => ({
       key: d.key, provider: d.provider, service: d.service,
       displayName: d.displayName, description: d.description,
       aliases: d.aliases, status: d.status
     }));
   }
 
-  getAllCanonicalKeys() { return this._reg.getAllCanonicalKeys(); }
-  has(key) { return this._reg.has(key); }
+  getAllCanonicalKeys() { return this._registry.getAllCanonicalKeys(); }
+  has(key) { return this._registry.has(key); }
 
   getByProvider() {
-    const grouped = this._reg.getByProvider();
+    const grouped = this._registry.getByProvider();
     const result = {};
     Object.entries(grouped).forEach(([provider, descriptors]) => {
       result[provider] = descriptors.map(d => ({
@@ -51,7 +45,7 @@ class ProviderCatalog {
     return result;
   }
 
-  getStats() { return this._reg.getStats(); }
+  getStats() { return this._registry.getStats(); }
 }
 
 module.exports = { ProviderCatalog };

@@ -23,7 +23,9 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
    * 初始化
    */
   async initialize() {
-    if (!this.registry.isReady) await this.registry.initialize();
+    if (!this.registry.isReady) {
+      throw new Error('[VoiceCatalogAdapter] VoiceRegistry 未初始化，请检查 ServiceContainer 初始化顺序');
+    }
   }
 
   /**

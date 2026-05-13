@@ -13,18 +13,14 @@
  * - 导入脚本
  */
 
-const { getVoiceRegistry } = require('../core/VoiceRegistry');
 const VoiceFormSchema = require('../schema/VoiceFormSchema');
 const StoredVoiceSchema = require('../schema/StoredVoiceSchema');
 const VoiceNormalizer = require('./VoiceNormalizer');
 
 class VoiceWriteService {
-  /**
-   * @param {Object} options
-   * @param {Object} [options.registry] - VoiceRegistry 实例（用于依赖注入）
-   */
-  constructor(options = {}) {
-    this.registry = options.registry || getVoiceRegistry();
+  constructor({ registry }) {
+    if (!registry) throw new Error('[VoiceWriteService] 需要 registry 实例');
+    this.registry = registry;
   }
 
   // ==================== 新增 ====================
@@ -37,7 +33,6 @@ class VoiceWriteService {
    * @returns {Object} { success, data?, error? }
    */
   create(form, options = {}) {
-    // 1. 表单校验
     const formValidation = VoiceFormSchema.validate(form);
     if (!formValidation.valid) {
       return {
@@ -47,8 +42,16 @@ class VoiceWriteService {
       };
     }
 
-    // 2. 转换为 StoredVoice
-    const stored = VoiceNormalizer.fromForm(form, options);
+    let voiceNumber = options.voiceNumber;
+    if (!voiceNumber && !form.voiceCode) {
+      try {
+        voiceNumber = this.registry.getNextVoiceNumber(form.provider);
+      } catch (e) {
+        return { success: false, error: e.message };
+      }
+    }
+
+    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber });
 
     // 3. 去重检查
     const existing = this.registry.get(stored.identity.id);
@@ -129,7 +132,6 @@ class VoiceWriteService {
    * @private
    */
   _createOneInternal(form, options = {}, excludeIds = new Set()) {
-    // 1. 表单校验
     const formValidation = VoiceFormSchema.validate(form);
     if (!formValidation.valid) {
       return {
@@ -139,8 +141,16 @@ class VoiceWriteService {
       };
     }
 
-    // 2. 转换为 StoredVoice
-    const stored = VoiceNormalizer.fromForm(form, options);
+    let voiceNumber = options.voiceNumber;
+    if (!voiceNumber && !form.voiceCode) {
+      try {
+        voiceNumber = this.registry.getNextVoiceNumber(form.provider);
+      } catch (e) {
+        return { success: false, error: e.message };
+      }
+    }
+
+    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber });
 
     // 3. 去重检查（Registry + 本批次）
     if (excludeIds.has(stored.identity.id)) {
@@ -257,7 +267,6 @@ class VoiceWriteService {
       runtime: {
         ...existing.runtime,
         ...(updates.providerVoiceId !== undefined && { voiceId: updates.providerVoiceId }),
-        ...(updates.model !== undefined && { model: updates.model }),
         ...(updates.providerOptions !== undefined && { providerOptions: updates.providerOptions })
       },
       meta: {
@@ -311,10 +320,6 @@ class VoiceWriteService {
   }
 }
 
-// 导出类（单例通过 ServiceContainer 管理；此实例为向后兼容保留）
-const voiceWriteService = new VoiceWriteService();
-
 module.exports = {
-  VoiceWriteService,
-  voiceWriteService
+  VoiceWriteService
 };

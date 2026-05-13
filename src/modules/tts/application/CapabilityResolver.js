@@ -16,12 +16,15 @@ class CapabilityResolver {
   /**
    * @param {Object} deps
    * @param {Function} deps.getCompiledCapability - FieldDefinitionSystem.getCompiledCapability
-   * @param {Object} [deps.providerRegistry] - ProviderRegistry 实例
+   * @param {Object} deps.providerRegistry - ProviderRegistry 实例
    * @param {Object} [deps.cache] - 可选的缓存 Map（测试用）
    */
   constructor({ getCompiledCapability, providerRegistry, cache }) {
     if (!getCompiledCapability || typeof getCompiledCapability !== 'function') {
       throw new Error('[CapabilityResolver] 需要 getCompiledCapability 函数');
+    }
+    if (!providerRegistry) {
+      throw new Error('[CapabilityResolver] 需要 providerRegistry 实例');
     }
     this._getCompiledCapability = getCompiledCapability;
     this._providerRegistry = providerRegistry;

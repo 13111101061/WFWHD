@@ -11,7 +11,6 @@
  *     "headers": { "Authorization": "Bearer ${credential.apiKey}" },
  *     "bodyTemplate": { "model": "${params.model}", "text": "${text}" },
  *     "responseMapping": { "audioPath": "audio_data", "audioEncoding": "base64" },
- *     "timeoutMs": 30000,
  *     "errorMapping": { "retryable": [429,503], "circuitBreaker": [500] }
  *   }
  *
@@ -22,6 +21,9 @@
  *
  * 如果 manifest 有 adapter 字段 → 使用自定义 Adapter（优先）
  * 如果 manifest 有 api 字段 → 使用 GenericHttpAdapter
+ *
+ * 注意：超时、重试、限流、熔断统一由 ExecutionPolicy 管理，
+ *       本适配器只负责单次 HTTP 请求。
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
@@ -39,9 +41,6 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     this._bodyTemplate = this._api.bodyTemplate || {};
     this._responseMap = this._api.responseMapping || {};
     this._errorMap = this._api.errorMapping || {};
-    this._timeout = this._api.timeoutMs || 30000;
-    this._retry = this._api.retry || { maxRetries: 0, backoffMs: 200 };
-    this._rateLimit = this._api.rateLimit || { requestsPerMinute: 60 };
 
     if (!this._endpoint) {
       throw new Error('[GenericHttpAdapter] manifest 缺少 api.endpoint');
@@ -83,8 +82,6 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     }
   }
 
-  // ==================== 模板内插 ====================
-
   _interpolateHeaders(creds) {
     const h = {};
     for (const [key, template] of Object.entries(this._headers)) {
@@ -97,7 +94,6 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     return this._resolve(this._bodyTemplate, { text, params });
   }
 
-  /** 递归遍历模板对象，解析 ${path} 占位符 */
   _resolve(node, context) {
     if (typeof node === 'string' && node.startsWith('${') && node.endsWith('}')) {
       return this._navigate(context, node.slice(2, -1).split('.'));
@@ -117,38 +113,24 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     return v !== undefined ? v : undefined;
   }
 
-  // ==================== HTTP ====================
-
   async _fetch(body, headers) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this._timeout);
-
-    try {
-      return await fetch(this._endpoint, {
-        method: this._method,
-        headers: { ...headers },
-        body: JSON.stringify(body),
-        signal: controller.signal
-      });
-    } finally {
-      clearTimeout(timer);
-    }
+    return fetch(this._endpoint, {
+      method: this._method,
+      headers: { ...headers },
+      body: JSON.stringify(body)
+    });
   }
-
-  // ==================== 响应处理 ====================
 
   async _extractAudio(response, mapping) {
     const encoding = mapping.audioEncoding || 'base64';
     const audioPath = mapping.audioPath || 'audio_data';
 
-    // Mode 1: Binary response (all bytes are audio)
     if (encoding === 'binary') {
       const buf = Buffer.from(await response.arrayBuffer());
       if (!buf || buf.length === 0) throw this._error('PARSE_ERROR', '响应中无音频数据');
       return buf;
     }
 
-    // Mode 2: JSON response with embedded audio (base64)
     const result = await response.json();
     let audio = result;
     for (const p of audioPath.split('.')) { audio = audio?.[p]; }

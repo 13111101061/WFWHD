@@ -8,8 +8,8 @@
  * - 重试策略
  * - 指标收集
  *
- * 替代原本散落在 TtsSynthesisService 中的 _getCircuitBreaker/_getRateLimiter/
- * _checkRateLimit/sleep/isRetryableError/withTimeout 等逻辑
+ * 支持 per-service 配置：从 manifest.json 的 executionPolicy 块读取
+ * 每个服务商可独立配置 timeoutMs/retryTimes/rateLimit/circuitBreaker
  */
 
 const CircuitBreaker = require('../../../infrastructure/resilience/CircuitBreaker');
@@ -52,12 +52,9 @@ class ExecutionPolicy {
     this.timeoutMs = config.timeoutMs || DEFAULT_TIMEOUT_MS;
     this.retryTimes = config.retryTimes || DEFAULT_RETRY_TIMES;
 
-    // per-service 熔断器
     this.circuitBreakers = new Map();
-    // per-service 限流器
     this.rateLimiters = new Map();
 
-    // 指标
     this.metrics = {
       totalRequests: 0,
       successfulRequests: 0,
@@ -68,41 +65,59 @@ class ExecutionPolicy {
       rateLimitHits: 0
     };
 
-    // 熔断器配置
     this.circuitBreakerConfig = config.circuitBreaker || {
       failureThreshold: 5,
       successThreshold: 2,
       timeout: 60000
     };
 
-    // 限流器配置
     this.rateLimiterConfig = config.rateLimiter || {
       maxRequests: 100,
       windowMs: 60000
     };
+
+    this._serviceConfigs = new Map();
+  }
+
+  /**
+   * 注册 per-service 配置
+   * @param {string} serviceKey - 服务标识
+   * @param {Object} config - { timeoutMs, retryTimes, rateLimit, circuitBreaker }
+   */
+  registerServiceConfig(serviceKey, config = {}) {
+    this._serviceConfigs.set(serviceKey, config);
+  }
+
+  /**
+   * 获取 per-service 超时
+   */
+  _getTimeoutMs(serviceKey) {
+    const svc = this._serviceConfigs.get(serviceKey);
+    return svc?.timeoutMs || this.timeoutMs;
+  }
+
+  /**
+   * 获取 per-service 重试次数
+   */
+  _getRetryTimes(serviceKey) {
+    const svc = this._serviceConfigs.get(serviceKey);
+    return svc?.retryTimes != null ? svc.retryTimes : this.retryTimes;
   }
 
   /**
    * 受保护的执行：限流 → 熔断 → 重试 → 超时
-   * 
-   * @param {string} serviceKey - 服务标识
-   * @param {Function} task - 异步任务函数
-   * @returns {Promise<any>} 任务结果
    */
   async execute(serviceKey, task) {
     const startTime = Date.now();
 
-    // 1. 限流检查
     this._checkRateLimit(serviceKey);
 
-    // 2. 熔断器保护执行
     const breaker = this._getCircuitBreaker(serviceKey);
 
     const result = await breaker.execute(async () => {
-      return this._executeWithRetry(task, startTime);
+      return this._executeWithRetry(serviceKey, task, startTime);
     });
 
-    // 3. 记录成功
     const latency = Date.now() - startTime;
     this._recordSuccess(serviceKey, latency);
 
@@ -110,15 +125,17 @@ class ExecutionPolicy {
   }
 
   /**
-   * 重试 + 超时包装
+   * 重试 + 超时包装（per-service 配置）
    */
-  async _executeWithRetry(task, startTime) {
-    const attempts = Math.max(1, this.retryTimes + 1);
+  async _executeWithRetry(serviceKey, task, startTime) {
+    const retryTimes = this._getRetryTimes(serviceKey);
+    const timeoutMs = this._getTimeoutMs(serviceKey);
+    const attempts = Math.max(1, retryTimes + 1);
     let lastError;
 
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
-        return await withTimeout(task(), this.timeoutMs);
+        return await withTimeout(task(), timeoutMs);
       } catch (error) {
         lastError = error;
         if (error.code === 'TIMEOUT_ERROR') {
@@ -133,9 +150,6 @@ class ExecutionPolicy {
     throw lastError;
   }
 
-  /**
-   * 限流检查
-   */
   _checkRateLimit(serviceKey) {
     const limiter = this._getRateLimiter(serviceKey);
     const result = limiter.check(serviceKey);
@@ -149,35 +163,30 @@ class ExecutionPolicy {
     }
   }
 
-  /**
-   * 获取或创建熔断器
-   */
   _getCircuitBreaker(serviceKey) {
     if (!this.circuitBreakers.has(serviceKey)) {
+      const svc = this._serviceConfigs.get(serviceKey);
+      const cbConfig = svc?.circuitBreaker || this.circuitBreakerConfig;
       this.circuitBreakers.set(serviceKey, new CircuitBreaker({
         name: `tts-${serviceKey}`,
-        ...this.circuitBreakerConfig
+        ...cbConfig
       }));
     }
     return this.circuitBreakers.get(serviceKey);
   }
 
-  /**
-   * 获取或创建限流器
-   */
   _getRateLimiter(serviceKey) {
     if (!this.rateLimiters.has(serviceKey)) {
+      const svc = this._serviceConfigs.get(serviceKey);
+      const rlConfig = svc?.rateLimit || this.rateLimiterConfig;
       this.rateLimiters.set(serviceKey, new RateLimiter({
         name: `tts-${serviceKey}`,
-        ...this.rateLimiterConfig
+        ...rlConfig
       }));
     }
     return this.rateLimiters.get(serviceKey);
   }
 
-  /**
-   * 记录成功
-   */
   _recordSuccess(serviceKey, latency) {
     this.metrics.totalRequests++;
     this.metrics.successfulRequests++;
@@ -191,9 +200,6 @@ class ExecutionPolicy {
     stats.totalLatency += latency;
   }
 
-  /**
-   * 记录失败（由熔断器回调时使用）
-   */
   recordFailure(serviceKey) {
     this.metrics.totalRequests++;
     this.metrics.failedRequests++;
@@ -206,9 +212,6 @@ class ExecutionPolicy {
     stats.errors++;
   }
 
-  /**
-   * 获取统计信息
-   */
   getStats() {
     const successRate = this.metrics.totalRequests > 0
       ? (this.metrics.successfulRequests / this.metrics.totalRequests * 100).toFixed(2)
@@ -240,9 +243,6 @@ class ExecutionPolicy {
     };
   }
 
-  /**
-   * 重置所有指标
-   */
   resetStats() {
     this.metrics = {
       totalRequests: 0, successfulRequests: 0, failedRequests: 0,
@@ -252,9 +252,6 @@ class ExecutionPolicy {
     this.circuitBreakers.forEach(b => b.reset());
   }
 
-  /**
-   * 获取熔断器状态
-   */
   _getCircuitBreakerStatus() {
     return Array.from(this.circuitBreakers.entries()).map(([key, breaker]) => ({
       service: key,
@@ -263,9 +260,6 @@ class ExecutionPolicy {
     }));
   }
 
-  /**
-   * 健康检查
-   */
   getHealthStatus() {
     const breakerStatus = this._getCircuitBreakerStatus();
     const openBreakers = breakerStatus.filter(cb => cb.state === 'OPEN');

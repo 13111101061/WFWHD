@@ -397,6 +397,26 @@ class VoiceRegistry {
     return this.voiceCodeIndex.has(voiceCode);
   }
 
+  getNextVoiceNumber(providerKey) {
+    const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
+    const providerCode = VoiceCodeGenerator.getProviderCode(providerKey);
+    if (!providerCode) return 1;
+
+    let maxNumber = 0;
+    for (const [voiceCode] of this.voiceCodeIndex) {
+      if (voiceCode.substring(0, 3) === providerCode) {
+        const num = parseInt(voiceCode.substring(3, 8), 10);
+        if (num > maxNumber) maxNumber = num;
+      }
+    }
+
+    const next = maxNumber + 1;
+    if (next > 99999) {
+      throw new Error(`[VoiceRegistry] provider "${providerKey}" voiceNumber 溢出（超过 99999）`);
+    }
+    return next;
+  }
+
   /**
    * 获取所有禁用的服务商
    */

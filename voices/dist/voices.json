@@ -91,17 +91,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2020008594694475776",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -145,17 +134,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2020009311371005952",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -199,17 +177,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2001257729754140672",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -253,17 +220,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2001286865130360832",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -307,17 +263,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2001898421836845056",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -361,17 +306,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2001910895478837248",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -415,17 +349,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2001931510222950400",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -469,17 +392,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2002941772480647168",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -523,17 +435,6 @@
         "updatedAt": "2026-04-21T14:54:01.997Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "sourceId": "2002991117984862208",
-          "model": "moss-tts",
-          "samplingParams": {
-            "temperature": 1.7,
-            "top_p": 0.8,
-            "top_k": 25
-          }
-        }
       }
     },
     {
@@ -574,13 +475,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Cherry",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -621,13 +515,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Ethan",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -668,13 +555,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Chelsie",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -715,13 +595,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Serena",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -762,13 +635,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Dylan",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -807,13 +673,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Jada",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -852,13 +711,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Sunny",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -899,13 +751,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Momo",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -946,13 +791,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Vivian",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -993,13 +831,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Moon",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1040,13 +871,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Maia",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1087,13 +911,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Kai",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1134,13 +951,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Nofish",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1181,13 +991,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Bella",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1228,13 +1031,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Jennifer",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1275,13 +1071,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Ryan",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1322,13 +1111,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Katerina",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1369,13 +1151,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Aiden",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1416,13 +1191,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Eldric Sage",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1463,13 +1231,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Mia",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1510,13 +1271,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Mochi",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1557,13 +1311,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Bellona",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1604,13 +1351,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Vincent",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1651,13 +1391,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Bunny",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1698,13 +1431,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Neil",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1745,13 +1471,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Elias",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1792,13 +1511,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Arthur",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1839,13 +1551,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Nini",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1886,13 +1591,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Ebona",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1933,13 +1631,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Seren",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -1980,13 +1671,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Pip",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2027,13 +1711,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Stella",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2073,13 +1750,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Bodega",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2119,13 +1789,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Sonrisa",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2165,13 +1828,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Alek",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2211,13 +1867,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Dolce",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2258,13 +1907,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Sohee",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2305,13 +1947,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Ono Anna",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2352,13 +1987,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Lenn",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2399,13 +2027,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Emilien",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2446,13 +2067,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Andre",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2493,13 +2107,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Radio Gol",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2538,13 +2145,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Li",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2583,13 +2183,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Marcus",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2628,13 +2221,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Roy",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2673,13 +2259,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Peter",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2718,13 +2297,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Eric",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2763,13 +2335,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Rocky",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     },
     {
@@ -2808,13 +2373,6 @@
         "updatedAt": "2026-04-21T14:54:02.001Z",
         "dataSource": "import",
         "version": "v1"
-      },
-      "_compat": {
-        "ttsConfig": {
-          "voiceName": "Kiki",
-          "model": "qwen3-tts-instruct-flash-realtime",
-          "sampleRate": 24000
-        }
       }
     }
   ]

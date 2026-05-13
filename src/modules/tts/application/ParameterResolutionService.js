@@ -112,4 +112,6 @@ class ParameterResolutionService {
   }
 }
 
-module.exports = { ParameterResolutionService };
+module.exports = {
+  ParameterResolutionService
+};

@@ -11,8 +11,8 @@
  * 参数合并逻辑已迁移到 ParameterResolutionService。
  */
 
-const CapabilitySchema = require('../schema/CapabilitySchema');
 const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
+const CapabilitySchema = require('../schema/CapabilitySchema');
 
 // 支持字段别名：voice_code/voiceCode, system_id/systemId, voice_id/voiceId, voice
 const RESERVED_REQUEST_KEYS = new Set([

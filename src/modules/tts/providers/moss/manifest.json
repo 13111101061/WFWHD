@@ -117,5 +117,18 @@
   "voiceCode": {
     "providerCode": "001",
     "serviceKey": "tts"
+  },
+  "executionPolicy": {
+    "timeoutMs": 30000,
+    "retryTimes": 1,
+    "rateLimit": {
+      "maxRequests": 30,
+      "windowMs": 60000
+    },
+    "circuitBreaker": {
+      "failureThreshold": 5,
+      "successThreshold": 2,
+      "timeout": 60000
+    }
   }
 }

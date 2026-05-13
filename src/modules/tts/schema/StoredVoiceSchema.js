@@ -151,13 +151,13 @@ const StoredVoiceSchema = {
       errors.push(...MetaSchema.validate(stored.meta).map(e => `meta: ${e}`));
     }
 
-    // 3. 检查兼容层（如果有）
+    // 3. 检查兼容层（上线前升级为 error）
     if (stored._compat) {
-      warnings.push('_compat 为兼容层，后续版本将移除');
+      errors.push('_compat 兼容层已废弃，请迁移数据后删除');
     }
 
     // 4. 检查未知顶层字段
-    const knownTopLevel = new Set([...this.required, '_compat']);
+    const knownTopLevel = new Set([...this.required]);
     for (const key of Object.keys(stored)) {
       if (!knownTopLevel.has(key)) {
         warnings.push(`未知顶层字段 "${key}"`);

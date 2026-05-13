@@ -201,24 +201,22 @@ async function runTests() {
  */
 async function cleanup() {
   try {
-    // 关闭 ServiceContainer（包含各服务的清理）
     const ServiceContainer = require('../../src/config/ServiceContainer');
     if (ServiceContainer && ServiceContainer.reset) {
       ServiceContainer.reset();
     }
 
-    // 关闭 VoiceRegistry（Redis 连接等）
-    if (voiceRegistry && voiceRegistry.close) {
-      await voiceRegistry.close();
+    const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+    const vr = getVoiceRegistry();
+    if (vr && vr.close) {
+      await vr.close();
     }
 
     console.log('资源清理完成，退出测试。\n');
   } catch (e) {
-    // 清理失败不影响测试结果
     console.log('资源清理时发生非致命错误:', e.message);
   }
 
-  // 强制退出，避免定时器/句柄未释放导致超时
   process.exit(0);
 }
 

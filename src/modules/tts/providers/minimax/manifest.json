@@ -89,5 +89,13 @@
   "voiceCode": {
     "providerCode": "005",
     "serviceKey": "tts"
+  },
+  "executionPolicy": {
+    "timeoutMs": 30000,
+    "retryTimes": 1,
+    "rateLimit": {
+      "maxRequests": 40,
+      "windowMs": 60000
+    }
   }
 }

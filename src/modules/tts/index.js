@@ -28,7 +28,7 @@
  */
 
 const ServiceContainer = require('../../config/ServiceContainer');
-const { getVoiceRegistry, VoiceRegistry } = require('./core/VoiceRegistry');
+const { getVoiceRegistry } = require('./core/VoiceRegistry');
 
 // 状态
 let _initialized = false;
@@ -112,14 +112,10 @@ module.exports = {
   getValidationService,
   getVoiceRegistry: getVoiceRegistryFn,
 
-  // 音色管理
-  getVoiceRegistry,
-  VoiceRegistry,
-
   // 类型导出（用于扩展）
   SynthesisRequest: require('./domain/SynthesisRequest'),
   AudioResult: require('./domain/AudioResult'),
-  TtsSynthesisService: require('./domain/TtsSynthesisService').TtsSynthesisService,  // 兼容解构导出
+  TtsSynthesisService: require('./domain/TtsSynthesisService').TtsSynthesisService,
   TtsValidationService: require('./domain/TtsValidationService'),
   TtsProviderPort: require('./ports/TtsProviderPort'),
   VoiceCatalogPort: require('./ports/VoiceCatalogPort'),

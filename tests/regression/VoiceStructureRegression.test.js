@@ -37,7 +37,6 @@ describe('Voice Structure Regression Tests', function() {
     description: '测试用音色',
     tags: ['测试'],
     providerVoiceId: 'provider_voice_123',
-    model: 'test-model',
     providerOptions: {
       temperature: 1.0
     }
@@ -84,7 +83,6 @@ describe('Voice Structure Regression Tests', function() {
 
         // 校验 runtime 层
         assert.strictEqual(stored.runtime.voiceId, 'provider_voice_123');
-        assert.strictEqual(stored.runtime.model, 'test-model');
         assert.deepStrictEqual(stored.runtime.providerOptions, { temperature: 1.0 });
 
         // 校验 meta 层
@@ -114,35 +112,29 @@ describe('Voice Structure Regression Tests', function() {
         assert.deepStrictEqual(stored.profile.languages, ['zh-CN']);
         assert.deepStrictEqual(stored.profile.tags, []);
         assert.strictEqual(stored.profile.description, '');
-        assert.strictEqual(stored.runtime.model, 'default');
         assert.deepStrictEqual(stored.runtime.providerOptions, {});
       });
     });
 
-    describe('fromLegacy()', function() {
+    describe('normalize()', function() {
       it('应正确转换遗留扁平结构', function() {
-        const stored = VoiceNormalizer.fromLegacy(legacyVoice);
+        const stored = VoiceNormalizer.normalize(legacyVoice);
 
-        // 校验已转换为新结构
         assert.ok(stored.identity, '应有 identity 层');
         assert.ok(stored.profile, '应有 profile 层');
         assert.ok(stored.runtime, '应有 runtime 层');
         assert.ok(stored.meta, '应有 meta 层');
 
-        // 校验 identity 正确映射
         assert.strictEqual(stored.identity.id, 'legacy_voice');
         assert.strictEqual(stored.identity.provider, 'legacy_provider');
         assert.strictEqual(stored.identity.service, 'legacy_service');
         assert.strictEqual(stored.identity.voiceCode, '001000030000001');
 
-        // 校验 profile 正确映射
         assert.strictEqual(stored.profile.displayName, '遗留音色');
         assert.strictEqual(stored.profile.alias, '遗留音色别名');
         assert.strictEqual(stored.profile.gender, 'male');
 
-        // 校验 runtime 从 ttsConfig 提取
         assert.strictEqual(stored.runtime.voiceId, 'legacy_provider_voice_id');
-        assert.strictEqual(stored.runtime.model, 'legacy-model');
       });
 
       it('应保持已转换的新结构不变', function() {
@@ -164,7 +156,6 @@ describe('Voice Structure Regression Tests', function() {
           },
           runtime: {
             voiceId: 'new_runtime_id',
-            model: 'new-model',
             providerOptions: {}
           },
           meta: {
@@ -175,10 +166,10 @@ describe('Voice Structure Regression Tests', function() {
           }
         };
 
-        const result = VoiceNormalizer.fromLegacy(newFormatVoice);
+        const result = VoiceNormalizer.normalize(newFormatVoice);
 
-        // 应该直接返回，不做修改
-        assert.strictEqual(result, newFormatVoice);
+        assert.strictEqual(result.identity.id, 'new_voice');
+        assert.strictEqual(result.runtime.voiceId, 'new_runtime_id');
       });
     });
 
@@ -210,10 +201,8 @@ describe('Voice Structure Regression Tests', function() {
         assert.strictEqual(runtime.provider, 'test_provider');
         assert.strictEqual(runtime.service, 'test_service');
         assert.strictEqual(runtime.voiceId, 'provider_voice_123');
-        assert.strictEqual(runtime.model, 'test-model');
         assert.deepStrictEqual(runtime.providerOptions, { temperature: 1.0 });
 
-        // 不应包含 profile 信息
         assert.strictEqual(runtime.displayName, undefined);
         assert.strictEqual(runtime.gender, undefined);
       });
@@ -241,7 +230,6 @@ describe('Voice Structure Regression Tests', function() {
       },
       runtime: {
         voiceId: 'mapper_runtime_id',
-        model: 'mapper-model',
         providerOptions: { speed: 1.2 }
       }
     };
@@ -256,7 +244,6 @@ describe('Voice Structure Regression Tests', function() {
         assert.strictEqual(adapter.name, '映射测试音色');
         assert.strictEqual(adapter.language, 'zh-CN');
         assert.strictEqual(adapter.voiceId, 'mapper_runtime_id');
-        assert.strictEqual(adapter.model, 'mapper-model');
         assert.deepStrictEqual(adapter.providerOptions, { speed: 1.2 });
       });
     });
@@ -268,9 +255,7 @@ describe('Voice Structure Regression Tests', function() {
         assert.strictEqual(runtime.provider, 'mapper_provider');
         assert.strictEqual(runtime.service, 'mapper_service');
         assert.strictEqual(runtime.voiceId, 'mapper_runtime_id');
-        assert.strictEqual(runtime.model, 'mapper-model');
 
-        // 不应包含展示信息
         assert.strictEqual(runtime.displayName, undefined);
       });
     });
@@ -300,7 +285,6 @@ describe('Voice Structure Regression Tests', function() {
       },
       runtime: {
         voiceId: 'catalog_runtime_id',
-        model: 'catalog-model',
         providerOptions: { speed: 1.5 }
       },
       meta: {
@@ -324,11 +308,9 @@ describe('Voice Structure Regression Tests', function() {
         assert.deepStrictEqual(display.languages, ['zh-CN', 'en-US']);
         assert.strictEqual(display.previewUrl, 'https://example.com/preview.mp3');
 
-        // 不应暴露运行时敏感信息
         assert.strictEqual(display.voiceId, undefined);
-        // 但应有运行时预览
         assert.ok(display.runtimePreview);
-        assert.strictEqual(display.runtimePreview.model, 'catalog-model');
+        assert.strictEqual(display.runtimePreview.hasProviderOptions, true);
       });
     });
 
@@ -505,7 +487,6 @@ describe('Voice Structure Regression Tests', function() {
           },
           runtime: {
             voiceId: 'runtime_id',
-            model: 'model',
             providerOptions: {}
           },
           meta: {
@@ -574,7 +555,6 @@ describe('Voice Structure Regression Tests', function() {
           },
           runtime: {
             voiceId: 'test_runtime',
-            model: 'test-model',
             providerOptions: {}
           },
           meta: {
@@ -780,9 +760,16 @@ describe('Voice Structure Regression Tests', function() {
 
   describe('VoiceCatalog Integration', function() {
 
+    let voiceCatalog;
+
+    before(async function() {
+      await voiceRegistry.initialize();
+      voiceCatalog = new VoiceCatalog({ voiceRegistry });
+    });
+
     describe('查询与分组', function() {
       it('getByProviderAndService 应正确分组', function() {
-        const voices = VoiceCatalog.getByProviderAndService('aliyun', 'qwen_http');
+        const voices = voiceCatalog.getByProviderAndService('aliyun', 'qwen_http');
 
         assert.ok(Array.isArray(voices));
         assert.ok(voices.length > 0);
@@ -794,18 +781,16 @@ describe('Voice Structure Regression Tests', function() {
       });
 
       it('getDisplay 应返回展示格式', function() {
-        // 获取第一个音色
-        const allVoices = VoiceCatalog.query({});
+        const allVoices = voiceCatalog.query({});
         if (allVoices.length === 0) {
           this.skip('无可用的音色数据');
         }
 
-        const voice = VoiceCatalog.getDisplay(allVoices[0].id);
+        const voice = voiceCatalog.getDisplay(allVoices[0].id);
 
         assert.ok(voice);
         assert.ok(voice.id);
         assert.ok(voice.displayName);
-        // 不应暴露敏感运行时信息
         assert.strictEqual(voice.voiceId, undefined);
       });
     });

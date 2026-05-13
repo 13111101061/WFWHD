@@ -23,7 +23,7 @@ class TtsProviderAdapter extends TtsProviderPort {
   async initialize() {
     if (this._initialized) return;
     if (this._voiceRegistry && !this._voiceRegistry.isReady) {
-      await this._voiceRegistry.initialize();
+      throw new Error('[TtsProviderAdapter] VoiceRegistry 未初始化，请检查 ServiceContainer 初始化顺序');
     }
     this._initialized = true;
   }

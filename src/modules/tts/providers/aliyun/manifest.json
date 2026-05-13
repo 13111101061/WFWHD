@@ -147,5 +147,13 @@
   "voiceCode": {
     "providerCode": "002",
     "serviceKey": "qwen_http"
+  },
+  "executionPolicy": {
+    "timeoutMs": 30000,
+    "retryTimes": 1,
+    "rateLimit": {
+      "maxRequests": 60,
+      "windowMs": 60000
+    }
   }
 }

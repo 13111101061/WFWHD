@@ -54,14 +54,11 @@ function onReload(fn) {
 function initialize(options = {}) {
   const failFast = options.failFast !== undefined ? options.failFast : FAIL_FAST;
 
-  // 1. 加载配置文件
   registry.initialize();
   console.log('[FieldDefinitionSystem] 字段定义系统已初始化');
 
-  // 保存 providerRegistry 供 reload 使用
   _providerRegistry = options.providerRegistry || null;
 
-  // 2. 预编译所有服务
   const { results, errors } = CapabilityCompiler.compileAll(_providerRegistry);
 
   // 3. 处理编译错误

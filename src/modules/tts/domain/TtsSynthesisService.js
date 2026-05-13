@@ -289,6 +289,7 @@ class TtsSynthesisService {
   _extractServiceType(serviceKey) {
     if (!serviceKey) return 'default';
     const reg = this._providerRegistry;
+    if (!reg) return serviceKey.split('_').slice(1).join('_') || 'default';
     const descriptor = reg.get(serviceKey);
     const canonicalKey = descriptor?.key || reg.resolveCanonicalKey(serviceKey) || serviceKey;
     const providerKey = descriptor?.provider || canonicalKey.split('_')[0];

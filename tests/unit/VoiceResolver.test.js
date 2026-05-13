@@ -15,12 +15,15 @@
 const assert = require('assert');
 const { VoiceResolver } = require('../../src/modules/tts/application/VoiceResolver');
 const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
+const { ProviderCatalog } = require('../../src/modules/tts/catalog/ProviderCatalog');
+const { getProviderRegistry } = require('../../src/modules/tts/provider-management');
 
 async function runTests() {
   console.log('\n=== VoiceResolver tests (v3.0 - refactored) ===\n');
   const voiceRegistry = getVoiceRegistry();
   await voiceRegistry.initialize();
-  const voiceResolver = new VoiceResolver({ voiceRegistry });
+  const providerCatalog = new ProviderCatalog({ providerRegistry: getProviderRegistry() });
+  const voiceResolver = new VoiceResolver({ voiceRegistry, providerCatalog });
 
   console.log('Test 1: resolve known service');
   {

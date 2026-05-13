@@ -339,7 +339,7 @@ const CapabilityCompiler = {
 
     for (const serviceKey of serviceKeys) {
       try {
-        const descriptor = providerRegistry.get(serviceKey);
+        const descriptor = providerRegistry ? providerRegistry.get(serviceKey) : null;
         if (!descriptor) {
           errors.push({ serviceKey, error: '服务描述未找到' });
           continue;

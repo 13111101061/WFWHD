@@ -120,7 +120,6 @@ const VoiceNormalizer = {
       status: stored.profile?.status,
       preview: stored.profile?.preview,
       providerVoiceId: stored.runtime?.voiceId,
-      model: stored.runtime?.model,
       providerOptions: stored.runtime?.providerOptions
     };
   },

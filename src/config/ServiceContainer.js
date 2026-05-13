@@ -14,6 +14,7 @@ const { VoiceCatalogAdapter } = require('../modules/tts/adapters/VoiceCatalogAda
 const { VoiceCatalog } = require('../modules/tts/catalog/VoiceCatalog');
 const { VoiceResolver } = require('../modules/tts/application/VoiceResolver');
 const { VoiceRegistry, setVoiceRegistry } = require('../modules/tts/core/VoiceRegistry');
+const { ProviderCatalog } = require('../modules/tts/catalog/ProviderCatalog');
 
 const { ProviderManifest } = require('../modules/tts/providers/manifests/ProviderManifest');
 const { ExecutionPolicy } = require('../modules/tts/infrastructure/ExecutionPolicy');
@@ -92,7 +93,11 @@ class ServiceContainer {
     await voiceCatalogAdapter.initialize();
     this._services.set('voiceCatalogAdapter', voiceCatalogAdapter);
 
-    // 6. CapabilityResolver（构造函数注入 getCompiledCapability + providerRegistry）
+    // 6. ProviderCatalog（服务商目录，构造函数注入 providerRegistry）
+    const providerCatalog = new ProviderCatalog({ providerRegistry });
+    this._services.set('providerCatalog', providerCatalog);
+
+    // 7. CapabilityResolver（构造函数注入 getCompiledCapability + providerRegistry）
     const capabilityResolver = new CapabilityResolver({
       getCompiledCapability: FieldDefinitionSystem.getCompiledCapability,
       providerRegistry
@@ -100,37 +105,38 @@ class ServiceContainer {
     FieldDefinitionSystem.onReload(() => capabilityResolver.clearCache());
     this._services.set('capabilityResolver', capabilityResolver);
 
-    // 7. 初始化适配器
+    // 8. 初始化适配器
     await ttsProviderAdapter.initialize();
 
-    // 7.1 音色一致性审计
+    // 8.1 音色一致性审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
       await auditVoiceCoverage(voiceRegistry, console);
     }
 
-    // 8. ExecutionPolicy
+    // 9. ExecutionPolicy（从 manifest 注册 per-service 配置）
     const executionPolicy = new ExecutionPolicy();
+    for (const serviceKey of ProviderManifest.getAllServiceKeys()) {
+      const svcConfig = ProviderManifest.getServiceConfig(serviceKey);
+      if (svcConfig?.executionPolicy) {
+        executionPolicy.registerServiceConfig(serviceKey, svcConfig.executionPolicy);
+      }
+    }
     this._services.set('executionPolicy', executionPolicy);
 
-    // 9. 验证服务
+    // 10. 验证服务
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
-    // 10. VoiceCatalog（查询门面，构造函数注入 voiceRegistry）
+    // 11. VoiceCatalog（查询门面，构造函数注入 voiceRegistry）
     const voiceCatalogQuery = new VoiceCatalog({ voiceRegistry });
     this._services.set('voiceCatalogQuery', voiceCatalogQuery);
 
-    // 10.1 ProviderCatalog（服务商目录，构造函数注入 providerRegistry）
-    const { ProviderCatalog } = require('../modules/tts/catalog/ProviderCatalog');
-    const providerCatalog = new ProviderCatalog({ providerRegistry });
-    this._services.set('providerCatalog', providerCatalog);
-
-    // 11. VoiceResolver（音色解析器，构造函数注入 voiceRegistry + providerCatalog）
+    // 12. VoiceResolver（音色解析器，构造函数注入 voiceRegistry + providerCatalog）
     const voiceResolver = new VoiceResolver({ voiceRegistry, providerCatalog });
     this._services.set('voiceResolver', voiceResolver);
 
-    // 12. 查询服务
+    // 13. 查询服务
     const queryService = new TtsQueryService({
       ttsProvider: ttsProviderAdapter,
       providerManagementService: pms,
@@ -141,12 +147,12 @@ class ServiceContainer {
     });
     this._services.set('queryService', queryService);
 
-    // 13. 参数解析服务
+    // 14. 参数解析服务
     const { ParameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
     const parameterResolutionService = new ParameterResolutionService();
     this._services.set('parameterResolutionService', parameterResolutionService);
 
-    // 14. 合成服务
+    // 15. 合成服务
     const synthesisService = new TtsSynthesisService({
       ttsProvider: ttsProviderAdapter,
       voiceCatalog: voiceCatalogAdapter,
@@ -159,8 +165,13 @@ class ServiceContainer {
     });
     this._services.set('synthesisService', synthesisService);
 
-    // 15. HTTP 适配器
-    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService);
+    // 16. HTTP 适配器
+    let clearAllCacheFn = null;
+    try {
+      const audioCache = require('../shared/utils/audioCache');
+      clearAllCacheFn = audioCache.clearAllCache;
+    } catch (e) { /* audioCache 可选 */ }
+    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn });
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 
     this._initialized = true;

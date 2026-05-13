@@ -15,16 +15,12 @@
 
 const SynthesisRequest = require('../../domain/SynthesisRequest');
 const AudioResult = require('../../domain/AudioResult');
-const { clearAllCache } = require('../../../../shared/utils/audioCache');
 
 class TtsHttpAdapter {
-  /**
-   * @param {Object} synthesisService - TtsSynthesisService 领域服务（合成职责）
-   * @param {Object} queryService - TtsQueryService 查询服务（查询职责）
-   */
-  constructor(synthesisService, queryService) {
+  constructor(synthesisService, queryService, { clearAllCache } = {}) {
     this.synthesisService = synthesisService;
     this.queryService = queryService;
+    this._clearAllCache = clearAllCache || null;
   }
 
   // ==================== HTTP入口方法 ====================
@@ -231,7 +227,10 @@ class TtsHttpAdapter {
    */
   async clearCache(req, res) {
     try {
-      const clearedCount = clearAllCache();
+      if (!this._clearAllCache) {
+        return res.status(501).json({ success: false, message: 'Cache clearing not configured' });
+      }
+      const clearedCount = this._clearAllCache();
 
       res.json({
         success: true,
