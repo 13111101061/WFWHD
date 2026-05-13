@@ -152,7 +152,16 @@ class AudioStorageManager {
       fullPath = path.join(fullPath, cleanSubDir);
     }
 
-    return path.join(fullPath, filename);
+    // 只取文件名的 basename, 防止 path traversal
+    const safeFilename = path.basename(filename);
+    const finalPath = path.resolve(fullPath, safeFilename);
+
+    // Ensure the final path is inside baseDir
+    if (!finalPath.startsWith(this.baseDir)) {
+      throw new Error('Invalid file path: path traversal attempt detected');
+    }
+
+    return finalPath;
   }
 
   /**
