@@ -1,13 +1,13 @@
 /**
  * VoiceCode 回归测试
- * 
+ *
  * 测试内容：
  * 1. VoiceCodeGenerator 生成与校验
  * 2. voiceCode 解析
  * 3. 兼容映射加载
  * 4. VoiceResolver 解析（新 voiceCode + 旧 systemId）
  * 5. SynthesisRequest voiceCode 字段
- * 
+ *
  * 运行方式：
  *   node tests/test-voice-code.js
  */
@@ -48,7 +48,6 @@ async function runTests() {
   test('生成 voiceCode 格式正确', () => {
     const code = VoiceCodeGenerator.generate({
       providerKey: 'moss',
-      modelKey: 'moss_tts',
       voiceNumber: 3
     });
     assert(code.length === 15, `长度应为15，实际 ${code.length}`);
@@ -59,7 +58,6 @@ async function runTests() {
   test('Luhn 校验位正确', () => {
     const code = VoiceCodeGenerator.generate({
       providerKey: 'moss',
-      modelKey: 'moss_tts',
       voiceNumber: 3
     });
     assert(VoiceCodeGenerator.isValid(code), '校验位应通过');
@@ -75,27 +73,25 @@ async function runTests() {
   test('解析 voiceCode', () => {
     const code = VoiceCodeGenerator.generate({
       providerKey: 'moss',
-      modelKey: 'moss_tts',
       voiceNumber: 3
     });
     const parsed = VoiceCodeGenerator.parse(code);
     assert(parsed !== null, '解析不应为null');
     assert(parsed.providerKey === 'moss', `providerKey 应为 moss，实际 ${parsed.providerKey}`);
-    assert(parsed.modelKey === 'moss_tts', `modelKey 应为 moss_tts，实际 ${parsed.modelKey}`);
+    assert(parsed.serviceKey === 'tts', `serviceKey 应为 tts，实际 ${parsed.serviceKey}`);
     assert(parsed.voiceNumber === 3, `voiceNumber 应为 3，实际 ${parsed.voiceNumber}`);
-    console.log(`   解析结果: provider=${parsed.providerKey}, model=${parsed.modelKey}, #${parsed.voiceNumber}`);
+    console.log(`   解析结果: provider=${parsed.providerKey}, service=${parsed.serviceKey}, #${parsed.voiceNumber}`);
   });
 
   test('阿里云 voiceCode 生成', () => {
     const code = VoiceCodeGenerator.generate({
       providerKey: 'aliyun',
-      modelKey: 'qwen_http',
       voiceNumber: 1
     });
     const parsed = VoiceCodeGenerator.parse(code);
     assert(parsed.providerKey === 'aliyun', 'providerKey 应为 aliyun');
-    assert(parsed.modelKey === 'qwen_http', 'modelKey 应为 qwen_http');
-    console.log(`   生成: ${code} → ${parsed.providerDisplayName} / ${parsed.modelDisplayName}`);
+    assert(parsed.serviceKey === 'qwen_http', 'serviceKey 应为 qwen_http');
+    console.log(`   生成: ${code} → ${parsed.providerDisplayName} / ${parsed.serviceKey}`);
   });
 
   // ==================== 2. 兼容映射测试 ====================
@@ -140,13 +136,13 @@ async function runTests() {
 
   test('SynthesisRequest 支持 voiceCode', () => {
     const ashuiCode = compatMap.legacyToVoiceCode['moss-tts-ashui'];
-    
+
     const request = SynthesisRequest.fromJSON({
       text: '测试文本',
       service: 'moss_tts',
       voiceCode: ashuiCode
     });
-    
+
     assert(request.voiceCode === ashuiCode, `voiceCode 应为 ${ashuiCode}`);
     assert(request.text === '测试文本', 'text 应正确');
     assert(request.service === 'moss_tts', 'service 应正确');
@@ -159,7 +155,7 @@ async function runTests() {
       service: 'moss_tts',
       voiceCode: '123456789012345'
     });
-    
+
     const validation = request.validate();
     assert(!validation.valid, '无效 voiceCode 应验证失败');
     assert(validation.errors.some(e => e.includes('voiceCode')), '应包含 voiceCode 错误');
@@ -172,7 +168,7 @@ async function runTests() {
       service: 'moss_tts',
       systemId: 'moss-tts-ashui'
     });
-    
+
     assert(request.systemId === 'moss-tts-ashui', 'systemId 应正确');
     assert(!request.voiceCode, 'voiceCode 应为空');
     console.log(`   systemId: ${request.systemId}`);
@@ -181,57 +177,64 @@ async function runTests() {
   // ==================== 4. VoiceResolver 测试 ====================
   console.log('\n📦 VoiceResolver 测试\n');
 
-  // 初始化 VoiceRegistry
   const { getVoiceRegistry } = require('../src/modules/tts/core/VoiceRegistry');
   const voiceRegistry = getVoiceRegistry();
   await voiceRegistry.initialize();
   console.log(`   VoiceRegistry 已加载: ${voiceRegistry.getStats().total} 个音色\n`);
 
   const { VoiceResolver } = require('../src/modules/tts/application/VoiceResolver');
+  const { ProviderCatalog } = require('../src/modules/tts/catalog/ProviderCatalog');
+  const { ProviderRegistry } = require('../src/modules/tts/provider-management');
+
+  const providerRegistry = new ProviderRegistry({ voiceRegistry });
+  providerRegistry.initialize();
+  const providerCatalog = new ProviderCatalog({ providerRegistry });
+
+  const resolver = new VoiceResolver({ voiceRegistry, providerCatalog });
 
   test('VoiceResolver 解析 voiceCode（新标准）', () => {
     const ashuiCode = compatMap.legacyToVoiceCode['moss-tts-ashui'];
-    
-    const resolved = VoiceResolver.resolve({
+
+    const resolved = resolver.resolve({
       text: '测试文本',
-      service: 'moss',
+      service: 'moss_tts',
       voiceCode: ashuiCode
     });
-    
+
     assert(resolved.providerKey === 'moss', `providerKey 应为 moss，实际 ${resolved.providerKey}`);
-    assert(resolved.serviceKey === 'tts', `serviceKey 应为 tts，实际 ${resolved.serviceKey}`);
+    assert(resolved.serviceKey === 'moss_tts', `serviceKey 应为 moss_tts，实际 ${resolved.serviceKey}`);
     assert(resolved.voiceCode === ashuiCode, 'voiceCode 应正确');
     assert(resolved.systemId === 'moss-tts-ashui', `systemId 应为 moss-tts-ashui，实际 ${resolved.systemId}`);
-    assert(resolved.voiceId, 'voiceId (provider_voice_id) 应存在');
-    console.log(`   voiceCode ${ashuiCode} → provider=${resolved.providerKey}, voiceId=${resolved.voiceId}`);
+    assert(resolved.providerVoiceId, 'providerVoiceId 应存在');
+    console.log(`   voiceCode ${ashuiCode} → provider=${resolved.providerKey}, voiceId=${resolved.providerVoiceId}`);
   });
 
   test('VoiceResolver 解析 systemId（兼容）', () => {
-    const resolved = VoiceResolver.resolve({
+    const resolved = resolver.resolve({
       text: '测试文本',
-      service: 'moss',
-      voice: 'moss-tts-ashui'
+      service: 'moss_tts',
+      systemId: 'moss-tts-ashui'
     });
-    
+
     assert(resolved.systemId === 'moss-tts-ashui', 'systemId 应正确');
-    assert(resolved.voiceId, 'voiceId (provider_voice_id) 应存在');
+    assert(resolved.providerVoiceId, 'providerVoiceId 应存在');
     assert(resolved.voiceCode, 'voiceCode 应自动填充');
-    console.log(`   systemId moss-tts-ashui → voiceId=${resolved.voiceId}, voiceCode=${resolved.voiceCode}`);
+    console.log(`   systemId moss-tts-ashui → voiceId=${resolved.providerVoiceId}, voiceCode=${resolved.voiceCode}`);
   });
 
   test('VoiceResolver 阿里云音色解析', () => {
     const cherryCode = compatMap.legacyToVoiceCode['aliyun-qwen_http-cherry'];
-    
-    const resolved = VoiceResolver.resolve({
+
+    const resolved = resolver.resolve({
       text: '测试文本',
-      service: 'aliyun_qwen',
+      service: 'aliyun_qwen_http',
       voiceCode: cherryCode
     });
-    
+
     assert(resolved.providerKey === 'aliyun', 'providerKey 应为 aliyun');
-    assert(resolved.serviceKey === 'qwen_http', 'serviceKey 应为 qwen_http');
-    assert(resolved.voiceId === 'Cherry', `voiceId 应为 Cherry，实际 ${resolved.voiceId}`);
-    console.log(`   voiceCode ${cherryCode} → provider=${resolved.providerKey}, voiceId=${resolved.voiceId}`);
+    assert(resolved.serviceKey === 'aliyun_qwen_http', 'serviceKey 应为 aliyun_qwen_http');
+    assert(resolved.providerVoiceId === 'Cherry', `providerVoiceId 应为 Cherry，实际 ${resolved.providerVoiceId}`);
+    console.log(`   voiceCode ${cherryCode} → provider=${resolved.providerKey}, voiceId=${resolved.providerVoiceId}`);
   });
 
   // ==================== 结果 ====================

@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
+const { sanitizeFilename, ensurePathInsideBase } = require('../utils/pathSecurity');
 
 /**
  * 文件存储基础类
@@ -32,7 +33,10 @@ class FileStorage {
    * @returns {string} 完整文件路径
    */
   getFilePath(filename) {
-    return path.join(this.dataDirectory, filename);
+    const safe = sanitizeFilename(filename);
+    const resolved = path.resolve(this.dataDirectory, safe);
+    ensurePathInsideBase(resolved, this.dataDirectory);
+    return resolved;
   }
 
   /**

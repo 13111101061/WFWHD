@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 const config = require('../config/config');
+const { sanitizeFilename, ensurePathInsideBase, sanitizeSubDir } = require('./pathSecurity');
 
 /**
  * 统一音频存储管理器
@@ -143,16 +144,17 @@ class AudioStorageManager {
    * @returns {string} 完整文件路径
    */
   generateFilePath(filename, subDir = '') {
+    const safeFilename = sanitizeFilename(filename);
     let fullPath = this.baseDir;
 
-    // 添加子目录
     if (subDir) {
-      // 清理子目录名
-      const cleanSubDir = subDir.replace(/[^a-zA-Z0-9_-]/g, '_');
-      fullPath = path.join(fullPath, cleanSubDir);
+      fullPath = path.join(fullPath, sanitizeSubDir(subDir));
     }
 
-    return path.join(fullPath, filename);
+    const finalPath = path.resolve(fullPath, safeFilename);
+    ensurePathInsideBase(finalPath, fullPath);
+
+    return finalPath;
   }
 
   /**
@@ -162,15 +164,14 @@ class AudioStorageManager {
    * @returns {string} 文件URL
    */
   generateFileUrl(filename, subDir = '') {
+    const safeFilename = sanitizeFilename(filename);
     let urlPath = this.options.urlPrefix;
 
-    // 添加子目录到URL
     if (subDir) {
-      const cleanSubDir = subDir.replace(/[^a-zA-Z0-9_-]/g, '_');
-      urlPath = `${urlPath}/${cleanSubDir}`;
+      urlPath = `${urlPath}/${sanitizeSubDir(subDir)}`;
     }
 
-    return `${urlPath}/${filename}`;
+    return `${urlPath}/${safeFilename}`;
   }
 
   /**

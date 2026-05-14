@@ -17,14 +17,66 @@ let manifests = null;
 let _serviceIndex = null;
 let _providerIndex = null;
 
+const MANIFEST_REQUIRED_FIELDS = {
+  root: ['providerKey', 'provider', 'services', 'voiceCode'],
+  provider: ['displayName', 'description'],
+  service: ['displayName', 'protocol'],
+  voiceCode: ['providerCode', 'serviceKey']
+};
+
+function _validateManifest(data, manifestPath) {
+  const errors = [];
+  const dirName = path.basename(path.dirname(manifestPath));
+
+  for (const field of MANIFEST_REQUIRED_FIELDS.root) {
+    if (!data[field]) {
+      errors.push(`providers/${dirName}/manifest.json: missing required field "${field}"`);
+    }
+  }
+
+  if (data.provider) {
+    for (const field of MANIFEST_REQUIRED_FIELDS.provider) {
+      if (!data.provider[field]) {
+        errors.push(`providers/${dirName}/manifest.json: missing provider.${field}`);
+      }
+    }
+  }
+
+  if (data.services) {
+    for (const [svcKey, svc] of Object.entries(data.services)) {
+      for (const field of MANIFEST_REQUIRED_FIELDS.service) {
+        if (!svc[field]) {
+          errors.push(`providers/${dirName}/manifest.json: services.${svcKey} missing ${field}`);
+        }
+      }
+      if (!svc.adapter && !svc.api) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} must have "adapter" or "api"`);
+      }
+    }
+  }
+
+  if (data.voiceCode) {
+    for (const field of MANIFEST_REQUIRED_FIELDS.voiceCode) {
+      if (!data.voiceCode[field]) {
+        errors.push(`providers/${dirName}/manifest.json: voiceCode missing ${field}`);
+      }
+    }
+    if (data.voiceCode.providerCode && !/^\d{3}$/.test(data.voiceCode.providerCode)) {
+      errors.push(`providers/${dirName}/manifest.json: voiceCode.providerCode must be 3-digit string (got "${data.voiceCode.providerCode}")`);
+    }
+  }
+
+  return errors;
+}
+
 function loadAllManifests() {
   if (manifests !== null) return manifests;
 
   manifests = new Map();
   _serviceIndex = new Map();
   _providerIndex = new Map();
+  const providerCodeSeen = new Map();
 
-  // 扫描 providers/ 目录下的子目录（跳过 manifests/ 和 ProviderManifest.js）
   const entries = fs.readdirSync(PROVIDERS_DIR, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
@@ -40,7 +92,28 @@ function loadAllManifests() {
     try {
       const raw = fs.readFileSync(manifestPath, 'utf8');
       const data = JSON.parse(raw);
+
+      const validationErrors = _validateManifest(data, manifestPath);
+      if (validationErrors.length > 0) {
+        for (const e of validationErrors) {
+          console.error(`[ProviderManifest] VALIDATION: ${e}`);
+        }
+        if (process.env.CONFIG_MODE !== 'migration') {
+          throw new Error(`Manifest validation failed:\n  ${validationErrors.join('\n  ')}`);
+        }
+      }
+
       const providerKey = data.providerKey || entry.name;
+
+      if (data.voiceCode?.providerCode) {
+        const prev = providerCodeSeen.get(data.voiceCode.providerCode);
+        if (prev) {
+          const msg = `[ProviderManifest] DUPLICATE providerCode "${data.voiceCode.providerCode}": ${prev} vs ${providerKey}`;
+          console.error(msg);
+          if (process.env.CONFIG_MODE !== 'migration') throw new Error(msg);
+        }
+        providerCodeSeen.set(data.voiceCode.providerCode, providerKey);
+      }
 
       manifests.set(providerKey, data);
       _providerIndex.set(providerKey, data);

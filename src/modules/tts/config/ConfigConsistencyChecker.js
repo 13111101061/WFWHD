@@ -125,6 +125,22 @@ function _checkVoiceCoverage(logger, ProviderManifest, VoiceRegistry, errors, wa
   }
 }
 
+function _checkVoiceCodeConfigClean(logger, errors, warnings) {
+  const configPath = path.join(__dirname, 'VoiceCodeConfig.json');
+  if (!fs.existsSync(configPath)) return;
+
+  try {
+    const content = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    if (content.providerCodes && Object.keys(content.providerCodes).length > 0) {
+      const msg = `[VOICECODE DUAL-SOURCE] VoiceCodeConfig.json still contains providerCodes — this section has been migrated to manifest.json voiceCode.providerCode. Remove providerCodes from VoiceCodeConfig.json to eliminate dual-source risk.`;
+      errors.push(msg);
+      logger.log('  🚫 ' + msg);
+    }
+  } catch (e) {
+    // ignore parse errors
+  }
+}
+
 function _checkLockedParams(logger, ProviderManifest, errors, warnings) {
   const serviceKeys = ProviderManifest.getAllServiceKeys();
   let lockedLostValue = 0;
@@ -207,6 +223,11 @@ function _doAudit(logger) {
   // --- L2b: voiceCode 映射 ---
   logger.log('--- L2b: VoiceCode mappings ---');
   _checkVoiceCodeMappings(logger, ProviderManifest, errors, warnings);
+  logger.log();
+
+  // --- L2b2: VoiceCodeConfig.json 不应包含 providerCodes ---
+  logger.log('--- L2b2: VoiceCodeConfig clean check ---');
+  _checkVoiceCodeConfigClean(logger, errors, warnings);
   logger.log();
 
   // --- L2c: Locked params ---

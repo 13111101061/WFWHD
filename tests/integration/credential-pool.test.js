@@ -7,7 +7,7 @@
 const assert = require('assert');
 const credentials = require('../../src/modules/credentials');
 const { HealthStatus } = require('../../src/modules/credentials/core/CredentialPool');
-const AliyunQwenAdapter = require('../../src/modules/tts/adapters/providers/AliyunQwenAdapter');
+const AliyunQwenAdapter = require('../../src/modules/tts/providers/aliyun/AliyunQwenAdapter');
 
 describe('Credential Pool Integration', () => {
   // 重置凭证模块状态
