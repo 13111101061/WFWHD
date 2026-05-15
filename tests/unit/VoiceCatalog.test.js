@@ -61,9 +61,9 @@ assert.deepStrictEqual(displayDto.tags, ['温柔', '自然'], 'tags 应该正确
 console.log('✅ 通过\n');
 
 // 测试 2: 展示 DTO 不暴露敏感运行时信息
-console.log('测试 2: 展示 DTO 不暴露 voiceId');
+console.log('测试 2: 展示 DTO 不暴露 voiceId 和 runtime');
 assert.strictEqual(displayDto.voiceId, undefined, 'voiceId 不应该在展示 DTO 中');
-assert.ok(displayDto.runtimePreview, 'runtimePreview 应该存在');
+assert.strictEqual(displayDto.runtimePreview, undefined, 'runtimePreview 不应在展示 DTO 中（已移至 detail）');
 console.log('✅ 通过\n');
 
 // 测试 3: 展示 DTO 不包含完整 runtime

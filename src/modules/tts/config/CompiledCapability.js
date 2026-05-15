@@ -25,6 +25,18 @@ class CompiledCapability {
   get apiStructure() { return this._data.apiStructure; }
   get compiledAt() { return this._data.compiledAt; }
 
+  /** @returns {Object} { sync:bool, streaming:bool, async:bool } 或来自 manifest */
+  get executionModes() { return this._data.executionModes || null; }
+
+  /** @returns {string[]} 如 ['plainText', 'markedText'] */
+  get inputFormats() { return this._data.inputFormats || []; }
+
+  /** @returns {string[]} 如 ['mp3', 'wav', 'pcm'] */
+  get outputFormats() { return this._data.outputFormats || []; }
+
+  /** @returns {Object|null} 模型详情（如果已解析特定模型） */
+  get modelCapability() { return this._data.modelCapability || null; }
+
   // ==================== 字段访问 ====================
 
   getSchema() { return this._data.compiledSchema; }
@@ -295,6 +307,22 @@ class CompiledCapability {
       this._cachedDigest = crypto.createHash('sha256').update(payload).digest('hex').substring(0, 12);
     }
     return this._cachedDigest;
+  }
+
+  /**
+   * 上下文能力指纹：把 model/mode/inputFormat/voiceCode 纳入 digest
+   * 前端在不同模型/模式下提交时，后端校验 schema 是否匹配当前组合。
+   */
+  getContextualDigest(ctx = {}) {
+    const crypto = require('crypto');
+    const payload = JSON.stringify({
+      base: this.capabilityDigest,
+      modelKey: ctx.modelKey || null,
+      mode: ctx.mode || null,
+      inputFormat: ctx.inputFormat || null,
+      voiceCode: ctx.voiceCode || null
+    });
+    return crypto.createHash('sha256').update(payload).digest('hex').substring(0, 12);
   }
 }
 

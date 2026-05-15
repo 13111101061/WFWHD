@@ -88,6 +88,7 @@ const VoiceNormalizer = {
       },
       runtime: {
         voiceId: form.providerVoiceId,
+        model: form.model || null,
         providerOptions: form.providerOptions || {}
       },
       meta: {
@@ -136,6 +137,7 @@ const VoiceNormalizer = {
       provider: stored.identity?.provider,
       service: stored.identity?.service,
       voiceId: stored.runtime?.voiceId,
+      model: stored.runtime?.model || null,
       providerOptions: stored.runtime?.providerOptions || {}
     };
   },
@@ -301,6 +303,7 @@ const VoiceNormalizer = {
       languages: profile.languages || voice.languages || ['zh-CN'],
       language: (profile.languages || voice.languages || ['zh-CN'])[0],
       voiceId: runtime.voiceId || null,
+      model: runtime.model || null,
       providerOptions: runtime.providerOptions || {},
       tags: profile.tags || voice.tags || [],
       description: profile.description || voice.description

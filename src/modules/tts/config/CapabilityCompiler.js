@@ -320,6 +320,10 @@ const CapabilityCompiler = {
       // streaming flags（从 manifest 读取，供 getCapabilities() 推导）
       capabilityStreaming: this._getStreamingFlag(serviceKey, 'supportsStreaming'),
       capabilityRealtime: this._getStreamingFlag(serviceKey, 'supportsRealtime'),
+      // 能力模式（从 manifest 服务配置 derive，为 streaming/async 预留）
+      executionModes: this._deriveExecutionModes(serviceKey),
+      inputFormats: this._deriveInputFormats(serviceKey),
+      outputFormats: this._deriveOutputFormats(serviceKey),
       compiledAt: new Date().toISOString(),
       version: '1.0.0'
     };
@@ -440,6 +444,34 @@ const CapabilityCompiler = {
       const svc = ProviderManifest.getServiceConfig(serviceKey);
       return svc?.[flagKey] || false;
     } catch (e) { return false; }
+  },
+
+  _deriveExecutionModes(serviceKey) {
+    try {
+      const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+      const svc = ProviderManifest.getServiceConfig(serviceKey);
+      return {
+        sync: { supported: !!(svc?.protocol) },
+        streaming: { supported: svc?.supportsStreaming || false },
+        async: { supported: svc?.supportsAsync || false }
+      };
+    } catch (e) { return {}; }
+  },
+
+  _deriveInputFormats(serviceKey) {
+    return ['plainText'];
+  },
+
+  _deriveOutputFormats(serviceKey) {
+    try {
+      const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+      const svc = ProviderManifest.getServiceConfig(serviceKey);
+      const format = svc?.defaults?.format || 'mp3';
+      const formats = [format];
+      const paramFormats = svc?.parameters?.format?.values;
+      if (Array.isArray(paramFormats)) formats.push(...paramFormats.filter(f => f !== format));
+      return [...new Set(formats)];
+    } catch (e) { return []; }
   }
 };
 

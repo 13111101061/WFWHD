@@ -346,7 +346,7 @@ class TtsHttpAdapter {
   async getCapabilities(req, res) {
     try {
       const { service } = req.params;
-      const result = this.queryService.getCapabilities(service);
+      const result = this.queryService.getCapabilities(service, req.query);
 
       const statusCode = result.success ? 200 : 404;
       res.status(statusCode).json(result);

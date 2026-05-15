@@ -74,8 +74,8 @@ class BaseTtsAdapter {
     }, {});
   }
 
-  async synthesizeAndSave(text, options = {}) {
-    const result = await this.synthesize(text, options);
+  async synthesizeAndSave(text, options = {}, providerInput = null) {
+    const result = await this.synthesize(text, options, providerInput);
     const metadata = this._extractResultMetadata(result);
 
     if (result.audioUrl) {

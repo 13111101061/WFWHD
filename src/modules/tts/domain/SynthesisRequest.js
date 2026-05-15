@@ -11,12 +11,16 @@
 class SynthesisRequest {
   /**
    * @param {Object} params
-   * @param {string} params.text - 要转换的文本
+   * @param {string} params.text - 要转换的文本（向后兼容）
    * @param {string} [params.service] - 服务标识符 (如 "aliyun_cosyvoice")
    * @param {string} [params.voiceCode] - 15位音色编码（新标准）
    * @param {string} [params.systemId] - 系统音色ID（兼容）
    * @param {string} [params.provider] - 服务提供商 (如 "aliyun")
    * @param {string} [params.serviceType] - 服务类型 (如 "cosyvoice")
+   * @param {string} [params.model] - 模型标识（如 "speech-01-hd"）
+   * @param {string} [params.mode] - 执行模式 ("sync"|"streaming"|"async")
+   * @param {Object} [params.input] - 结构化输入 { type, raw, segments }
+   * @param {string} [params.inputFormat] - 输入格式 ("plainText"|"ssml"|"markedText")
    * @param {string} [params.capabilityDigest] - 能力指纹（前端 schema 版本校验）
    * @param {Object} [params.options] - 合成选项
    */
@@ -27,6 +31,10 @@ class SynthesisRequest {
     systemId,
     provider,
     serviceType,
+    model,
+    mode,
+    input,
+    inputFormat,
     capabilityDigest,
     options = {}
   }) {
@@ -37,6 +45,10 @@ class SynthesisRequest {
     this.systemId = systemId;
     this.provider = provider;
     this.serviceType = serviceType;
+    this.model = model || null;
+    this.mode = mode || null;
+    this.input = input || null;
+    this.inputFormat = inputFormat || (input?.type) || null;
     this.capabilityDigest = capabilityDigest;
     this.options = Object.freeze({ ...options });
 
@@ -84,6 +96,8 @@ class SynthesisRequest {
       'voiceCode', 'voice_code',
       'systemId', 'system_id',
       'provider', 'serviceType',
+      'model', 'mode', 'input', 'inputFormat',
+      'capabilityDigest', 'capability_digest',
       'options',
       'voice', 'voiceId', 'voice_id'
     ]);
@@ -107,6 +121,10 @@ class SynthesisRequest {
       systemId,
       provider: json.provider,
       serviceType: json.serviceType,
+      model: json.model,
+      mode: json.mode,
+      input: json.input,
+      inputFormat: json.inputFormat || (json.input?.type) || null,
       capabilityDigest: json.capabilityDigest || json.capability_digest,
       options: {
         ...topLevelOptions,
@@ -156,16 +174,18 @@ class SynthesisRequest {
   validate() {
     const errors = [];
 
-    if (!this.text) {
-      errors.push('Text parameter is required');
+    const effectiveText = this.text || this.input?.raw || (this.input?.segments && this.input.segments.length > 0 ? this.input.segments[0]?.text || '' : '');
+
+    if (!effectiveText) {
+      errors.push('Text parameter is required (or input.raw / input.segments)');
     }
 
     if (!this.service && !this.voiceCode && !this.systemId && !this.provider) {
       errors.push('Either service, voiceCode, systemId, or provider parameter is required');
     }
 
-    if (this.text && typeof this.text !== 'string') {
-      errors.push('Text must be a string');
+    if (effectiveText && typeof effectiveText !== 'string' && !this.input?.segments) {
+      errors.push('Text must be a string or input.segments array');
     }
 
     if (this.text && this.text.length > 10000) {
@@ -199,6 +219,11 @@ class SynthesisRequest {
       systemId: this.systemId,
       provider: voice.provider,
       serviceType: voice.service,
+      model: this.model,
+      mode: this.mode,
+      input: this.input,
+      inputFormat: this.inputFormat,
+      capabilityDigest: this.capabilityDigest,
       options: {
         ...this.options,
         voice: this.options.voice || voice.sourceId
@@ -217,6 +242,11 @@ class SynthesisRequest {
       systemId: this.systemId,
       provider: this.provider,
       serviceType: this.serviceType,
+      model: this.model,
+      mode: this.mode,
+      input: this.input,
+      inputFormat: this.inputFormat,
+      capabilityDigest: this.capabilityDigest,
       options: { ...this.options },
       requestId: this.requestId,
       timestamp: this.timestamp

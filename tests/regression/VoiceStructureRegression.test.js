@@ -309,8 +309,7 @@ describe('Voice Structure Regression Tests', function() {
         assert.strictEqual(display.previewUrl, 'https://example.com/preview.mp3');
 
         assert.strictEqual(display.voiceId, undefined);
-        assert.ok(display.runtimePreview);
-        assert.strictEqual(display.runtimePreview.hasProviderOptions, true);
+        assert.strictEqual(display.runtimePreview, undefined, 'runtimePreview 已从展示 DTO 移除');
       });
     });
 

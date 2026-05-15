@@ -179,14 +179,20 @@ class TtsQueryService {
    * - fieldIndex: supported/unsupported/locked 分类索引
    * - metadata: 服务商元信息
    */
-  getCapabilities(serviceKey) {
+  getCapabilities(serviceKey, query = {}) {
     const canonicalKey = this._resolveCanonicalKey(serviceKey);
     if (!canonicalKey) {
       return { success: false, error: `Service not found: ${serviceKey}` };
     }
 
     const resolver = this._ensureCapabilityResolver();
-    const context = resolver.resolve(canonicalKey);
+    const context = resolver.resolve({
+      serviceKey: canonicalKey,
+      modelKey: query.model || null,
+      mode: query.mode || null,
+      inputFormat: query.inputFormat || null,
+      voiceCode: query.voiceCode || null
+    });
     const compiled = context.compiled;
 
     if (!compiled) {
@@ -205,7 +211,7 @@ class TtsQueryService {
         serviceKey: canonicalKey,
         providerKey: compiled.providerKey,
         serviceType: this._getServiceType(canonicalKey),
-        capabilityDigest: compiled.capabilityDigest,
+        capabilityDigest: context.contextualDigest || compiled.capabilityDigest,
         apiStructure: compiled.apiStructure,
 
         // 完整字段 Schema（前端渲染表单的主数据源）
@@ -225,6 +231,11 @@ class TtsQueryService {
 
         // 元信息
         defaultVoiceId: context.defaultVoiceId,
+
+        // 能力模式（为未来 streaming/async 预留结构）
+        executionModes: context.executionModes,
+        inputFormats: context.inputFormats,
+        outputFormats: context.outputFormats,
 
         // 调用契约（前端自动生成调用所需信息）
         requestContract: this._buildRequestContract(canonicalKey, compiled)
@@ -467,7 +478,7 @@ class TtsQueryService {
       try {
         const ctx = resolver.resolve(info.key);
         if (ctx?.compiled) {
-          digest = ctx.compiled.capabilityDigest;
+          digest = ctx.contextualDigest || ctx.compiled.capabilityDigest;
           capabilitySummary = ctx.compiled.getCapabilities();
           capabilityCompiled = true;
         }
@@ -495,6 +506,10 @@ class TtsQueryService {
         capabilityDigest: digest,
         capabilitySummary,
         formSchemaUrl: `${basePath}/capabilities/${info.key}`,
+        // 能力模式（为 streaming/async 预留）
+        executionModes: ctx?.executionModes || null,
+        inputFormats: ctx?.inputFormats || null,
+        outputFormats: ctx?.outputFormats || null,
         // 接入状态分解（新增 provider 调试用）
         onboarding: {
           manifestLoaded: true,

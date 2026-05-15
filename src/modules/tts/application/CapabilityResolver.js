@@ -6,8 +6,13 @@
  *
  * 依赖由构造函数注入，启动时立即校验可用性。
  *
- * 输入：serviceKey, modelKey, voiceRuntime
- * 输出：CapabilityContext（包含 compiled、默认值、锁定参数、apiStructure）
+ * 签名（向后兼容）：
+ *   resolve(serviceKey, modelKey, voiceRuntime)           // 旧
+ *   resolve({ serviceKey, modelKey, voiceRuntime,          // 新
+ *             mode, inputFormat, voiceCode })
+ *
+ * 输出：CapabilityContext（包含 compiled、默认值、锁定参数、apiStructure、
+ *       executionModes、inputFormats、outputFormats）
  */
 
 const CapabilitySchema = require('../schema/CapabilitySchema');
@@ -31,8 +36,21 @@ class CapabilityResolver {
     this.cache = cache || new Map();
   }
 
-  resolve(serviceKey, modelKey = null, voiceRuntime = null) {
-    const cacheKey = serviceKey;
+  /**
+   * @param {string|Object} serviceKeyOrOpts — canonical serviceKey 或 resolve options
+   * @param {string|null} [modelKey] — 旧签名第二参数
+   * @param {Object|null} [voiceRuntime] — 旧签名第三参数
+   */
+  resolve(serviceKeyOrOpts, modelKey = null, voiceRuntime = null) {
+    // 对象化签名兼容
+    let serviceKey, mode, inputFormat, voiceCode;
+    if (typeof serviceKeyOrOpts === 'object' && serviceKeyOrOpts !== null) {
+      ({ serviceKey, modelKey = null, voiceRuntime = null, mode = null, inputFormat = null, voiceCode = null } = serviceKeyOrOpts);
+    } else {
+      serviceKey = serviceKeyOrOpts;
+    }
+
+    const cacheKey = [serviceKey, modelKey, mode, inputFormat, voiceCode].filter(Boolean).join('|') || serviceKey;
 
     if (this.cache.has(cacheKey)) return this._enrich(this.cache.get(cacheKey), voiceRuntime);
 
@@ -44,12 +62,20 @@ class CapabilityResolver {
 
     const context = {
       serviceKey,
+      modelKey,
+      mode,
+      inputFormat,
+      voiceCode,
       compiled,
       resolvedDefaults: compiled.getDefaults(),
       lockedParams: Object.keys(compiled.getLockedParams()),
       lockedParamsMap: compiled.getLockedParams(),
       defaultVoiceId: CapabilitySchema.getDefaultVoiceId(serviceKey) || null,
-      apiStructure: compiled.apiStructure
+      apiStructure: compiled.apiStructure,
+      executionModes: compiled.executionModes || {},
+      inputFormats: compiled.inputFormats || [],
+      outputFormats: compiled.outputFormats || [],
+      contextualDigest: compiled.getContextualDigest({ modelKey, mode, inputFormat, voiceCode })
     };
 
     this.cache.set(cacheKey, context);

@@ -34,11 +34,11 @@ class TtsProviderAdapter extends TtsProviderPort {
 
   // ==================== 合成 ====================
 
-  async synthesize(provider, serviceType, text, options) {
+  async synthesize(provider, serviceType, text, options, providerInput = null) {
     const key = serviceType ? `${provider}_${serviceType}` : provider;
     const adapter = this._getAdapter(key);
 
-    const result = await adapter.synthesizeAndSave(text, options);
+    const result = await adapter.synthesizeAndSave(text, options, providerInput);
 
     return {
       success: true,

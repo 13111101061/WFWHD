@@ -17,7 +17,7 @@
 
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
-const SynthesisContext = require('./SynthesisContext');
+const { SynthesisContext } = require('./SynthesisContext');
 
 class TtsSynthesisService {
   /**
@@ -72,6 +72,7 @@ class TtsSynthesisService {
     await this.executionPolicy.execute(canonicalKey, async () => {
       this._buildCapability(ctx);
       this._checkCapabilityDigest(ctx);
+      this._compileInput(ctx);
       this._mergeAndValidateParams(ctx);
       this._mapToProvider(ctx);
       await this._callProvider(ctx);
@@ -123,19 +124,27 @@ class TtsSynthesisService {
   _buildCapability(ctx) {
     const identity = ctx.voiceIdentity;
     const serviceKey = identity?.serviceKey || ctx.serviceKey;
-    ctx.capabilityContext = this.capabilityResolver.resolve(
+    const req = ctx.request;
+    ctx.capabilityContext = this.capabilityResolver.resolve({
       serviceKey,
-      null,
-      identity?.voiceRuntime
-    );
+      modelKey: req?.model || identity?.voiceRuntime?.model || null,
+      voiceRuntime: identity?.voiceRuntime,
+      mode: req?.mode || null,
+      inputFormat: req?.input?.type || req?.inputFormat || null,
+      voiceCode: identity?.voiceCode
+    });
   }
 
   _checkCapabilityDigest(ctx) {
-    const clientDigest = ctx.request?.options?.capabilityDigest
-      || ctx.request?.capabilityDigest;
+    const req = ctx.request;
+    const clientDigest = req?.options?.capabilityDigest || req?.capabilityDigest;
     if (!clientDigest || !ctx.capabilityContext?.compiled) return;
 
-    const serverDigest = ctx.capabilityContext.compiled.capabilityDigest;
+    // 如果请求包含 model/mode/inputFormat，用 contextualDigest 校验
+    const serverDigest = (ctx.capabilityContext.modelKey || ctx.capabilityContext.mode || ctx.capabilityContext.inputFormat)
+      ? ctx.capabilityContext.contextualDigest
+      : ctx.capabilityContext.compiled.capabilityDigest;
+
     if (clientDigest !== serverDigest) {
       const err = new Error('Capability schema outdated, please refresh service capability schema');
       err.code = 'CAPABILITY_SCHEMA_OUTDATED';
@@ -199,13 +208,50 @@ class TtsSynthesisService {
     const identity = ctx.voiceIdentity;
     const desc = ctx.serviceDescriptor;
     const serviceType = desc?.serviceType || 'default';
+    const text = ctx.compiledInput?.providerText ?? ctx.request?.input?.raw ?? ctx.request?.text ?? '';
+    const providerInput = ctx.compiledInput?.providerInput || null;
 
     ctx.result = await this.ttsProvider.synthesize(
       identity.providerKey,
       serviceType,
-      ctx.request.text,
-      ctx.providerParams
+      text,
+      ctx.providerParams,
+      providerInput
     );
+  }
+
+  // ==================== 输入编译（最小 stub） ====================
+
+  _compileInput(ctx) {
+    const req = ctx.request;
+    const input = req?.input;
+    const text = req?.text;
+
+    if (!input) {
+      ctx.compiledInput = { providerText: text || '', providerInput: null, warnings: [] };
+      return;
+    }
+
+    const capCtx = ctx.capabilityContext;
+    const supportedFormats = capCtx?.inputFormats || ['plainText'];
+    const inputType = input.type || 'plainText';
+
+    if (!supportedFormats.includes(inputType)) {
+      const err = new Error(`Input format "${inputType}" not supported. Supported: ${supportedFormats.join(', ')}`);
+      err.code = 'INPUT_FORMAT_UNSUPPORTED';
+      throw err;
+    }
+
+    if (inputType === 'markedText' || inputType === 'ssml' || inputType === 'segments') {
+      ctx.warnings.push({ type: 'unsupported', param: 'inputFormat', message: `Input format "${inputType}" not yet compiled — using raw text` });
+    }
+
+    ctx.compiledInput = {
+      providerText: input.raw || text || '',
+      providerInput: input.segments ? { segments: input.segments } : null,
+      inputFormat: inputType,
+      warnings: []
+    };
   }
 
   // ==================== 批量合成 ====================
