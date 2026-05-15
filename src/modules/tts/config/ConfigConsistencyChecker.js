@@ -101,10 +101,9 @@ function _checkVoiceCoverage(logger, ProviderManifest, VoiceRegistry, errors, wa
     const svc = ProviderManifest.getServiceConfig(sk);
     const defaultVoiceId = svc?.defaultVoiceId;
     const providerKey = svc?.providerKey;
-    const serviceType = sk.split('_').slice(1).join('_'); // crude but works
+    const serviceType = sk.slice(providerKey.length + 1);
 
     if (defaultVoiceId) {
-      // Check the defaultVoiceId exists in voice registry
       const voice = VoiceRegistry.get(defaultVoiceId);
       if (!voice) {
         const msg = `[DEFAULT VOICE MISSING] ${sk}: defaultVoiceId="${defaultVoiceId}" not found in voice registry`;
@@ -113,7 +112,6 @@ function _checkVoiceCoverage(logger, ProviderManifest, VoiceRegistry, errors, wa
       }
     }
 
-    // Check at least one voice exists for this service
     if (providerKey && serviceType) {
       const voices = VoiceRegistry.getByProviderAndService(providerKey, serviceType);
       if (!voices || voices.length === 0) {
@@ -123,6 +121,63 @@ function _checkVoiceCoverage(logger, ProviderManifest, VoiceRegistry, errors, wa
       }
     }
   }
+
+  // L3+: active voice 必须有 voiceCode
+  const allVoices = VoiceRegistry.getAll();
+  let missingVoiceCode = 0;
+  for (const voice of allVoices) {
+    const status = voice.profile?.status || 'active';
+    const voiceCode = voice.identity?.voiceCode;
+    if (status === 'active' && !voiceCode) {
+      const id = voice.identity?.id || 'unknown';
+      const msg = `[MISSING VOICECODE] active voice "${id}" has no voiceCode — voiceCode-based synthesis will fail`;
+      errors.push(msg);
+      logger.log('  🚫 ' + msg);
+      missingVoiceCode++;
+    }
+  }
+  if (missingVoiceCode > 0) {
+    logger.log(`  → ${missingVoiceCode} active voice(s) without voiceCode`);
+  }
+
+  // L3++: voice ↔ manifest 双向审计
+  const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
+  let orphanVoices = 0;
+  let codeProviderMismatch = 0;
+
+  for (const voice of allVoices) {
+    const identity = voice.identity || {};
+    const vProvider = identity.provider;
+    const vService = identity.service;
+    const vc = identity.voiceCode;
+
+    if (vProvider && vService) {
+      const canonical = `${vProvider}_${vService}`;
+      if (!serviceKeys.includes(canonical)) {
+        const msg = `[ORPHAN VOICE] voice "${identity.id}" refers to unknown service "${canonical}" — no matching manifest`;
+        warnings.push(msg);
+        logger.log('  ⚠️ ' + msg);
+        orphanVoices++;
+      }
+    }
+
+    // voiceCode providerCode 必须匹配 voice.identity.provider
+    if (vc && vProvider) {
+      try {
+        const parsedCode = VoiceCodeGenerator.getProviderCode(vProvider);
+        const actualCode = vc.substring(0, 3);
+        if (parsedCode && actualCode !== parsedCode) {
+          const msg = `[VOICECODE PROVIDER MISMATCH] voice "${identity.id}" voiceCode="${vc}" (code=${actualCode}) doesn't match provider "${vProvider}" (code=${parsedCode})`;
+          errors.push(msg);
+          logger.log('  🚫 ' + msg);
+          codeProviderMismatch++;
+        }
+      } catch (e) { /* skip if VoiceCode not found */ }
+    }
+  }
+
+  if (orphanVoices > 0) logger.log(`  → ${orphanVoices} orphan voices (no manifest service)`);
+  if (codeProviderMismatch > 0) logger.log(`  → ${codeProviderMismatch} voiceCode/provider mismatch`);
 }
 
 function _checkVoiceCodeConfigClean(logger, errors, warnings) {

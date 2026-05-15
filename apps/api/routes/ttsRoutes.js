@@ -276,6 +276,22 @@ router.get('/frontend',
   }
 );
 
+/**
+ * 获取前端启动包（完整前端初始化数据）
+ * GET /api/tts/bootstrap
+ */
+router.get('/bootstrap',
+  requestLogger,
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getFrontendBootstrap(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 // ==================== 运维管理端点 ====================
 
 /**
@@ -391,16 +407,13 @@ function registerDynamicServiceRoutes() {
     const providerKey = cfg.providerKey || parts[0];
     const serviceSuffix = parts.slice(1).join('_');
 
-    // 主路由: /provider/service (如 /aliyun/cosyvoice, /moss)
     const primaryPath = `/${providerKey}/${serviceSuffix}`;
     if (!routeMap.has(primaryPath)) {
       routeMap.set(primaryPath, serviceKey);
     }
 
-    // 别名路由（如 cosyvoice, moss, tencent 等）
     if (cfg.aliases && Array.isArray(cfg.aliases)) {
       for (const alias of cfg.aliases) {
-        // 避免与主路由重复
         if (alias === serviceKey) continue;
         const aliasPath = `/${alias.replace(/_/g, '/')}`;
         if (!routeMap.has(aliasPath)) {
@@ -440,6 +453,7 @@ router.use('*', (req, res) => {
       'GET /api/tts/filters - Filter options',
       'GET /api/tts/catalog - Frontend catalog',
       'GET /api/tts/frontend - Frontend voices',
+      'GET /api/tts/bootstrap - Frontend bootstrap',
       'GET /api/tts/health - Health check',
       'GET /api/tts/stats - Statistics',
       'POST /api/tts/reset-stats - Reset stats',

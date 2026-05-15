@@ -40,7 +40,14 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     this._headers = this._api.headers || {};
     this._bodyTemplate = this._api.bodyTemplate || {};
     this._responseMap = this._api.responseMapping || {};
-    this._errorMap = this._api.errorMapping || {};
+
+    const errorMap = this._api.errorMapping || {};
+    this._retryableHttp = new Set(
+      Array.isArray(errorMap.retryable) ? errorMap.retryable : [...RETRYABLE_HTTP]
+    );
+    this._circuitHttp = new Set(
+      Array.isArray(errorMap.circuitBreaker) ? errorMap.circuitBreaker : [...CIRCUIT_HTTP]
+    );
 
     if (!this._endpoint) {
       throw new Error('[GenericHttpAdapter] manifest 缺少 api.endpoint');
@@ -66,13 +73,21 @@ class GenericHttpAdapter extends BaseTtsAdapter {
         throw await this._mapError(response);
       }
 
-      const audio = await this._extractAudio(response, this._responseMap);
+      const result = await this._extractAudio(response, this._responseMap);
 
       this._reportSuccess();
 
+      const format = this._responseMap.formatPath
+        ? this._navigate(result._parsed || {}, this._responseMap.formatPath.split('.'))
+        : providerParams.format || 'wav';
+
+      if (result.audioUrl) {
+        return { audioUrl: result.audioUrl, format, provider: this.provider, serviceType: this.serviceType };
+      }
+
       return {
-        audio,
-        format: providerParams.format || 'wav',
+        audio: result.audio,
+        format,
         provider: this.provider,
         serviceType: this.serviceType
       };
@@ -128,7 +143,25 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     if (encoding === 'binary') {
       const buf = Buffer.from(await response.arrayBuffer());
       if (!buf || buf.length === 0) throw this._error('PARSE_ERROR', '响应中无音频数据');
-      return buf;
+      return { audio: buf };
+    }
+
+    if (encoding === 'url') {
+      const result = await response.json();
+      let url = result;
+      for (const p of audioPath.split('.')) { url = url?.[p]; }
+      if (!url || typeof url !== 'string') throw this._error('PARSE_ERROR', '响应中未找到音频 URL');
+      const sizePath = mapping.sizePath;
+      let size = 0;
+      if (sizePath) {
+        size = this._navigate(result, sizePath.split('.')) || 0;
+      }
+      const dataPath = mapping.dataPath;
+      let data = null;
+      if (dataPath) {
+        data = this._navigate(result, dataPath.split('.')) || null;
+      }
+      return { audioUrl: url, size, data };
     }
 
     const result = await response.json();
@@ -137,15 +170,15 @@ class GenericHttpAdapter extends BaseTtsAdapter {
 
     if (!audio) throw this._error('PARSE_ERROR', '响应中未找到音频数据');
 
-    return Buffer.from(audio, 'base64');
+    return { audio: Buffer.from(audio, 'base64'), _parsed: result };
   }
 
   async _mapError(response) {
     const status = response.status;
     let code = 'API_ERROR';
 
-    if ((this._errorMap.retryable || RETRYABLE_HTTP).has(status)) code = 'PROVIDER_ERROR';
-    if ((this._errorMap.circuitBreaker || CIRCUIT_HTTP).has(status)) code = 'PROVIDER_ERROR';
+    if (this._retryableHttp.has(status)) code = 'PROVIDER_ERROR';
+    if (this._circuitHttp.has(status)) code = 'PROVIDER_ERROR';
 
     let detail = `HTTP ${status}`;
     try {

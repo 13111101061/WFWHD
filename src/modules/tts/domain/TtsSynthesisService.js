@@ -2,23 +2,22 @@
  * TtsSynthesisService - TTS合成领域服务
  *
  * 核心职责：
- * - 编排TTS合成流程
- * - 验证 → 解析音色 → 能力校验 → 参数合并 → 参数映射 → 调用Provider
+ * - 编排TTS合成流程：验证 → 解析音色 → 能力校验 → 参数合并 → 参数映射 → 调用Provider
  *
- * 调用链：
- * 1. VoiceResolver 解析身份 → VoiceIdentity
- * 2. CapabilityResolver 获取能力上下文 → CapabilityContext
- * 3. ParameterResolutionService 合并参数 → 平台标准参数
- * 4. CompiledCapability.mapToProvider() 映射参数 → 服务商参数
- * 5. ProviderAdapter 调用 API
+ * 调用链（阶段化，上下文由 SynthesisContext 承载）：
+ * 1. VoiceResolver 解析身份 → ctx.voiceIdentity + ctx.serviceDescriptor
+ * 2. CapabilityResolver 获取能力上下文 → ctx.capabilityContext
+ * 3. ParameterResolutionService 合并参数 → ctx.resolvedParams
+ * 4. CompiledCapability.validate() + mapToProvider() → ctx.providerParams
+ * 5. ProviderAdapter 调用 API → ctx.result
  *
- * 所有依赖通过构造函数注入，消除 setter 时间耦合。
+ * 所有依赖通过构造函数注入。
  * 限流/熔断/重试/超时 → 委托 ExecutionPolicy。
  */
 
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
-const AudioResult = require('./AudioResult');
+const SynthesisContext = require('./SynthesisContext');
 
 class TtsSynthesisService {
   /**
@@ -63,99 +62,154 @@ class TtsSynthesisService {
 
   async synthesize(request) {
     const sr = request instanceof SynthesisRequest ? request : SynthesisRequest.fromJSON(request);
-
     this._validateRequest(sr);
 
-    const { resolvedRequest, voiceIdentity } = await this._resolveServiceIdentifier(sr);
-    const resolvedServiceKey = this._buildServiceKey(resolvedRequest);
+    const ctx = new SynthesisContext({ request: sr });
 
-    const { result, warnings: chainWarnings } = await this.executionPolicy.execute(resolvedServiceKey, async () => {
-      return this._synthesizeWithNewChain(resolvedRequest, voiceIdentity);
+    this._resolveVoice(sr, ctx);
+    const canonicalKey = ctx.serviceKey || 'default';
+
+    await this.executionPolicy.execute(canonicalKey, async () => {
+      this._buildCapability(ctx);
+      this._checkCapabilityDigest(ctx);
+      this._mergeAndValidateParams(ctx);
+      this._mapToProvider(ctx);
+      await this._callProvider(ctx);
     });
 
-    const warnings = [];
-    if (chainWarnings?.length) {
-      warnings.push(...chainWarnings);
+    const audioResult = ctx.toAudioResult();
+    if (ctx.warnings.length > 0) {
+      audioResult.warnings = ctx.warnings;
       this.metrics.capabilityValidationFailures++;
-    }
-
-    const audioResult = AudioResult.fromServiceResult(result, {
-      provider: resolvedRequest.provider,
-      serviceType: resolvedRequest.serviceType,
-      text: resolvedRequest.text,
-      latency: 0
-    });
-
-    if (warnings.length > 0) {
-      audioResult.warnings = warnings;
     }
 
     return audioResult;
   }
 
-  async _synthesizeWithNewChain(resolvedRequest, voiceIdentity) {
-    const identity = voiceIdentity || this.voiceResolver.resolve({
-      text: resolvedRequest.text,
-      service: resolvedRequest.service,
-      voiceCode: resolvedRequest.voiceCode,
-      systemId: resolvedRequest.systemId,
-      options: resolvedRequest.options
-    });
+  // ==================== 阶段方法 ====================
 
-    const capabilityContext = this.capabilityResolver.resolve(
-      identity.serviceKey,
+  _resolveVoice(sr, ctx) {
+    const resolveInput = {
+      text: sr.text,
+      service: sr.service,
+      options: sr.options
+    };
+
+    if (sr.voiceCode) {
+      resolveInput.voiceCode = sr.voiceCode;
+    } else if (sr.systemId) {
+      resolveInput.systemId = sr.systemId;
+    } else {
+      resolveInput.voice = sr.options?.voice || sr.options?.voiceId;
+      resolveInput.voiceId = sr.options?.voiceId;
+    }
+
+    let voiceIdentity;
+    try {
+      voiceIdentity = this.voiceResolver.resolve(resolveInput);
+    } catch (error) {
+      if (!error.code) error.code = 'VOICE_NOT_FOUND';
+      throw error;
+    }
+
+    ctx.voiceIdentity = voiceIdentity;
+
+    if (this._providerRegistry) {
+      const desc = this._providerRegistry.get(voiceIdentity.serviceKey);
+      if (desc) ctx.serviceDescriptor = desc;
+    }
+  }
+
+  _buildCapability(ctx) {
+    const identity = ctx.voiceIdentity;
+    const serviceKey = identity?.serviceKey || ctx.serviceKey;
+    ctx.capabilityContext = this.capabilityResolver.resolve(
+      serviceKey,
       null,
-      identity.voiceRuntime
+      identity?.voiceRuntime
     );
+  }
 
-    const resolvedParams = this.parameterResolutionService.mergeFromContext(
-      resolvedRequest.options,
-      capabilityContext,
+  _checkCapabilityDigest(ctx) {
+    const clientDigest = ctx.request?.options?.capabilityDigest
+      || ctx.request?.capabilityDigest;
+    if (!clientDigest || !ctx.capabilityContext?.compiled) return;
+
+    const serverDigest = ctx.capabilityContext.compiled.capabilityDigest;
+    if (clientDigest !== serverDigest) {
+      const err = new Error('Capability schema outdated, please refresh service capability schema');
+      err.code = 'CAPABILITY_SCHEMA_OUTDATED';
+      err.serverDigest = serverDigest;
+      throw err;
+    }
+  }
+
+  _mergeAndValidateParams(ctx) {
+    const identity = ctx.voiceIdentity;
+    const capCtx = ctx.capabilityContext;
+
+    const merged = this.parameterResolutionService.mergeFromContext(
+      ctx.request?.options,
+      capCtx,
       identity
     );
 
-    const cleanParams = this._cleanProviderParams(resolvedParams.parameters, capabilityContext);
+    if (merged.warnings?.length) ctx.warnings.push(...merged.warnings);
+
+    const cleanParams = this._cleanProviderParams(merged.parameters, capCtx);
 
     const buildResult = this.parameterResolutionService.buildFinalParams({
       parameters: cleanParams,
-      warnings: resolvedParams.warnings,
-      lockedParams: resolvedParams.lockedParams,
-      filtered: resolvedParams.filtered
-    }, capabilityContext);
-    const finalParams = buildResult.params;
+      warnings: merged.warnings,
+      lockedParams: merged.lockedParams,
+      filtered: merged.filtered
+    }, capCtx);
 
-    const chainWarnings = [];
-    if (resolvedParams.warnings?.length) chainWarnings.push(...resolvedParams.warnings);
-    if (buildResult.warnings?.length) chainWarnings.push(...buildResult.warnings);
+    ctx.resolvedParams = buildResult.params;
+    if (buildResult.warnings?.length) ctx.warnings.push(...buildResult.warnings);
 
-    if (capabilityContext.providerOptions && Object.keys(capabilityContext.providerOptions).length > 0) {
-      finalParams.providerOptions = {
-        ...(finalParams.providerOptions || {}),
-        ...capabilityContext.providerOptions
-      };
+    // CompiledCapability.validate — 与前端 schema 同源校验
+    if (capCtx?.compiled) {
+      const validation = capCtx.compiled.validate(ctx.resolvedParams);
+      if (!validation.valid) {
+        const err = new Error(validation.errors.join('; '));
+        err.code = 'CAPABILITY_ERROR';
+        err.errors = validation.errors;
+        throw err;
+      }
     }
 
-    const providerParams = capabilityContext.compiled.mapToProvider(
-      finalParams,
-      { providerVoiceId: identity.providerVoiceId }
-    );
+    if (capCtx.providerOptions && Object.keys(capCtx.providerOptions).length > 0) {
+      ctx.resolvedParams.providerOptions = {
+        ...(ctx.resolvedParams.providerOptions || {}),
+        ...capCtx.providerOptions
+      };
+    }
+  }
 
-    const serviceType = this._extractServiceType(identity.serviceKey);
-    const providerResult = await this.ttsProvider.synthesize(
+  _mapToProvider(ctx) {
+    const identity = ctx.voiceIdentity;
+    ctx.providerParams = ctx.capabilityContext.compiled.mapToProvider(
+      ctx.resolvedParams,
+      { providerVoiceId: identity?.providerVoiceId }
+    );
+  }
+
+  async _callProvider(ctx) {
+    const identity = ctx.voiceIdentity;
+    const desc = ctx.serviceDescriptor;
+    const serviceType = desc?.serviceType || 'default';
+
+    ctx.result = await this.ttsProvider.synthesize(
       identity.providerKey,
       serviceType,
-      resolvedRequest.text,
-      providerParams
+      ctx.request.text,
+      ctx.providerParams
     );
-
-    return { result: providerResult, warnings: chainWarnings };
   }
 
   // ==================== 批量合成 ====================
 
-  /**
-   * 批量合成（流式并发：完成一个立即补下一个，始终保持 concurrency 个飞行中）
-   */
   async batchSynthesize(requests, opts = {}) {
     const concurrency = opts.concurrency
       || parseInt(process.env.TTS_BATCH_CONCURRENCY, 10)
@@ -227,7 +281,7 @@ class TtsSynthesisService {
     };
   }
 
-  // ==================== 私有方法 ====================
+  // ==================== 内部工具 ====================
 
   _validateRequest(request) {
     const baseValidation = request.validate();
@@ -246,57 +300,6 @@ class TtsSynthesisService {
         throw error;
       }
     }
-  }
-
-  async _resolveServiceIdentifier(request) {
-    const resolveInput = {
-      text: request.text,
-      service: request.service,
-      options: request.options
-    };
-
-    if (request.voiceCode) {
-      resolveInput.voiceCode = request.voiceCode;
-    } else if (request.systemId) {
-      resolveInput.systemId = request.systemId;
-    } else {
-      resolveInput.voice = request.options?.voice || request.options?.voiceId;
-      resolveInput.voiceId = request.options?.voiceId;
-    }
-
-    try {
-      const resolved = this.voiceResolver.resolve(resolveInput);
-      const serviceType = this._extractServiceType(resolved.serviceKey);
-      const resolvedRequest = new SynthesisRequest({
-        text: request.text, service: request.service,
-        voiceCode: resolved.voiceCode, systemId: resolved.systemId,
-        provider: resolved.providerKey, serviceType,
-        options: { ...request.options, voice: resolved.providerVoiceId, voiceId: resolved.providerVoiceId }
-      });
-      return { resolvedRequest, voiceIdentity: resolved };
-    } catch (error) {
-      if (!error.code) error.code = 'VOICE_NOT_FOUND';
-      throw error;
-    }
-  }
-
-  _buildServiceKey(request) {
-    if (request.provider && request.serviceType) return `${request.provider}_${request.serviceType}`;
-    if (request.service) return request.service;
-    return 'default';
-  }
-
-  _extractServiceType(serviceKey) {
-    if (!serviceKey) return 'default';
-    const reg = this._providerRegistry;
-    if (!reg) return serviceKey.split('_').slice(1).join('_') || 'default';
-    const descriptor = reg.get(serviceKey);
-    const canonicalKey = descriptor?.key || reg.resolveCanonicalKey(serviceKey) || serviceKey;
-    const providerKey = descriptor?.provider || canonicalKey.split('_')[0];
-    const prefix = `${providerKey}_`;
-    if (canonicalKey.startsWith(prefix) && canonicalKey.length > prefix.length) return canonicalKey.slice(prefix.length);
-    if (!canonicalKey.includes('_')) return canonicalKey;
-    return canonicalKey.split('_').slice(1).join('_');
   }
 
   _cleanProviderParams(params, capabilityContext) {

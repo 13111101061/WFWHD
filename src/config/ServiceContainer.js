@@ -143,7 +143,8 @@ class ServiceContainer {
       capabilityResolver: capabilityResolver,
       voiceCatalog: voiceCatalogAdapter,
       voiceCatalogQuery,
-      voiceRegistry
+      voiceRegistry,
+      providerRegistry
     });
     this._services.set('queryService', queryService);
 
@@ -171,7 +172,7 @@ class ServiceContainer {
       const audioCache = require('../shared/utils/audioCache');
       clearAllCacheFn = audioCache.clearAllCache;
     } catch (e) { /* audioCache 可选 */ }
-    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn });
+    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn, providerRegistry });
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 
     this._initialized = true;

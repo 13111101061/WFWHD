@@ -39,10 +39,7 @@ function toDisplayDto(storedVoice) {
     description: profile.description || '',
     status: profile.status || 'active',
     previewUrl: profile.preview || null,
-    alias: profile.alias,
-    runtimePreview: {
-      hasProviderOptions: !!(runtime.providerOptions && Object.keys(runtime.providerOptions).length > 0)
-    }
+    alias: profile.alias
   };
 }
 

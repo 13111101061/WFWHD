@@ -17,10 +17,11 @@ const SynthesisRequest = require('../../domain/SynthesisRequest');
 const AudioResult = require('../../domain/AudioResult');
 
 class TtsHttpAdapter {
-  constructor(synthesisService, queryService, { clearAllCache } = {}) {
+  constructor(synthesisService, queryService, { clearAllCache, providerRegistry } = {}) {
     this.synthesisService = synthesisService;
     this.queryService = queryService;
     this._clearAllCache = clearAllCache || null;
+    this._providerRegistry = providerRegistry || null;
   }
 
   // ==================== HTTP入口方法 ====================
@@ -34,14 +35,20 @@ class TtsHttpAdapter {
       const request = SynthesisRequest.fromJSON(req.body);
       const result = await this.synthesisService.synthesize(request);
 
+      const canonicalServiceKey = result.serviceKey
+        || (result.provider && result.serviceType ? `${result.provider}_${result.serviceType}` : null);
+
       const response = {
         success: true,
         data: result.toApiResponse(),
-        service: request.getServiceKey(),
+        service: canonicalServiceKey || request.service,
         fromCache: result.fromCache || false,
         metadata: {
           provider: result.provider,
           serviceType: result.serviceType,
+          serviceKey: canonicalServiceKey,
+          requestedService: request.service,
+          voiceCode: result.voiceCode || request.voiceCode || null,
           systemId: request.systemId || null,
           requestId: request.requestId
         },
@@ -50,6 +57,10 @@ class TtsHttpAdapter {
 
       if (result.warnings && result.warnings.length > 0) {
         response.warnings = result.warnings;
+      }
+
+      if (result.voice && !response.metadata.systemId) {
+        response.metadata.voice = result.voice;
       }
 
       res.json(response);
@@ -74,6 +85,9 @@ class TtsHttpAdapter {
       );
 
       const { results, errors } = await this.synthesisService.batchSynthesize(requests);
+
+      results.sort((a, b) => a.index - b.index);
+      errors.sort((a, b) => a.index - b.index);
 
       res.json({
         success: errors.length === 0,
@@ -119,8 +133,34 @@ class TtsHttpAdapter {
         });
       }
 
-      const tempRequest = SynthesisRequest.fromJSON({ text: '', service });
-      const { provider, serviceType } = tempRequest.parseServiceIdentifier();
+      let provider, serviceType, canonicalKey;
+
+      if (this._providerRegistry) {
+        canonicalKey = this._providerRegistry.resolveCanonicalKey(service);
+        if (canonicalKey) {
+          const desc = this._providerRegistry.get(canonicalKey);
+          if (desc) {
+            provider = desc.provider;
+            serviceType = desc.serviceType;
+          }
+        }
+      }
+
+      if (!provider || !serviceType) {
+        canonicalKey = null;
+        const tempRequest = SynthesisRequest.fromJSON({ text: '', service });
+        ({ provider, serviceType } = tempRequest.parseServiceIdentifier());
+        if (provider && serviceType) canonicalKey = `${provider}_${serviceType}`;
+      }
+
+      if (!provider || !serviceType) {
+        return res.status(400).json({
+          success: false,
+          error: `Could not resolve service: ${service}`,
+          code: 'UNKNOWN_SERVICE'
+        });
+      }
+
       const voices = await this.queryService.getVoices(provider, serviceType);
 
       res.json({
@@ -128,6 +168,7 @@ class TtsHttpAdapter {
         data: {
           provider,
           service: serviceType,
+          canonicalKey: canonicalKey || `${provider}_${serviceType}`,
           voices
         },
         voiceCount: voices.length,
@@ -357,6 +398,20 @@ class TtsHttpAdapter {
     }
   }
 
+  /**
+   * 获取前端启动包
+   * GET /api/tts/bootstrap
+   */
+  async getFrontendBootstrap(req, res) {
+    try {
+      const result = this.queryService.getFrontendBootstrap();
+      res.json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
   // ==================== 私有方法 ====================
 
   /**
@@ -403,15 +458,25 @@ class TtsHttpAdapter {
   _getStatusCode(error) {
     switch (error.code) {
       case 'VALIDATION_ERROR':
-      case 'SERVICE_MISMATCH':  // 服务不匹配属于客户端参数错误
-      case 'UNKNOWN_SERVICE':   // 未知服务属于客户端参数错误
-      case 'CAPABILITY_ERROR':  // 能力校验失败属于客户端参数错误
+      case 'SERVICE_MISMATCH':
+      case 'UNKNOWN_SERVICE':
+      case 'CAPABILITY_ERROR':
+      case 'PARAMETER_MAPPING_ERROR':
         return 400;
       case 'VOICE_NOT_FOUND':
       case 'NOT_FOUND':
         return 404;
+      case 'CAPABILITY_SCHEMA_OUTDATED':
+        return 409;
       case 'RATE_LIMIT_EXCEEDED':
         return 429;
+      case 'TIMEOUT_ERROR':
+        return 504;
+      case 'API_ERROR':
+      case 'PROVIDER_ERROR':
+        return 502;
+      case 'CONFIG_ERROR':
+        return 500;
       case 'CIRCUIT_BREAKER_OPEN':
       case 'SERVICE_UNAVAILABLE':
         return 503;
@@ -435,6 +500,7 @@ class TtsHttpAdapter {
     if (error.errors) base.errors = error.errors;
     if (error.retryAfter) base.retryAfter = error.retryAfter;
     if (error.limit) base.limit = error.limit;
+    if (error.serverDigest) base.serverDigest = error.serverDigest;
 
     return base;
   }

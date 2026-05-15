@@ -55,9 +55,6 @@ const detectMaliciousContent = (text) => {
     /<script[^>]*>/gi,
     /<iframe[^>]*>/gi,
 
-    // 过长的文本（可能的DoS攻击）
-    /.{1000,}/,
-
     // 控制字符
     /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,
 

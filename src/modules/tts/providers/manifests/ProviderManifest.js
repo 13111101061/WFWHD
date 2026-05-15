@@ -19,30 +19,51 @@ let _providerIndex = null;
 
 const MANIFEST_REQUIRED_FIELDS = {
   root: ['providerKey', 'provider', 'services', 'voiceCode'],
-  provider: ['displayName', 'description'],
+  provider: ['displayName', 'description', 'credentialMode'],
   service: ['displayName', 'protocol'],
   voiceCode: ['providerCode', 'serviceKey']
 };
 
+const VALID_CREDENTIAL_MODES = new Set(['apiKey', 'secretKey', 'accessKey']);
+const VALID_PROTOCOLS = new Set(['http', 'ws', 'websocket', 'http-sdk']);
+const VALID_API_STRUCTURES = new Set(['flat', 'nested']);
+const VALID_PARAM_STATUSES = new Set(['supported', 'unsupported', 'locked', 'hidden', 'required']);
+
 function _validateManifest(data, manifestPath) {
   const errors = [];
+  const warnings = [];
   const dirName = path.basename(path.dirname(manifestPath));
 
+  // ---- root —----
   for (const field of MANIFEST_REQUIRED_FIELDS.root) {
     if (!data[field]) {
       errors.push(`providers/${dirName}/manifest.json: missing required field "${field}"`);
     }
   }
 
+  // providerKey must equal directory name
+  if (data.providerKey && data.providerKey !== dirName) {
+    errors.push(`providers/${dirName}/manifest.json: providerKey "${data.providerKey}" does not match directory "${dirName}"`);
+  }
+
+  // ---- provider —----
   if (data.provider) {
     for (const field of MANIFEST_REQUIRED_FIELDS.provider) {
       if (!data.provider[field]) {
         errors.push(`providers/${dirName}/manifest.json: missing provider.${field}`);
       }
     }
+    if (data.provider.credentialMode && !VALID_CREDENTIAL_MODES.has(data.provider.credentialMode)) {
+      errors.push(`providers/${dirName}/manifest.json: invalid provider.credentialMode "${data.provider.credentialMode}" (must be apiKey|secretKey|accessKey)`);
+    }
+    if (data.provider.status && !['stable', 'beta', 'deprecated'].includes(data.provider.status)) {
+      errors.push(`providers/${dirName}/manifest.json: invalid provider.status "${data.provider.status}"`);
+    }
   }
 
+  // ---- services —----
   if (data.services) {
+    const providerKey = data.providerKey || dirName;
     for (const [svcKey, svc] of Object.entries(data.services)) {
       for (const field of MANIFEST_REQUIRED_FIELDS.service) {
         if (!svc[field]) {
@@ -52,9 +73,77 @@ function _validateManifest(data, manifestPath) {
       if (!svc.adapter && !svc.api) {
         errors.push(`providers/${dirName}/manifest.json: services.${svcKey} must have "adapter" or "api"`);
       }
+      if (svc.adapter && svc.api) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} cannot have both "adapter" and "api"`);
+      }
+
+      // serviceKey convention: must start with providerKey_
+      if (!svcKey.startsWith(`${providerKey}_`)) {
+        errors.push(`providers/${dirName}/manifest.json: serviceKey "${svcKey}" must start with "${providerKey}_"`);
+      }
+
+      if (svc.protocol && !VALID_PROTOCOLS.has(svc.protocol)) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} invalid protocol "${svc.protocol}"`);
+      }
+      if (svc.apiStructure && !VALID_API_STRUCTURES.has(svc.apiStructure)) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} invalid apiStructure "${svc.apiStructure}"`);
+      }
+      if (svc.apiStructure === 'nested' && !svc.basePath) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} apiStructure=nested requires basePath`);
+      }
+      if (svc.status && !['stable', 'beta', 'deprecated'].includes(svc.status)) {
+        errors.push(`providers/${dirName}/manifest.json: services.${svcKey} invalid status "${svc.status}"`);
+      }
+
+      // api config checks
+      if (svc.api) {
+        if (!svc.api.endpoint) {
+          errors.push(`providers/${dirName}/manifest.json: services.${svcKey}.api missing endpoint`);
+        }
+        if (!svc.api.method) {
+          errors.push(`providers/${dirName}/manifest.json: services.${svcKey}.api missing method`);
+        }
+        if (svc.api.responseMapping) {
+          const rm = svc.api.responseMapping;
+          if (rm.audioEncoding && !['base64', 'binary', 'url'].includes(rm.audioEncoding)) {
+            errors.push(`providers/${dirName}/manifest.json: services.${svcKey}.api.responseMapping invalid audioEncoding "${rm.audioEncoding}"`);
+          }
+        }
+      }
+
+      // adapter file check
+      if (svc.adapter) {
+        const adapterAbs = path.join(path.dirname(manifestPath), svc.adapter);
+        if (!fs.existsSync(adapterAbs)) {
+          errors.push(`providers/${dirName}/manifest.json: services.${svcKey} adapter file not found: ${svc.adapter}`);
+        }
+      }
+
+      // parameters checks
+      if (svc.parameters) {
+        if (!svc.parameters.text || (svc.parameters.text.status !== 'required' && svc.parameters.text.status !== 'supported')) {
+          errors.push(`providers/${dirName}/manifest.json: services.${svcKey} parameters.text must exist and be required`);
+        }
+        for (const [pk, p] of Object.entries(svc.parameters)) {
+          if (p.status && !VALID_PARAM_STATUSES.has(p.status)) {
+            errors.push(`providers/${dirName}/manifest.json: services.${svcKey}.parameters.${pk} invalid status "${p.status}"`);
+          }
+          if (p.status === 'locked' && !p.lockedValue && !p.source) {
+            errors.push(`providers/${dirName}/manifest.json: services.${svcKey}.parameters.${pk} locked without lockedValue or source`);
+          }
+          const needsMapTo = p.status === 'supported' || p.status === 'locked' || p.status === 'required';
+          if (needsMapTo && !p.mapTo && !p.source && !p.nested) {
+            warnings.push(`providers/${dirName}/manifest.json: services.${svcKey}.parameters.${pk} status=${p.status} missing mapTo`);
+          }
+          if (p.status === 'unsupported' && p.mapTo) {
+            warnings.push(`providers/${dirName}/manifest.json: services.${svcKey}.parameters.${pk} unsupported has mapTo`);
+          }
+        }
+      }
     }
   }
 
+  // ---- voiceCode —----
   if (data.voiceCode) {
     for (const field of MANIFEST_REQUIRED_FIELDS.voiceCode) {
       if (!data.voiceCode[field]) {
@@ -64,9 +153,16 @@ function _validateManifest(data, manifestPath) {
     if (data.voiceCode.providerCode && !/^\d{3}$/.test(data.voiceCode.providerCode)) {
       errors.push(`providers/${dirName}/manifest.json: voiceCode.providerCode must be 3-digit string (got "${data.voiceCode.providerCode}")`);
     }
+    // voiceCode.serviceKey should match a known serviceType in services
+    if (data.voiceCode.serviceKey && data.services) {
+      const targetServiceKey = `${data.providerKey || dirName}_${data.voiceCode.serviceKey}`;
+      if (!data.services[targetServiceKey]) {
+        warnings.push(`providers/${dirName}/manifest.json: voiceCode.serviceKey "${data.voiceCode.serviceKey}" does not match any services.${targetServiceKey}`);
+      }
+    }
   }
 
-  return errors;
+  return { errors, warnings };
 }
 
 function loadAllManifests() {
@@ -93,17 +189,23 @@ function loadAllManifests() {
       const raw = fs.readFileSync(manifestPath, 'utf8');
       const data = JSON.parse(raw);
 
-      const validationErrors = _validateManifest(data, manifestPath);
-      if (validationErrors.length > 0) {
-        for (const e of validationErrors) {
+      const result = _validateManifest(data, manifestPath);
+      if (result.errors.length > 0) {
+        for (const e of result.errors) {
           console.error(`[ProviderManifest] VALIDATION: ${e}`);
         }
         if (process.env.CONFIG_MODE !== 'migration') {
-          throw new Error(`Manifest validation failed:\n  ${validationErrors.join('\n  ')}`);
+          throw new Error(`Manifest validation failed:\n  ${result.errors.join('\n  ')}`);
+        }
+      }
+      if (result.warnings.length > 0) {
+        for (const w of result.warnings) {
+          console.warn(`[ProviderManifest] WARNING: ${w}`);
         }
       }
 
       const providerKey = data.providerKey || entry.name;
+      const providerCredentialMode = data.provider?.credentialMode || null;
 
       if (data.voiceCode?.providerCode) {
         const prev = providerCodeSeen.get(data.voiceCode.providerCode);
@@ -120,10 +222,24 @@ function loadAllManifests() {
 
       if (data.services) {
         for (const [serviceKey, svc] of Object.entries(data.services)) {
-          _serviceIndex.set(serviceKey, { providerKey, ...svc, _canonicalKey: serviceKey });
+          // Merge provider-level credentialMode into svc.api.credentialMode (avoid dual-source)
+          const mergedApi = svc.api ? {
+            ...svc.api,
+            credentialMode: svc.api.credentialMode || providerCredentialMode
+          } : undefined;
+
+          // 根级 executionPolicy 下放到每个 service（service 自己的同名字段可覆盖）
+          const serviceConfig = {
+            providerKey,
+            executionPolicy: data.executionPolicy,
+            ...svc,
+            api: mergedApi || svc.api,
+            _canonicalKey: serviceKey
+          };
+          _serviceIndex.set(serviceKey, serviceConfig);
           if (Array.isArray(svc.aliases)) {
             for (const alias of svc.aliases) {
-              _serviceIndex.set(alias, { providerKey, ...svc, _canonicalKey: serviceKey });
+              _serviceIndex.set(alias, { ...serviceConfig, _canonicalKey: serviceKey });
             }
           }
         }

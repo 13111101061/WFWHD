@@ -14,6 +14,11 @@
  * - 表单字段: preview（试听地址）
  * - 存储位置: profile.preview
  * - 展示输出: previewUrl（VoiceCatalog.toDisplayDto 标准化输出）
+ *
+ * 命名约定：
+ * - 表单的 `service` 是 provider 内部 serviceType（如 qwen_http），不是 canonical serviceKey（如 aliyun_qwen_http）
+ * - 表单的 `providerVoiceId` 映射到存储的 `runtime.voiceId`
+ * - identity 字段 (provider/service/sourceId) 创建后不可修改
  */
 
 const VALID_GENDERS = ['male', 'female', 'neutral'];
@@ -29,6 +34,13 @@ const FORBIDDEN_FIELDS = [
   'ttsConfig',
   'runtime',   // runtime 应该通过 providerVoiceId/model/providerOptions 构建
   'meta'
+];
+
+// 禁止 update 修改的不可变身份字段
+const IMMUTABLE_FIELDS = [
+  'provider',       // providerKey 不可变
+  'service',        // provider 内部 serviceType，不可变
+  'sourceId'        // provider 本地源 ID，不可变
 ];
 
 const VoiceFormSchema = {
@@ -103,7 +115,7 @@ const VoiceFormSchema = {
     }
 
     if (form.status && !VALID_STATUSES.includes(form.status)) {
-      warnings.push(`status 值 "${form.status}" 不在标准列表中，将使用默认值 "active"`);
+      errors.push(`status 值 "${form.status}" 无效，必须为: ${VALID_STATUSES.join(', ')}`);
     }
 
     if (form.languages && !Array.isArray(form.languages)) {
@@ -132,7 +144,7 @@ const VoiceFormSchema = {
     }
 
     // 4. 检查未知字段（警告）
-    const knownFields = new Set([...this.required, ...this.optional, ...FORBIDDEN_FIELDS]);
+    const knownFields = new Set([...this.required, ...this.optional, ...FORBIDDEN_FIELDS, ...IMMUTABLE_FIELDS]);
     for (const key of Object.keys(form)) {
       if (!knownFields.has(key)) {
         warnings.push(`未知字段 "${key}" 将被忽略`);
@@ -166,19 +178,14 @@ const VoiceFormSchema = {
       }
     }
 
-    // 2. 校验字段格式（只校验传入的字段）
-    if (updates.provider !== undefined && typeof updates.provider !== 'string') {
-      errors.push('provider 必须为字符串');
+    // 2. 检查不可变身份字段
+    for (const field of IMMUTABLE_FIELDS) {
+      if (updates[field] !== undefined) {
+        errors.push(`身份字段不可修改: ${field}`);
+      }
     }
 
-    if (updates.service !== undefined && typeof updates.service !== 'string') {
-      errors.push('service 必须为字符串');
-    }
-
-    if (updates.sourceId !== undefined && typeof updates.sourceId !== 'string') {
-      errors.push('sourceId 必须为字符串');
-    }
-
+    // 3. 校验字段格式（只校验传入的字段；provider/service/sourceId 已在上面检查不可变）
     if (updates.displayName !== undefined && typeof updates.displayName !== 'string') {
       errors.push('displayName 必须为字符串');
     }
@@ -188,7 +195,7 @@ const VoiceFormSchema = {
     }
 
     if (updates.status !== undefined && !VALID_STATUSES.includes(updates.status)) {
-      warnings.push(`status 值 "${updates.status}" 不在标准列表中`);
+      errors.push(`status 值 "${updates.status}" 无效，必须为: ${VALID_STATUSES.join(', ')}`);
     }
 
     if (updates.languages !== undefined && !Array.isArray(updates.languages)) {
@@ -214,7 +221,7 @@ const VoiceFormSchema = {
     }
 
     // 3. 检查未知字段
-    const knownFields = new Set([...this.required, ...this.optional, ...FORBIDDEN_FIELDS]);
+    const knownFields = new Set([...this.required, ...this.optional, ...FORBIDDEN_FIELDS, ...IMMUTABLE_FIELDS]);
     for (const key of Object.keys(updates)) {
       if (!knownFields.has(key)) {
         warnings.push(`未知字段 "${key}" 将被忽略`);

@@ -196,26 +196,17 @@ class VoiceRegistry {
 
   /**
    * 校验是否为有效的 StoredVoice 结构
+   * 委托 StoredVoiceSchema 做标准校验，保证与 VoiceWriteService 一致
    * @private
    */
   _validateStoredVoice(voice) {
-    if (!voice || typeof voice !== 'object') {
-      throw new Error('VoiceRegistry: voice must be an object');
-    }
-
-    if (!voice.identity || !voice.profile || !voice.runtime) {
+    const StoredVoiceSchema = require('../schema/StoredVoiceSchema');
+    const result = StoredVoiceSchema.validate(voice);
+    if (!result.valid) {
       throw new Error(
-        'VoiceRegistry: voice must be StoredVoice structure with identity/profile/runtime layers. ' +
-        'Use VoiceWriteService for form submission or addLegacyForMigration() for legacy data.'
+        'VoiceRegistry: voice must be a valid StoredVoice. ' +
+        result.errors.join('; ')
       );
-    }
-
-    if (!voice.identity.id) {
-      throw new Error('VoiceRegistry: voice.identity.id is required');
-    }
-
-    if (!voice.identity.provider) {
-      throw new Error('VoiceRegistry: voice.identity.provider is required');
     }
   }
 
@@ -231,11 +222,16 @@ class VoiceRegistry {
     this._removeFromIndexes(existing);
 
     // 合并更新（仅 StoredVoice 分层合并）
+    // identity 不可变字段保护：id/provider/service/sourceId 不可通过 merge 修改
+    const { id: _idUpd, provider: _provUpd, service: _svcUpd, sourceId: _srcUpd, ...identityUpdates } = updates.identity || {};
     const updated = {
       ...existing,
       identity: {
         ...existing.identity,
-        ...(updates.identity || {})
+        ...identityUpdates,
+        id,                              // immutable
+        provider: existing.identity.provider,   // immutable
+        service: existing.identity.service     // immutable
       },
       profile: {
         ...existing.profile,
@@ -397,6 +393,11 @@ class VoiceRegistry {
     return this.voiceCodeIndex.has(voiceCode);
   }
 
+  /**
+   * 获取指定 provider 的下一个可用 voiceNumber（scan max+1）
+   *
+   * ⚠️ 非原子操作：单进程安全；多实例部署建议用 Redis INCR 或 DB SEQUENCE。
+   */
   getNextVoiceNumber(providerKey) {
     const VoiceCodeGenerator = require('../config/VoiceCodeGenerator');
     const providerCode = VoiceCodeGenerator.getProviderCode(providerKey);
@@ -454,6 +455,9 @@ class VoiceRegistry {
 
     // voiceCode 反向索引（O(1) 查找）
     if (voiceCode) {
+      if (this.voiceCodeIndex.has(voiceCode) && this.voiceCodeIndex.get(voiceCode) !== id) {
+        console.warn(`[VoiceRegistry] Duplicate voiceCode "${voiceCode}" — ${this.voiceCodeIndex.get(voiceCode)} overwritten by ${id}`);
+      }
       this.voiceCodeIndex.set(voiceCode, id);
     }
   }

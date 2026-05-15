@@ -27,7 +27,9 @@ class AudioResult {
     fileName,
     provider,
     serviceType,
+    serviceKey,
     voice,
+    voiceCode,
     model,
     duration,
     fileSize,
@@ -42,7 +44,9 @@ class AudioResult {
     this.fileName = fileName;
     this.provider = provider;
     this.serviceType = serviceType;
+    this.serviceKey = serviceKey || null;
     this.voice = voice;
+    this.voiceCode = voiceCode || null;
     this.model = model;
     this.duration = duration;
     this.fileSize = fileSize;
@@ -66,8 +70,10 @@ class AudioResult {
       fileName: serviceResult.fileName,
       provider: context.provider || serviceResult.provider,
       serviceType: context.serviceType || serviceResult.serviceType,
-      voice: serviceResult.voice,
-      model: serviceResult.model,
+      serviceKey: context.serviceKey || null,
+      voice: serviceResult.voice || context.voice,
+      voiceCode: context.voiceCode || null,
+      model: serviceResult.model || context.model,
       duration: serviceResult.duration,
       fileSize: serviceResult.size || serviceResult.fileSize,
       format: serviceResult.format || 'mp3',

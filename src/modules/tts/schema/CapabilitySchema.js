@@ -1,8 +1,8 @@
 /**
  * CapabilitySchema - 平台级能力定义
  *
- * 只保留平台级常量和模型定义。
- * 服务级能力定义已迁移到 manifests/<provider>/manifest.json。
+ * 只保留平台级不变常量和工具函数。
+ * 服务/模型级能力定义已完全迁移到 ProviderManifest（manifest.json 是唯一事实源）。
  */
 
 const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
@@ -15,31 +15,8 @@ const CapabilitySchema = {
     maxTextLength: 10000,
     supportedFormats: ['wav', 'mp3', 'pcm', 'flac'],
     supportedSampleRates: [8000, 16000, 22050, 24000, 32000, 44100]
-  },
-
-  models: {
-    'qwen3-tts-instruct-flash-realtime': {
-      displayName: 'Qwen3 TTS Instruct Flash Realtime',
-      serviceKey: 'aliyun_qwen_http',
-      capabilities: { highQuality: false, lowLatency: true },
-      defaults: {},
-      parameters: {}
-    },
-    'moss-tts': {
-      displayName: 'MOSS TTS',
-      serviceKey: 'moss_tts',
-      capabilities: { highQuality: true, samplingControl: true },
-      defaults: { samplingParams: { temperature: 1.7, topP: 0.8, topK: 25 } },
-      parameters: {}
-    },
-    'speech-01-hd-preview': {
-      displayName: 'MiniMax Speech-01 HD Preview',
-      serviceKey: 'minimax_tts',
-      capabilities: { highQuality: true, emotionSupport: true },
-      defaults: {},
-      parameters: {}
-    }
   }
+
 };
 
 function getServiceCapabilities(serviceKey) {
@@ -48,7 +25,8 @@ function getServiceCapabilities(serviceKey) {
 }
 
 function getModelCapabilities(modelKey) {
-  return CapabilitySchema.models[modelKey] || null;
+  // 模型定义已迁移到 manifest parameters.model.default/lockedValue，不再维护硬编码表
+  return null;
 }
 
 function getPlatformDefaults() {
@@ -93,12 +71,13 @@ function getAllServiceKeys() {
 }
 
 function getAllModelKeys() {
-  return Object.keys(CapabilitySchema.models);
+  // 模型定义已迁移到 manifest
+  return [];
 }
 
 function getServiceKeyByModel(modelKey) {
-  const model = CapabilitySchema.models[modelKey];
-  return model?.serviceKey || null;
+  // 模型定义已迁移到 manifest
+  return null;
 }
 
 module.exports = {

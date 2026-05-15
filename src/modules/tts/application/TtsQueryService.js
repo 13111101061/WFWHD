@@ -5,9 +5,9 @@
  * - 音色查询（列表/详情/筛选）
  * - 提供商查询
  * - 服务能力查询
- * - 前端展示数据组装
+ * - 前端展示数据组装（catalog / bootstrap / frontend）
  *
- * 展示 DTO 统一由 this._ensureVoiceCatalogQuery().toDisplayDto() / toDetailDto() 生成
+ * 展示 DTO 统一由 VoiceCatalog.toDisplayDto() / toDetailDto() 生成
  * 本服务只做组装和过滤，不再手写字段映射
  */
 
@@ -23,14 +23,16 @@ class TtsQueryService {
    * @param {Object} [options.capabilityResolver] - 能力解析器（统一能力规则源）
    * @param {Object} [options.voiceCatalog] - 音色目录适配器（可选，用于上报分组逻辑）
    * @param {Object} [options.voiceRegistry] - VoiceRegistry 实例（备用）
+   * @param {Object} [options.providerRegistry] - ProviderRegistry 实例（用于构建动态路由信息）
    */
-  constructor({ ttsProvider, providerManagementService, capabilityResolver, voiceCatalog, voiceCatalogQuery, voiceRegistry } = {}) {
+  constructor({ ttsProvider, providerManagementService, capabilityResolver, voiceCatalog, voiceCatalogQuery, voiceRegistry, providerRegistry } = {}) {
     this.ttsProvider = ttsProvider;
     this.providerManagementService = providerManagementService;
     this.capabilityResolver = capabilityResolver;
     this.voiceCatalog = voiceCatalog;
     this._voiceCatalogQuery = voiceCatalogQuery;
     this._voiceRegistry = voiceRegistry;
+    this._providerRegistry = providerRegistry || null;
   }
 
   // ==================== 音色查询 ====================
@@ -202,6 +204,8 @@ class TtsQueryService {
       data: {
         serviceKey: canonicalKey,
         providerKey: compiled.providerKey,
+        serviceType: this._getServiceType(canonicalKey),
+        capabilityDigest: compiled.capabilityDigest,
         apiStructure: compiled.apiStructure,
 
         // 完整字段 Schema（前端渲染表单的主数据源）
@@ -220,32 +224,100 @@ class TtsQueryService {
         fieldIndex,
 
         // 元信息
-        defaultVoiceId: context.defaultVoiceId
+        defaultVoiceId: context.defaultVoiceId,
+
+        // 调用契约（前端自动生成调用所需信息）
+        requestContract: this._buildRequestContract(canonicalKey, compiled)
       },
       timestamp: new Date().toISOString()
     };
   }
 
+  _getServiceType(serviceKey) {
+    if (this._providerRegistry) {
+      const desc = this._providerRegistry.get(serviceKey);
+      if (desc) return desc.serviceType;
+    }
+    // fallback
+    const parts = serviceKey.split('_');
+    return parts.slice(1).join('_');
+  }
+
+  _buildRequestContract(serviceKey, compiled) {
+    const basePath = '/api/tts';
+    let pk, suffix;
+
+    if (this._providerRegistry) {
+      const rd = this._providerRegistry.getRouteDescriptor(serviceKey);
+      if (rd) {
+        return {
+          endpoint: `POST ${basePath}/synthesize`,
+          quickEndpoint: `${rd.primary.method} ${rd.primary.path}`,
+          method: 'POST',
+          contentType: 'application/json',
+          bodyShape: {
+            text: 'string',
+            service: serviceKey,
+            voiceCode: 'string?',
+            systemId: 'string?',
+            capabilityDigest: 'string?',
+            options: 'object'
+          },
+          requiredIdentity: ['voiceCode', 'systemId', 'voice'],
+          recommendedIdentity: 'voiceCode',
+          capabilityDigestField: 'capabilityDigest',
+          apiStructure: compiled.apiStructure || 'flat'
+        };
+      }
+    }
+
+    // fallback
+    const parts = serviceKey.split('_');
+    pk = parts[0];
+    suffix = parts.slice(1).join('_');
+
+    return {
+      endpoint: `POST ${basePath}/synthesize`,
+      quickEndpoint: `POST ${basePath}/${pk}/${suffix}`,
+      method: 'POST',
+      contentType: 'application/json',
+      bodyShape: {
+        text: 'string',
+        service: serviceKey,
+        voiceCode: 'string?',
+        systemId: 'string?',
+        capabilityDigest: 'string?',
+        options: 'object'
+      },
+      requiredIdentity: ['voiceCode', 'systemId', 'voice'],
+      recommendedIdentity: 'voiceCode',
+      capabilityDigestField: 'capabilityDigest',
+      apiStructure: compiled.apiStructure || 'flat'
+    };
+  }
+
   /**
    * 将 CompiledCapability schema 序列化为前端友好的结构
-   * 去掉 mapper 函数（不可序列化），保留所有渲染所需信息
+   * 去掉不可序列化的函数字段（mapper, validator, sortIndex）
    */
   _serializeSchema(schema) {
+    const stripKeys = new Set(['mapper', 'validator', 'sortIndex']);
     const result = {};
     for (const [key, field] of Object.entries(schema)) {
-      const { mapper, ...rest } = field;
-      // 序列化嵌套字段
-      if (rest.nestedFields && Array.isArray(rest.nestedFields)) {
-        result[key] = {
-          ...rest,
-          nestedFields: rest.nestedFields.map(nf => {
-            const { mapper: nm, ...nrest } = nf;
-            return nrest;
-          })
-        };
-      } else {
-        result[key] = rest;
+      const cleaned = {};
+      for (const [k, v] of Object.entries(field)) {
+        if (!stripKeys.has(k)) cleaned[k] = v;
       }
+      if (field.nestedFields && Array.isArray(field.nestedFields)) {
+        cleaned.nestedFields = field.nestedFields.map(nf => {
+          const ncleaned = {};
+          for (const [nk, nv] of Object.entries(nf)) {
+            if (!stripKeys.has(nk)) ncleaned[nk] = nv;
+          }
+          return ncleaned;
+        });
+      }
+      result[key] = cleaned;
     }
     return result;
   }
@@ -266,21 +338,37 @@ class TtsQueryService {
     const filters = this._buildFiltersMeta(items);
     const counts = this._buildCounts(items);
     const index = this._buildIndex(items);
-    const providers = this.getProviders();
 
-    // 直接使用 VoiceCatalog 的展示 DTO，不再手写字段
+    // providers: 使用干净的 provider 数组（从 ProviderManagementService，但不嵌套包装）
+    const allInfo = this._ensureProviderManagementService().getAllServiceInfo();
+    const providerList = allInfo
+      .filter(info => info.availability.adapterRegistered)
+      .map(info => ({
+        key: info.key,
+        provider: info.provider,
+        service: info.service,
+        serviceType: this._getServiceType(info.key),
+        displayName: info.displayName,
+        description: info.description,
+        configured: info.availability.credentialsConfigured,
+        available: info.availability.available,
+        status: info.status,
+        capabilities: info.capabilities,
+        aliases: info.aliases
+      }));
+
     const voices = items;
 
     return {
       success: true,
       data: {
-        schemaVersion: 'frontend-catalog.v1',
+        schemaVersion: 'frontend-catalog.v2',
         generatedAt: new Date().toISOString(),
         voices,
         filters,
         counts,
         index,
-        providers
+        providers: providerList
       },
       timestamp: new Date().toISOString()
     };
@@ -329,6 +417,137 @@ class TtsQueryService {
           tags: Array.from(tags).sort()
         },
         total: voices.length
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 前端启动包 — 单次请求获取完整前端初始数据
+   *
+   * 包含：
+   * - endpoints: 合成/批量/快捷路由等信息
+   * - services: 每个 serviceKey 的 descriptor + capabilityDigest + capabilitySummary + formSchemaUrl
+   * - voices: 精简音色列表 + filters
+   * - 不包含：完整 capability schema（前端通过 formSchemaUrl 按需拉取，避免响应过大）
+   *
+   * 前端可以基于此一次拉取后：
+   * - 渲染服务商选择器
+   * - 渲染音色选择器
+   * - 渲染参数表单（按需拉取 capability schema）
+   * - 生成调用 endpoint
+   * - 校验 schema 版本
+   */
+  getFrontendBootstrap() {
+    const pms = this._ensureProviderManagementService();
+    const resolver = this._ensureCapabilityResolver();
+    const pr = this._providerRegistry;
+
+    // 1. 端点信息
+    const basePath = '/api/tts';
+    const endpoints = {
+      synthesize: `POST ${basePath}/synthesize`,
+      batch: `POST ${basePath}/batch`,
+      catalog: `GET ${basePath}/catalog`,
+      bootstrap: `GET ${basePath}/bootstrap`
+    };
+
+    // 2. 服务信息（含 capabilityDigest + 动态路由）
+    const allInfo = pms.getAllServiceInfo();
+    const services = [];
+    const vc = this._ensureVoiceCatalogQuery();
+    const reg = this._voiceRegistry;
+
+    for (const info of allInfo) {
+      let digest = null;
+      let capabilitySummary = null;
+      let defaultVoiceId = null;
+      let capabilityCompiled = false;
+
+      try {
+        const ctx = resolver.resolve(info.key);
+        if (ctx?.compiled) {
+          digest = ctx.compiled.capabilityDigest;
+          capabilitySummary = ctx.compiled.getCapabilities();
+          capabilityCompiled = true;
+        }
+        defaultVoiceId = ctx?.defaultVoiceId || null;
+      } catch (e) { /* skip */ }
+
+      const desc = pr ? pr.get(info.key) : null;
+      const serviceType = desc?.serviceType || info.key.split('_').slice(1).join('_');
+      const voiceCount = reg ? reg.getByProviderAndService(info.provider, serviceType).length : 0;
+
+      const serviceEntry = {
+        serviceKey: info.key,
+        providerKey: info.provider,
+        serviceType,
+        displayName: info.displayName,
+        description: info.description,
+        aliases: info.aliases || [],
+        status: info.status,
+        configured: info.availability.credentialsConfigured,
+        available: info.availability.available,
+        protocol: (info.capabilities && info.capabilities.protocol) || 'http',
+        supportsStreaming: (info.capabilities && info.capabilities.streaming) || false,
+        supportsAsync: (info.capabilities && info.capabilities.async) || false,
+        defaultVoiceId,
+        capabilityDigest: digest,
+        capabilitySummary,
+        formSchemaUrl: `${basePath}/capabilities/${info.key}`,
+        // 接入状态分解（新增 provider 调试用）
+        onboarding: {
+          manifestLoaded: true,
+          adapterRegistered: !!info.availability.adapterRegistered,
+          credentialsConfigured: !!info.availability.credentialsConfigured,
+          voicesAvailable: voiceCount > 0,
+          capabilityCompiled,
+          defaultVoiceReady: !!(defaultVoiceId && reg && reg.get(defaultVoiceId)),
+          voiceCount
+        }
+      };
+
+      // 动态快捷路由（从统一的 route descriptor）
+      if (pr) {
+        const rd = pr.getRouteDescriptor(info.key);
+        if (rd) {
+          serviceEntry.routes = {
+            primary: `${rd.primary.method} ${rd.primary.path}`,
+            aliases: rd.aliases.map(a => `${a.method} ${a.path}`)
+          };
+        }
+      }
+
+      services.push(serviceEntry);
+    }
+
+    // 3. 音色数据
+    const items = this._filterVisibleVoices(this._ensureVoiceCatalogQuery().query({}));
+    const filters = this._buildFiltersMeta(items);
+
+    const voices = items.map(item => ({
+      id: item.id,
+      voiceCode: item.voiceCode,
+      provider: item.provider,
+      service: item.service,
+      displayName: item.displayName,
+      gender: item.gender,
+      languages: item.languages,
+      tags: item.tags,
+      description: item.description,
+      previewUrl: item.previewUrl
+    }));
+
+    return {
+      success: true,
+      data: {
+        schemaVersion: 'tts-frontend.v1',
+        generatedAt: new Date().toISOString(),
+        endpoints,
+        services,
+        voices,
+        filters,
+        totalVoices: voices.length
       },
       timestamp: new Date().toISOString()
     };

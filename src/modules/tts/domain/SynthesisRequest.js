@@ -17,6 +17,7 @@ class SynthesisRequest {
    * @param {string} [params.systemId] - 系统音色ID（兼容）
    * @param {string} [params.provider] - 服务提供商 (如 "aliyun")
    * @param {string} [params.serviceType] - 服务类型 (如 "cosyvoice")
+   * @param {string} [params.capabilityDigest] - 能力指纹（前端 schema 版本校验）
    * @param {Object} [params.options] - 合成选项
    */
   constructor({
@@ -26,6 +27,7 @@ class SynthesisRequest {
     systemId,
     provider,
     serviceType,
+    capabilityDigest,
     options = {}
   }) {
     // 不可变性：使用 Object.freeze
@@ -35,6 +37,7 @@ class SynthesisRequest {
     this.systemId = systemId;
     this.provider = provider;
     this.serviceType = serviceType;
+    this.capabilityDigest = capabilityDigest;
     this.options = Object.freeze({ ...options });
 
     // 元数据
@@ -104,9 +107,7 @@ class SynthesisRequest {
       systemId,
       provider: json.provider,
       serviceType: json.serviceType,
-      // Backward compatible:
-      // - allow top-level options (voice/speed/model/...)
-      // - allow nested options object (preferred)
+      capabilityDigest: json.capabilityDigest || json.capability_digest,
       options: {
         ...topLevelOptions,
         ...(json.options || {})
@@ -115,8 +116,12 @@ class SynthesisRequest {
   }
 
   /**
-   * 解析服务标识符
-   * 支持: "tencent", "aliyun_cosyvoice", "aliyun_qwen_http"
+   * 解析服务标识符（仅 legacy fallback，不识别 alias/manifest）
+   *
+   * @deprecated 主链路应使用 ProviderRegistry.resolveCanonicalKey() + descriptor.serviceType。
+   *             此方法只做字符串 split，不了解 alias、manifest canonical key 语义。
+   *             仅用于无 ProviderRegistry 的 fallback 场景（如 TtsHttpAdapter.getVoices legacy 路径）。
+   *
    * @returns {{ provider: string, serviceType: string|null }}
    */
   parseServiceIdentifier() {

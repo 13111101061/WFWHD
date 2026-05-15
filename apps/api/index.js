@@ -77,67 +77,59 @@ app.get('/api/public/info', (req, res) => {
   });
 });
 
-// TTS routes (使用合并后的完整版路由)
+// TTS routes — 全部路由在 ServiceContainer 初始化后挂载，确保单实例 VoiceRegistry
 const serviceContainer = require('../../src/config/ServiceContainer');
 
-// 初始化ServiceContainer并挂载TTS路由
-async function initializeTTSModule() {
-  try {
-    await serviceContainer.initialize();
-    console.log('✅ TTS ServiceContainer initialized');
-  } catch (error) {
-    console.error('❌ TTS ServiceContainer initialization failed:', error.message);
-  }
+// Route modules (lazy-require, not mounted yet)
+const ttsRoutes = require('./routes/ttsRoutes');
+const { createVoiceManageRoutes } = require('../../src/modules/tts/routes/voiceManageRoutes');
+const credentialsRoutes = require('../../src/modules/credentials/routes/credentialsRoutes');
+const audioRoutes = require('./routes/audioRoutes');
+const monitoringRoutes = require('./routes/monitoringRoutes');
+const snpanRoutes = require('../../src/modules/snpan/routes/snpanRoutes');
+const adminRoutes = require('../../src/modules/admin/routes/adminRoutes');
+
+// Mount all routes in the correct order after ServiceContainer is ready
+function mountAllRoutes(voiceRegistry) {
+  app.use('/api/tts', ttsRoutes);
+  app.use('/api/voices', createVoiceManageRoutes(voiceRegistry));
+  app.use('/api/credentials', credentialsRoutes);
+  app.use('/api/audio', audioRoutes);
+  app.use('/api/monitoring', monitoringRoutes);
+
+  app.use(
+    '/api/snpan',
+    unifiedAuth.createMiddleware({
+      required: true,
+      permissions: ['storage.access'],
+      rateLimitTier: 'default',
+      metadata: { service: 'snpan' }
+    }),
+    snpanRoutes
+  );
+
+  // SMS routes (paused)
+  // app.use('/api/sms', unifiedAuth.createMiddleware({
+  //   required: true,
+  //   permissions: ['sms.access'],
+  //   rateLimitTier: 'default',
+  //   metadata: { service: 'sms' }
+  // }), require('../../src/modules/sms[Paused]/routes/smsRoutes'));
+
+  app.use(
+    '/api/admin',
+    unifiedAuth.createMiddleware({
+      required: true,
+      permissions: ['admin.access'],
+      rateLimitTier: 'admin',
+      metadata: { service: 'admin' }
+    }),
+    adminRoutes
+  );
 }
 
-initializeTTSModule();
-app.use('/api/tts', require('./routes/ttsRoutes'));
-// Voice models (音色管理)
-app.use('/api/voices', (() => {
-  const { createVoiceManageRoutes } = require('../../src/modules/tts/routes/voiceManageRoutes');
-  const { getVoiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
-  return createVoiceManageRoutes(getVoiceRegistry());
-})());
-// Credentials (凭证管理)
-app.use('/api/credentials', require('../../src/modules/credentials/routes/credentialsRoutes'));
-// Audio storage
-app.use('/api/audio', require('./routes/audioRoutes'));
-// Monitoring
-app.use('/api/monitoring', require('./routes/monitoringRoutes'));
+// ==== Auth / key management (no ServiceContainer dependency) ====
 
-// File storage (snpan)
-app.use(
-  '/api/snpan',
-  unifiedAuth.createMiddleware({
-    required: true,
-    permissions: ['storage.access'],
-    rateLimitTier: 'default',
-    metadata: { service: 'snpan' }
-  }),
-  require('../../src/modules/snpan/routes/snpanRoutes')
-);
-
-// SMS routes (paused)
-// app.use('/api/sms', unifiedAuth.createMiddleware({
-//   required: true,
-//   permissions: ['sms.access'],
-//   rateLimitTier: 'default',
-//   metadata: { service: 'sms' }
-// }), require('../../src/modules/sms[Paused]/routes/smsRoutes'));
-
-// Admin routes
-app.use(
-  '/api/admin',
-  unifiedAuth.createMiddleware({
-    required: true,
-    permissions: ['admin.access'],
-    rateLimitTier: 'admin',
-    metadata: { service: 'admin' }
-  }),
-  require('../../src/modules/admin/routes/adminRoutes')
-);
-
-// Auth monitoring
 app.get(
   '/api/auth/stats',
   unifiedAuth.createMiddleware({
@@ -159,7 +151,6 @@ app.get(
   }
 );
 
-// API key management
 app.post(
   '/api/auth/keys',
   unifiedAuth.createMiddleware({
@@ -170,13 +161,7 @@ app.post(
   (req, res) => {
     try {
       const { services, permissions, description, expiresIn } = req.body;
-      const newKey = unifiedAuth.generateKey({
-        services,
-        permissions,
-        description,
-        expiresIn
-      });
-
+      const newKey = unifiedAuth.generateKey({ services, permissions, description, expiresIn });
       res.json({
         success: true,
         data: newKey,
@@ -210,6 +195,7 @@ app.get(
   }
 );
 
+// ==== Single startup entry: init → mount → 404/error → listen ====
 
 // Critical env validation in production
 if (process.env.NODE_ENV === 'production') {
@@ -220,57 +206,52 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'API endpoint not found',
-    message: `Requested path ${req.originalUrl} does not exist`
+async function start() {
+  await serviceContainer.initialize();
+  console.log('✅ ServiceContainer initialized');
+
+  const voiceRegistry = serviceContainer.get('voiceRegistry');
+  mountAllRoutes(voiceRegistry);
+
+  // 404 handler — must be after ALL business routes
+  app.use((req, res) => {
+    res.status(404).json({
+      success: false,
+      error: 'API endpoint not found',
+      message: `Requested path ${req.originalUrl} does not exist`
+    });
   });
-});
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    success: false,
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  // Global error handler
+  app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    });
   });
-});
 
-// Initialize services
-async function initializeServices() {
-  try {
-    // 初始化 VoiceRegistry（必须先调用 initialize）
-    const { voiceRegistry } = require('../../src/modules/tts/core/VoiceRegistry');
-    await voiceRegistry.initialize();
+  const stats = voiceRegistry.getStats();
+  console.log(`✅ VoiceRegistry: ${stats.total} voices across ${Object.keys(stats.providers || {}).length} providers`);
 
-    const stats = voiceRegistry.getStats();
-    console.log(`✅ VoiceRegistry initialized: ${stats.totalVoices} voices, ${stats.providers} providers`);
-  } catch (error) {
-    console.error('❌ Service initialization failed:', error.message);
-  }
-}
-
-// Start server
-initializeServices().then(() => {
   app.listen(PORT, () => {
     console.log(`TTS microservice running on port ${PORT}`);
-  console.log(`API base: http://localhost:${PORT}/api`);
-  console.log(`Health: http://localhost:${PORT}/health`);
+    console.log(`API base: http://localhost:${PORT}/api`);
+    console.log(`Health: http://localhost:${PORT}/health`);
 
-  if (process.env.API_KEYS) {
-    const keyCount = process.env.API_KEYS.split(',').length;
-    console.log(`API keys configured: ${keyCount}`);
-  } else {
-    console.log('Warning: API_KEYS not configured (set in .env)');
-  }
+    if (process.env.API_KEYS) {
+      console.log(`API keys configured: ${process.env.API_KEYS.split(',').length}`);
+    } else {
+      console.log('Warning: API_KEYS not configured (set in .env)');
+    }
 
-  console.log('Auth system: unified API keys, monitoring/auditing, rate limiting, service-level permissions');
+    console.log('Auth system: unified API keys, monitoring/auditing, rate limiting, service-level permissions');
     console.log('Tip: test auth system with `node tests/test-new-auth.js`');
   });
-}).catch(err => {
+}
+
+start().catch(err => {
   console.error('Failed to start server:', err);
   process.exit(1);
 });

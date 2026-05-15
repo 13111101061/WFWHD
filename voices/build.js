@@ -112,7 +112,7 @@ function generateVoiceCode(provider, voiceNumber) {
 /**
  * 处理单个 YAML 文件
  */
-async function processYamlFile(filePath) {
+async function processYamlFile(filePath, providerCounters = new Map()) {
   const content = await fs.readFile(filePath, 'utf8');
   const data = yaml.load(content);
 
@@ -128,8 +128,8 @@ async function processYamlFile(filePath) {
     return { voices: [], provider, enabled: false };
   }
 
-  // 音色编号计数器（用于生成 voiceCode）
-  let voiceNumber = 1;
+  // Per-provider voiceNumber 计数器
+  let voiceNumber = providerCounters.get(provider) || 1;
 
   for (const v of data.voices) {
     if (!v.id || !v.displayName || !v.gender) {
@@ -146,6 +146,7 @@ async function processYamlFile(filePath) {
     // 生成 voiceCode
     const voiceCode = generateVoiceCode(provider, voiceNumber);
     voiceNumber++;
+    providerCounters.set(provider, voiceNumber);
 
     // 构建新格式 StoredVoice
     const storedVoice = {
@@ -174,13 +175,6 @@ async function processYamlFile(filePath) {
         version: 'v1'
       }
     };
-
-    // 保留兼容层（逐步淘汰）
-    if (v.ttsConfig && Object.keys(v.ttsConfig).length > 0) {
-      storedVoice._compat = {
-        ttsConfig: v.ttsConfig
-      };
-    }
 
     voices.push(storedVoice);
   }
@@ -271,9 +265,12 @@ async function build() {
     const sources = [];
     const errors = [];
 
+    // Per-provider voiceNumber counter (避免多 YAML 文件 voiceCode 重复)
+    const providerCounters = new Map();
+
     for (const file of yamlFiles) {
       try {
-        const result = await processYamlFile(path.join(CONFIG.sourceDir, file));
+        const result = await processYamlFile(path.join(CONFIG.sourceDir, file), providerCounters);
         allVoices.push(...result.voices);
         sources.push({
           file,
@@ -289,6 +286,7 @@ async function build() {
     if (errors.length > 0) {
       console.error('Build errors:');
       errors.forEach(e => console.error(`- ${e.file}: ${e.error}`));
+      process.exit(1);
     }
 
     // 检查重复 ID
@@ -302,7 +300,24 @@ async function build() {
       idSet.add(id);
     }
     if (duplicates.length > 0) {
-      console.error(`Duplicate voice ids: ${duplicates.join(', ')}`);
+      console.error(`FATAL: Duplicate voice ids: ${duplicates.join(', ')}`);
+      process.exit(1);
+    }
+
+    // 检查重复 voiceCode
+    const vcSet = new Set();
+    const dupCodes = [];
+    for (const voice of allVoices) {
+      const vc = voice.identity.voiceCode;
+      if (!vc) continue;
+      if (vcSet.has(vc)) {
+        dupCodes.push(vc);
+      }
+      vcSet.add(vc);
+    }
+    if (dupCodes.length > 0) {
+      console.error(`FATAL: Duplicate voiceCode: ${dupCodes.join(', ')}`);
+      process.exit(1);
     }
 
     const enabledProviders = sources.filter(s => s.enabled !== false).map(s => s.provider);

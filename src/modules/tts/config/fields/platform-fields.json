@@ -1,7 +1,7 @@
 {
   "$schema": "FieldDefinitionRegistry/v1",
   "version": "1.0.0",
-  "description": "平台标准字段定义 - 定义 TTS 平台层面的通用字段语义",
+  "description": "平台标准字段定义 - TTS 字段语义的单一权威来源。前端 schema、CompiledCapability、后端校验均从此编译。manifest 只声明 per-service 差异（映射、范围、默认值），不重新定义字段语义。",
 
   "fields": {
     "voice": {

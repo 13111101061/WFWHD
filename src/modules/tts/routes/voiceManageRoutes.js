@@ -1,9 +1,12 @@
 const express = require('express');
 const { VoiceWriteService } = require('../application/VoiceWriteService');
+const { VoiceAdminQueryService } = require('../application/VoiceAdminQueryService');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
 function createVoiceManageRoutes(voiceRegistry) {
   const router = express.Router();
+
+  const adminQuery = new VoiceAdminQueryService({ voiceRegistry });
 
   let _voiceWriteService;
   function getVoiceWriteService() {
@@ -22,32 +25,7 @@ function createVoiceManageRoutes(voiceRegistry) {
 
   router.get('/', async (req, res) => {
     try {
-      const { provider, service, tags, gender } = req.query;
-
-      let voices = voiceRegistry.getAll();
-
-      if (provider) {
-        voices = voiceRegistry.getByProvider(provider);
-      }
-
-      if (provider && service) {
-        voices = voiceRegistry.getByProviderAndService(provider, service);
-      }
-
-      if (gender) {
-        voices = voices.filter(v => {
-          const vGender = v.profile?.gender || v.gender;
-          return vGender === gender;
-        });
-      }
-
-      if (tags) {
-        const tagList = tags.split(',').map(t => t.trim());
-        voices = voices.filter(v => {
-          const vTags = v.profile?.tags || v.tags;
-          return vTags && tagList.some(t => vTags.includes(t));
-        });
-      }
+      const voices = adminQuery.list(req.query);
 
       res.json({
         success: true,
@@ -67,23 +45,19 @@ function createVoiceManageRoutes(voiceRegistry) {
   router.get('/stats/overview', (req, res) => {
     res.json({
       success: true,
-      data: voiceRegistry.getStats()
+      data: adminQuery.getStats()
     });
   });
 
   router.get('/providers/status', (req, res) => {
     res.json({
       success: true,
-      data: {
-        enabled: voiceRegistry.getEnabledProviders(),
-        disabled: voiceRegistry.getDisabledProviders(),
-        all: voiceRegistry.getStats().providers
-      }
+      data: adminQuery.getProvidersStatus()
     });
   });
 
   router.get('/providers/:provider/enabled', (req, res) => {
-    const enabled = voiceRegistry.isProviderEnabled(req.params.provider);
+    const enabled = adminQuery.isProviderEnabled(req.params.provider);
     res.json({
       success: true,
       data: {
@@ -94,7 +68,7 @@ function createVoiceManageRoutes(voiceRegistry) {
   });
 
   router.get('/:id', (req, res) => {
-    const voice = voiceRegistry.get(req.params.id);
+    const voice = adminQuery.getById(req.params.id);
 
     if (!voice) {
       return res.status(404).json({
@@ -109,7 +83,7 @@ function createVoiceManageRoutes(voiceRegistry) {
     });
   });
 
-  router.post('/', (req, res) => {
+  router.post('/', async (req, res) => {
     const result = getVoiceWriteService().create(req.body);
 
     if (!result.success) {
@@ -121,11 +95,22 @@ function createVoiceManageRoutes(voiceRegistry) {
       });
     }
 
-    res.status(201).json({
-      success: true,
-      data: result.data,
-      message: `Voice added: ${result.data.identity.id}`
-    });
+    try {
+      await getVoiceWriteService().save();
+      res.status(201).json({
+        success: true,
+        data: result.data,
+        persisted: true,
+        message: `Voice added and persisted: ${result.data.identity.id}`
+      });
+    } catch (e) {
+      res.status(201).json({
+        success: true,
+        data: result.data,
+        persisted: false,
+        message: `Voice added in memory: ${result.data.identity.id}. Save failed: ${e.message}`
+      });
+    }
   });
 
   router.post('/batch', (req, res) => {
@@ -147,7 +132,7 @@ function createVoiceManageRoutes(voiceRegistry) {
     });
   });
 
-  router.put('/:id', (req, res) => {
+  router.put('/:id', async (req, res) => {
     const result = getVoiceWriteService().update(req.params.id, req.body);
 
     if (!result.success) {
@@ -159,14 +144,25 @@ function createVoiceManageRoutes(voiceRegistry) {
       });
     }
 
-    res.json({
-      success: true,
-      data: result.data,
-      message: `Voice updated: ${req.params.id}`
-    });
+    try {
+      await getVoiceWriteService().save();
+      res.json({
+        success: true,
+        data: result.data,
+        persisted: true,
+        message: `Voice updated and persisted: ${req.params.id}`
+      });
+    } catch (e) {
+      res.json({
+        success: true,
+        data: result.data,
+        persisted: false,
+        message: `Voice updated in memory: ${req.params.id}. Save failed: ${e.message}`
+      });
+    }
   });
 
-  router.delete('/:id', (req, res) => {
+  router.delete('/:id', async (req, res) => {
     const result = getVoiceWriteService().remove(req.params.id);
 
     if (!result.success) {
@@ -176,10 +172,20 @@ function createVoiceManageRoutes(voiceRegistry) {
       });
     }
 
-    res.json({
-      success: true,
-      message: `Voice removed: ${req.params.id}`
-    });
+    try {
+      await getVoiceWriteService().save();
+      res.json({
+        success: true,
+        persisted: true,
+        message: `Voice removed and persisted: ${req.params.id}`
+      });
+    } catch (e) {
+      res.json({
+        success: true,
+        persisted: false,
+        message: `Voice removed from memory: ${req.params.id}. Save failed: ${e.message}`
+      });
+    }
   });
 
   router.post('/save', async (req, res) => {
@@ -188,7 +194,7 @@ function createVoiceManageRoutes(voiceRegistry) {
 
       res.json({
         success: true,
-        message: `Saved ${voiceRegistry.getStats().total} voices to file`
+        message: `Saved ${adminQuery.getTotal()} voices to file`
       });
 
     } catch (error) {
@@ -203,7 +209,7 @@ function createVoiceManageRoutes(voiceRegistry) {
     try {
       await getVoiceWriteService().reload();
 
-      const stats = voiceRegistry.getStats();
+      const stats = adminQuery.getStats();
 
       res.json({
         success: true,

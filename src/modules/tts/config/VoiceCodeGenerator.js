@@ -105,12 +105,13 @@ const VoiceCodeGenerator = {
 
     const providerInfo = providerCodeToInfo[providerCode];
 
+    // 注意：parse() 只从 providerCode 推导 providerKey。
+    // 对于多 service 的 provider（如 aliyun: cosyvoice + qwen_http），
+    // providerCode 无法唯一确定 serviceKey —— 务必通过 VoiceRegistry 查询权威归属。
     return {
       voiceCode,
       providerCode,
       providerKey: providerInfo?.providerKey || null,
-      serviceKey: providerInfo?.serviceKey || null,
-      providerDisplayName: providerInfo?.displayName || null,
       voiceNumber: parseInt(voiceNumber, 10),
       reserved,
       checkDigit,

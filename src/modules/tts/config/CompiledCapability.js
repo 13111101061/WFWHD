@@ -279,6 +279,23 @@ class CompiledCapability {
   }
 
   toDebugJSON() { return this._data; }
+
+  /**
+   * 能力指纹：前端提交时带此 digest，后端校验 schema 是否一致。
+   * 不一致时返回 CAPABILITY_SCHEMA_OUTDATED 让前端拉最新 schema。
+   */
+  get capabilityDigest() {
+    if (!this._cachedDigest) {
+      const crypto = require('crypto');
+      const payload = JSON.stringify({
+        schema: this._data.compiledSchema,
+        defaults: this._data.compiledDefaults,
+        lockedParams: this._data.compiledLockedParams
+      });
+      this._cachedDigest = crypto.createHash('sha256').update(payload).digest('hex').substring(0, 12);
+    }
+    return this._cachedDigest;
+  }
 }
 
 function createCompiledCapability(compiled) {

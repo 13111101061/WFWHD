@@ -19,7 +19,7 @@ const VALID_STATUSES = ['active', 'inactive', 'deprecated'];
 const VALID_DATA_SOURCES = ['manual', 'import', 'migration', 'api'];
 
 const IdentitySchema = {
-  // voiceCode 改为可选，由系统生成
+  // voiceCode 在字段层面对 migration/import 数据可选；active voice 必须有 voiceCode（见顶层校验）
   required: ['id', 'sourceId', 'provider', 'service'],
   optional: ['voiceCode'],
   validate(identity) {
@@ -156,7 +156,12 @@ const StoredVoiceSchema = {
       errors.push('_compat 兼容层已废弃，请迁移数据后删除');
     }
 
-    // 4. 检查未知顶层字段
+    // 4. active 音色必须有 voiceCode
+    if (stored.profile?.status === 'active' && !stored.identity?.voiceCode) {
+      errors.push('identity.voiceCode 缺失：active 状态音色必须提供 voiceCode');
+    }
+
+    // 5. 检查未知顶层字段
     const knownTopLevel = new Set([...this.required]);
     for (const key of Object.keys(stored)) {
       if (!knownTopLevel.has(key)) {

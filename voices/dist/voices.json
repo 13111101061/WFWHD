@@ -1,7 +1,7 @@
 {
   "_meta": {
     "version": "3.0",
-    "generatedAt": "2026-04-21T14:54:02.003Z",
+    "generatedAt": "2026-05-14T17:31:37.439Z",
     "totalVoices": 58,
     "sources": [
       {
@@ -46,7 +46,7 @@
         "volcengine"
       ]
     },
-    "buildTime": 13,
+    "buildTime": 17,
     "format": "StoredVoice"
   },
   "voices": [
@@ -77,7 +77,6 @@
       },
       "runtime": {
         "voiceId": "2020008594694475776",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -87,8 +86,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -120,7 +119,6 @@
       },
       "runtime": {
         "voiceId": "2020009311371005952",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -130,8 +128,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -163,7 +161,6 @@
       },
       "runtime": {
         "voiceId": "2001257729754140672",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -173,8 +170,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -206,7 +203,6 @@
       },
       "runtime": {
         "voiceId": "2001286865130360832",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -216,8 +212,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -249,7 +245,6 @@
       },
       "runtime": {
         "voiceId": "2001898421836845056",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -259,8 +254,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -292,7 +287,6 @@
       },
       "runtime": {
         "voiceId": "2001910895478837248",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -302,8 +296,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -335,7 +329,6 @@
       },
       "runtime": {
         "voiceId": "2001931510222950400",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -345,8 +338,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -378,7 +371,6 @@
       },
       "runtime": {
         "voiceId": "2002941772480647168",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -388,8 +380,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -421,7 +413,6 @@
       },
       "runtime": {
         "voiceId": "2002991117984862208",
-        "model": "moss-tts",
         "providerOptions": {
           "samplingParams": {
             "temperature": 1.7,
@@ -431,8 +422,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:01.997Z",
-        "updatedAt": "2026-04-21T14:54:01.997Z",
+        "createdAt": "2026-05-14T17:31:37.431Z",
+        "updatedAt": "2026-05-14T17:31:37.431Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -466,13 +457,13 @@
       },
       "runtime": {
         "voiceId": "Cherry",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -506,13 +497,13 @@
       },
       "runtime": {
         "voiceId": "Ethan",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -546,13 +537,13 @@
       },
       "runtime": {
         "voiceId": "Chelsie",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -586,13 +577,13 @@
       },
       "runtime": {
         "voiceId": "Serena",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -626,13 +617,13 @@
       },
       "runtime": {
         "voiceId": "Dylan",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -664,13 +655,13 @@
       },
       "runtime": {
         "voiceId": "Jada",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -702,13 +693,13 @@
       },
       "runtime": {
         "voiceId": "Sunny",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -742,13 +733,13 @@
       },
       "runtime": {
         "voiceId": "Momo",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -782,13 +773,13 @@
       },
       "runtime": {
         "voiceId": "Vivian",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -822,13 +813,13 @@
       },
       "runtime": {
         "voiceId": "Moon",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -862,13 +853,13 @@
       },
       "runtime": {
         "voiceId": "Maia",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -902,13 +893,13 @@
       },
       "runtime": {
         "voiceId": "Kai",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -942,13 +933,13 @@
       },
       "runtime": {
         "voiceId": "Nofish",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -982,13 +973,13 @@
       },
       "runtime": {
         "voiceId": "Bella",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1022,13 +1013,13 @@
       },
       "runtime": {
         "voiceId": "Jennifer",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1062,13 +1053,13 @@
       },
       "runtime": {
         "voiceId": "Ryan",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1102,13 +1093,13 @@
       },
       "runtime": {
         "voiceId": "Katerina",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1142,13 +1133,13 @@
       },
       "runtime": {
         "voiceId": "Aiden",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1182,13 +1173,13 @@
       },
       "runtime": {
         "voiceId": "Eldric Sage",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1222,13 +1213,13 @@
       },
       "runtime": {
         "voiceId": "Mia",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1262,13 +1253,13 @@
       },
       "runtime": {
         "voiceId": "Mochi",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1302,13 +1293,13 @@
       },
       "runtime": {
         "voiceId": "Bellona",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1342,13 +1333,13 @@
       },
       "runtime": {
         "voiceId": "Vincent",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1382,13 +1373,13 @@
       },
       "runtime": {
         "voiceId": "Bunny",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1422,13 +1413,13 @@
       },
       "runtime": {
         "voiceId": "Neil",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1462,13 +1453,13 @@
       },
       "runtime": {
         "voiceId": "Elias",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1502,13 +1493,13 @@
       },
       "runtime": {
         "voiceId": "Arthur",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1542,13 +1533,13 @@
       },
       "runtime": {
         "voiceId": "Nini",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1582,13 +1573,13 @@
       },
       "runtime": {
         "voiceId": "Ebona",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1622,13 +1613,13 @@
       },
       "runtime": {
         "voiceId": "Seren",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1662,13 +1653,13 @@
       },
       "runtime": {
         "voiceId": "Pip",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1702,13 +1693,13 @@
       },
       "runtime": {
         "voiceId": "Stella",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1741,13 +1732,13 @@
       },
       "runtime": {
         "voiceId": "Bodega",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1780,13 +1771,13 @@
       },
       "runtime": {
         "voiceId": "Sonrisa",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1819,13 +1810,13 @@
       },
       "runtime": {
         "voiceId": "Alek",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1858,13 +1849,13 @@
       },
       "runtime": {
         "voiceId": "Dolce",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1898,13 +1889,13 @@
       },
       "runtime": {
         "voiceId": "Sohee",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1938,13 +1929,13 @@
       },
       "runtime": {
         "voiceId": "Ono Anna",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1978,13 +1969,13 @@
       },
       "runtime": {
         "voiceId": "Lenn",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2018,13 +2009,13 @@
       },
       "runtime": {
         "voiceId": "Emilien",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2058,13 +2049,13 @@
       },
       "runtime": {
         "voiceId": "Andre",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2098,13 +2089,13 @@
       },
       "runtime": {
         "voiceId": "Radio Gol",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2136,13 +2127,13 @@
       },
       "runtime": {
         "voiceId": "Li",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2174,13 +2165,13 @@
       },
       "runtime": {
         "voiceId": "Marcus",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2212,13 +2203,13 @@
       },
       "runtime": {
         "voiceId": "Roy",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2250,13 +2241,13 @@
       },
       "runtime": {
         "voiceId": "Peter",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2288,13 +2279,13 @@
       },
       "runtime": {
         "voiceId": "Eric",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2326,13 +2317,13 @@
       },
       "runtime": {
         "voiceId": "Rocky",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2364,13 +2355,13 @@
       },
       "runtime": {
         "voiceId": "Kiki",
-        "model": "qwen3-tts-instruct-flash-realtime",
-        "providerOptions": {},
-        "sampleRate": 24000
+        "providerOptions": {
+          "sampleRate": 24000
+        }
       },
       "meta": {
-        "createdAt": "2026-04-21T14:54:02.001Z",
-        "updatedAt": "2026-04-21T14:54:02.001Z",
+        "createdAt": "2026-05-14T17:31:37.437Z",
+        "updatedAt": "2026-05-14T17:31:37.437Z",
         "dataSource": "import",
         "version": "v1"
       }

@@ -47,7 +47,7 @@ class ProviderManagementService {
     }
     result.details.adapterRegistered = true;
 
-    const credStatus = this._checkCredentialStatus(descriptor.provider);
+    const credStatus = this._checkServiceCredentialStatus(descriptor.provider, descriptor.serviceType);
     result.details.credentials = credStatus;
     if (!credStatus.configured) { result.reason = 'credentials_not_configured'; return result; }
 
@@ -59,6 +59,19 @@ class ProviderManagementService {
   _checkCredentialStatus(providerKey) {
     try {
       const configured = this._credentials.isConfigured(providerKey);
+      return { configured, reason: configured ? 'ok' : 'not_configured' };
+    } catch (e) {
+      return { configured: false, reason: 'error', error: e.message };
+    }
+  }
+
+  /**
+   * 检查 provider 对特定 serviceType 是否有可用凭证
+   * 使用 credentials.isServiceAvailable 做 service 级粒度检查
+   */
+  _checkServiceCredentialStatus(providerKey, serviceType) {
+    try {
+      const configured = this._credentials.isServiceAvailable(providerKey, serviceType);
       return { configured, reason: configured ? 'ok' : 'not_configured' };
     } catch (e) {
       return { configured: false, reason: 'error', error: e.message };

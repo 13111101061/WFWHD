@@ -27,7 +27,7 @@ class ProviderRegistry {
     /** @type {Map<string, Array>} canonical key → aliases */
     this._canonicalToAliases = null;
 
-    /** @type {Map<string, { AdapterClass, provider, service }>} adapter class 注册 */
+    /** @type {Map<string, { AdapterClass, provider, service, serviceType }>} adapter class 注册 */
     this._adapterClasses = new Map();
 
     /** @type {Map<string, Object>} adapter 实例缓存 */
@@ -62,9 +62,13 @@ class ProviderRegistry {
       const cfg = ProviderManifest.getServiceConfig(key);
       if (!cfg) continue;
 
+      const providerKey = cfg.providerKey;
+      const serviceType = key.slice(providerKey.length + 1); // strip "provider_" → pure service name
+
       const registration = {
-        provider: cfg.providerKey,
-        service: cfg._canonicalKey
+        provider: providerKey,
+        service: key,           // canonical serviceKey
+        serviceType             // stripped service name
       };
 
       if (cfg.adapter) {
@@ -105,6 +109,36 @@ class ProviderRegistry {
 
   // ==================== 描述查询 ====================
 
+  /**
+   * 构建统一的 ServiceDescriptor（单一门面产出）
+   * 所有对外描述方法最终都通过此方法构造，保证字段语义一致
+   */
+  _buildDescriptor(cfg, canonicalKey) {
+    const provider = cfg.providerKey;
+    const key = canonicalKey || cfg._canonicalKey;
+    const adapterRegistered = this._adapterClasses.has(key);
+
+    return {
+      key,
+      provider,
+      service: key,
+      serviceType: key.slice(provider.length + 1),
+      displayName: cfg.displayName || key,
+      description: cfg.description || '',
+      status: cfg.status || 'stable',
+      aliases: cfg.aliases || [],
+      protocol: cfg.protocol || 'http',
+      category: 'tts',
+      supportsStreaming: cfg.supportsStreaming || false,
+      supportsAsync: cfg.supportsAsync || false,
+      apiStructure: cfg.apiStructure || 'flat',
+      basePath: cfg.basePath || null,
+      defaultVoiceId: cfg.defaultVoiceId || null,
+      adapterRegistered,
+      capabilities: cfg.capabilities || {}
+    };
+  }
+
   get(key) {
     this._assertInit();
     const canonicalKey = this._aliasToCanonical.get(key);
@@ -113,19 +147,7 @@ class ProviderRegistry {
     const cfg = ProviderManifest.getServiceConfig(canonicalKey);
     if (!cfg) return null;
 
-    return {
-      key: canonicalKey,
-      provider: cfg.providerKey,
-      service: cfg._canonicalKey,
-      displayName: cfg.displayName || canonicalKey,
-      description: cfg.description || '',
-      status: cfg.status || 'stable',
-      aliases: cfg.aliases || [],
-      protocol: cfg.protocol || 'http',
-      category: 'tts',
-      supportsStreaming: cfg.supportsStreaming || false,
-      supportsAsync: cfg.supportsAsync || false
-    };
+    return this._buildDescriptor(cfg, canonicalKey);
   }
 
   resolveCanonicalKey(key) {
@@ -140,19 +162,9 @@ class ProviderRegistry {
 
   getAll() {
     this._assertInit();
-    return ProviderManifest.getAllServiceDescriptors().map(cfg => ({
-      key: cfg._canonicalKey,
-      provider: cfg.providerKey,
-      service: cfg._canonicalKey,
-      displayName: cfg.displayName || cfg.key,
-      description: cfg.description || '',
-      status: cfg.status || 'stable',
-      aliases: cfg.aliases || [],
-      protocol: cfg.protocol || 'http',
-      category: 'tts',
-      supportsStreaming: cfg.supportsStreaming || false,
-      supportsAsync: cfg.supportsAsync || false
-    }));
+    return ProviderManifest.getAllServiceDescriptors().map(cfg =>
+      this._buildDescriptor(cfg, cfg._canonicalKey)
+    );
   }
 
   getAllCanonicalKeys() {
@@ -188,19 +200,9 @@ class ProviderRegistry {
 
   getServicesByProvider(providerKey) {
     this._assertInit();
-    return ProviderManifest.getProviderServices(providerKey).map(cfg => ({
-      key: cfg.key,
-      provider: cfg.providerKey || providerKey,
-      service: cfg.key,
-      displayName: cfg.displayName || cfg.key,
-      description: cfg.description || '',
-      status: cfg.status || 'stable',
-      aliases: cfg.aliases || [],
-      protocol: cfg.protocol || 'http',
-      category: 'tts',
-      supportsStreaming: cfg.supportsStreaming || false,
-      supportsAsync: cfg.supportsAsync || false
-    }));
+    return ProviderManifest.getProviderServices(providerKey).map(cfg =>
+      this._buildDescriptor({ ...cfg, _canonicalKey: cfg.key, providerKey: cfg.providerKey }, cfg.key)
+    );
   }
 
   // ==================== 运行时实例 ====================
@@ -225,7 +227,7 @@ class ProviderRegistry {
 
     const instance = new registration.AdapterClass({
       provider: registration.provider,
-      serviceType: registration.service,
+      serviceType: registration.serviceType,
       api: registration.apiConfig,
       voiceRegistry: this._voiceRegistry,
       ...config
@@ -256,6 +258,42 @@ class ProviderRegistry {
       cachedInstances: this._adapterInstances.size,
       serviceKeys: Array.from(this._adapterClasses.keys())
     };
+  }
+
+  // ==================== Route Descriptor（统一路由描述） ====================
+
+  /**
+   * 获取 service 的路由描述符（前端发现 + 后端注册同源）
+   *
+   * @param {string} serviceKey — canonical key 如 aliyun_qwen_http
+   * @returns {{ primary: {method, path, serviceKey}, aliases: [{method, path, alias}] }}
+   */
+  getRouteDescriptor(serviceKey) {
+    this._assertInit();
+    const canonicalKey = this.resolveCanonicalKey(serviceKey) || serviceKey;
+    const desc = this.get(canonicalKey);
+    if (!desc) return null;
+
+    const parts = canonicalKey.split('_');
+    const providerKey = parts[0];
+    const svcSuffix = parts.slice(1).join('_');
+    const basePath = '/api/tts';
+
+    const routes = {
+      primary: {
+        method: 'POST',
+        path: `${basePath}/${providerKey}/${svcSuffix}`,
+        serviceKey: canonicalKey
+      },
+      aliases: ((desc.aliases || []).map(alias => ({
+        method: 'POST',
+        path: `${basePath}/${alias.replace(/_/g, '/')}`,
+        alias,
+        serviceKey: canonicalKey
+      })))
+    };
+
+    return routes;
   }
 }
 

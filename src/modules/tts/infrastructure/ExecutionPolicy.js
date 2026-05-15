@@ -114,14 +114,19 @@ class ExecutionPolicy {
 
     const breaker = this._getCircuitBreaker(serviceKey);
 
-    const result = await breaker.execute(async () => {
-      return this._executeWithRetry(serviceKey, task, startTime);
-    });
+    try {
+      const result = await breaker.execute(async () => {
+        return this._executeWithRetry(serviceKey, task, startTime);
+      });
 
-    const latency = Date.now() - startTime;
-    this._recordSuccess(serviceKey, latency);
+      const latency = Date.now() - startTime;
+      this._recordSuccess(serviceKey, latency);
 
-    return result;
+      return result;
+    } catch (error) {
+      this.recordFailure(serviceKey);
+      throw error;
+    }
   }
 
   /**

@@ -100,9 +100,13 @@ class VoiceResolver {
 
     let service = request.service;
     if (!service && voiceCode) {
-      const parsed = VoiceCodeGenerator.parse(voiceCode);
-      if (parsed && parsed.providerKey && parsed.serviceKey) {
-        service = `${parsed.providerKey}_${parsed.serviceKey}`;
+      // 用 voiceCodeIndex 查音色，从 identity 取准确的 provider+service
+      const voiceId = this.registry.voiceCodeIndex.get(voiceCode);
+      if (voiceId) {
+        const rawVoice = this.registry.get(voiceId);
+        if (rawVoice?.identity?.provider && rawVoice.identity.service) {
+          service = `${rawVoice.identity.provider}_${rawVoice.identity.service}`;
+        }
       }
     }
     if (!service && systemId) {
@@ -116,17 +120,12 @@ class VoiceResolver {
 
     return {
       text: request.text,
-      service: service || 'aliyun_qwen_http',
+      service: service || null,  // 不再硬编码默认服务；resolve() 时会校验
       voiceCode,
       systemId,
       voiceId,
       options: normalizedOptions
     };
-  }
-
-  buildServiceKeyFromVoiceCode(parsed) {
-    if (!parsed || !parsed.providerKey || !parsed.serviceKey) return null;
-    return `${parsed.providerKey}_${parsed.serviceKey}`;
   }
 
   resolve(request) {
@@ -206,8 +205,6 @@ class VoiceResolver {
       throw error;
     }
 
-    const expectedServiceKey = this.buildServiceKeyFromVoiceCode(parsed);
-
     // O(1) 查找：使用 voiceCodeIndex
     const voiceIdByCode = this.registry.voiceCodeIndex.get(voiceCode);
     if (!voiceIdByCode) {
@@ -222,6 +219,11 @@ class VoiceResolver {
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
+
+    // 从实际音色数据构建 expectedServiceKey（不依赖 parse 的 serviceKey 推断）
+    const identity = rawVoice.identity || {};
+    const expectedServiceKey = (identity.provider && identity.service)
+      ? `${identity.provider}_${identity.service}` : null;
 
     return {
       voiceCode,

@@ -206,7 +206,13 @@ class BaseTtsAdapter {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  /**
+   * @deprecated 重试由 ExecutionPolicy 统一管理，适配器层不应自行重试。
+   *             使用此方法会导致双重重试（ExecutionPolicy retry × Adapter retry），
+   *             影响 billing、timeout 预期、circuit breaker 统计和 credential health。
+   */
   async _retry(fn, maxRetries = this.config.maxRetries) {
+    console.warn(`[BaseTtsAdapter DEPRECATED] _retry() called on ${this.provider}/${this.serviceType} — 重试应由 ExecutionPolicy 管理`);
     let lastError;
     for (let i = 0; i < maxRetries; i += 1) {
       try {
