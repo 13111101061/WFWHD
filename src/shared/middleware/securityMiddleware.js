@@ -169,8 +169,10 @@ const validateTtsParams = (req, res, next) => {
   if (errors.length > 0) {
     return res.status(400).json({
       success: false,
-      error: 'Validation failed',
-      details: errors,
+      code: 'VALIDATION_ERROR',
+      message: errors.join('; '),
+      errors,
+      retryable: false,
       requestId: req.requestId,
       timestamp: new Date().toISOString()
     });

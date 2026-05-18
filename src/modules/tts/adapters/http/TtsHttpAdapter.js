@@ -15,6 +15,7 @@
 
 const SynthesisRequest = require('../../domain/SynthesisRequest');
 const AudioResult = require('../../domain/AudioResult');
+const { TtsErrorCodes, HTTP_STATUS_MAP, RETRYABLE_MAP } = require('../../TtsErrorCodes');
 
 class TtsHttpAdapter {
   constructor(synthesisService, queryService, { clearAllCache, providerRegistry } = {}) {
@@ -156,8 +157,10 @@ class TtsHttpAdapter {
       if (!provider || !serviceType) {
         return res.status(400).json({
           success: false,
-          error: `Could not resolve service: ${service}`,
-          code: 'UNKNOWN_SERVICE'
+          code: 'UNKNOWN_SERVICE',
+          message: `Could not resolve service: ${service}`,
+          retryable: false,
+          timestamp: new Date().toISOString()
         });
       }
 
@@ -456,53 +459,25 @@ class TtsHttpAdapter {
    * 获取HTTP状态码
    */
   _getStatusCode(error) {
-    switch (error.code) {
-      case 'VALIDATION_ERROR':
-      case 'SERVICE_MISMATCH':
-      case 'UNKNOWN_SERVICE':
-      case 'CAPABILITY_ERROR':
-      case 'PARAMETER_MAPPING_ERROR':
-        return 400;
-      case 'VOICE_NOT_FOUND':
-      case 'NOT_FOUND':
-        return 404;
-      case 'CAPABILITY_SCHEMA_OUTDATED':
-        return 409;
-      case 'RATE_LIMIT_EXCEEDED':
-        return 429;
-      case 'TIMEOUT_ERROR':
-        return 504;
-      case 'API_ERROR':
-      case 'PROVIDER_ERROR':
-        return 502;
-      case 'CONFIG_ERROR':
-        return 500;
-      case 'CIRCUIT_BREAKER_OPEN':
-      case 'SERVICE_UNAVAILABLE':
-        return 503;
-      default:
-        return 500;
-    }
+    return HTTP_STATUS_MAP[error.code] || 500;
   }
 
-  /**
-   * 构建错误响应
-   */
   _buildErrorResponse(error) {
-    const base = {
+    const code = error.code || TtsErrorCodes.INTERNAL_ERROR;
+    const retryable = RETRYABLE_MAP[code] === true;
+    const response = {
       success: false,
-      error: error.message,
-      code: error.code || 'INTERNAL_ERROR',
+      code,
+      message: error.message,
+      retryable,
       timestamp: new Date().toISOString()
     };
-
-    // 添加额外信息
-    if (error.errors) base.errors = error.errors;
-    if (error.retryAfter) base.retryAfter = error.retryAfter;
-    if (error.limit) base.limit = error.limit;
-    if (error.serverDigest) base.serverDigest = error.serverDigest;
-
-    return base;
+    if (error.errors) response.errors = error.errors;
+    if (error.retryAfter) response.retryAfter = error.retryAfter;
+    if (error.limit) response.limit = error.limit;
+    if (error.serverDigest) response.serverDigest = error.serverDigest;
+    if (error.provider) response.provider = error.provider;
+    return response;
   }
 }
 

@@ -75,8 +75,10 @@ const validateBatchParams = (req, res, next) => {
   if (errors.length > 0) {
     return res.status(400).json({
       success: false,
-      error: 'Validation failed',
-      details: errors,
+      code: 'VALIDATION_ERROR',
+      message: errors.join('; '),
+      errors,
+      retryable: false,
       requestId: req.requestId,
       timestamp: new Date().toISOString()
     });
@@ -439,8 +441,9 @@ router.use('*', (req, res) => {
 
   res.status(404).json({
     success: false,
-    error: 'TTS endpoint not found',
+    code: 'UNKNOWN_SERVICE',
     message: `The requested TTS endpoint ${req.method} ${req.originalUrl} is not available`,
+    retryable: false,
     availableEndpoints: [
       'POST /api/tts/synthesize - Unified TTS synthesis',
       'POST /api/tts - Legacy compatibility',
@@ -471,8 +474,9 @@ router.use((error, req, res, next) => {
 
   res.status(error.status || 500).json({
     success: false,
-    error: error.message || 'Internal server error',
     code: error.code || 'INTERNAL_ERROR',
+    message: error.message || 'Internal server error',
+    retryable: false,
     requestId: req.requestId,
     timestamp: new Date().toISOString()
   });

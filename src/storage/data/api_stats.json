@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 608,
+  "totalCalls": 757,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -79,16 +79,16 @@
       "lastCalled": "2025-09-22T09:32:02.076Z"
     },
     "GET /": {
-      "totalCalls": 52,
-      "lastCalled": "2026-04-20T10:56:06.561Z"
+      "totalCalls": 54,
+      "lastCalled": "2026-05-17T09:09:16.408Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 40,
-      "lastCalled": "2026-04-18T08:10:37.970Z"
+      "totalCalls": 65,
+      "lastCalled": "2026-05-17T17:12:12.079Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
-      "totalCalls": 42,
-      "lastCalled": "2026-04-21T09:25:29.367Z"
+      "totalCalls": 60,
+      "lastCalled": "2026-05-17T16:08:00.363Z"
     },
     "GET /api/tts/voices/models": {
       "totalCalls": 10,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 172,
-      "lastCalled": "2026-04-21T08:45:33.686Z"
+      "totalCalls": 215,
+      "lastCalled": "2026-05-17T15:08:17.359Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -139,8 +139,8 @@
       "lastCalled": "2025-10-31T13:48:44.640Z"
     },
     "GET /api/tts/providers": {
-      "totalCalls": 19,
-      "lastCalled": "2026-04-20T10:50:55.597Z"
+      "totalCalls": 25,
+      "lastCalled": "2026-05-17T14:59:27.665Z"
     },
     "GET /api/tts/stats": {
       "totalCalls": 4,
@@ -215,16 +215,16 @@
       "lastCalled": "2026-04-18T07:58:33.684Z"
     },
     "GET /api": {
-      "totalCalls": 10,
-      "lastCalled": "2026-04-21T09:25:06.857Z"
+      "totalCalls": 16,
+      "lastCalled": "2026-05-17T16:08:00.188Z"
     },
     "HEAD /api/tts/voices": {
       "totalCalls": 3,
       "lastCalled": "2026-03-17T11:49:15.927Z"
     },
     "GET /api/tts/frontend": {
-      "totalCalls": 31,
-      "lastCalled": "2026-04-21T08:45:46.657Z"
+      "totalCalls": 34,
+      "lastCalled": "2026-05-17T12:56:36.812Z"
     },
     "GET /api/credentials/providers": {
       "totalCalls": 1,
@@ -251,8 +251,8 @@
       "lastCalled": "2026-04-12T15:50:31.849Z"
     },
     "POST /api/tts/moss": {
-      "totalCalls": 3,
-      "lastCalled": "2026-04-13T09:22:16.009Z"
+      "totalCalls": 4,
+      "lastCalled": "2026-05-17T09:04:10.093Z"
     },
     "POST /api/tts/batch": {
       "totalCalls": 7,
@@ -279,8 +279,8 @@
       "lastCalled": "2026-04-18T07:58:13.479Z"
     },
     "GET /api/tts/voices/moss-tts-ashui/detail": {
-      "totalCalls": 1,
-      "lastCalled": "2026-04-18T08:04:02.335Z"
+      "totalCalls": 8,
+      "lastCalled": "2026-05-17T15:04:41.958Z"
     },
     "PUT /api/voices/moss-tts-ashui": {
       "totalCalls": 1,
@@ -313,7 +313,55 @@
     "GET /api/tts/capabilities/:service": {
       "totalCalls": 2,
       "lastCalled": "2026-04-21T09:27:23.449Z"
+    },
+    "GET /api/tts/health": {
+      "totalCalls": 9,
+      "lastCalled": "2026-05-17T14:59:27.709Z"
+    },
+    "GET /api/tts/bootstrap": {
+      "totalCalls": 3,
+      "lastCalled": "2026-05-17T15:58:44.416Z"
+    },
+    "GET /tts/health": {
+      "totalCalls": 3,
+      "lastCalled": "2026-05-17T12:44:52.550Z"
+    },
+    "GET /tts/providers": {
+      "totalCalls": 3,
+      "lastCalled": "2026-05-17T12:44:52.527Z"
+    },
+    "GET /tts/voices": {
+      "totalCalls": 4,
+      "lastCalled": "2026-05-17T12:44:52.537Z"
+    },
+    "GET /api/tts/capabilities/moss_tts": {
+      "totalCalls": 8,
+      "lastCalled": "2026-05-17T15:04:41.969Z"
+    },
+    "GET /tts/voices/moss-tts-ashui/detail": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-17T12:43:49.117Z"
+    },
+    "GET /tts/frontend": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-17T12:44:52.546Z"
+    },
+    "GET /tts/capabilities/moss_tts": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-17T12:43:49.134Z"
+    },
+    "GET /tts/bootstrap": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-17T15:58:50.898Z"
+    },
+    "POST /api/tts/reset-stats": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-17T13:36:44.317Z"
+    },
+    "POST /api/tts/clear-cache": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-17T13:36:44.321Z"
     }
   },
-  "lastUpdated": "2026-04-21T09:27:23.449Z"
+  "lastUpdated": "2026-05-17T17:12:12.079Z"
 }

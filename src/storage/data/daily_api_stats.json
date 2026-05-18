@@ -268,6 +268,32 @@
         "GET /api/tts/voices/:id/detail": 1,
         "GET /api/tts/capabilities/:service": 2
       }
+    },
+    "2026-05-17": {
+      "totalCalls": 149,
+      "endpoints": {
+        "GET /api": 6,
+        "GET /hybridaction/zybTrackerStatisticsAction": 18,
+        "GET /": 2,
+        "GET /api/tts/health": 9,
+        "POST /api/tts/synthesize": 43,
+        "GET /api/tts/providers": 6,
+        "GET /api/tts/bootstrap": 3,
+        "GET /api/tts/voices": 25,
+        "POST /api/tts/moss": 1,
+        "GET /tts/health": 3,
+        "GET /tts/providers": 3,
+        "GET /tts/voices": 4,
+        "GET /api/tts/capabilities/moss_tts": 8,
+        "GET /api/tts/voices/moss-tts-ashui/detail": 7,
+        "GET /api/tts/frontend": 3,
+        "GET /tts/voices/moss-tts-ashui/detail": 1,
+        "GET /tts/frontend": 2,
+        "GET /tts/capabilities/moss_tts": 1,
+        "GET /tts/bootstrap": 2,
+        "POST /api/tts/reset-stats": 1,
+        "POST /api/tts/clear-cache": 1
+      }
     }
   }
 }

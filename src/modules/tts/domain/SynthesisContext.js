@@ -29,6 +29,8 @@ class SynthesisContext {
     this.resolvedParams = null;
     this.providerParams = null;
 
+    this.normalizedInput = null;
+
     this.result = null;
 
     this.warnings = [];

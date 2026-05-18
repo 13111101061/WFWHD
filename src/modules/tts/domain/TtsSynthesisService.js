@@ -18,6 +18,7 @@
 const { ExecutionPolicy } = require('../infrastructure/ExecutionPolicy');
 const SynthesisRequest = require('./SynthesisRequest');
 const { SynthesisContext } = require('./SynthesisContext');
+const NormalizedSynthesisInput = require('./NormalizedSynthesisInput');
 
 class TtsSynthesisService {
   /**
@@ -64,7 +65,9 @@ class TtsSynthesisService {
     const sr = request instanceof SynthesisRequest ? request : SynthesisRequest.fromJSON(request);
     this._validateRequest(sr);
 
+    const normalized = new NormalizedSynthesisInput(sr);
     const ctx = new SynthesisContext({ request: sr });
+    ctx.normalizedInput = normalized;
 
     this._resolveVoice(sr, ctx);
     const canonicalKey = ctx.serviceKey || 'default';
@@ -156,9 +159,10 @@ class TtsSynthesisService {
   _mergeAndValidateParams(ctx) {
     const identity = ctx.voiceIdentity;
     const capCtx = ctx.capabilityContext;
+    const normalized = ctx.normalizedInput;
 
     const merged = this.parameterResolutionService.mergeFromContext(
-      ctx.request?.options,
+      normalized.params,
       capCtx,
       identity
     );
@@ -208,7 +212,7 @@ class TtsSynthesisService {
     const identity = ctx.voiceIdentity;
     const desc = ctx.serviceDescriptor;
     const serviceType = desc?.serviceType || 'default';
-    const text = ctx.compiledInput?.providerText ?? ctx.request?.input?.raw ?? ctx.request?.text ?? '';
+    const text = ctx.compiledInput?.providerText ?? ctx.normalizedInput?.text ?? '';
     const providerInput = ctx.compiledInput?.providerInput || null;
 
     ctx.result = await this.ttsProvider.synthesize(
@@ -223,12 +227,11 @@ class TtsSynthesisService {
   // ==================== 输入编译（最小 stub） ====================
 
   _compileInput(ctx) {
-    const req = ctx.request;
-    const input = req?.input;
-    const text = req?.text;
+    const normalized = ctx.normalizedInput;
+    const input = normalized.input;
 
     if (!input) {
-      ctx.compiledInput = { providerText: text || '', providerInput: null, warnings: [] };
+      ctx.compiledInput = { providerText: normalized.text, providerInput: null, warnings: [] };
       return;
     }
 
@@ -247,7 +250,7 @@ class TtsSynthesisService {
     }
 
     ctx.compiledInput = {
-      providerText: input.raw || text || '',
+      providerText: input.raw || normalized.text,
       providerInput: input.segments ? { segments: input.segments } : null,
       inputFormat: inputType,
       warnings: []

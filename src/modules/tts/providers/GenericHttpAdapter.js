@@ -27,6 +27,8 @@
  */
 
 const BaseTtsAdapter = require('./BaseTtsAdapter');
+const TemplateResolver = require('./TemplateResolver');
+const { resolveProviderError } = require('../TtsErrorCodes');
 
 const RETRYABLE_HTTP = new Set([429, 503, 502]);
 const CIRCUIT_HTTP = new Set([500]);
@@ -49,6 +51,8 @@ class GenericHttpAdapter extends BaseTtsAdapter {
       Array.isArray(errorMap.circuitBreaker) ? errorMap.circuitBreaker : [...CIRCUIT_HTTP]
     );
 
+    this._resolver = new TemplateResolver();
+
     if (!this._endpoint) {
       throw new Error('[GenericHttpAdapter] manifest 缺少 api.endpoint');
     }
@@ -64,10 +68,14 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     }
 
     try {
-      const headers = this._interpolateHeaders(creds);
-      const body = this._interpolateBody(text, providerParams);
+      const headers = this._resolver.resolve(this._headers, { credential: creds });
+      const body = this._resolver.resolve(this._bodyTemplate, { text, params: providerParams });
 
-      const response = await this._fetch(body, headers);
+      const response = await fetch(this._endpoint, {
+        method: this._method,
+        headers,
+        body: JSON.stringify(body)
+      });
 
       if (!response.ok) {
         throw await this._mapError(response);
@@ -95,45 +103,6 @@ class GenericHttpAdapter extends BaseTtsAdapter {
       this._reportFailure(error);
       throw error;
     }
-  }
-
-  _interpolateHeaders(creds) {
-    const h = {};
-    for (const [key, template] of Object.entries(this._headers)) {
-      h[key] = this._resolve(template, { credential: creds });
-    }
-    return h;
-  }
-
-  _interpolateBody(text, params) {
-    return this._resolve(this._bodyTemplate, { text, params });
-  }
-
-  _resolve(node, context) {
-    if (typeof node === 'string' && node.startsWith('${') && node.endsWith('}')) {
-      return this._navigate(context, node.slice(2, -1).split('.'));
-    }
-    if (Array.isArray(node)) return node.map(v => this._resolve(v, context));
-    if (node && typeof node === 'object') {
-      const r = {};
-      for (const [k, v] of Object.entries(node)) r[k] = this._resolve(v, context);
-      return r;
-    }
-    return node;
-  }
-
-  _navigate(obj, path) {
-    let v = obj;
-    for (const p of path) { if (v == null) return undefined; v = v[p]; }
-    return v !== undefined ? v : undefined;
-  }
-
-  async _fetch(body, headers) {
-    return fetch(this._endpoint, {
-      method: this._method,
-      headers: { ...headers },
-      body: JSON.stringify(body)
-    });
   }
 
   async _extractAudio(response, mapping) {
@@ -175,18 +144,16 @@ class GenericHttpAdapter extends BaseTtsAdapter {
 
   async _mapError(response) {
     const status = response.status;
-    let code = 'API_ERROR';
-
-    if (this._retryableHttp.has(status)) code = 'PROVIDER_ERROR';
-    if (this._circuitHttp.has(status)) code = 'PROVIDER_ERROR';
-
     let detail = `HTTP ${status}`;
     try {
       const data = await response.json();
       detail = data.error?.message || data.message || detail;
-    } catch (e) { /* ignore */ }
+    } catch (e) { /* keep HTTP status detail */ }
 
-    return this._error(code, `${this.provider} 错误: ${detail}`);
+    const code = resolveProviderError(status, detail);
+    const err = this._error(code, `${this.provider} 错误: ${detail}`);
+    err.httpStatus = status;
+    return err;
   }
 
   _hasCredential(creds) {
@@ -195,6 +162,12 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     if (mode === 'secretKey') return !!(creds?.secretId && creds?.secretKey);
     if (mode === 'accessKey') return !!(creds?.accessKey && creds?.secretKey);
     return !!(creds?.apiKey);
+  }
+
+  _navigate(obj, path) {
+    let v = obj;
+    for (const p of path) { if (v == null) return undefined; v = v[p]; }
+    return v !== undefined ? v : undefined;
   }
 
   getStatus() {
