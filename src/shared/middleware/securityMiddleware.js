@@ -102,7 +102,7 @@ const MAX_BATCH_TEXT_LENGTH = 5000;
  * 此中间件只负责：结构校验、类型校验、安全过滤。
  */
 const validateTtsParams = (req, res, next) => {
-  const body = req.body;
+  const body = req.body || {};
   const errors = [];
 
   if (!body.text || typeof body.text !== 'string') {
@@ -251,7 +251,7 @@ const securityLogger = (req, res, next) => {
   ];
 
   const url = req.originalUrl || req.url;
-  const body = JSON.stringify(req.body);
+  const body = JSON.stringify(req.body || {});
 
   for (const pattern of suspiciousPatterns) {
     if (pattern.test(url) || pattern.test(body)) {

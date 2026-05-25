@@ -40,8 +40,26 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' ? allowedOrigins : true,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-API-Key',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Cache-Control',
+    'Pragma',
+    'X-Request-Id'
+  ],
+  exposedHeaders: [
+    'X-Request-Id',
+    'X-RateLimit-Limit',
+    'X-RateLimit-Remaining',
+    'X-RateLimit-Reset',
+    'Content-Length'
+  ],
+  maxAge: 86400
 };
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
@@ -50,6 +68,12 @@ app.use(presets.full());
 
 // Serve SDK static files
 app.use('/sdk', express.static(path.join(__dirname, '../../sdk')));
+
+// Serve audio files — MUST be before routes + 404 handler
+// In BFF mode, BFF can still proxy /api/audio/file/:filename instead of exposing this directly
+app.use('/audio', express.static(path.resolve(
+  process.env.AUDIO_STORAGE_DIR || config.audio.directory || 'src/storage/uploads/audio'
+)));
 
 
 // Health check (no auth)

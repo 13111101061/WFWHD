@@ -77,7 +77,8 @@ class TtsHttpAdapter {
    */
   async batchSynthesize(req, res) {
     try {
-      const { service, texts, options = {} } = req.body;
+      const { service, texts, options = {} } = req.body || {};
+      const stopOnError = options.stopOnError === true;
 
       this._validateBatchRequest(service, texts);
 
@@ -85,13 +86,19 @@ class TtsHttpAdapter {
         SynthesisRequest.fromJSON({ text, service, options })
       );
 
-      const { results, errors } = await this.synthesisService.batchSynthesize(requests);
+      const { results, errors } = await this.synthesisService.batchSynthesize(
+        requests,
+        { stopOnError }
+      );
 
       results.sort((a, b) => a.index - b.index);
       errors.sort((a, b) => a.index - b.index);
 
-      res.json({
-        success: errors.length === 0,
+      const hasErrors = errors.length > 0;
+      const statusCode = (stopOnError && hasErrors) ? 502 : 200;
+
+      res.status(statusCode).json({
+        success: !hasErrors,
         data: {
           results: results.map(r => ({
             index: r.index,
@@ -366,6 +373,8 @@ class TtsHttpAdapter {
   async getFilterOptions(req, res) {
     try {
       const result = this.queryService.getFilterOptions();
+      this._applyStaticCache(res, result, 1800);
+      if (this._checkNotModified(req, res)) return;
       res.json(result);
 
     } catch (error) {
@@ -380,6 +389,8 @@ class TtsHttpAdapter {
   async getFrontendCatalog(req, res) {
     try {
       const result = this.queryService.getFrontendCatalog();
+      this._applyStaticCache(res, result, 3600);
+      if (this._checkNotModified(req, res)) return;
       res.json(result);
 
     } catch (error) {
@@ -394,6 +405,8 @@ class TtsHttpAdapter {
   async getFrontendVoices(req, res) {
     try {
       const result = this.queryService.getFrontendVoices();
+      this._applyStaticCache(res, result, 3600);
+      if (this._checkNotModified(req, res)) return;
       res.json(result);
 
     } catch (error) {
@@ -408,6 +421,8 @@ class TtsHttpAdapter {
   async getFrontendBootstrap(req, res) {
     try {
       const result = this.queryService.getFrontendBootstrap();
+      this._applyStaticCache(res, result, 1800);
+      if (this._checkNotModified(req, res)) return;
       res.json(result);
 
     } catch (error) {
@@ -416,6 +431,24 @@ class TtsHttpAdapter {
   }
 
   // ==================== 私有方法 ====================
+
+  _applyStaticCache(res, data, maxAgeSeconds = 3600) {
+    const etag = require('crypto')
+      .createHash('md5')
+      .update(JSON.stringify(data))
+      .digest('hex');
+    res.setHeader('Cache-Control', `public, max-age=${maxAgeSeconds}`);
+    res.setHeader('ETag', `"${etag}"`);
+  }
+
+  _checkNotModified(req, res) {
+    const ifNoneMatch = req.headers['if-none-match'];
+    if (ifNoneMatch && res.get('ETag') && ifNoneMatch === res.get('ETag')) {
+      res.removeHeader('Content-Type');
+      return res.status(304).end();
+    }
+    return false;
+  }
 
   /**
    * 验证批量请求参数
@@ -465,14 +498,37 @@ class TtsHttpAdapter {
   _buildErrorResponse(error) {
     const code = error.code || TtsErrorCodes.INTERNAL_ERROR;
     const retryable = RETRYABLE_MAP[code] === true;
+
+    const isProviderError = code === TtsErrorCodes.PROVIDER_UNAUTHORIZED
+      || code === TtsErrorCodes.PROVIDER_UNAVAILABLE
+      || code === TtsErrorCodes.PROVIDER_RATE_LIMITED;
+
+    let safeMessage = error.message;
+    if (isProviderError) {
+      console.error('[TtsHttpAdapter] Provider error (sanitized):', error.message);
+      switch (code) {
+        case TtsErrorCodes.PROVIDER_UNAUTHORIZED:
+          safeMessage = 'Service provider authentication failed';
+          break;
+        case TtsErrorCodes.PROVIDER_UNAVAILABLE:
+          safeMessage = 'Service provider temporary error';
+          break;
+        case TtsErrorCodes.PROVIDER_RATE_LIMITED:
+          safeMessage = 'Service provider rate limit exceeded';
+          break;
+        default:
+          safeMessage = 'Service provider error';
+      }
+    }
+
     const response = {
       success: false,
       code,
-      message: error.message,
+      message: safeMessage,
       retryable,
       timestamp: new Date().toISOString()
     };
-    if (error.errors) response.errors = error.errors;
+    if (!isProviderError && error.errors) response.errors = error.errors;
     if (error.retryAfter) response.retryAfter = error.retryAfter;
     if (error.limit) response.limit = error.limit;
     if (error.serverDigest) response.serverDigest = error.serverDigest;

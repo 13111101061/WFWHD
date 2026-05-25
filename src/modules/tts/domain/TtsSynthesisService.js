@@ -263,23 +263,27 @@ class TtsSynthesisService {
     const concurrency = opts.concurrency
       || parseInt(process.env.TTS_BATCH_CONCURRENCY, 10)
       || 5;
+    const stopOnError = opts.stopOnError === true;
 
     const results = [];
     const errors = [];
     const inFlight = new Set();
     let cursor = 0;
+    let aborted = false;
 
     const runOne = async (index) => {
+      if (aborted) return;
       try {
         const result = await this.synthesize(requests[index]);
         results.push({ index, success: true, data: result, warnings: result.warnings || undefined });
       } catch (error) {
         errors.push({ index, success: false, error: error.message, code: error.code });
+        if (stopOnError) aborted = true;
       }
     };
 
-    while (cursor < requests.length || inFlight.size > 0) {
-      while (inFlight.size < concurrency && cursor < requests.length) {
+    while (!aborted && (cursor < requests.length || inFlight.size > 0)) {
+      while (!aborted && inFlight.size < concurrency && cursor < requests.length) {
         const idx = cursor++;
         const p = runOne(idx).finally(() => inFlight.delete(p));
         inFlight.add(p);

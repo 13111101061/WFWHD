@@ -294,6 +294,74 @@
         "POST /api/tts/reset-stats": 1,
         "POST /api/tts/clear-cache": 1
       }
+    },
+    "2026-05-18": {
+      "totalCalls": 4,
+      "endpoints": {
+        "GET /api/tts/voices": 4
+      }
+    },
+    "2026-05-19": {
+      "totalCalls": 46,
+      "endpoints": {
+        "GET /api/tts/voices": 22,
+        "GET /api/tts/providers": 2,
+        "GET /api/tts/capabilities/%3Aservice": 1,
+        "GET /api/tts/capabilities/%3Amosi": 2,
+        "GET /api/tts/capabilities/%3Amoss": 1,
+        "GET /api/tts/capabilities/%3AMOSS%20TTS": 1,
+        "GET /api/tts/capabilities/%3Amoss_tts": 1,
+        "GET /api/tts/capabilities/moss_tts": 3,
+        "GET /api/tts/capabilities/aliyun-qwen": 1,
+        "GET /api/tts/capabilities/aliyun-qwen_http": 2,
+        "GET /api/tts/capabilities/aliyun_qwen_http": 1,
+        "POST /api/tts/synthesize": 9
+      }
+    },
+    "2026-05-23": {
+      "totalCalls": 43,
+      "endpoints": {
+        "GET /api": 1,
+        "GET /hybridaction/zybTrackerStatisticsAction": 4,
+        "GET /api/tts/voices": 33,
+        "GET /api/tts/capabilities/moss_tts": 1,
+        "GET /api/tts/bootstrap": 1,
+        "GET /api/tts/providers": 1,
+        "GET /api/credentials/status": 1,
+        "GET /api/tts/capabilities/aliyun_qwen_http": 1
+      }
+    },
+    "2026-05-24": {
+      "totalCalls": 124,
+      "endpoints": {
+        "GET /api/tts/voices": 33,
+        "POST /api/tts/synthesize": 53,
+        "GET /api/tts/health": 1,
+        "GET /audio/tts_hello_world_1779601615410_2935af579a2da808.wav": 1,
+        "GET /api/audio/tts_hello_world_1779601952462_e677b2fb5a7f55c6.wav": 4,
+        "GET /hybridaction/zybTrackerStatisticsAction": 4,
+        "GET /api/audio/tts_hello_world_test_cors_1779602330585_4c5cc07f3380bbbc.wav": 2,
+        "GET /audio/tts_hello_world_test_cors_1779602330585_4c5cc07f3380bbbc.wav": 1,
+        "GET /api/audio/exists/tts_hello_world_test_cors_1779602330585_4c5cc07f3380bbbc.wav": 2,
+        "GET /api/audio/config": 1,
+        "GET /api/audio/info/tts_hello_world_test_cors_1779602330585_4c5cc07f3380bbbc.wav": 1,
+        "GET /api/audio/info/tts_%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C_1779602823569_4e2548fd93e78ae3.wav": 1,
+        "GET /api/audio/exists/tts_%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C_1779602823569_4e2548fd93e78ae3.wav": 1,
+        "GET /audio/tts_%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C_1779602823569_4e2548fd93e78ae3.wav": 3,
+        "GET /api/audio/tts_%E7%8E%B0%E5%9C%A8_API_%E8%AF%B7%E6%B1%82%E4%BC%9A%E5%8F%91%E9%80%81%E5%88%B0%E5%89%8D%E7%AB%AF%EF%BC%8C%E4%B8%8D%E4%BC%9A%E5%9C%A8%E5%8F%91%E5%88%B0%E5%90%8E%E7%AB%AF_1779602920360_2c570dcf245bed0b.wav": 1,
+        "POST /tts-factory/api/synthesis/synthesize": 1,
+        "POST /api/synthesis/synthesize": 1,
+        "GET /api/audio/tts_%E7%8E%B0%E5%9C%A8_API_%E8%AF%B7%E6%B1%82%E4%BC%9A%E5%8F%91%E9%80%81%E5%88%B0%E5%89%8D%E7%AB%AF%EF%BC%8C%E4%B8%8D%E4%BC%9A%E5%9C%A8%E5%8F%91%E5%88%B0%E5%90%8E%E7%AB%AF_1779603956107_8e00c397df92470d.wav": 4,
+        "GET /api/audio/file/tts_%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C_1779602823569_4e2548fd93e78ae3.wav": 1,
+        "GET /api/audio/file/tts_%E4%BD%A0%E5%A5%BD%E4%B8%96%E7%95%8C%EF%BC%8C%E6%AC%A2%E8%BF%8E%E4%BD%BF%E7%94%A8MOSS%E8%AF%AD%E9%9F%B3%E5%90%88%E6%88%90_1779614519601_f6faa4c9f66a6e1f.mp3": 1,
+        "GET /api/tts/providers": 1,
+        "GET /api/tts/capabilities/aliyun_cosyvoice": 1,
+        "GET /api/tts/capabilities/aliyun_qwen_http": 1,
+        "GET /api/tts/capabilities/minimax_tts": 1,
+        "GET /api/tts/capabilities/moss_tts": 1,
+        "GET /api/tts/capabilities/tencent_tts": 1,
+        "GET /api/tts/capabilities/volcengine_http": 1
+      }
     }
   }
 }

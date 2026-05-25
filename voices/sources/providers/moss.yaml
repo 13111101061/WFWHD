@@ -22,7 +22,7 @@ voices:
     gender: male
     languages: [中文]
     description: 普通话标准，带轻微北京口音，发音清晰自然，语气松弛有亲和力。
-    tags: [清晰, 自然, 松弛, 亲和]
+    tags: [清晰, 沉稳, 青年, 播客, 松弛, 亲和]
     ttsConfig:
       sourceId: "2020008594694475776"
       model: moss-tts
@@ -38,7 +38,7 @@ voices:
     gender: female
     languages: [中文]
     description: 台湾口音柔和细腻，语气温柔平稳，情绪收敛但有温度。
-    tags: [温柔, 治愈, 柔和, 细腻]
+    tags: [柔和, 温柔, 少女, 讲述, 细腻, 治愈]
     ttsConfig:
       sourceId: "2020009311371005952"
       model: moss-tts
@@ -54,7 +54,7 @@ voices:
     gender: female
     languages: [中文]
     description: 冬天清晨的灰白天空，风很冷，但阳光迟早会出来。
-    tags: [松弛, 耐听, 治愈, 温暖]
+    tags: [温润, 治愈, 青年, 陪伴, 耐听, 松弛]
     ttsConfig:
       sourceId: "2001257729754140672"
       model: moss-tts
@@ -70,7 +70,7 @@ voices:
     gender: female
     languages: [中文]
     description: 薄雾里的风、旧磁带、夜里低声自言自语。
-    tags: [独白, 讲述, 低沉, 氛围]
+    tags: [低沉, 沉稳, 讲述者, 讲述, 沧桑, 氛围]
     ttsConfig:
       sourceId: "2001286865130360832"
       model: moss-tts
@@ -86,7 +86,7 @@ voices:
     gender: female
     languages: [中文]
     description: 雨后未干的水泥地，空气里有点凉，音量不大，却带着倔强的边角。
-    tags: [轻快, 元气, 倔强, 清新]
+    tags: [明亮, 活泼, 少女, 日常, 轻快, 倔强]
     ttsConfig:
       sourceId: "2001898421836845056"
       model: moss-tts
@@ -102,7 +102,7 @@ voices:
     gender: female
     languages: [中文]
     description: 音色清透偏高，带自然甜感，节奏轻快但不浮，语气坚定、有朝气。
-    tags: [轻快, 明亮, 坚定, 朝气]
+    tags: [明亮, 阳光, 少女, 日常, 轻快, 朝气]
     ttsConfig:
       sourceId: "2001910895478837248"
       model: moss-tts
@@ -118,7 +118,7 @@ voices:
     gender: male
     languages: [中文]
     description: 中低音偏中，发音清晰标准，语速自然不过快，语气沉稳但不老成，带轻微电台感与亲和力。
-    tags: [播客, 理性, 沉稳, 亲和]
+    tags: [清晰, 沉稳, 讲述者, 播客, 理性, 亲和]
     ttsConfig:
       sourceId: "2001931510222950400"
       model: moss-tts
@@ -134,7 +134,7 @@ voices:
     gender: female
     languages: [中文]
     description: 声音柔和而稳定，不催促、不打断，给人被照顾的安心感。
-    tags: [温柔, 稳定, 安心, 柔和]
+    tags: [柔和, 温柔, 少女, 陪伴, 安心, 稳定]
     ttsConfig:
       sourceId: "2002941772480647168"
       model: moss-tts
@@ -150,7 +150,7 @@ voices:
     gender: male
     languages: [中文]
     description: 咬字清晰，但又语气放松，不会给人太多的听感压力。
-    tags: [新闻, 专业, 清晰, 放松]
+    tags: [清晰, 沉稳, 青年, 新闻, 专业, 放松]
     ttsConfig:
       sourceId: "2002991117984862208"
       model: moss-tts

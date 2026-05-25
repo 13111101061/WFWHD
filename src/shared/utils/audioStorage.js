@@ -171,7 +171,16 @@ class AudioStorageManager {
       urlPath = `${urlPath}/${sanitizeSubDir(subDir)}`;
     }
 
-    return `${urlPath}/${safeFilename}`;
+    const relativeUrl = `${urlPath}/${safeFilename}`;
+
+    // 如果配置了 PUBLIC_BASE_URL，生成绝对 URL（适用于 BFF / 网关 / CDN 场景）
+    const publicBaseUrl = process.env.PUBLIC_BASE_URL || this.options.publicBaseUrl;
+    if (publicBaseUrl) {
+      const base = publicBaseUrl.replace(/\/$/, '');
+      return `${base}${relativeUrl}`;
+    }
+
+    return relativeUrl;
   }
 
   /**

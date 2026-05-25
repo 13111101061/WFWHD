@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const { audioStorageManager } = require('../../../src/shared/utils/audioStorage');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
 
@@ -255,6 +257,87 @@ router.get('/config',
   }
 );
 
+/**
+ * 流式获取音频文件（BFF 代理友好端点）
+ * GET /api/audio/file/:filename
+ * Query: ?subDir=xxx
+ * 用途：当微服务不直接暴露 /audio 静态目录时，BFF 可通过此端点代理音频流
+ */
+router.get('/file/:filename',
+  requestLogger,
+  async (req, res) => {
+    try {
+      const { filename } = req.params;
+      const { subDir = '' } = req.query;
+
+      const filePath = audioStorageManager.generateFilePath(filename, subDir);
+
+      // 安全检查：确保文件在 baseDir 内
+      const resolvedPath = path.resolve(filePath);
+      const resolvedBase = path.resolve(audioStorageManager.baseDir);
+      if (!resolvedPath.startsWith(resolvedBase)) {
+        return res.status(403).json({
+          success: false,
+          error: 'Access denied',
+          message: 'Invalid file path',
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // 检查文件存在性
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({
+          success: false,
+          error: 'File not found',
+          message: `Audio file ${filename} not found`,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // 推断 Content-Type
+      const ext = path.extname(filename).toLowerCase().replace(/^\./, '');
+      const mimeTypes = {
+        mp3: 'audio/mpeg',
+        wav: 'audio/wav',
+        pcm: 'audio/pcm',
+        flac: 'audio/flac',
+        ogg: 'audio/ogg'
+      };
+      const contentType = mimeTypes[ext] || 'application/octet-stream';
+
+      const stat = fs.statSync(filePath);
+
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Length', stat.size);
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.setHeader('X-Request-Id', req.requestId || 'unknown');
+
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+
+      stream.on('error', (err) => {
+        console.error('音频流错误:', err.message);
+        if (!res.headersSent) {
+          res.status(500).json({
+            success: false,
+            error: 'Stream error',
+            message: err.message,
+            timestamp: new Date().toISOString()
+          });
+        }
+      });
+    } catch (error) {
+      console.error('获取音频流失败:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to stream audio',
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
 // 404处理 - 未定义的音频路由
 router.use('*', (req, res) => {
   res.status(404).json({
@@ -268,7 +351,8 @@ router.use('*', (req, res) => {
       'GET /api/audio/info/:filename - 获取文件信息',
       'DELETE /api/audio/:filename - 删除音频文件',
       'POST /api/audio/generate-filename - 生成安全文件名',
-      'GET /api/audio/config - 获取配置信息'
+      'GET /api/audio/config - 获取配置信息',
+      'GET /api/audio/file/:filename - 流式获取音频文件（BFF代理）'
     ],
     timestamp: new Date().toISOString()
   });

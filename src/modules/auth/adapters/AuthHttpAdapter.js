@@ -21,6 +21,7 @@ class AuthHttpAdapter {
    * 创建认证中间件
    * @param {Object} options
    * @param {string} [options.service] - 服务名称
+   * @param {string} [options.serviceScope] - 细粒度服务级权限范围 (e.g. 'tts:aliyun_cosyvoice')
    * @param {boolean} [options.required=true] - 是否必须认证
    * @param {string[]} [options.permissions=[]] - 所需权限
    * @param {string} [options.rateLimitTier='default'] - 限流层级
@@ -30,6 +31,7 @@ class AuthHttpAdapter {
   createMiddleware(options = {}) {
     const {
       service = null,
+      serviceScope = null,
       required = true,
       permissions = [],
       rateLimitTier = 'default',
@@ -37,31 +39,31 @@ class AuthHttpAdapter {
     } = options;
 
     return async (req, res, next) => {
-      // 记录开始时间
       const startTime = Date.now();
 
-      // 提取API密钥
       const apiKey = this._extractApiKey(req);
 
-      // 提取服务名称
       const serviceName = service || this._extractServiceName(req);
 
-      // 构建认证请求
+      const derivedPermissions = [...permissions];
+      if (serviceScope) {
+        derivedPermissions.push(serviceScope);
+      }
+
       const authRequest = {
         apiKey,
         service: serviceName,
-        requiredPermissions: permissions,
+        requiredPermissions: derivedPermissions,
         rateLimitTier,
         context: {
           ip: req.ip,
           userAgent: req.headers['user-agent'],
           url: req.originalUrl,
           method: req.method,
-          metadata: { ...metadata, startTime }
+          metadata: { ...metadata, startTime, serviceScope }
         }
       };
 
-      // 如果没有密钥且非必须认证
       if (!apiKey && !required) {
         req.auth = {
           anonymous: true,
@@ -71,18 +73,33 @@ class AuthHttpAdapter {
         return next();
       }
 
-      // 调用领域服务
       const result = await this.authService.authenticate(authRequest);
 
       if (!result.success) {
         return this._sendError(res, result);
       }
 
-      // 设置请求上下文
+      // 细粒度权限校验: 如果指定了 serviceScope，验证 auth.permissions 是否包含该 scope
+      if (serviceScope && result.auth?.permissions) {
+        const userPerms = result.auth.permissions;
+        const hasScope = userPerms.includes(serviceScope)
+          || userPerms.includes(`${serviceName}:*`)
+          || userPerms.includes('*');
+        if (!hasScope) {
+          return res.status(403).json({
+            success: false,
+            error: 'Forbidden',
+            code: 'INSUFFICIENT_SCOPE',
+            message: `Access denied: missing permission '${serviceScope}'`,
+            requestId: result.requestId,
+            timestamp: new Date().toISOString()
+          });
+        }
+      }
+
       req.auth = result.auth;
       req.requestId = result.requestId;
 
-      // 设置响应头
       res.setHeader('X-Request-ID', result.requestId);
 
       next();

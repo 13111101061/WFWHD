@@ -368,9 +368,10 @@ router.post('/clear-cache',
 
 const createServiceRoute = (serviceName) => {
   return [
-    unifiedAuth.createMiddleware({ service: 'tts' }),
+    unifiedAuth.createMiddleware({ service: 'tts', serviceScope: `tts:${serviceName}` }),
     securityLogger,
     (req, res, next) => {
+      req.body = req.body || {};
       req.body.service = serviceName;
       next();
     },

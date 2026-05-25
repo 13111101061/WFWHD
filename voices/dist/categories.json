@@ -1,7 +1,15 @@
 {
   "_meta": {
-    "generatedAt": "2026-05-14T17:31:37.440Z",
-    "totalVoices": 58
+    "generatedAt": "2026-05-23T06:46:00.633Z",
+    "totalVoices": 58,
+    "categoryNames": [
+      "其他",
+      "地域",
+      "场景",
+      "声线",
+      "情感",
+      "角色"
+    ]
   },
   "byProvider": {
     "moss": [
@@ -141,9 +149,7 @@
       "moss-tts-xiaoman",
       "moss-tts-chengshu",
       "moss-tts-aning",
-      "moss-tts-liangzi"
-    ],
-    "����": [
+      "moss-tts-liangzi",
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-ethan",
       "aliyun-qwen_http-chelsie",
@@ -172,11 +178,6 @@
       "aliyun-qwen_http-seren",
       "aliyun-qwen_http-pip",
       "aliyun-qwen_http-stella",
-      "aliyun-qwen_http-alek",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-emilien",
       "aliyun-qwen_http-li",
       "aliyun-qwen_http-marcus",
       "aliyun-qwen_http-roy",
@@ -185,29 +186,80 @@
       "aliyun-qwen_http-rocky",
       "aliyun-qwen_http-kiki"
     ],
-    "Ӣ��": [
+    "英语": [
       "aliyun-qwen_http-jennifer",
       "aliyun-qwen_http-ryan",
       "aliyun-qwen_http-katerina",
       "aliyun-qwen_http-aiden"
     ],
-    "��������": [
+    "西班牙语": [
       "aliyun-qwen_http-bodega",
       "aliyun-qwen_http-sonrisa",
       "aliyun-qwen_http-andre",
       "aliyun-qwen_http-radio-gol"
     ],
-    "�������": [
+    "俄语": [
+      "aliyun-qwen_http-alek"
+    ],
+    "意大利语": [
       "aliyun-qwen_http-dolce"
+    ],
+    "韩语": [
+      "aliyun-qwen_http-sohee"
+    ],
+    "日语": [
+      "aliyun-qwen_http-ono-anna"
+    ],
+    "德语": [
+      "aliyun-qwen_http-lenn"
+    ],
+    "法语": [
+      "aliyun-qwen_http-emilien"
     ]
   },
   "byTag": {
     "清晰": [
       "moss-tts-beijingnan",
-      "moss-tts-liangzi"
+      "moss-tts-chengshu",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-lenn",
+      "aliyun-qwen_http-li"
     ],
-    "自然": [
-      "moss-tts-beijingnan"
+    "沉稳": [
+      "moss-tts-beijingnan",
+      "moss-tts-zhouzhou",
+      "moss-tts-chengshu",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-eldric-sage",
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-arthur",
+      "aliyun-qwen_http-andre",
+      "aliyun-qwen_http-li",
+      "aliyun-qwen_http-marcus"
+    ],
+    "青年": [
+      "moss-tts-beijingnan",
+      "moss-tts-ashui",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-ethan",
+      "aliyun-qwen_http-aiden",
+      "aliyun-qwen_http-ebona",
+      "aliyun-qwen_http-alek",
+      "aliyun-qwen_http-dolce",
+      "aliyun-qwen_http-lenn",
+      "aliyun-qwen_http-emilien",
+      "aliyun-qwen_http-roy",
+      "aliyun-qwen_http-eric",
+      "aliyun-qwen_http-rocky"
+    ],
+    "播客": [
+      "moss-tts-beijingnan",
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-ethan",
+      "aliyun-qwen_http-aiden",
+      "aliyun-qwen_http-lenn"
     ],
     "松弛": [
       "moss-tts-beijingnan",
@@ -215,510 +267,1233 @@
     ],
     "亲和": [
       "moss-tts-beijingnan",
-      "moss-tts-chengshu"
-    ],
-    "温柔": [
-      "moss-tts-taiwannv",
-      "moss-tts-aning"
-    ],
-    "治愈": [
-      "moss-tts-taiwannv",
-      "moss-tts-ashui"
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-aiden"
     ],
     "柔和": [
       "moss-tts-taiwannv",
-      "moss-tts-aning"
+      "moss-tts-aning",
+      "aliyun-qwen_http-seren",
+      "aliyun-qwen_http-sohee"
+    ],
+    "温柔": [
+      "moss-tts-taiwannv",
+      "moss-tts-aning",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-seren",
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-emilien"
+    ],
+    "少女": [
+      "moss-tts-taiwannv",
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "moss-tts-aning",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-vivian",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-nini",
+      "aliyun-qwen_http-seren",
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-ono-anna",
+      "aliyun-qwen_http-kiki"
+    ],
+    "讲述": [
+      "moss-tts-taiwannv",
+      "moss-tts-zhouzhou",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-moon",
+      "aliyun-qwen_http-marcus",
+      "aliyun-qwen_http-peter"
     ],
     "细腻": [
       "moss-tts-taiwannv"
     ],
+    "治愈": [
+      "moss-tts-taiwannv",
+      "moss-tts-ashui",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-elias"
+    ],
+    "温润": [
+      "moss-tts-ashui",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-elias",
+      "aliyun-qwen_http-arthur"
+    ],
+    "陪伴": [
+      "moss-tts-ashui",
+      "moss-tts-aning",
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-nini",
+      "aliyun-qwen_http-rocky"
+    ],
     "耐听": [
       "moss-tts-ashui"
     ],
-    "温暖": [
-      "moss-tts-ashui"
-    ],
-    "独白": [
-      "moss-tts-zhouzhou"
-    ],
-    "讲述": [
-      "moss-tts-zhouzhou"
-    ],
     "低沉": [
-      "moss-tts-zhouzhou"
+      "moss-tts-zhouzhou",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-eldric-sage",
+      "aliyun-qwen_http-ebona",
+      "aliyun-qwen_http-alek",
+      "aliyun-qwen_http-andre"
+    ],
+    "讲述者": [
+      "moss-tts-zhouzhou",
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-ryan",
+      "aliyun-qwen_http-bellona",
+      "aliyun-qwen_http-radio-gol",
+      "aliyun-qwen_http-peter"
+    ],
+    "沧桑": [
+      "moss-tts-zhouzhou",
+      "aliyun-qwen_http-eldric-sage"
     ],
     "氛围": [
       "moss-tts-zhouzhou"
+    ],
+    "明亮": [
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-dylan",
+      "aliyun-qwen_http-jada",
+      "aliyun-qwen_http-pip",
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-sonrisa",
+      "aliyun-qwen_http-ono-anna",
+      "aliyun-qwen_http-roy",
+      "aliyun-qwen_http-peter"
+    ],
+    "活泼": [
+      "moss-tts-ziqi",
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-bella",
+      "aliyun-qwen_http-mochi",
+      "aliyun-qwen_http-bunny",
+      "aliyun-qwen_http-pip",
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-ono-anna"
+    ],
+    "日常": [
+      "moss-tts-ziqi",
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-dylan",
+      "aliyun-qwen_http-jada",
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-vivian",
+      "aliyun-qwen_http-nofish",
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-ono-anna",
+      "aliyun-qwen_http-roy",
+      "aliyun-qwen_http-eric",
+      "aliyun-qwen_http-kiki"
     ],
     "轻快": [
       "moss-tts-ziqi",
       "moss-tts-xiaoman"
     ],
-    "元气": [
-      "moss-tts-ziqi"
-    ],
     "倔强": [
       "moss-tts-ziqi"
     ],
-    "清新": [
-      "moss-tts-ziqi"
-    ],
-    "明亮": [
-      "moss-tts-xiaoman"
-    ],
-    "坚定": [
-      "moss-tts-xiaoman"
+    "阳光": [
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-ethan",
+      "aliyun-qwen_http-bodega"
     ],
     "朝气": [
-      "moss-tts-xiaoman"
-    ],
-    "播客": [
-      "moss-tts-chengshu"
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-ethan"
     ],
     "理性": [
-      "moss-tts-chengshu"
-    ],
-    "沉稳": [
-      "moss-tts-chengshu"
-    ],
-    "稳定": [
-      "moss-tts-aning"
+      "moss-tts-chengshu",
+      "aliyun-qwen_http-lenn",
+      "aliyun-qwen_http-andre"
     ],
     "安心": [
       "moss-tts-aning"
     ],
+    "稳定": [
+      "moss-tts-aning"
+    ],
     "新闻": [
-      "moss-tts-liangzi"
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-neil"
     ],
     "专业": [
-      "moss-tts-liangzi"
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-kai"
     ],
     "放松": [
       "moss-tts-liangzi"
     ],
-    "�滺": [
+    "清澈": [
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-mochi",
+      "aliyun-qwen_http-rocky"
+    ],
+    "舒缓": [
       "aliyun-qwen_http-cherry",
       "aliyun-qwen_http-seren"
     ],
-    "����": [
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-cherry",
+    "磁性": [
       "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-chelsie",
-      "aliyun-qwen_http-chelsie",
-      "aliyun-qwen_http-chelsie",
-      "aliyun-qwen_http-chelsie",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-dylan",
-      "aliyun-qwen_http-dylan",
-      "aliyun-qwen_http-dylan",
-      "aliyun-qwen_http-jada",
-      "aliyun-qwen_http-jada",
-      "aliyun-qwen_http-jada",
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-momo",
-      "aliyun-qwen_http-momo",
-      "aliyun-qwen_http-vivian",
-      "aliyun-qwen_http-vivian",
-      "aliyun-qwen_http-vivian",
       "aliyun-qwen_http-moon",
-      "aliyun-qwen_http-moon",
-      "aliyun-qwen_http-moon",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-nofish",
-      "aliyun-qwen_http-nofish",
-      "aliyun-qwen_http-nofish",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-ryan",
       "aliyun-qwen_http-ryan",
       "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-aiden",
-      "aliyun-qwen_http-aiden",
-      "aliyun-qwen_http-aiden",
-      "aliyun-qwen_http-eldric-sage",
-      "aliyun-qwen_http-eldric-sage",
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-mochi",
-      "aliyun-qwen_http-mochi",
-      "aliyun-qwen_http-bellona",
-      "aliyun-qwen_http-bellona",
-      "aliyun-qwen_http-bellona",
-      "aliyun-qwen_http-vincent",
-      "aliyun-qwen_http-vincent",
-      "aliyun-qwen_http-bunny",
-      "aliyun-qwen_http-bunny",
-      "aliyun-qwen_http-neil",
-      "aliyun-qwen_http-neil",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-nini",
-      "aliyun-qwen_http-nini",
-      "aliyun-qwen_http-nini",
-      "aliyun-qwen_http-ebona",
-      "aliyun-qwen_http-ebona",
-      "aliyun-qwen_http-ebona",
-      "aliyun-qwen_http-ebona",
-      "aliyun-qwen_http-ebona",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-pip",
-      "aliyun-qwen_http-pip",
-      "aliyun-qwen_http-stella",
-      "aliyun-qwen_http-stella",
-      "aliyun-qwen_http-bodega",
-      "aliyun-qwen_http-bodega",
-      "aliyun-qwen_http-bodega",
-      "aliyun-qwen_http-bodega",
-      "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-alek",
       "aliyun-qwen_http-dolce",
-      "aliyun-qwen_http-dolce",
-      "aliyun-qwen_http-dolce",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-ono-anna",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-emilien",
-      "aliyun-qwen_http-andre",
-      "aliyun-qwen_http-andre",
-      "aliyun-qwen_http-radio-gol",
-      "aliyun-qwen_http-radio-gol",
-      "aliyun-qwen_http-radio-gol",
-      "aliyun-qwen_http-li",
-      "aliyun-qwen_http-li",
-      "aliyun-qwen_http-li",
-      "aliyun-qwen_http-marcus",
-      "aliyun-qwen_http-marcus",
-      "aliyun-qwen_http-marcus",
-      "aliyun-qwen_http-marcus",
-      "aliyun-qwen_http-roy",
-      "aliyun-qwen_http-peter",
-      "aliyun-qwen_http-peter",
-      "aliyun-qwen_http-eric",
-      "aliyun-qwen_http-eric",
-      "aliyun-qwen_http-rocky",
-      "aliyun-qwen_http-rocky",
-      "aliyun-qwen_http-kiki",
-      "aliyun-qwen_http-kiki",
-      "aliyun-qwen_http-kiki"
+      "aliyun-qwen_http-emilien"
     ],
-    "��Ȼ": [
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-nofish"
-    ],
-    "��ů": [
-      "aliyun-qwen_http-cherry",
+    "活力": [
       "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-andre"
+      "aliyun-qwen_http-sonrisa"
     ],
-    "�ɿ�": [
-      "aliyun-qwen_http-ethan"
+    "软糯": [
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-bella",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-bunny",
+      "aliyun-qwen_http-nini"
     ],
-    "����Ԫ": [
+    "二次元": [
       "aliyun-qwen_http-chelsie"
     ],
-    "�Ķ�": [
-      "aliyun-qwen_http-chelsie"
+    "娇憨": [
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-bella"
     ],
-    "�峺": [
+    "亲切": [
       "aliyun-qwen_http-serena"
     ],
-    "��ǻ": [
-      "aliyun-qwen_http-dylan"
-    ],
-    "ˬ��": [
+    "爽朗": [
       "aliyun-qwen_http-dylan",
       "aliyun-qwen_http-jada"
     ],
-    "�ɴ�": [
-      "aliyun-qwen_http-dylan"
-    ],
-    "������": [
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-vivian",
-      "aliyun-qwen_http-nofish",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-nini"
-    ],
-    "���": [
-      "aliyun-qwen_http-momo",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-eldric-sage",
-      "aliyun-qwen_http-mochi",
-      "aliyun-qwen_http-alek",
-      "aliyun-qwen_http-dolce"
-    ],
-    "��Ƥ": [
-      "aliyun-qwen_http-momo",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-pip"
-    ],
-    "�鶯": [
-      "aliyun-qwen_http-momo"
-    ],
-    "Ԫ����Ů": [
-      "aliyun-qwen_http-momo"
-    ],
-    "˧��": [
-      "aliyun-qwen_http-vivian",
+    "少年": [
+      "aliyun-qwen_http-dylan",
       "aliyun-qwen_http-moon",
-      "aliyun-qwen_http-stella"
-    ],
-    "С����": [
-      "aliyun-qwen_http-vivian",
-      "aliyun-qwen_http-mochi"
-    ],
-    "�侲": [
-      "aliyun-qwen_http-moon",
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-lenn"
-    ],
-    "�����": [
-      "aliyun-qwen_http-moon"
-    ],
-    "֪��": [
-      "aliyun-qwen_http-maia"
-    ],
-    "�ͳ�": [
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-alek",
-      "aliyun-qwen_http-andre"
-    ],
-    "רҵ": [
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-neil"
-    ],
-    "ƽ��": [
       "aliyun-qwen_http-nofish"
     ],
-    "Ӣ��": [
+    "京腔": [
+      "aliyun-qwen_http-dylan"
+    ],
+    "利落": [
+      "aliyun-qwen_http-dylan"
+    ],
+    "知性": [
+      "aliyun-qwen_http-jada",
+      "aliyun-qwen_http-maia",
       "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-ryan",
+      "aliyun-qwen_http-elias",
+      "aliyun-qwen_http-sonrisa"
+    ],
+    "干练": [
+      "aliyun-qwen_http-jada"
+    ],
+    "阿姐": [
+      "aliyun-qwen_http-jada"
+    ],
+    "清脆": [
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-kiki"
+    ],
+    "娇媚": [
+      "aliyun-qwen_http-sunny"
+    ],
+    "甜蜜": [
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-nini"
+    ],
+    "轻盈": [
+      "aliyun-qwen_http-momo"
+    ],
+    "俏皮": [
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-stella"
+    ],
+    "撒娇": [
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-nini"
+    ],
+    "清冷": [
+      "aliyun-qwen_http-vivian",
+      "aliyun-qwen_http-moon"
+    ],
+    "洒脱": [
+      "aliyun-qwen_http-vivian",
+      "aliyun-qwen_http-vincent",
+      "aliyun-qwen_http-eric"
+    ],
+    "傲娇": [
+      "aliyun-qwen_http-vivian"
+    ],
+    "叛逆": [
+      "aliyun-qwen_http-vivian",
+      "aliyun-qwen_http-lenn"
+    ],
+    "冷静": [
+      "aliyun-qwen_http-moon",
+      "aliyun-qwen_http-alek",
+      "aliyun-qwen_http-lenn"
+    ],
+    "帅气": [
+      "aliyun-qwen_http-moon"
+    ],
+    "御姐": [
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-katerina"
+    ],
+    "成熟": [
+      "aliyun-qwen_http-maia"
+    ],
+    "深沉": [
+      "aliyun-qwen_http-kai"
+    ],
+    "自然": [
+      "aliyun-qwen_http-nofish",
+      "aliyun-qwen_http-eric"
+    ],
+    "清新": [
+      "aliyun-qwen_http-nofish"
+    ],
+    "文艺": [
+      "aliyun-qwen_http-nofish"
+    ],
+    "个性": [
+      "aliyun-qwen_http-nofish",
+      "aliyun-qwen_http-eric"
+    ],
+    "萝莉": [
+      "aliyun-qwen_http-bella",
+      "aliyun-qwen_http-bunny"
+    ],
+    "童趣": [
+      "aliyun-qwen_http-bella",
+      "aliyun-qwen_http-mochi",
+      "aliyun-qwen_http-bunny",
+      "aliyun-qwen_http-pip"
+    ],
+    "醉意": [
+      "aliyun-qwen_http-bella"
+    ],
+    "通透": [
+      "aliyun-qwen_http-jennifer"
+    ],
+    "优雅": [
+      "aliyun-qwen_http-jennifer",
       "aliyun-qwen_http-katerina",
-      "aliyun-qwen_http-aiden"
+      "aliyun-qwen_http-emilien"
     ],
-    "�߼�": [
+    "广告": [
+      "aliyun-qwen_http-jennifer",
+      "aliyun-qwen_http-katerina",
+      "aliyun-qwen_http-bodega",
+      "aliyun-qwen_http-sonrisa"
+    ],
+    "高级": [
       "aliyun-qwen_http-jennifer"
     ],
-    "�ʸ�": [
+    "质感": [
       "aliyun-qwen_http-jennifer"
     ],
-    "��Ӱ��": [
+    "深邃": [
       "aliyun-qwen_http-ryan"
     ],
-    "��зḻ": [
+    "影视": [
       "aliyun-qwen_http-ryan"
     ],
-    "�ݼ���": [
+    "演技派": [
       "aliyun-qwen_http-ryan"
     ],
-    "�ɾ�": [
-      "aliyun-qwen_http-aiden"
+    "张力": [
+      "aliyun-qwen_http-ryan"
     ],
-    "�ڼ�": [
+    "韵律": [
+      "aliyun-qwen_http-katerina"
+    ],
+    "气场": [
+      "aliyun-qwen_http-katerina"
+    ],
+    "干净": [
       "aliyun-qwen_http-aiden",
-      "aliyun-qwen_http-ono-anna"
+      "aliyun-qwen_http-neil"
     ],
-    "��ɣ": [
+    "腼腆": [
+      "aliyun-qwen_http-aiden"
+    ],
+    "邻家": [
+      "aliyun-qwen_http-aiden"
+    ],
+    "长者": [
+      "aliyun-qwen_http-eldric-sage",
+      "aliyun-qwen_http-vincent",
+      "aliyun-qwen_http-arthur",
+      "aliyun-qwen_http-li",
+      "aliyun-qwen_http-marcus"
+    ],
+    "有声书": [
       "aliyun-qwen_http-eldric-sage",
       "aliyun-qwen_http-vincent",
       "aliyun-qwen_http-arthur"
     ],
-    "���¸�": [
+    "睿智": [
       "aliyun-qwen_http-eldric-sage"
     ],
-    "��ѧ": [
-      "aliyun-qwen_http-eldric-sage"
-    ],
-    "��˳": [
+    "乖巧": [
       "aliyun-qwen_http-mia"
     ],
-    "��Ŵ": [
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-bunny",
-      "aliyun-qwen_http-nini"
-    ],
-    "����Ů��": [
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-nini"
-    ],
-    "��̫": [
+    "正太": [
       "aliyun-qwen_http-mochi",
       "aliyun-qwen_http-pip"
     ],
-    "ͯ��": [
-      "aliyun-qwen_http-mochi",
-      "aliyun-qwen_http-pip"
+    "聪明": [
+      "aliyun-qwen_http-mochi"
     ],
-    "Ϸ����": [
-      "aliyun-qwen_http-bellona"
+    "早慧": [
+      "aliyun-qwen_http-mochi"
     ],
-    "˵����": [
+    "洪亮": [
       "aliyun-qwen_http-bellona",
-      "aliyun-qwen_http-vincent"
+      "aliyun-qwen_http-bodega",
+      "aliyun-qwen_http-radio-gol"
     ],
-    "��Ѫ": [
-      "aliyun-qwen_http-bellona"
-    ],
-    "ɳ��": [
-      "aliyun-qwen_http-vincent"
-    ],
-    "��ɤ": [
-      "aliyun-qwen_http-vincent"
-    ],
-    "��": [
-      "aliyun-qwen_http-bunny"
-    ],
-    "�ɰ�": [
-      "aliyun-qwen_http-bunny"
-    ],
-    "��ͯ": [
-      "aliyun-qwen_http-bunny"
-    ],
-    "�͹�": [
-      "aliyun-qwen_http-neil"
-    ],
-    "����ǻԲ": [
-      "aliyun-qwen_http-neil"
-    ],
-    "Ȩ��": [
-      "aliyun-qwen_http-neil"
-    ],
-    "֪ʶ": [
-      "aliyun-qwen_http-elias"
-    ],
-    "�ڰ�": [
-      "aliyun-qwen_http-ebona"
-    ],
-    "ASMR": [
-      "aliyun-qwen_http-seren"
-    ],
-    "��Ц": [
-      "aliyun-qwen_http-pip"
-    ],
-    "˫���˸�": [
-      "aliyun-qwen_http-stella"
-    ],
-    "Ԫ��": [
-      "aliyun-qwen_http-stella"
-    ],
-    "ս����Ů": [
-      "aliyun-qwen_http-stella"
-    ],
-    "��������": [
+    "热情": [
+      "aliyun-qwen_http-bellona",
       "aliyun-qwen_http-bodega",
       "aliyun-qwen_http-sonrisa",
-      "aliyun-qwen_http-andre",
       "aliyun-qwen_http-radio-gol"
     ],
-    "ս������": [
+    "纪录片": [
+      "aliyun-qwen_http-bellona",
       "aliyun-qwen_http-alek"
     ],
-    "Ӳ��": [
-      "aliyun-qwen_http-alek"
+    "热血": [
+      "aliyun-qwen_http-bellona"
     ],
-    "�������": [
-      "aliyun-qwen_http-dolce"
+    "江湖": [
+      "aliyun-qwen_http-bellona"
     ],
-    "ŷ��": [
-      "aliyun-qwen_http-sohee"
+    "沙哑": [
+      "aliyun-qwen_http-vincent"
     ],
-    "�����ḻ": [
-      "aliyun-qwen_http-sohee"
+    "烟嗓": [
+      "aliyun-qwen_http-vincent"
     ],
-    "��÷����": [
-      "aliyun-qwen_http-ono-anna"
+    "豪情": [
+      "aliyun-qwen_http-vincent"
     ],
-    "��ѧ��": [
+    "萌": [
+      "aliyun-qwen_http-bunny"
+    ],
+    "可爱": [
+      "aliyun-qwen_http-bunny"
+    ],
+    "学者": [
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-elias",
       "aliyun-qwen_http-andre"
     ],
-    "��˵": [
-      "aliyun-qwen_http-radio-gol"
+    "权威": [
+      "aliyun-qwen_http-neil"
     ],
-    "ʫ��": [
-      "aliyun-qwen_http-radio-gol"
-    ],
-    "��ʦ": [
+    "教育": [
+      "aliyun-qwen_http-elias",
+      "aliyun-qwen_http-andre",
       "aliyun-qwen_http-li"
     ],
-    "̨��": [
-      "aliyun-qwen_http-roy"
+    "条理": [
+      "aliyun-qwen_http-elias"
     ],
-    "ڶг": [
+    "质朴": [
+      "aliyun-qwen_http-arthur"
+    ],
+    "乡土": [
+      "aliyun-qwen_http-arthur"
+    ],
+    "甜美": [
+      "aliyun-qwen_http-nini",
+      "aliyun-qwen_http-kiki"
+    ],
+    "神秘": [
+      "aliyun-qwen_http-ebona"
+    ],
+    "冥想": [
+      "aliyun-qwen_http-ebona",
+      "aliyun-qwen_http-seren"
+    ],
+    "哥特": [
+      "aliyun-qwen_http-ebona"
+    ],
+    "气声": [
+      "aliyun-qwen_http-ebona"
+    ],
+    "助眠": [
+      "aliyun-qwen_http-seren"
+    ],
+    "顽皮": [
+      "aliyun-qwen_http-pip"
+    ],
+    "搞笑": [
+      "aliyun-qwen_http-pip"
+    ],
+    "元气": [
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-ono-anna"
+    ],
+    "大叔": [
+      "aliyun-qwen_http-bodega"
+    ],
+    "战斗民族": [
+      "aliyun-qwen_http-bodega"
+    ],
+    "开朗": [
+      "aliyun-qwen_http-sonrisa",
+      "aliyun-qwen_http-sohee"
+    ],
+    "硬朗": [
+      "aliyun-qwen_http-alek"
+    ],
+    "冷酷": [
+      "aliyun-qwen_http-alek"
+    ],
+    "慵懒": [
+      "aliyun-qwen_http-dolce"
+    ],
+    "电台": [
+      "aliyun-qwen_http-dolce",
+      "aliyun-qwen_http-emilien"
+    ],
+    "浪漫": [
+      "aliyun-qwen_http-dolce",
+      "aliyun-qwen_http-emilien"
+    ],
+    "随性": [
+      "aliyun-qwen_http-dolce"
+    ],
+    "娇俏": [
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-kiki"
+    ],
+    "鬼马": [
+      "aliyun-qwen_http-ono-anna"
+    ],
+    "科学家": [
+      "aliyun-qwen_http-andre"
+    ],
+    "体育": [
+      "aliyun-qwen_http-radio-gol"
+    ],
+    "激情": [
+      "aliyun-qwen_http-radio-gol"
+    ],
+    "诗人": [
+      "aliyun-qwen_http-radio-gol"
+    ],
+    "耐心": [
+      "aliyun-qwen_http-li"
+    ],
+    "淳朴": [
+      "aliyun-qwen_http-li",
+      "aliyun-qwen_http-marcus"
+    ],
+    "醇厚": [
+      "aliyun-qwen_http-marcus"
+    ],
+    "憨厚": [
+      "aliyun-qwen_http-marcus"
+    ],
+    "幽默": [
       "aliyun-qwen_http-roy",
-      "aliyun-qwen_http-peter"
-    ],
-    "ֱˬ": [
-      "aliyun-qwen_http-roy"
-    ],
-    "��Ĭ": [
       "aliyun-qwen_http-peter",
       "aliyun-qwen_http-rocky"
     ],
-    "�ɶ�": [
-      "aliyun-qwen_http-eric"
+    "诙谐": [
+      "aliyun-qwen_http-roy"
     ],
-    "��Ȥ": [
+    "直爽": [
+      "aliyun-qwen_http-roy"
+    ],
+    "相声": [
+      "aliyun-qwen_http-peter"
+    ],
+    "捧哏": [
+      "aliyun-qwen_http-peter"
+    ],
+    "风趣": [
       "aliyun-qwen_http-eric",
       "aliyun-qwen_http-rocky"
     ],
-    "��Ů": [
+    "陪聊": [
+      "aliyun-qwen_http-rocky"
+    ],
+    "闺蜜": [
       "aliyun-qwen_http-kiki"
     ]
+  },
+  "byCategory": {
+    "角色": {
+      "青年": [
+        "moss-tts-beijingnan",
+        "moss-tts-ashui",
+        "moss-tts-liangzi",
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-aiden",
+        "aliyun-qwen_http-ebona",
+        "aliyun-qwen_http-alek",
+        "aliyun-qwen_http-dolce",
+        "aliyun-qwen_http-lenn",
+        "aliyun-qwen_http-emilien",
+        "aliyun-qwen_http-roy",
+        "aliyun-qwen_http-eric",
+        "aliyun-qwen_http-rocky"
+      ],
+      "少女": [
+        "moss-tts-taiwannv",
+        "moss-tts-ziqi",
+        "moss-tts-xiaoman",
+        "moss-tts-aning",
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-vivian",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-nini",
+        "aliyun-qwen_http-seren",
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-sohee",
+        "aliyun-qwen_http-ono-anna",
+        "aliyun-qwen_http-kiki"
+      ],
+      "讲述者": [
+        "moss-tts-zhouzhou",
+        "moss-tts-chengshu",
+        "aliyun-qwen_http-kai",
+        "aliyun-qwen_http-ryan",
+        "aliyun-qwen_http-bellona",
+        "aliyun-qwen_http-radio-gol",
+        "aliyun-qwen_http-peter"
+      ],
+      "少年": [
+        "aliyun-qwen_http-dylan",
+        "aliyun-qwen_http-moon",
+        "aliyun-qwen_http-nofish"
+      ],
+      "知性": [
+        "aliyun-qwen_http-jada",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-jennifer",
+        "aliyun-qwen_http-elias",
+        "aliyun-qwen_http-sonrisa"
+      ],
+      "干练": [
+        "aliyun-qwen_http-jada"
+      ],
+      "阿姐": [
+        "aliyun-qwen_http-jada"
+      ],
+      "傲娇": [
+        "aliyun-qwen_http-vivian"
+      ],
+      "帅气": [
+        "aliyun-qwen_http-moon"
+      ],
+      "御姐": [
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-katerina"
+      ],
+      "成熟": [
+        "aliyun-qwen_http-maia"
+      ],
+      "个性": [
+        "aliyun-qwen_http-nofish",
+        "aliyun-qwen_http-eric"
+      ],
+      "萝莉": [
+        "aliyun-qwen_http-bella",
+        "aliyun-qwen_http-bunny"
+      ],
+      "演技派": [
+        "aliyun-qwen_http-ryan"
+      ],
+      "气场": [
+        "aliyun-qwen_http-katerina"
+      ],
+      "邻家": [
+        "aliyun-qwen_http-aiden"
+      ],
+      "长者": [
+        "aliyun-qwen_http-eldric-sage",
+        "aliyun-qwen_http-vincent",
+        "aliyun-qwen_http-arthur",
+        "aliyun-qwen_http-li",
+        "aliyun-qwen_http-marcus"
+      ],
+      "睿智": [
+        "aliyun-qwen_http-eldric-sage"
+      ],
+      "正太": [
+        "aliyun-qwen_http-mochi",
+        "aliyun-qwen_http-pip"
+      ],
+      "聪明": [
+        "aliyun-qwen_http-mochi"
+      ],
+      "早慧": [
+        "aliyun-qwen_http-mochi"
+      ],
+      "学者": [
+        "aliyun-qwen_http-neil",
+        "aliyun-qwen_http-elias",
+        "aliyun-qwen_http-andre"
+      ],
+      "权威": [
+        "aliyun-qwen_http-neil"
+      ],
+      "大叔": [
+        "aliyun-qwen_http-bodega"
+      ],
+      "硬朗": [
+        "aliyun-qwen_http-alek"
+      ],
+      "科学家": [
+        "aliyun-qwen_http-andre"
+      ],
+      "诗人": [
+        "aliyun-qwen_http-radio-gol"
+      ],
+      "捧哏": [
+        "aliyun-qwen_http-peter"
+      ],
+      "闺蜜": [
+        "aliyun-qwen_http-kiki"
+      ]
+    },
+    "情感": {
+      "沉稳": [
+        "moss-tts-beijingnan",
+        "moss-tts-zhouzhou",
+        "moss-tts-chengshu",
+        "moss-tts-liangzi",
+        "aliyun-qwen_http-kai",
+        "aliyun-qwen_http-eldric-sage",
+        "aliyun-qwen_http-neil",
+        "aliyun-qwen_http-arthur",
+        "aliyun-qwen_http-andre",
+        "aliyun-qwen_http-li",
+        "aliyun-qwen_http-marcus"
+      ],
+      "亲和": [
+        "moss-tts-beijingnan",
+        "moss-tts-chengshu",
+        "aliyun-qwen_http-aiden"
+      ],
+      "温柔": [
+        "moss-tts-taiwannv",
+        "moss-tts-aning",
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-seren",
+        "aliyun-qwen_http-sohee",
+        "aliyun-qwen_http-emilien"
+      ],
+      "细腻": [
+        "moss-tts-taiwannv"
+      ],
+      "治愈": [
+        "moss-tts-taiwannv",
+        "moss-tts-ashui",
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-elias"
+      ],
+      "沧桑": [
+        "moss-tts-zhouzhou",
+        "aliyun-qwen_http-eldric-sage"
+      ],
+      "氛围": [
+        "moss-tts-zhouzhou"
+      ],
+      "活泼": [
+        "moss-tts-ziqi",
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-bella",
+        "aliyun-qwen_http-mochi",
+        "aliyun-qwen_http-bunny",
+        "aliyun-qwen_http-pip",
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-ono-anna"
+      ],
+      "轻快": [
+        "moss-tts-ziqi",
+        "moss-tts-xiaoman"
+      ],
+      "倔强": [
+        "moss-tts-ziqi"
+      ],
+      "阳光": [
+        "moss-tts-xiaoman",
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-bodega"
+      ],
+      "朝气": [
+        "moss-tts-xiaoman",
+        "aliyun-qwen_http-ethan"
+      ],
+      "理性": [
+        "moss-tts-chengshu",
+        "aliyun-qwen_http-lenn",
+        "aliyun-qwen_http-andre"
+      ],
+      "安心": [
+        "moss-tts-aning"
+      ],
+      "专业": [
+        "moss-tts-liangzi",
+        "aliyun-qwen_http-kai"
+      ],
+      "放松": [
+        "moss-tts-liangzi"
+      ],
+      "舒缓": [
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-seren"
+      ],
+      "活力": [
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-sonrisa"
+      ],
+      "娇憨": [
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-bella"
+      ],
+      "亲切": [
+        "aliyun-qwen_http-serena"
+      ],
+      "爽朗": [
+        "aliyun-qwen_http-dylan",
+        "aliyun-qwen_http-jada"
+      ],
+      "娇媚": [
+        "aliyun-qwen_http-sunny"
+      ],
+      "甜蜜": [
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-nini"
+      ],
+      "俏皮": [
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-stella"
+      ],
+      "撒娇": [
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-nini"
+      ],
+      "清冷": [
+        "aliyun-qwen_http-vivian",
+        "aliyun-qwen_http-moon"
+      ],
+      "洒脱": [
+        "aliyun-qwen_http-vivian",
+        "aliyun-qwen_http-vincent",
+        "aliyun-qwen_http-eric"
+      ],
+      "叛逆": [
+        "aliyun-qwen_http-vivian",
+        "aliyun-qwen_http-lenn"
+      ],
+      "冷静": [
+        "aliyun-qwen_http-moon",
+        "aliyun-qwen_http-alek",
+        "aliyun-qwen_http-lenn"
+      ],
+      "深沉": [
+        "aliyun-qwen_http-kai"
+      ],
+      "清新": [
+        "aliyun-qwen_http-nofish"
+      ],
+      "醉意": [
+        "aliyun-qwen_http-bella"
+      ],
+      "优雅": [
+        "aliyun-qwen_http-jennifer",
+        "aliyun-qwen_http-katerina",
+        "aliyun-qwen_http-emilien"
+      ],
+      "深邃": [
+        "aliyun-qwen_http-ryan"
+      ],
+      "张力": [
+        "aliyun-qwen_http-ryan"
+      ],
+      "腼腆": [
+        "aliyun-qwen_http-aiden"
+      ],
+      "乖巧": [
+        "aliyun-qwen_http-mia"
+      ],
+      "热情": [
+        "aliyun-qwen_http-bellona",
+        "aliyun-qwen_http-bodega",
+        "aliyun-qwen_http-sonrisa",
+        "aliyun-qwen_http-radio-gol"
+      ],
+      "热血": [
+        "aliyun-qwen_http-bellona"
+      ],
+      "豪情": [
+        "aliyun-qwen_http-vincent"
+      ],
+      "萌": [
+        "aliyun-qwen_http-bunny"
+      ],
+      "可爱": [
+        "aliyun-qwen_http-bunny"
+      ],
+      "条理": [
+        "aliyun-qwen_http-elias"
+      ],
+      "质朴": [
+        "aliyun-qwen_http-arthur"
+      ],
+      "甜美": [
+        "aliyun-qwen_http-nini",
+        "aliyun-qwen_http-kiki"
+      ],
+      "神秘": [
+        "aliyun-qwen_http-ebona"
+      ],
+      "顽皮": [
+        "aliyun-qwen_http-pip"
+      ],
+      "搞笑": [
+        "aliyun-qwen_http-pip"
+      ],
+      "元气": [
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-ono-anna"
+      ],
+      "战斗民族": [
+        "aliyun-qwen_http-bodega"
+      ],
+      "开朗": [
+        "aliyun-qwen_http-sonrisa",
+        "aliyun-qwen_http-sohee"
+      ],
+      "冷酷": [
+        "aliyun-qwen_http-alek"
+      ],
+      "慵懒": [
+        "aliyun-qwen_http-dolce"
+      ],
+      "浪漫": [
+        "aliyun-qwen_http-dolce",
+        "aliyun-qwen_http-emilien"
+      ],
+      "随性": [
+        "aliyun-qwen_http-dolce"
+      ],
+      "娇俏": [
+        "aliyun-qwen_http-sohee",
+        "aliyun-qwen_http-kiki"
+      ],
+      "鬼马": [
+        "aliyun-qwen_http-ono-anna"
+      ],
+      "激情": [
+        "aliyun-qwen_http-radio-gol"
+      ],
+      "耐心": [
+        "aliyun-qwen_http-li"
+      ],
+      "淳朴": [
+        "aliyun-qwen_http-li",
+        "aliyun-qwen_http-marcus"
+      ],
+      "憨厚": [
+        "aliyun-qwen_http-marcus"
+      ],
+      "幽默": [
+        "aliyun-qwen_http-roy",
+        "aliyun-qwen_http-peter",
+        "aliyun-qwen_http-rocky"
+      ],
+      "诙谐": [
+        "aliyun-qwen_http-roy"
+      ],
+      "直爽": [
+        "aliyun-qwen_http-roy"
+      ],
+      "风趣": [
+        "aliyun-qwen_http-eric",
+        "aliyun-qwen_http-rocky"
+      ]
+    },
+    "声线": {
+      "清晰": [
+        "moss-tts-beijingnan",
+        "moss-tts-chengshu",
+        "moss-tts-liangzi",
+        "aliyun-qwen_http-neil",
+        "aliyun-qwen_http-lenn",
+        "aliyun-qwen_http-li"
+      ],
+      "松弛": [
+        "moss-tts-beijingnan",
+        "moss-tts-ashui"
+      ],
+      "柔和": [
+        "moss-tts-taiwannv",
+        "moss-tts-aning",
+        "aliyun-qwen_http-seren",
+        "aliyun-qwen_http-sohee"
+      ],
+      "温润": [
+        "moss-tts-ashui",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-elias",
+        "aliyun-qwen_http-arthur"
+      ],
+      "耐听": [
+        "moss-tts-ashui"
+      ],
+      "低沉": [
+        "moss-tts-zhouzhou",
+        "aliyun-qwen_http-kai",
+        "aliyun-qwen_http-eldric-sage",
+        "aliyun-qwen_http-ebona",
+        "aliyun-qwen_http-alek",
+        "aliyun-qwen_http-andre"
+      ],
+      "明亮": [
+        "moss-tts-ziqi",
+        "moss-tts-xiaoman",
+        "aliyun-qwen_http-dylan",
+        "aliyun-qwen_http-jada",
+        "aliyun-qwen_http-pip",
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-sonrisa",
+        "aliyun-qwen_http-ono-anna",
+        "aliyun-qwen_http-roy",
+        "aliyun-qwen_http-peter"
+      ],
+      "稳定": [
+        "moss-tts-aning"
+      ],
+      "清澈": [
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-mochi",
+        "aliyun-qwen_http-rocky"
+      ],
+      "磁性": [
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-moon",
+        "aliyun-qwen_http-ryan",
+        "aliyun-qwen_http-katerina",
+        "aliyun-qwen_http-dolce",
+        "aliyun-qwen_http-emilien"
+      ],
+      "软糯": [
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-bella",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-bunny",
+        "aliyun-qwen_http-nini"
+      ],
+      "利落": [
+        "aliyun-qwen_http-dylan"
+      ],
+      "清脆": [
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-kiki"
+      ],
+      "轻盈": [
+        "aliyun-qwen_http-momo"
+      ],
+      "自然": [
+        "aliyun-qwen_http-nofish",
+        "aliyun-qwen_http-eric"
+      ],
+      "通透": [
+        "aliyun-qwen_http-jennifer"
+      ],
+      "高级": [
+        "aliyun-qwen_http-jennifer"
+      ],
+      "质感": [
+        "aliyun-qwen_http-jennifer"
+      ],
+      "韵律": [
+        "aliyun-qwen_http-katerina"
+      ],
+      "干净": [
+        "aliyun-qwen_http-aiden",
+        "aliyun-qwen_http-neil"
+      ],
+      "洪亮": [
+        "aliyun-qwen_http-bellona",
+        "aliyun-qwen_http-bodega",
+        "aliyun-qwen_http-radio-gol"
+      ],
+      "沙哑": [
+        "aliyun-qwen_http-vincent"
+      ],
+      "烟嗓": [
+        "aliyun-qwen_http-vincent"
+      ],
+      "气声": [
+        "aliyun-qwen_http-ebona"
+      ],
+      "醇厚": [
+        "aliyun-qwen_http-marcus"
+      ]
+    },
+    "场景": {
+      "播客": [
+        "moss-tts-beijingnan",
+        "moss-tts-chengshu",
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-aiden",
+        "aliyun-qwen_http-lenn"
+      ],
+      "讲述": [
+        "moss-tts-taiwannv",
+        "moss-tts-zhouzhou",
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-moon",
+        "aliyun-qwen_http-marcus",
+        "aliyun-qwen_http-peter"
+      ],
+      "陪伴": [
+        "moss-tts-ashui",
+        "moss-tts-aning",
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-nini",
+        "aliyun-qwen_http-rocky"
+      ],
+      "日常": [
+        "moss-tts-ziqi",
+        "moss-tts-xiaoman",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-dylan",
+        "aliyun-qwen_http-jada",
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-vivian",
+        "aliyun-qwen_http-nofish",
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-sohee",
+        "aliyun-qwen_http-ono-anna",
+        "aliyun-qwen_http-roy",
+        "aliyun-qwen_http-eric",
+        "aliyun-qwen_http-kiki"
+      ],
+      "新闻": [
+        "moss-tts-liangzi",
+        "aliyun-qwen_http-kai",
+        "aliyun-qwen_http-neil"
+      ],
+      "童趣": [
+        "aliyun-qwen_http-bella",
+        "aliyun-qwen_http-mochi",
+        "aliyun-qwen_http-bunny",
+        "aliyun-qwen_http-pip"
+      ],
+      "广告": [
+        "aliyun-qwen_http-jennifer",
+        "aliyun-qwen_http-katerina",
+        "aliyun-qwen_http-bodega",
+        "aliyun-qwen_http-sonrisa"
+      ],
+      "影视": [
+        "aliyun-qwen_http-ryan"
+      ],
+      "有声书": [
+        "aliyun-qwen_http-eldric-sage",
+        "aliyun-qwen_http-vincent",
+        "aliyun-qwen_http-arthur"
+      ],
+      "纪录片": [
+        "aliyun-qwen_http-bellona",
+        "aliyun-qwen_http-alek"
+      ],
+      "教育": [
+        "aliyun-qwen_http-elias",
+        "aliyun-qwen_http-andre",
+        "aliyun-qwen_http-li"
+      ],
+      "冥想": [
+        "aliyun-qwen_http-ebona",
+        "aliyun-qwen_http-seren"
+      ],
+      "助眠": [
+        "aliyun-qwen_http-seren"
+      ],
+      "电台": [
+        "aliyun-qwen_http-dolce",
+        "aliyun-qwen_http-emilien"
+      ],
+      "体育": [
+        "aliyun-qwen_http-radio-gol"
+      ],
+      "相声": [
+        "aliyun-qwen_http-peter"
+      ],
+      "陪聊": [
+        "aliyun-qwen_http-rocky"
+      ]
+    },
+    "地域": {
+      "二次元": [
+        "aliyun-qwen_http-chelsie"
+      ],
+      "京腔": [
+        "aliyun-qwen_http-dylan"
+      ],
+      "文艺": [
+        "aliyun-qwen_http-nofish"
+      ],
+      "江湖": [
+        "aliyun-qwen_http-bellona"
+      ],
+      "乡土": [
+        "aliyun-qwen_http-arthur"
+      ],
+      "哥特": [
+        "aliyun-qwen_http-ebona"
+      ]
+    },
+    "其他": {}
   }
 }

@@ -112,12 +112,14 @@ class ExecutionPolicy {
 
     this._checkRateLimit(serviceKey);
 
-    const breaker = this._getCircuitBreaker(serviceKey);
+    const circuitBreakerDisabled = process.env.TTS_DISABLE_CIRCUIT_BREAKER === 'true';
 
     try {
-      const result = await breaker.execute(async () => {
-        return this._executeWithRetry(serviceKey, task, startTime);
-      });
+      const result = circuitBreakerDisabled
+        ? await this._executeWithRetry(serviceKey, task, startTime)
+        : await this._getCircuitBreaker(serviceKey).execute(async () => {
+            return this._executeWithRetry(serviceKey, task, startTime);
+          });
 
       const latency = Date.now() - startTime;
       this._recordSuccess(serviceKey, latency);

@@ -18,6 +18,38 @@ const CONFIG = {
   outputDir: path.join(__dirname, 'dist')
 };
 
+// 加载标签分类映射
+let TAG_CATEGORY_INDEX = null;
+function loadTagCategories() {
+  if (TAG_CATEGORY_INDEX) return TAG_CATEGORY_INDEX;
+  try {
+    const raw = require(path.join(__dirname, 'tag-categories.json'));
+    const idx = {};
+    for (const [cat, tags] of Object.entries(raw.categories || {})) {
+      for (const t of tags) idx[t] = cat;
+    }
+    TAG_CATEGORY_INDEX = idx;
+  } catch (e) {
+    console.warn('[build] tag-categories.json not loaded:', e.message);
+    TAG_CATEGORY_INDEX = {};
+  }
+  return TAG_CATEGORY_INDEX;
+}
+
+/**
+ * 将平铺标签归类到高层语义类别
+ */
+function categorizeTags(tags) {
+  const idx = loadTagCategories();
+  const result = {};
+  for (const tag of tags) {
+    const cat = idx[tag] || '其他';
+    if (!result[cat]) result[cat] = [];
+    result[cat].push(tag);
+  }
+  return result;
+}
+
 /**
  * 从多个候选值中选取第一个有效值
  */
@@ -164,6 +196,7 @@ async function processYamlFile(filePath, providerCounters = new Map()) {
         languages: v.languages || ['zh-CN'],
         description: v.description || '',
         tags: v.tags || [],
+        tagCategories: categorizeTags(v.tags || []),
         status: 'active',
         preview: v.preview || null
       },
@@ -186,19 +219,27 @@ async function processYamlFile(filePath, providerCounters = new Map()) {
  * 生成分类索引
  */
 async function generateCategories(voices) {
+  const catIdx = loadTagCategories();
+  const allCategories = new Set(Object.values(catIdx));
+  allCategories.add('其他');
+
   const categories = {
     _meta: {
       generatedAt: new Date().toISOString(),
-      totalVoices: voices.length
+      totalVoices: voices.length,
+      categoryNames: Array.from(allCategories).sort()
     },
     byProvider: {},
-    byGender: {
-      female: [],
-      male: []
-    },
+    byGender: { female: [], male: [] },
     byLanguage: {},
-    byTag: {}
+    byTag: {},
+    byCategory: {}
   };
+
+  // 初始化 category buckets
+  for (const c of allCategories) {
+    categories.byCategory[c] = {};
+  }
 
   for (const voice of voices) {
     const id = voice.identity.id;
@@ -206,34 +247,35 @@ async function generateCategories(voices) {
     const gender = voice.profile.gender;
     const languages = voice.profile.languages;
     const tags = voice.profile.tags;
+    const tagCats = voice.profile.tagCategories || {};
 
     // byProvider
-    if (!categories.byProvider[provider]) {
-      categories.byProvider[provider] = [];
-    }
+    if (!categories.byProvider[provider]) categories.byProvider[provider] = [];
     categories.byProvider[provider].push(id);
 
     // byGender
-    if (gender === 'female') {
-      categories.byGender.female.push(id);
-    } else if (gender === 'male') {
-      categories.byGender.male.push(id);
-    }
+    if (gender === 'female') categories.byGender.female.push(id);
+    else if (gender === 'male') categories.byGender.male.push(id);
 
     // byLanguage
     for (const lang of languages || []) {
-      if (!categories.byLanguage[lang]) {
-        categories.byLanguage[lang] = [];
-      }
+      if (!categories.byLanguage[lang]) categories.byLanguage[lang] = [];
       categories.byLanguage[lang].push(id);
     }
 
-    // byTag
+    // byTag (flat)
     for (const tag of tags || []) {
-      if (!categories.byTag[tag]) {
-        categories.byTag[tag] = [];
-      }
+      if (!categories.byTag[tag]) categories.byTag[tag] = [];
       categories.byTag[tag].push(id);
+    }
+
+    // byCategory (two-tier)
+    for (const [cat, catTags] of Object.entries(tagCats)) {
+      if (!categories.byCategory[cat]) categories.byCategory[cat] = {};
+      for (const t of catTags) {
+        if (!categories.byCategory[cat][t]) categories.byCategory[cat][t] = [];
+        categories.byCategory[cat][t].push(id);
+      }
     }
   }
 

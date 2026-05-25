@@ -403,6 +403,7 @@ class TtsQueryService {
       gender: item.gender,
       languages: item.languages,
       tags: item.tags,
+      tagCategories: item.tagCategories,
       description: item.description,
       previewUrl: item.previewUrl
     }));
@@ -549,6 +550,7 @@ class TtsQueryService {
       gender: item.gender,
       languages: item.languages,
       tags: item.tags,
+      tagCategories: item.tagCategories,
       description: item.description,
       previewUrl: item.previewUrl
     }));
@@ -603,6 +605,7 @@ class TtsQueryService {
     const genders = new Set();
     const languages = new Set();
     const tags = new Set();
+    const tagCategories = {};
 
     items.forEach(item => {
       if (item.provider) providers.add(item.provider);
@@ -616,14 +619,27 @@ class TtsQueryService {
       if (Array.isArray(item.tags)) {
         item.tags.forEach(tag => tags.add(tag));
       }
+
+      if (item.tagCategories && typeof item.tagCategories === 'object') {
+        for (const [cat, catTags] of Object.entries(item.tagCategories)) {
+          if (!tagCategories[cat]) tagCategories[cat] = new Set();
+          if (Array.isArray(catTags)) catTags.forEach(t => tagCategories[cat].add(t));
+        }
+      }
     });
+
+    const sortedTagCategories = {};
+    for (const [cat, tset] of Object.entries(tagCategories)) {
+      sortedTagCategories[cat] = Array.from(tset).sort();
+    }
 
     return {
       providers: Array.from(providers).sort(),
       services: Array.from(services).sort(),
       genders: Array.from(genders).sort(),
       languages: Array.from(languages).sort(),
-      tags: Array.from(tags).sort()
+      tags: Array.from(tags).sort(),
+      tagCategories: sortedTagCategories
     };
   }
 
@@ -658,7 +674,8 @@ class TtsQueryService {
       byService: {},
       byGender: {},
       byLanguage: {},
-      byTag: {}
+      byTag: {},
+      byCategory: {}
     };
 
     items.forEach(item => {
@@ -689,6 +706,18 @@ class TtsQueryService {
           if (!index.byTag[tag]) index.byTag[tag] = [];
           index.byTag[tag].push(item.id);
         });
+      }
+
+      if (item.tagCategories && typeof item.tagCategories === 'object') {
+        for (const [cat, catTags] of Object.entries(item.tagCategories)) {
+          if (!index.byCategory[cat]) index.byCategory[cat] = {};
+          if (Array.isArray(catTags)) {
+            catTags.forEach(t => {
+              if (!index.byCategory[cat][t]) index.byCategory[cat][t] = [];
+              index.byCategory[cat][t].push(item.id);
+            });
+          }
+        }
       }
     });
 
