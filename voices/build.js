@@ -36,6 +36,34 @@ function loadTagCategories() {
   return TAG_CATEGORY_INDEX;
 }
 
+// 加载全局音色分类
+let VOICE_CATEGORIES = null;
+function loadVoiceCategories() {
+  if (VOICE_CATEGORIES) return VOICE_CATEGORIES;
+  try {
+    const raw = require(path.join(__dirname, 'voice-categories.json'));
+    VOICE_CATEGORIES = raw.categories || {};
+  } catch (e) {
+    console.warn('[build] voice-categories.json not loaded:', e.message);
+    VOICE_CATEGORIES = {};
+  }
+  return VOICE_CATEGORIES;
+}
+
+/**
+ * 根据音色标签匹配全局分类（一个音色可属于多个分类）
+ */
+function computeCategories(tags) {
+  const cats = loadVoiceCategories();
+  const matched = [];
+  for (const [catName, catDef] of Object.entries(cats)) {
+    const matchTags = catDef.matchTags || [];
+    const hasMatch = tags.some(t => matchTags.includes(t));
+    if (hasMatch) matched.push(catName);
+  }
+  return matched;
+}
+
 /**
  * 将平铺标签归类到高层语义类别
  */
@@ -196,6 +224,7 @@ async function processYamlFile(filePath, providerCounters = new Map()) {
         languages: v.languages || ['zh-CN'],
         description: v.description || '',
         tags: v.tags || [],
+        categories: computeCategories(v.tags || []),
         tagCategories: categorizeTags(v.tags || []),
         status: 'active',
         preview: v.preview || null
@@ -220,6 +249,7 @@ async function processYamlFile(filePath, providerCounters = new Map()) {
  */
 async function generateCategories(voices) {
   const catIdx = loadTagCategories();
+  const globalCats = loadVoiceCategories();
   const allCategories = new Set(Object.values(catIdx));
   allCategories.add('其他');
 
@@ -227,18 +257,25 @@ async function generateCategories(voices) {
     _meta: {
       generatedAt: new Date().toISOString(),
       totalVoices: voices.length,
-      categoryNames: Array.from(allCategories).sort()
+      categoryNames: Array.from(allCategories).sort(),
+      globalCategoryNames: Object.keys(globalCats).sort()
     },
     byProvider: {},
     byGender: { female: [], male: [] },
     byLanguage: {},
     byTag: {},
-    byCategory: {}
+    byCategory: {},
+    byGlobalCategory: {}
   };
 
   // 初始化 category buckets
   for (const c of allCategories) {
     categories.byCategory[c] = {};
+  }
+
+  // 初始化全局分类 buckets
+  for (const c of Object.keys(globalCats)) {
+    categories.byGlobalCategory[c] = [];
   }
 
   for (const voice of voices) {
@@ -248,6 +285,7 @@ async function generateCategories(voices) {
     const languages = voice.profile.languages;
     const tags = voice.profile.tags;
     const tagCats = voice.profile.tagCategories || {};
+    const globalCats = voice.profile.categories || [];
 
     // byProvider
     if (!categories.byProvider[provider]) categories.byProvider[provider] = [];
@@ -275,6 +313,13 @@ async function generateCategories(voices) {
       for (const t of catTags) {
         if (!categories.byCategory[cat][t]) categories.byCategory[cat][t] = [];
         categories.byCategory[cat][t].push(id);
+      }
+    }
+
+    // byGlobalCategory
+    for (const cat of globalCats) {
+      if (categories.byGlobalCategory[cat]) {
+        categories.byGlobalCategory[cat].push(id);
       }
     }
   }

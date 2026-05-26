@@ -35,6 +35,7 @@ function toDisplayDto(storedVoice) {
     displayName: profile.displayName,
     gender: profile.gender,
     languages: profile.languages || ['zh-CN'],
+    categories: profile.categories || [],
     tags: profile.tags || [],
     tagCategories: profile.tagCategories || {},
     description: profile.description || '',

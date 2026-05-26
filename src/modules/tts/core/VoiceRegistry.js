@@ -36,6 +36,7 @@ class VoiceRegistry {
     this.providerIndex = new Map();
     this.serviceIndex = new Map();
     this.voiceCodeIndex = new Map();  // voiceCode → id
+    this.categoryIndex = new Map();   // category → Set<id>
 
     // 服务商状态
     this.providerStatus = new Map();  // provider -> { enabled, service }
@@ -115,6 +116,18 @@ class VoiceRegistry {
 
   getAll() {
     return Array.from(this.voices.values());
+  }
+
+  getByCategory(category) {
+    const ids = this.categoryIndex.get(category);
+    if (!ids) return [];
+    return Array.from(ids)
+      .map(id => this.voices.get(id))
+      .filter(Boolean);
+  }
+
+  getCategories() {
+    return Array.from(this.categoryIndex.keys()).sort();
   }
 
   // ==================== 写入（严格类型） ====================
@@ -435,6 +448,7 @@ class VoiceRegistry {
     const provider = voice.identity?.provider || voice.provider;
     const service = voice.identity?.service || voice.service;
     const voiceCode = voice.identity?.voiceCode || voice.voiceCode;
+    const categories = voice.profile?.categories || voice.categories || [];
 
     if (!id || !provider) return;
 
@@ -460,6 +474,14 @@ class VoiceRegistry {
       }
       this.voiceCodeIndex.set(voiceCode, id);
     }
+
+    // 全局分类索引
+    for (const cat of categories) {
+      if (!this.categoryIndex.has(cat)) {
+        this.categoryIndex.set(cat, new Set());
+      }
+      this.categoryIndex.get(cat).add(id);
+    }
   }
 
   _removeFromIndexes(voice) {
@@ -468,6 +490,7 @@ class VoiceRegistry {
     const provider = voice.identity?.provider || voice.provider;
     const service = voice.identity?.service || voice.service;
     const voiceCode = voice.identity?.voiceCode || voice.voiceCode;
+    const categories = voice.profile?.categories || voice.categories || [];
 
     if (!id || !provider) return;
 
@@ -495,6 +518,17 @@ class VoiceRegistry {
     // 从 voiceCode 索引删除
     if (voiceCode) {
       this.voiceCodeIndex.delete(voiceCode);
+    }
+
+    // 从分类索引删除
+    for (const cat of categories) {
+      const catIds = this.categoryIndex.get(cat);
+      if (catIds) {
+        catIds.delete(id);
+        if (catIds.size === 0) {
+          this.categoryIndex.delete(cat);
+        }
+      }
     }
   }
 

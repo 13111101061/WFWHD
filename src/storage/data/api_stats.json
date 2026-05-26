@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 974,
+  "totalCalls": 1041,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -35,8 +35,8 @@
       "lastCalled": "2025-09-16T03:21:26.246Z"
     },
     "GET /@vite/client": {
-      "totalCalls": 7,
-      "lastCalled": "2026-03-08T12:58:43.893Z"
+      "totalCalls": 16,
+      "lastCalled": "2026-05-25T16:03:00.637Z"
     },
     "GET /audio/qwen-http-audio_52e8a0fd-ee53-42d0-95db-c832ce3e3abe.wav": {
       "totalCalls": 1,
@@ -83,12 +83,12 @@
       "lastCalled": "2026-05-17T09:09:16.408Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 157,
-      "lastCalled": "2026-05-24T16:46:36.398Z"
+      "totalCalls": 173,
+      "lastCalled": "2026-05-26T15:31:21.706Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
-      "totalCalls": 68,
-      "lastCalled": "2026-05-24T06:26:38.143Z"
+      "totalCalls": 72,
+      "lastCalled": "2026-05-25T14:35:39.781Z"
     },
     "GET /api/tts/voices/models": {
       "totalCalls": 10,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 277,
-      "lastCalled": "2026-05-24T16:47:36.907Z"
+      "totalCalls": 294,
+      "lastCalled": "2026-05-26T13:47:34.552Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -473,7 +473,67 @@
     "GET /api/tts/capabilities/volcengine_http": {
       "totalCalls": 1,
       "lastCalled": "2026-05-24T16:21:02.630Z"
+    },
+    "GET /api/api/audio/file/tts_%E4%BB%96%E6%AF%8F%E4%B8%80%E4%B8%AA%E7%9C%BC%E7%A5%9E%E6%88%91%E9%83%BD%E8%AF%BB%E5%BE%97%E6%87%82%EF%BC%8C%E6%AF%8F%E4%B8%80%E5%8F%A5%E8%B0%8E%E6%88%91%E9%83%BD%E5%90%AC%E5%BE%97%E5%87%BA_1779719602810_29284d1c21964a4b.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T14:33:32.886Z"
+    },
+    "GET /api/audio/file/tts_%E4%BB%96%E6%AF%8F%E4%B8%80%E4%B8%AA%E7%9C%BC%E7%A5%9E%E6%88%91%E9%83%BD%E8%AF%BB%E5%BE%97%E6%87%82%EF%BC%8C%E6%AF%8F%E4%B8%80%E5%8F%A5%E8%B0%8E%E6%88%91%E9%83%BD%E5%90%AC%E5%BE%97%E5%87%BA_1779719602810_29284d1c21964a4b.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T14:35:39.531Z"
+    },
+    "GET /api/api/audio/file/tts_%E5%86%8D%E6%8A%8A%E9%82%A3%E4%B8%AA%E6%94%B6%E5%88%B0%E9%9F%B3%E9%A2%91%E7%9A%84%E8%93%9D%E8%89%B2%E4%BA%AE%E5%85%89%E5%8E%BB%E6%8E%89%E5%A4%AA%E5%BB%89%E4%BB%B7%E4%BA%86_1779721668711_e4b16f7bd7081688.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T15:09:21.288Z"
+    },
+    "GET /api/api/audio/file/tts_%E5%B7%B2%E5%85%A8%E9%9D%A2%E6%9B%BF%E6%8D%A2%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88%EF%BC%8C%E4%BB%8E%E5%BB%89%E4%BB%B7%E7%9A%84%E4%BA%AE%E8%93%9D%E6%94%B9%E4%B8%BA%E9%AB%98%E7%BA%A7%E6%9A%96%E7%81%B0_1779721969587_858e9a87fb16a802.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T15:12:55.540Z"
+    },
+    "GET /api/audio/file/tts_%E5%B7%B2%E5%85%A8%E9%9D%A2%E6%9B%BF%E6%8D%A2%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88%EF%BC%8C%E4%BB%8E%E5%BB%89%E4%BB%B7%E7%9A%84%E4%BA%AE%E8%93%9D%E6%94%B9%E4%B8%BA%E9%AB%98%E7%BA%A7%E6%9A%96%E7%81%B0_1779721969587_858e9a87fb16a802.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T15:13:00.271Z"
+    },
+    "GET /api/api/audio/file/tts_%E5%86%8D%E5%8A%A0%E5%85%A5%E8%BF%99%E4%B8%AA_%E8%BF%9B%E5%BA%A6%E5%90%8C%E6%AD%A5%E7%9D%80%E8%89%B2_%E5%92%8C_%E6%8B%96%E6%8B%BD_%E9%80%BB%E8%BE%91_1779722503047_e265d7beeba440d6.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T15:21:49.655Z"
+    },
+    "GET /api/audio/file/tts_%E5%86%8D%E5%8A%A0%E5%85%A5%E8%BF%99%E4%B8%AA_%E8%BF%9B%E5%BA%A6%E5%90%8C%E6%AD%A5%E7%9D%80%E8%89%B2_%E5%92%8C_%E6%8B%96%E6%8B%BD_%E9%80%BB%E8%BE%91_1779722503047_e265d7beeba440d6.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T15:21:55.449Z"
+    },
+    "GET /api/audio/file/tts_%E8%B0%83%E7%94%A8%E5%BA%95%E5%B1%82_TTS_%E6%9C%8D%E5%8A%A1%E5%90%88%E6%88%90%E9%9F%B3%E9%A2%91%EF%BC%8C%E6%8A%8A%E6%96%87%E4%BB%B6%E5%AD%98%E5%A5%BD_1779723016327_14da1fafb305bd83.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T15:30:16.419Z"
+    },
+    "GET /api/audio/file/tts_%E7%8E%B0%E5%9C%A8%E6%88%91%E8%A6%81%E9%87%8D%E5%86%99%E6%B3%A2%E5%BD%A2%E5%8C%BA%E5%9F%9F%E3%80%82%E6%A0%B8%E5%BF%83%E6%94%B9%E5%8A%A8%E5%8E%BB%E6%8E%89_motion.div_%E5%8A%A8%E7%94%BB%EF%BC%8C%E6%94%B9%E4%B8%BA%E6%99%AE%E9%80%9A_div_%EF%BC%8C%E9%AB%98%E5%BA%A6%E5%9B%BA%E5%AE%9A_1779723615034_e8226a44505f63d6.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T15:51:39.461Z"
+    },
+    "GET /api/audio/file/tts_%E8%BF%99%E8%99%BD%E7%84%B6%E8%AF%B4%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81%E6%8B%96%E5%8A%A8%E4%BA%86%EF%BC%8C%E4%BD%86%E6%98%AF%E9%9F%B3%E9%A2%91%E6%B2%A1%E5%8A%9E%E6%B3%95%E6%8B%96%E5%8A%A8%E5%95%8A%E5%95%A5%E6%83%85%E5%86%B5_1779724345231_d97675bee7ebf9bd.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-05-25T15:55:07.538Z"
+    },
+    "GET /api/audio/file/tts_%E4%BB%96%E6%AF%8F%E4%B8%80%E4%B8%AA%E7%9C%BC%E7%A5%9E%E6%88%91%E9%83%BD%E8%AF%BB%E5%BE%97%E6%87%82%EF%BC%8C%E6%AF%8F%E4%B8%80%E5%8F%A5%E8%B0%8E%E6%88%91%E9%83%BD%E5%90%AC%E5%BE%97%E5%87%BA%EF%BC%8C%E6%88%91%E6%B2%A1%E6%9C%89%E6%8B%86%E7%A9%BF_1779724975591_edc119b7d9cc2096.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T16:03:00.614Z"
+    },
+    "GET /api/audio/file/tts_%E8%BF%99%E4%B8%AA%E7%BB%84%E4%BB%B6%E5%9C%A8%E5%88%9A%E8%BD%BD%E5%85%A5%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%97%B6%E5%80%99%E4%B8%8D%E7%94%A8%E5%87%BA%E7%8E%B0%E8%BF%99%E4%B8%AA_1779725192381_af3adc1086478ad7.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T16:09:31.463Z"
+    },
+    "GET /api/audio/file/tts_%E6%88%91%E4%BB%80%E4%B9%88%E9%83%BD%E7%9C%8B%E5%9C%A8%E7%9C%BC%E9%87%8C%EF%BC%8C%E6%AF%94%E8%B0%81%E9%83%BD%E6%B8%85%E6%A5%9A%E3%80%82%E5%8F%AF%E6%88%91%E5%B0%B1%E6%98%AF%E6%B2%A1%E8%BE%A9%E8%A7%A3%EF%BC%8C%E8%BF%98%E5%9C%A8%E8%B4%AA%E6%81%8B%E9%82%A3%E4%B8%AA%E5%AE%B6%E7%9A%84%E5%81%87%E8%B1%A1%E3%80%82_1779725872541_2d10b34aaddbb68c.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-25T16:17:52.583Z"
+    },
+    "GET /api/audio/file/tts_%E6%88%91%E4%BB%80%E4%B9%88%E9%83%BD%E7%9C%8B%E5%9C%A8%E7%9C%BC%E9%87%8C%EF%BC%8C%E6%AF%94%E8%B0%81%E9%83%BD%E6%B8%85%E6%A5%9A%E3%80%82%E5%8F%AF%E6%88%91%E5%B0%B1%E6%98%AF%E6%B2%A1%E8%BE%A9%E8%A7%A3%EF%BC%8C%E8%BF%98%E5%9C%A8%E8%B4%AA%E6%81%8B%E9%82%A3%E4%B8%AA%E5%AE%B6%E7%9A%84%E5%81%87%E8%B1%A1%E3%80%82_1779802777142_729f011dd721d5f6.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-26T13:43:01.260Z"
+    },
+    "GET /api/audio/file/tts_%E5%81%9C%E6%AD%A2%E5%BD%93%E5%89%8D%E6%92%AD%E6%94%BE%EF%BC%8C%E9%87%8D%E7%BD%AE%E7%8A%B6%E6%80%81%E5%90%8E%E5%86%8D%E5%8A%A0%E8%BD%BD%E6%96%B0%E9%9F%B3%E9%A2%91_1779803254548_7bdaf208f348f8d7.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-05-26T13:47:51.064Z"
     }
   },
-  "lastUpdated": "2026-05-24T16:47:36.907Z"
+  "lastUpdated": "2026-05-26T15:31:21.706Z"
 }
