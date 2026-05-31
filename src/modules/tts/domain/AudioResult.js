@@ -19,6 +19,7 @@ class AudioResult {
    * @param {number} [params.sampleRate] - 采样率
    * @param {string} [params.traceId] - 追踪ID
    * @param {boolean} [params.fromCache] - 是否来自缓存
+   * @param {number} [params.textLength] - 文本字符数（前端计费）
    */
   constructor({
     text,
@@ -36,7 +37,8 @@ class AudioResult {
     format = 'mp3',
     sampleRate,
     traceId,
-    fromCache = false
+    fromCache = false,
+    textLength
   }) {
     this.text = text;
     this.audioUrl = audioUrl;
@@ -54,6 +56,7 @@ class AudioResult {
     this.sampleRate = sampleRate;
     this.traceId = traceId;
     this.fromCache = fromCache;
+    this.textLength = textLength || (text ? text.length : 0);
     this.timestamp = new Date().toISOString();
   }
 
@@ -89,6 +92,7 @@ class AudioResult {
   toJSON() {
     return {
       text: this.text,
+      textLength: this.textLength,
       audioUrl: this.audioUrl,
       filePath: this.filePath,
       fileName: this.fileName,

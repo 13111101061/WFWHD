@@ -136,13 +136,15 @@ class VoiceCatalog {
   }
 
   query(filters = {}) {
-    const { provider, service, gender, tags, language } = filters;
+    const { provider, service, gender, tags, language, category } = filters;
 
     let voices;
     if (provider && service) {
       voices = this.registry.getByProviderAndService(provider, service);
     } else if (provider) {
       voices = this.registry.getByProvider(provider);
+    } else if (category) {
+      voices = this.registry.getByCategory(category);
     } else {
       voices = this.registry.getAll();
     }
@@ -166,6 +168,12 @@ class VoiceCatalog {
       );
     }
 
+    if (category && results.length === 0) {
+      results = this.registry.getAll().filter(v =>
+        v.profile?.categories && v.profile.categories.includes(category)
+      );
+    }
+
     return results.map(toDisplayDto).filter(Boolean);
   }
 
@@ -177,6 +185,7 @@ class VoiceCatalog {
     const genders = new Set();
     const languages = new Set();
     const allTags = new Set();
+    const allCategories = new Set();
 
     voices.forEach(v => {
       const identity = v.identity || {};
@@ -191,6 +200,9 @@ class VoiceCatalog {
       if (profile.tags) {
         profile.tags.forEach(t => allTags.add(t));
       }
+      if (profile.categories) {
+        profile.categories.forEach(c => allCategories.add(c));
+      }
     });
 
     return {
@@ -198,7 +210,8 @@ class VoiceCatalog {
       services: Array.from(services).sort(),
       genders: Array.from(genders).sort(),
       languages: Array.from(languages).sort(),
-      tags: Array.from(allTags).sort()
+      tags: Array.from(allTags).sort(),
+      categories: Array.from(allCategories).sort()
     };
   }
 

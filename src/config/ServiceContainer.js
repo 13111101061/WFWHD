@@ -124,6 +124,11 @@ class ServiceContainer {
     }
     this._services.set('executionPolicy', executionPolicy);
 
+    // 9.1 SynthesisQueue（合成排队系统，控制并发+排队+任务追踪）
+    const { SynthesisQueue } = require('../modules/tts/infrastructure/SynthesisQueue');
+    const synthesisQueue = new SynthesisQueue();
+    this._services.set('synthesisQueue', synthesisQueue);
+
     // 10. 验证服务
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
@@ -161,6 +166,7 @@ class ServiceContainer {
       capabilityResolver: capabilityResolver,
       parameterResolutionService: parameterResolutionService,
       executionPolicy: executionPolicy,
+      synthesisQueue,
       voiceResolver,
       providerRegistry
     });
@@ -172,7 +178,7 @@ class ServiceContainer {
       const audioCache = require('../shared/utils/audioCache');
       clearAllCacheFn = audioCache.clearAllCache;
     } catch (e) { /* audioCache 可选 */ }
-    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn, providerRegistry });
+    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn, providerRegistry, synthesisQueue });
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
 
     this._initialized = true;

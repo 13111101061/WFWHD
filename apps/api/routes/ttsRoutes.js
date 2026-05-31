@@ -294,6 +294,54 @@ router.get('/bootstrap',
   }
 );
 
+// ==================== 排队系统端点 ====================
+
+/**
+ * 获取队列快照
+ * GET /api/tts/queue
+ */
+router.get('/queue',
+  requestLogger,
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getQueueSnapshot(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * 获取任务队列状态
+ * GET /api/tts/queue/:requestId
+ */
+router.get('/queue/:requestId',
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getQueueStatus(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * 取消排队任务
+ * DELETE /api/tts/queue/:requestId
+ */
+router.delete('/queue/:requestId',
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.cancelQueueTask(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 // ==================== 运维管理端点 ====================
 
 /**

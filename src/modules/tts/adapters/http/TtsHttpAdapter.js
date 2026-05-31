@@ -18,11 +18,12 @@ const AudioResult = require('../../domain/AudioResult');
 const { TtsErrorCodes, HTTP_STATUS_MAP, RETRYABLE_MAP } = require('../../TtsErrorCodes');
 
 class TtsHttpAdapter {
-  constructor(synthesisService, queryService, { clearAllCache, providerRegistry } = {}) {
+  constructor(synthesisService, queryService, { clearAllCache, providerRegistry, synthesisQueue } = {}) {
     this.synthesisService = synthesisService;
     this.queryService = queryService;
     this._clearAllCache = clearAllCache || null;
     this._providerRegistry = providerRegistry || null;
+    this._synthesisQueue = synthesisQueue || null;
   }
 
   // ==================== HTTP入口方法 ====================
@@ -55,6 +56,17 @@ class TtsHttpAdapter {
         },
         timestamp: result.timestamp
       };
+
+      // 排队状态（仅当队列存在时）
+      if (this._synthesisQueue) {
+        const taskStatus = this._synthesisQueue.getStatus(request.requestId);
+        const snapshot = this._synthesisQueue.getQueueSnapshot();
+        response.metadata.queue = {
+          active: snapshot.active,
+          waiting: snapshot.waiting,
+          maxConcurrency: snapshot.maxConcurrency
+        };
+      }
 
       if (result.warnings && result.warnings.length > 0) {
         response.warnings = result.warnings;
@@ -493,6 +505,70 @@ class TtsHttpAdapter {
    */
   _getStatusCode(error) {
     return HTTP_STATUS_MAP[error.code] || 500;
+  }
+
+  /**
+   * 获取队列任务状态
+   * GET /api/tts/queue/:requestId
+   */
+  async getQueueStatus(req, res) {
+    if (!this._synthesisQueue) {
+      return res.status(404).json({
+        success: false,
+        error: 'Queue system not enabled'
+      });
+    }
+
+    const status = this._synthesisQueue.getStatus(req.params.requestId);
+    if (!status) {
+      return res.status(404).json({
+        success: false,
+        error: `Task not found: ${req.params.requestId}`
+      });
+    }
+
+    res.json({ success: true, data: status, timestamp: new Date().toISOString() });
+  }
+
+  /**
+   * 取消队列任务
+   * DELETE /api/tts/queue/:requestId
+   */
+  async cancelQueueTask(req, res) {
+    if (!this._synthesisQueue) {
+      return res.status(404).json({
+        success: false,
+        error: 'Queue system not enabled'
+      });
+    }
+
+    const cancelled = this._synthesisQueue.cancel(req.params.requestId);
+    res.json({
+      success: cancelled,
+      message: cancelled
+        ? `Task ${req.params.requestId} cancelled`
+        : `Task ${req.params.requestId} not found or already started`,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  /**
+   * 获取队列快照
+   * GET /api/tts/queue
+   */
+  async getQueueSnapshot(req, res) {
+    if (!this._synthesisQueue) {
+      return res.status(404).json({
+        success: false,
+        error: 'Queue system not enabled'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: this._synthesisQueue.getQueueSnapshot(),
+      timestamp: new Date().toISOString()
+    });
   }
 
   _buildErrorResponse(error) {

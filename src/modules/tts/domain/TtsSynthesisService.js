@@ -39,6 +39,7 @@ class TtsSynthesisService {
     capabilityResolver = null,
     parameterResolutionService = null,
     executionPolicy = null,
+    synthesisQueue = null,
     voiceResolver = null,
     providerRegistry = null
   }) {
@@ -48,6 +49,7 @@ class TtsSynthesisService {
     this.capabilityResolver = capabilityResolver;
     this.parameterResolutionService = parameterResolutionService;
     this.executionPolicy = executionPolicy || new ExecutionPolicy();
+    this.synthesisQueue = synthesisQueue;
     this.voiceResolver = voiceResolver;
     this._providerRegistry = providerRegistry;
 
@@ -72,14 +74,26 @@ class TtsSynthesisService {
     this._resolveVoice(sr, ctx);
     const canonicalKey = ctx.serviceKey || 'default';
 
-    await this.executionPolicy.execute(canonicalKey, async () => {
-      this._buildCapability(ctx);
-      this._checkCapabilityDigest(ctx);
-      this._compileInput(ctx);
-      this._mergeAndValidateParams(ctx);
-      this._mapToProvider(ctx);
-      await this._callProvider(ctx);
-    });
+    const taskFn = async () => {
+      await this.executionPolicy.execute(canonicalKey, async () => {
+        this._buildCapability(ctx);
+        this._checkCapabilityDigest(ctx);
+        this._compileInput(ctx);
+        this._mergeAndValidateParams(ctx);
+        this._mapToProvider(ctx);
+        await this._callProvider(ctx);
+      });
+    };
+
+    const queue = this.synthesisQueue;
+    if (queue) {
+      const { result: queueResult } = await queue.enqueue(canonicalKey, taskFn, {
+        requestId: sr.requestId,
+        text: sr.text
+      });
+    } else {
+      await taskFn();
+    }
 
     const audioResult = ctx.toAudioResult();
     if (ctx.warnings.length > 0) {

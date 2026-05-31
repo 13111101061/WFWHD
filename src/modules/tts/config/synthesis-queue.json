@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "合成排队系统配置。控制并发、排队长度、超时。所有值均可通过环境变量覆盖。"
+  },
+  "maxConcurrency": 5,
+  "maxQueueLength": 50,
+  "queueTimeoutMs": 120000,
+  "completionRetentionMs": 300000,
+  "envOverrides": {
+    "maxConcurrency": "TTS_QUEUE_MAX_CONCURRENCY",
+    "maxQueueLength": "TTS_QUEUE_MAX_LENGTH",
+    "queueTimeoutMs": "TTS_QUEUE_TIMEOUT_MS",
+    "completionRetentionMs": "TTS_QUEUE_RETENTION_MS"
+  }
+}

@@ -41,7 +41,7 @@ class TtsQueryService {
    * 查询音色列表（带筛选）
    */
   queryVoices(filters = {}) {
-    const { includeCounts = true } = filters;
+    const { includeCounts = true, category } = filters;
 
     const vc = this._ensureVoiceCatalogQuery();
     const items = vc.query(filters);
@@ -402,6 +402,7 @@ class TtsQueryService {
       displayName: item.displayName,
       gender: item.gender,
       languages: item.languages,
+      categories: item.categories,
       tags: item.tags,
       tagCategories: item.tagCategories,
       description: item.description,
@@ -411,11 +412,13 @@ class TtsQueryService {
     // 构建筛选元数据
     const genders = new Set();
     const languages = new Set();
+    const categories = new Set();
     const tags = new Set();
 
     voices.forEach(v => {
       if (v.gender) genders.add(v.gender);
       v.languages.forEach(lang => languages.add(lang));
+      if (Array.isArray(v.categories)) v.categories.forEach(cat => categories.add(cat));
       v.tags.forEach(tag => tags.add(tag));
     });
 
@@ -426,6 +429,7 @@ class TtsQueryService {
         filters: {
           genders: Array.from(genders).sort(),
           languages: Array.from(languages).sort(),
+          categories: Array.from(categories).sort(),
           tags: Array.from(tags).sort()
         },
         total: voices.length
@@ -549,6 +553,7 @@ class TtsQueryService {
       displayName: item.displayName,
       gender: item.gender,
       languages: item.languages,
+      categories: item.categories,
       tags: item.tags,
       tagCategories: item.tagCategories,
       description: item.description,
@@ -605,6 +610,7 @@ class TtsQueryService {
     const genders = new Set();
     const languages = new Set();
     const tags = new Set();
+    const categories = new Set();
     const tagCategories = {};
 
     items.forEach(item => {
@@ -618,6 +624,10 @@ class TtsQueryService {
 
       if (Array.isArray(item.tags)) {
         item.tags.forEach(tag => tags.add(tag));
+      }
+
+      if (Array.isArray(item.categories)) {
+        item.categories.forEach(cat => categories.add(cat));
       }
 
       if (item.tagCategories && typeof item.tagCategories === 'object') {
@@ -639,6 +649,7 @@ class TtsQueryService {
       genders: Array.from(genders).sort(),
       languages: Array.from(languages).sort(),
       tags: Array.from(tags).sort(),
+      categories: Array.from(categories).sort(),
       tagCategories: sortedTagCategories
     };
   }
@@ -648,7 +659,8 @@ class TtsQueryService {
       total: items.length,
       byProvider: {},
       byService: {},
-      byGender: {}
+      byGender: {},
+      byCategory: {}
     };
 
     items.forEach(item => {
@@ -663,6 +675,12 @@ class TtsQueryService {
       if (item.gender) {
         counts.byGender[item.gender] = (counts.byGender[item.gender] || 0) + 1;
       }
+
+      if (Array.isArray(item.categories)) {
+        item.categories.forEach(cat => {
+          counts.byCategory[cat] = (counts.byCategory[cat] || 0) + 1;
+        });
+      }
     });
 
     return counts;
@@ -675,7 +693,8 @@ class TtsQueryService {
       byGender: {},
       byLanguage: {},
       byTag: {},
-      byCategory: {}
+      byCategory: {},
+      byGlobalCategory: {}
     };
 
     items.forEach(item => {
@@ -718,6 +737,13 @@ class TtsQueryService {
             });
           }
         }
+      }
+
+      if (Array.isArray(item.categories)) {
+        item.categories.forEach(cat => {
+          if (!index.byGlobalCategory[cat]) index.byGlobalCategory[cat] = [];
+          index.byGlobalCategory[cat].push(item.id);
+        });
       }
     });
 
