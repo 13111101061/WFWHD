@@ -27,12 +27,14 @@ class VoiceOnboardingService {
    * @param {Object} deps.ttsSynthesisService - TtsSynthesisService 实例（用于生成测试音频）
    * @param {Object} deps.credentials - 凭证模块
    */
-  constructor({ voiceWriteService, voiceRegistrationRegistry, ttsSynthesisService, credentials, voiceGenAdapter = null }) {
+  constructor({ voiceWriteService, voiceRegistrationRegistry, ttsSynthesisService, credentials, voiceGenAdapters = {}, voiceGenAdapter = null, enricher = null }) {
     this.voiceWriteService = voiceWriteService;
     this.registry = voiceRegistrationRegistry;
     this.synthesisService = ttsSynthesisService;
     this.credentials = credentials;
+    this.voiceGenAdapters = voiceGenAdapters;
     this.voiceGenAdapter = voiceGenAdapter;
+    this.enricher = enricher;
   }
 
   /**
@@ -81,19 +83,21 @@ class VoiceOnboardingService {
 
       if (!cloneResult.isReady()) {
         // ==== Step 3a: 异步模式 —— 先入库（inactive），跳过测试音频 ====
-        const form = {
-          provider: request.providerKey,
-          service: request.serviceType,
-          sourceId: request.sourceId,
-          displayName: request.displayName,
-          gender: request.gender,
-          languages: request.languages,
-          tags: request.tags,
-          description: request.description,
-          providerVoiceId: cloneResult.providerVoiceId,
-          model: cloneResult.model,
-          status: 'inactive'
-        };
+        const form = this.enricher
+          ? this.enricher.enrichCloneForm(request.providerKey, cloneResult, { ...req.body, status: 'inactive' })
+          : {
+              provider: request.providerKey,
+              service: request.serviceType,
+              sourceId: request.sourceId,
+              displayName: request.displayName,
+              gender: request.gender,
+              languages: request.languages,
+              tags: request.tags,
+              description: request.description,
+              providerVoiceId: cloneResult.providerVoiceId,
+              model: cloneResult.model,
+              status: 'inactive'
+            };
 
         const createResult = this.voiceWriteService.create(form);
         if (!createResult.success) {
@@ -103,6 +107,8 @@ class VoiceOnboardingService {
         await this.voiceWriteService.save();
 
         const newVoice = createResult.data;
+
+        if (this.enricher) this.enricher.triggerAfterCreate(newVoice);
 
         return {
           success: true,
@@ -123,18 +129,29 @@ class VoiceOnboardingService {
       }
 
       // ==== Step 3b: 同步模式 —— 创建 StoredVoice 入库（active） ====
-      const form = {
-        provider: request.providerKey,
-        service: request.serviceType,
-        sourceId: request.sourceId,
-        displayName: request.displayName,
-        gender: request.gender,
-        languages: request.languages,
-        tags: request.tags,
-        description: request.description,
-        providerVoiceId: cloneResult.providerVoiceId,
-        model: cloneResult.model
-      };
+      const form = this.enricher
+        ? this.enricher.enrichCloneForm(request.providerKey, cloneResult, {
+            ...req.body,
+            sourceId: request.sourceId,
+            serviceType: request.serviceType,
+            displayName: request.displayName,
+            gender: request.gender,
+            languages: request.languages,
+            tags: request.tags,
+            description: request.description
+          })
+        : {
+            provider: request.providerKey,
+            service: request.serviceType,
+            sourceId: request.sourceId,
+            displayName: request.displayName,
+            gender: request.gender,
+            languages: request.languages,
+            tags: request.tags,
+            description: request.description,
+            providerVoiceId: cloneResult.providerVoiceId,
+            model: cloneResult.model
+          };
 
       const createResult = this.voiceWriteService.create(form);
       if (!createResult.success) {
@@ -144,6 +161,8 @@ class VoiceOnboardingService {
       await this.voiceWriteService.save();
 
       const newVoice = createResult.data;
+
+      if (this.enricher) this.enricher.triggerAfterCreate(newVoice);
 
       // ==== Step 4: 生成测试音频（可选跳过） ====
       if (!request.skipTestSynthesis) {
@@ -239,11 +258,9 @@ class VoiceOnboardingService {
   async generateInstructionPreview(body) {
     const { providerKey, instruction, testText, samplingParams = {} } = body;
 
-    if (!this.voiceGenAdapter) {
-      return { success: false, error: 'Voice generation adapter not configured' };
-    }
-    if (!providerKey || !instruction) {
-      return { success: false, error: 'providerKey and instruction are required' };
+    const adapter = this.voiceGenAdapters[providerKey] || this.voiceGenAdapter;
+    if (!adapter) {
+      return { success: false, error: `Voice generation adapter not configured for provider: ${providerKey}` };
     }
 
     const genConfig = this._getGenerationConfig(providerKey);
@@ -251,7 +268,7 @@ class VoiceOnboardingService {
     const creds = this.credentials.getCredentials(providerKey);
 
     try {
-      const result = await this.voiceGenAdapter.generatePreview(
+      const result = await adapter.generatePreview(
         instruction, phrase, samplingParams, creds?.apiKey
       );
 
@@ -295,26 +312,28 @@ class VoiceOnboardingService {
 
     const sourceId = (displayName + '_' + Date.now().toString(36)).replace(/\s+/g, '_');
 
-    const form = {
-      provider: providerKey,
-      service: serviceType,
-      sourceId,
-      sourceType: 'instruction',
-      displayName,
-      gender,
-      languages,
-      tags: Array.isArray(tags) ? tags : [],
-      description,
-      providerVoiceId: null,
-      model: 'moss-voice-generator',
-      providerOptions: {
-        instruction,
-        temperature: samplingParams.temperature ?? 1.5,
-        topP: samplingParams.topP ?? 0.6,
-        topK: samplingParams.topK ?? 50
-      },
-      status: 'active'
-    };
+    const form = this.enricher
+      ? this.enricher.enrichInstructionForm(providerKey, body)
+      : {
+          provider: providerKey,
+          service: serviceType,
+          sourceId,
+          sourceType: 'instruction',
+          displayName,
+          gender,
+          languages,
+          tags: Array.isArray(tags) ? tags : [],
+          description,
+          providerVoiceId: null,
+          model: 'moss-voice-generator',
+          providerOptions: {
+            instruction,
+            temperature: samplingParams.temperature ?? 1.5,
+            topP: samplingParams.topP ?? 0.6,
+            topK: samplingParams.topK ?? 50
+          },
+          status: 'active'
+        };
 
     const result = this.voiceWriteService.create(form);
     if (!result.success) {
@@ -324,6 +343,9 @@ class VoiceOnboardingService {
     await this.voiceWriteService.save();
 
     const newVoice = result.data;
+
+    if (this.enricher) this.enricher.triggerAfterCreate(newVoice);
+
     return {
       success: true,
       data: {

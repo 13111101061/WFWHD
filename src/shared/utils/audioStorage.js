@@ -83,42 +83,59 @@ class AudioStorageManager {
       useTimestamp = true,
       useHash = true,
       prefix = '',
-      suffix = ''
+      suffix = '',
+      // 结构化命名（CDN 友好，无中文无服务商名）
+      nameFormat = null,
+      type = null,
+      providerCode = null
     } = options;
 
     let filename = '';
 
-    // 添加前缀
-    if (prefix) {
-      filename += `${prefix}_`;
-    }
+    if (nameFormat === 'structured' && type && providerCode) {
+      // 格式：{type}_{code}_{yyyymmddHHmmss}
+      const now = new Date();
+      const datePart = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0'),
+        String(now.getHours()).padStart(2, '0'),
+        String(now.getMinutes()).padStart(2, '0'),
+        String(now.getSeconds()).padStart(2, '0')
+      ].join('');
+      filename = `${type}_${providerCode}_${datePart}`;
+    } else {
+      // 前缀
+      if (prefix) {
+        filename += `${prefix}_`;
+      }
 
-    // 处理原始名称
-    if (originalName && typeof originalName === 'string') {
-      // 清理文件名，移除不安全字符
-      const cleanName = originalName
-        .replace(/[<>:"/\\|?*]/g, '_')
-        .replace(/\s+/g, '_')
-        .substring(0, 50); // 限制长度
+      // 原始名称（文本）
+      if (originalName && typeof originalName === 'string') {
+        const cleanName = originalName
+          .replace(/[<>:"/\\|?*]/g, '_')
+          .replace(/\s+/g, '_')
+          .substring(0, 50);
 
-      if (cleanName) {
-        filename += cleanName;
+        if (cleanName) {
+          filename += cleanName;
+        }
       }
     }
 
-    // 添加时间戳
-    if (useTimestamp) {
+    // 时间戳（结构化模式下日期已含时间，跳过）
+    if (useTimestamp && nameFormat !== 'structured') {
       const timestamp = Date.now();
       filename += filename ? `_${timestamp}` : timestamp;
     }
 
-    // 添加哈希值（确保唯一性）
+    // 哈希
     if (useHash) {
-      const hash = crypto.randomBytes(8).toString('hex');
+      const hash = crypto.randomBytes(4).toString('hex');
       filename += filename ? `_${hash}` : hash;
     }
 
-    // 添加后缀
+    // 后缀
     if (suffix) {
       filename += `_${suffix}`;
     }
@@ -128,7 +145,7 @@ class AudioStorageManager {
       filename = filename.substring(0, this.options.maxFilenameLength - extension.length - 1);
     }
 
-    // 确保扩展名有效
+    // 扩展名校验
     const cleanExtension = extension.replace(/^\./, '').toLowerCase();
     if (!this.options.supportedFormats.includes(cleanExtension)) {
       throw new Error(`不支持的音频格式: ${cleanExtension}`);
@@ -204,7 +221,10 @@ class AudioStorageManager {
         extension,
         {
           prefix: metadata.service || 'tts',
-          suffix: metadata.taskId || ''
+          suffix: metadata.taskId || '',
+          nameFormat: metadata.nameFormat || null,
+          type: metadata.type || null,
+          providerCode: metadata.providerCode || null
         }
       );
 
@@ -477,7 +497,24 @@ class AudioStorageManager {
 // 创建默认实例
 const audioStorageManager = new AudioStorageManager();
 
+/**
+ * providerKey → providerCode 映射（从 manifest voiceCode 读取）
+ * @param {string} providerKey  e.g. 'mimo', 'moss'
+ * @returns {string} 3位 providerCode，未知返回 '000'
+ */
+function getProviderCode(providerKey) {
+  try {
+    const { ProviderManifest } = require('../../modules/tts/providers/manifests/ProviderManifest');
+    const all = ProviderManifest.getAllVoiceCodeMappings();
+    for (const [code, info] of Object.entries(all)) {
+      if (info.providerKey === providerKey) return code;
+    }
+  } catch (e) { /* manifest 未就绪 */ }
+  return '000';
+}
+
 module.exports = {
   AudioStorageManager,
-  audioStorageManager
+  audioStorageManager,
+  getProviderCode
 };

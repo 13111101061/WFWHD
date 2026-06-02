@@ -1,12 +1,13 @@
 {
   "_meta": {
     "version": "3.0",
-    "savedAt": "2026-06-02T13:29:17.141Z",
-    "totalVoices": 60,
+    "savedAt": "2026-06-02T14:23:49.029Z",
+    "totalVoices": 69,
     "providers": {
       "enabled": [
         "moss",
-        "aliyun"
+        "aliyun",
+        "mimo"
       ],
       "disabled": [
         "minimax",
@@ -23,6 +24,11 @@
       {
         "provider": "aliyun",
         "count": 49,
+        "enabled": true
+      },
+      {
+        "provider": "mimo",
+        "count": 9,
         "enabled": true
       }
     ]
@@ -3678,6 +3684,339 @@
       "meta": {
         "createdAt": "2026-06-02T13:29:17.140Z",
         "updatedAt": "2026-06-02T13:29:17.140Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-mimo_default",
+        "voiceCode": "006000010000006",
+        "sourceId": "mimo_default",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "MiMo-默认",
+        "gender": "female",
+        "languages": [
+          "zh-CN",
+          "en"
+        ],
+        "description": "默认音色（集群决定）",
+        "tags": [
+          "通用",
+          "默认",
+          "中性"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "mimo_default",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-bingtang",
+        "voiceCode": "006000020000005",
+        "sourceId": "冰糖",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "冰糖",
+        "gender": "female",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "甜美清脆的年轻女声",
+        "tags": [
+          "甜美",
+          "清脆",
+          "年轻",
+          "活泼"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "冰糖",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-moli",
+        "voiceCode": "006000030000004",
+        "sourceId": "茉莉",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "茉莉",
+        "gender": "female",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "温柔知性的女声",
+        "tags": [
+          "温柔",
+          "知性",
+          "女声",
+          "成熟"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "茉莉",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-suda",
+        "voiceCode": "006000040000003",
+        "sourceId": "苏打",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "苏打",
+        "gender": "male",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "清亮阳光的男声",
+        "tags": [
+          "清亮",
+          "阳光",
+          "男声",
+          "青年"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "苏打",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-baihua",
+        "voiceCode": "006000050000002",
+        "sourceId": "白桦",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "白桦",
+        "gender": "male",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "沉稳厚重的男声",
+        "tags": [
+          "沉稳",
+          "厚重",
+          "男声",
+          "中年"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "白桦",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-mia",
+        "voiceCode": "006000060000001",
+        "sourceId": "Mia",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Mia",
+        "gender": "female",
+        "languages": [
+          "en"
+        ],
+        "description": "Warm and natural English female voice",
+        "tags": [
+          "warm",
+          "natural",
+          "female",
+          "English"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Mia",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-chloe",
+        "voiceCode": "006000070000000",
+        "sourceId": "Chloe",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Chloe",
+        "gender": "female",
+        "languages": [
+          "en"
+        ],
+        "description": "Bright and energetic English female voice",
+        "tags": [
+          "bright",
+          "energetic",
+          "female",
+          "English"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Chloe",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-milo",
+        "voiceCode": "006000080000009",
+        "sourceId": "Milo",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Milo",
+        "gender": "male",
+        "languages": [
+          "en"
+        ],
+        "description": "Deep and calm English male voice",
+        "tags": [
+          "deep",
+          "calm",
+          "male",
+          "English"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Milo",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-dean",
+        "voiceCode": "006000090000008",
+        "sourceId": "Dean",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Dean",
+        "gender": "male",
+        "languages": [
+          "en"
+        ],
+        "description": "Confident and clear English male voice",
+        "tags": [
+          "confident",
+          "clear",
+          "male",
+          "English"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Dean",
+        "providerOptions": {
+          "model": "mimo-v2.5-tts"
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T14:23:49.029Z",
+        "updatedAt": "2026-06-02T14:23:49.029Z",
         "dataSource": "manual",
         "version": "v1"
       }

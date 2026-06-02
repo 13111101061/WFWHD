@@ -14,6 +14,7 @@ const fs = require('fs');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const { getProviderCode } = require('../../../../shared/utils/audioStorage');
 
 class MossVoiceGenAdapter {
   constructor(config = {}) {
@@ -23,6 +24,8 @@ class MossVoiceGenAdapter {
     this.timeoutMs = config.timeoutMs || 30000;
     this.model = config.model || 'moss-voice-generator';
     this._audioStorage = config.audioStorage || null;
+    this._providerKey = 'moss';
+    this._providerCode = getProviderCode(this._providerKey);
   }
 
   /**
@@ -70,9 +73,14 @@ class MossVoiceGenAdapter {
     // 如果有 AudioStorage 注入，用它存；否则手动存
     if (this._audioStorage) {
       const saved = await this._audioStorage.saveAudioFile(buffer, {
-        filename: fileName,
         extension: 'wav',
-        metadata: { service: 'voicegen', text: testText.substring(0, 50) }
+        metadata: {
+          service: 'voicegen',
+          text: testText.substring(0, 50),
+          nameFormat: 'structured',
+          type: 'gen',
+          providerCode: this._providerCode
+        }
       });
       return {
         audioUrl: saved.url,

@@ -1,4 +1,4 @@
-const { audioStorageManager } = require('../../../shared/utils/audioStorage');
+const { audioStorageManager, getProviderCode } = require('../../../shared/utils/audioStorage');
 const credentials = require('../../credentials');
 const { CapabilitySchema } = require('../schema/CapabilitySchema');
 const VoiceNormalizer = require('../application/VoiceNormalizer');
@@ -17,6 +17,7 @@ class BaseTtsAdapter {
     this.serviceType = config.serviceType || 'default';
     this._currentAccountId = null;
     this.voiceRegistry = config.voiceRegistry || null;
+    this._providerCode = getProviderCode(this.provider);
   }
 
   _getCredentials(context = {}) {
@@ -93,7 +94,10 @@ class BaseTtsAdapter {
       metadata: {
         provider: this.provider,
         service: this.serviceType,
-        text: text.substring(0, 50)
+        text: text.substring(0, 50),
+        nameFormat: 'structured',
+        type: 'syn',
+        providerCode: this._providerCode
       }
     });
 

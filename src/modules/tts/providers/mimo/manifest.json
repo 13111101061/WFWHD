@@ -1,0 +1,142 @@
+{
+  "$schema": "ProviderManifest/v2",
+  "providerKey": "mimo",
+  "provider": {
+    "displayName": "MiMo",
+    "description": "小米 MiMo TTS 语音合成 — 基于 OpenAI-compatible Chat Completions API",
+    "status": "stable",
+    "protocolTypes": ["http"],
+    "credentialMode": "apiKey"
+  },
+  "services": {
+    "mimo_tts": {
+      "displayName": "MiMo 语音合成",
+      "description": "使用 MiMo-V2.5-TTS 预置音色进行语音合成，支持自然语言风格控制",
+      "aliases": ["mimo"],
+      "protocol": "http",
+      "supportsStreaming": false,
+      "supportsAsync": false,
+      "apiStructure": "flat",
+      "adapter": "./MimoTtsAdapter.js",
+      "endpoint": "https://api.xiaomimimo.com/v1/chat/completions",
+      "capabilities": {
+        "streaming": false,
+        "realtime": false,
+        "emotion": true,
+        "speedAdjustable": true,
+        "pitchAdjustable": true,
+        "volumeAdjustable": true
+      },
+      "defaults": {
+        "format": "wav",
+        "sampleRate": 24000,
+        "model": "mimo-v2.5-tts"
+      },
+      "lockedParams": ["voice", "model"],
+      "parameters": {
+        "voice": {
+          "status": "locked",
+          "source": "providerVoiceId",
+          "mapTo": "voice"
+        },
+        "text": {
+          "status": "required",
+          "mapTo": "text"
+        },
+        "instruction": {
+          "status": "supported",
+          "default": "",
+          "mapTo": "instruction",
+          "ui": { "highlight": true }
+        },
+        "model": {
+          "status": "locked",
+          "lockedValue": "mimo-v2.5-tts",
+          "mapTo": "model"
+        },
+        "format": {
+          "status": "supported",
+          "default": "wav",
+          "values": ["wav", "mp3", "pcm16"],
+          "mapTo": "format"
+        },
+        "sampleRate": {
+          "status": "supported",
+          "default": 24000,
+          "mapTo": "sampleRate"
+        },
+        "speed": {
+          "status": "unsupported",
+          "reason": "MiMo 通过 instruction 自然语言控制语速，无独立参数",
+          "onUserInput": "ignore"
+        },
+        "pitch": {
+          "status": "unsupported",
+          "reason": "MiMo 通过 instruction 自然语言控制音调，无独立参数",
+          "onUserInput": "ignore"
+        },
+        "volume": {
+          "status": "unsupported",
+          "reason": "MiMo 通过 instruction 自然语言控制音量，无独立参数",
+          "onUserInput": "ignore"
+        },
+        "emotion": {
+          "status": "unsupported",
+          "reason": "MiMo 通过 instruction 自然语言控制情绪，无独立参数",
+          "onUserInput": "ignore"
+        },
+        "languageType": {
+          "status": "unsupported",
+          "reason": "MiMo 自动检测语言",
+          "onUserInput": "ignore"
+        },
+        "expectedDurationSec": {
+          "status": "unsupported",
+          "onUserInput": "ignore"
+        },
+        "samplingParams": {
+          "status": "unsupported",
+          "onUserInput": "ignore"
+        }
+      }
+    }
+  },
+  "voiceCode": {
+    "providerCode": "006",
+    "serviceKey": "tts"
+  },
+  "executionPolicy": {
+    "timeoutMs": 60000,
+    "retryTimes": 1,
+    "rateLimit": {
+      "maxRequests": 60,
+      "windowMs": 60000
+    },
+    "circuitBreaker": {
+      "failureThreshold": 5,
+      "successThreshold": 2,
+      "timeout": 60000
+    }
+  },
+  "supportsVoiceCloning": true,
+  "voiceCloningConfig": {
+    "maxAudioSizeMb": 10,
+    "supportedFormats": ["audio/wav", "audio/mpeg", "audio/mp3"],
+    "minDurationSec": 3,
+    "maxDurationSec": 300,
+    "supportsAsyncMode": false,
+    "mode": "inline_base64",
+    "testPhrases": [
+      "欢迎使用 MiMo 音色复刻引擎，这是我的定制音色测试。",
+      "Hello, this is a voice cloning test using the MiMo engine."
+    ]
+  },
+  "voiceGenerationConfig": {
+    "model": "mimo-v2.5-tts-voicedesign",
+    "supportedFormats": ["wav", "mp3"],
+    "testPhrases": [
+      "这是一个指令生成音色的预览测试文本。",
+      "This is a preview test for instruction-generated voice."
+    ]
+  }
+}

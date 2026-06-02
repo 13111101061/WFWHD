@@ -95,14 +95,40 @@ function toDetailDto(storedVoice) {
 class VoiceCatalog {
   /**
    * @param {Object} options
-   * @param {Object} options.voiceRegistry - VoiceRegistry 实例
+   * @param {Object|Array} options.registries - VoiceRegistry 实例数组（或单个）
+   * @param {Object} [options.voiceRegistry] - 向后兼容：单个 registry
    */
-  constructor({ voiceRegistry }) {
-    this.registry = voiceRegistry;
+  constructor({ registries, voiceRegistry } = {}) {
+    if (registries) {
+      this.registries = Array.isArray(registries) ? registries : [registries];
+    } else if (voiceRegistry) {
+      this.registries = [voiceRegistry];
+    } else {
+      this.registries = [];
+    }
+  }
+
+  get isReady() {
+    return this.registries.length > 0 && this.registries.every(r => r.isReady);
   }
 
   get(voiceId) {
-    return this.registry.get(voiceId);
+    for (const reg of this.registries) {
+      const v = reg.get(voiceId);
+      if (v) return v;
+    }
+    return null;
+  }
+
+  getByVoiceCode(voiceCode) {
+    for (const reg of this.registries) {
+      const id = reg.voiceCodeIndex.get(voiceCode);
+      if (id) {
+        const v = reg.get(id);
+        if (v) return v;
+      }
+    }
+    return null;
   }
 
   getRuntime(voiceId) {
@@ -120,36 +146,54 @@ class VoiceCatalog {
     return toDetailDto(stored);
   }
 
-  getAllDisplay() {
-    const voices = this.registry.getAll();
+  getAllDisplay(source) {
+    let voices = [];
+    for (const reg of this.registries) {
+      voices = voices.concat(reg.getAll());
+    }
+    if (source) {
+      voices = voices.filter(v => v.meta?.dataSource === source);
+    }
     return voices.map(v => toDisplayDto(v)).filter(Boolean);
   }
 
   getByProvider(provider) {
-    const voices = this.registry.getByProvider(provider);
-    return voices.map(v => toDisplayDto(v)).filter(Boolean);
+    let results = [];
+    for (const reg of this.registries) {
+      results = results.concat(reg.getByProvider(provider));
+    }
+    return results.map(v => toDisplayDto(v)).filter(Boolean);
   }
 
   getByProviderAndService(provider, service) {
-    const voices = this.registry.getByProviderAndService(provider, service);
-    return voices.map(v => toDisplayDto(v)).filter(Boolean);
+    let results = [];
+    for (const reg of this.registries) {
+      results = results.concat(reg.getByProviderAndService(provider, service));
+    }
+    return results.map(v => toDisplayDto(v)).filter(Boolean);
   }
 
   query(filters = {}) {
-    const { provider, service, gender, tags, language, category } = filters;
+    const { provider, service, gender, tags, language, category, source } = filters;
 
-    let voices;
-    if (provider && service) {
-      voices = this.registry.getByProviderAndService(provider, service);
-    } else if (provider) {
-      voices = this.registry.getByProvider(provider);
-    } else if (category) {
-      voices = this.registry.getByCategory(category);
-    } else {
-      voices = this.registry.getAll();
+    let voices = [];
+    for (const reg of this.registries) {
+      if (provider && service) {
+        voices = voices.concat(reg.getByProviderAndService(provider, service));
+      } else if (provider) {
+        voices = voices.concat(reg.getByProvider(provider));
+      } else if (category) {
+        voices = voices.concat(reg.getByCategory(category));
+      } else {
+        voices = voices.concat(reg.getAll());
+      }
     }
 
     let results = voices;
+
+    if (source) {
+      results = results.filter(v => v.meta?.dataSource === source);
+    }
 
     if (gender) {
       results = results.filter(v => v.profile?.gender === gender);
@@ -169,17 +213,18 @@ class VoiceCatalog {
     }
 
     if (category && results.length === 0) {
-      results = this.registry.getAll().filter(v =>
-        v.profile?.categories && v.profile.categories.includes(category)
-      );
+      results = [];
+      for (const reg of this.registries) {
+        results = results.concat(reg.getAll().filter(v =>
+          v.profile?.categories && v.profile.categories.includes(category)
+        ));
+      }
     }
 
     return results.map(toDisplayDto).filter(Boolean);
   }
 
   getFiltersMeta() {
-    const voices = this.registry.getAll();
-
     const providers = new Set();
     const services = new Set();
     const genders = new Set();
@@ -187,23 +232,18 @@ class VoiceCatalog {
     const allTags = new Set();
     const allCategories = new Set();
 
-    voices.forEach(v => {
-      const identity = v.identity || {};
-      const profile = v.profile || {};
-
-      if (identity.provider) providers.add(identity.provider);
-      if (identity.service) services.add(identity.service);
-      if (profile.gender) genders.add(profile.gender);
-      if (profile.languages) {
-        profile.languages.forEach(l => languages.add(l));
-      }
-      if (profile.tags) {
-        profile.tags.forEach(t => allTags.add(t));
-      }
-      if (profile.categories) {
-        profile.categories.forEach(c => allCategories.add(c));
-      }
-    });
+    for (const reg of this.registries) {
+      reg.getAll().forEach(v => {
+        const identity = v.identity || {};
+        const profile = v.profile || {};
+        if (identity.provider) providers.add(identity.provider);
+        if (identity.service) services.add(identity.service);
+        if (profile.gender) genders.add(profile.gender);
+        if (profile.languages) profile.languages.forEach(l => languages.add(l));
+        if (profile.tags) profile.tags.forEach(t => allTags.add(t));
+        if (profile.categories) profile.categories.forEach(c => allCategories.add(c));
+      });
+    }
 
     return {
       providers: Array.from(providers).sort(),
@@ -216,12 +256,25 @@ class VoiceCatalog {
   }
 
   getStats() {
-    const registryStats = this.registry.getStats();
+    let total = 0;
+    const byProvider = {};
+
+    for (const reg of this.registries) {
+      const stats = reg.getStats();
+      total += stats.total;
+      for (const [p, info] of Object.entries(stats.providers)) {
+        if (byProvider[p]) {
+          byProvider[p].count += info.count;
+        } else {
+          byProvider[p] = { ...info };
+        }
+      }
+    }
+
     return {
-      total: registryStats.total,
-      providers: registryStats.providers,
-      services: registryStats.services,
-      storage: registryStats.storage
+      total,
+      providers: byProvider,
+      registries: this.registries.length
     };
   }
 }

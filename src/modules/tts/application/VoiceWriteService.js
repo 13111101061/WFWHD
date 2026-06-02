@@ -51,7 +51,7 @@ class VoiceWriteService {
       }
     }
 
-    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber });
+    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber, namespace: 'user' });
 
     // 3. 去重检查
     const existing = this.registry.get(stored.identity.id);
@@ -150,7 +150,7 @@ class VoiceWriteService {
       }
     }
 
-    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber });
+    const stored = VoiceNormalizer.fromForm(form, { ...options, voiceNumber, namespace: 'user' });
 
     // 3. 去重检查（Registry + 本批次）
     if (excludeIds.has(stored.identity.id)) {

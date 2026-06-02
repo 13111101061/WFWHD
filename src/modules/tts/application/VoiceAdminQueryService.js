@@ -11,19 +11,30 @@
  * - VoiceAdminQueryService → 面向管理端 raw 数据（完整 StoredVoice）
  */
 class VoiceAdminQueryService {
-  constructor({ voiceRegistry }) {
-    this.registry = voiceRegistry;
+  constructor({ voiceCatalog }) {
+    this.catalog = voiceCatalog;
   }
 
   list(filters = {}) {
-    const { provider, service, gender, tags } = filters;
+    const { provider, service, gender, tags, source } = filters;
 
-    let voices = this.registry.getAll();
-
+    let voices = [];
     if (provider && service) {
-      voices = this.registry.getByProviderAndService(provider, service);
+      for (const reg of this.catalog.registries) {
+        voices = voices.concat(reg.getByProviderAndService(provider, service));
+      }
     } else if (provider) {
-      voices = this.registry.getByProvider(provider);
+      for (const reg of this.catalog.registries) {
+        voices = voices.concat(reg.getByProvider(provider));
+      }
+    } else {
+      for (const reg of this.catalog.registries) {
+        voices = voices.concat(reg.getAll());
+      }
+    }
+
+    if (source) {
+      voices = voices.filter(v => v.meta?.dataSource === source);
     }
 
     if (gender) {
@@ -42,27 +53,42 @@ class VoiceAdminQueryService {
   }
 
   getById(id) {
-    return this.registry.get(id) || null;
+    return this.catalog.get(id) || null;
   }
 
   getStats() {
-    return this.registry.getStats();
+    return this.catalog.getStats();
   }
 
   getProvidersStatus() {
+    const enabledSet = new Set();
+    const disabledSet = new Set();
+    const all = {};
+
+    for (const reg of this.catalog.registries) {
+      for (const p of reg.getEnabledProviders()) enabledSet.add(p);
+      for (const d of reg.getDisabledProviders()) disabledSet.add(d.provider || d);
+      Object.assign(all, reg.getStats().providers);
+    }
+
     return {
-      enabled: this.registry.getEnabledProviders(),
-      disabled: this.registry.getDisabledProviders(),
-      all: this.registry.getStats().providers
+      enabled: Array.from(enabledSet),
+      disabled: Array.from(disabledSet),
+      all
     };
   }
 
   isProviderEnabled(provider) {
-    return this.registry.isProviderEnabled(provider);
+    for (const reg of this.catalog.registries) {
+      if (reg.isProviderEnabled(provider) !== undefined) return reg.isProviderEnabled(provider);
+    }
+    return false;
   }
 
   getTotal() {
-    return this.registry.getStats().total;
+    let total = 0;
+    for (const reg of this.catalog.registries) total += reg.getStats().total;
+    return total;
   }
 }
 

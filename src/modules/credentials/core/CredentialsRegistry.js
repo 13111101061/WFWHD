@@ -232,6 +232,23 @@ class CredentialsRegistry {
         }
       }
     });
+
+    // ==================== MiMo ====================
+    this.registerProvider('mimo', {
+      name: 'MiMo',
+      description: '小米 MiMo TTS — OpenAI-compatible Chat Completions',
+      credentials: {
+        apiKey: this._filterPlaceholder(process.env.MIMO_API_KEY)
+      },
+      requiredFields: ['apiKey'],
+      services: {
+        'tts': {
+          name: 'TTS',
+          description: 'MiMo 语音合成',
+          endpoint: 'https://api.xiaomimimo.com/v1/chat/completions'
+        }
+      }
+    });
   }
 
   /**

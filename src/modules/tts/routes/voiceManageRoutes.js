@@ -11,15 +11,16 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 } // 20MB, 各 provider 的 voiceCloningConfig 再做二次校验
 });
 
-function createVoiceManageRoutes(voiceRegistry, voiceWriteService, voiceOnboardingService) {
+function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardingService) {
   const router = express.Router();
 
-  const adminQuery = new VoiceAdminQueryService({ voiceRegistry });
+  const adminQuery = new VoiceAdminQueryService({ voiceCatalog });
 
   let _voiceWriteService;
   function getVoiceWriteService() {
     if (!_voiceWriteService) {
-      _voiceWriteService = voiceWriteService || new VoiceWriteService({ registry: voiceRegistry });
+      // 回退：voiceCatalog 无法直接用作单 registry 写入口，需外部注入 VoiceWriteService
+      _voiceWriteService = voiceWriteService || new VoiceWriteService({ registry: voiceCatalog.registries[1] || voiceCatalog.registries[0] });
     }
     return _voiceWriteService;
   }
@@ -320,6 +321,24 @@ function createVoiceManageRoutes(voiceRegistry, voiceWriteService, voiceOnboardi
           error: error.message
         });
       }
+    });
+
+    // ==================== 同步状态 ====================
+
+    /**
+     * 音色表同步状态
+     * GET /api/voices/sync
+     */
+    router.get('/sync', (req, res) => {
+      const statuses = voiceCatalog.registries.map(r => ({
+        type: r.readOnly ? 'official' : 'user',
+        ...r.getSyncStatus()
+      }));
+      res.json({
+        success: true,
+        data: { registries: statuses },
+        timestamp: new Date().toISOString()
+      });
     });
   }
 

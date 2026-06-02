@@ -52,23 +52,61 @@ class ServiceContainer {
       }
     }
 
-    // 0.2 VoiceRegistry（音色注册中心）
-    const defaultRedisConfig = process.env.REDIS_HOST ? {
-      host: process.env.REDIS_HOST,
-      port: parseInt(process.env.REDIS_PORT || '6379')
-    } : null;
+    // 0.2 VoiceRegistry — 双库裂变（官方只读 + 用户 Redis）
+    const path = require('path');
 
-    const voiceRegistry = new VoiceRegistry({ redis: defaultRedisConfig });
-    await voiceRegistry.initialize();
-    setVoiceRegistry(voiceRegistry);
-    this._services.set('voiceRegistry', voiceRegistry);
+    const officialRegistry = new VoiceRegistry({
+      storagePath: path.join(__dirname, '../../voices/dist/voices.json'),
+      readOnly: true
+    });
+    await officialRegistry.initialize();
+    this._services.set('officialVoiceRegistry', officialRegistry);
+    setVoiceRegistry(officialRegistry);
+
+    // 0.21 Redis 连接池初始化
+    const redisPool = require('./redis');
+    await redisPool.initialize();
+
+    let userRegistry;
+    if (redisPool.isReady()) {
+      const { RedisVoiceRegistry } = require('../modules/tts/application/RedisVoiceRegistry');
+      userRegistry = new RedisVoiceRegistry({
+        redis: redisPool.getPrimary(),
+        sub: redisPool.getSubscriber(),
+        hashKey: 'tts:voices:user',
+        channel: 'tts:voices:channel',
+        seedPath: path.join(__dirname, '../../voices/dist/user-voices.seed.json')
+      });
+      await userRegistry.initialize();
+    } else {
+      // Redis 不可用时回退到文件模式
+      console.warn('[ServiceContainer] Redis unavailable — user voices fallback to file');
+      userRegistry = new VoiceRegistry({
+        storagePath: path.join(__dirname, '../../voices/dist/user-voices.json'),
+        readOnly: false
+      });
+      try { await userRegistry.initialize(); } catch (e) {
+        console.warn('[ServiceContainer] User voice registry init skipped:', e.message);
+      }
+      userRegistry.enableHotReload();
+    }
+    this._services.set('userVoiceRegistry', userRegistry);
+
+    // 0.3 VoiceCatalog — 跨库聚合代理
+    const voiceCatalog = new VoiceCatalog({ registries: [officialRegistry, userRegistry] });
+    this._services.set('voiceCatalog', voiceCatalog);
 
     // 1. ProviderRegistry（统一注册表：manifest 解析 + adapter 自动加载）
     const { ProviderRegistry, ProviderManagementService, setProviderRegistry } = require('../modules/tts/provider-management');
     const credentials = require('../modules/credentials');
 
-    const providerRegistry = new ProviderRegistry({ voiceRegistry });
+    const providerRegistry = new ProviderRegistry({ voiceRegistry: voiceCatalog });
     providerRegistry.initialize();
+
+    // 开发环境自动启用热监听（仅 VoiceRegistry 文件实例，Redis 靠 Pub/Sub）
+    if ((process.env.VOICE_HOT_RELOAD === 'true' || process.env.NODE_ENV !== 'production') && typeof userRegistry.enableHotReload === 'function') {
+      userRegistry.enableHotReload();
+    }
     setProviderRegistry(providerRegistry);
     this._services.set('providerRegistry', providerRegistry);
 
@@ -84,12 +122,12 @@ class ServiceContainer {
     // 4. TtsProviderAdapter（构造函数注入 PMS + voiceRegistry）
     const ttsProviderAdapter = new TtsProviderAdapter({
       providerManagementService: pms,
-      voiceRegistry
+      voiceRegistry: voiceCatalog
     });
     this._services.set('ttsProviderAdapter', ttsProviderAdapter);
 
     // 5. VoiceCatalogAdapter（构造函数注入 voiceRegistry）
-    const voiceCatalogAdapter = new VoiceCatalogAdapter({ voiceRegistry });
+    const voiceCatalogAdapter = new VoiceCatalogAdapter({ voiceRegistry: voiceCatalog });
     await voiceCatalogAdapter.initialize();
     this._services.set('voiceCatalogAdapter', voiceCatalogAdapter);
 
@@ -111,7 +149,7 @@ class ServiceContainer {
     // 8.1 音色一致性审计
     if (process.env.CONFIG_AUDIT !== 'false') {
       const { auditVoiceCoverage } = require('../modules/tts/config/ConfigConsistencyChecker');
-      await auditVoiceCoverage(voiceRegistry, console);
+      await auditVoiceCoverage(officialRegistry, console);
     }
 
     // 9. ExecutionPolicy（从 manifest 注册 per-service 配置）
@@ -133,12 +171,12 @@ class ServiceContainer {
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
-    // 11. VoiceCatalog（查询门面，构造函数注入 voiceRegistry）
-    const voiceCatalogQuery = new VoiceCatalog({ voiceRegistry });
+    // 11. VoiceCatalog（查询门面，复用上面创建的 catalog 实例）
+    const voiceCatalogQuery = voiceCatalog;
     this._services.set('voiceCatalogQuery', voiceCatalogQuery);
 
-    // 12. VoiceResolver（音色解析器，构造函数注入 voiceRegistry + providerCatalog）
-    const voiceResolver = new VoiceResolver({ voiceRegistry, providerCatalog });
+    // 12. VoiceResolver（音色解析器，切换到跨库 catalog）
+    const voiceResolver = new VoiceResolver({ voiceCatalog, providerCatalog });
     this._services.set('voiceResolver', voiceResolver);
 
     // 13. 查询服务
@@ -148,7 +186,7 @@ class ServiceContainer {
       capabilityResolver: capabilityResolver,
       voiceCatalog: voiceCatalogAdapter,
       voiceCatalogQuery,
-      voiceRegistry,
+      voiceRegistry: voiceCatalog,
       providerRegistry
     });
     this._services.set('queryService', queryService);
@@ -174,28 +212,36 @@ class ServiceContainer {
 
     // 16. VoiceWriteService（音色写入，供 VoiceOnboarding + voiceManageRoutes 共用）
     const { VoiceWriteService } = require('../modules/tts/application/VoiceWriteService');
-    const voiceWriteService = new VoiceWriteService({ registry: voiceRegistry });
+    const voiceWriteService = new VoiceWriteService({ registry: userRegistry });
     this._services.set('voiceWriteService', voiceWriteService);
 
     // 17. VoiceRegistrationRegistry（音色克隆适配器注册表）
     const VoiceRegistrationRegistry = require('../modules/tts/voice-onboarding/VoiceRegistrationRegistry');
     const MossVoiceRegistrationAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceRegistrationAdapter');
+    const MimoVoiceRegistrationAdapter = require('../modules/tts/voice-onboarding/adapters/MimoVoiceRegistrationAdapter');
     const voiceRegRegistry = new VoiceRegistrationRegistry();
     voiceRegRegistry.register('moss', new MossVoiceRegistrationAdapter());
+    voiceRegRegistry.register('mimo', new MimoVoiceRegistrationAdapter({
+      audioStorage: require('../shared/utils/audioStorage').audioStorageManager
+    }));
     this._services.set('voiceRegistrationRegistry', voiceRegRegistry);
 
     // 18. VoiceOnboardingService（音色入驻编排）
     const VoiceOnboardingService = require('../modules/tts/voice-onboarding/VoiceOnboardingService');
     const MossVoiceGenAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceGenAdapter');
-    const voiceGenAdapter = new MossVoiceGenAdapter({
-      audioStorage: require('../shared/utils/audioStorage').audioStorageManager
-    });
+    const MimoVoiceGenAdapter = require('../modules/tts/voice-onboarding/adapters/MimoVoiceGenAdapter');
+    const audioStorage = require('../shared/utils/audioStorage').audioStorageManager;
+    const voiceGenAdapters = {
+      moss: new MossVoiceGenAdapter({ audioStorage }),
+      mimo: new MimoVoiceGenAdapter({ audioStorage })
+    };
     const voiceOnboardingService = new VoiceOnboardingService({
       voiceWriteService,
       voiceRegistrationRegistry: voiceRegRegistry,
       ttsSynthesisService: synthesisService,
       credentials,
-      voiceGenAdapter
+      voiceGenAdapters,
+      enricher: new (require('../modules/tts/voice-onboarding/VoiceCreationEnricher').VoiceCreationEnricher)()
     });
     this._services.set('voiceOnboardingService', voiceOnboardingService);
 

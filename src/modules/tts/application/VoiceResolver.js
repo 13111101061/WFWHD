@@ -63,12 +63,62 @@ function extractTopLevelOptions(request = {}) {
 class VoiceResolver {
   /**
    * @param {Object} options
-   * @param {Object} options.voiceRegistry - VoiceRegistry 实例
+   * @param {Object} options.voiceCatalog - VoiceCatalog 实例（跨库聚合）
    * @param {Object} options.providerCatalog - ProviderCatalog 实例
    */
-  constructor({ voiceRegistry, providerCatalog }) {
-    this.registry = voiceRegistry;
+  constructor({ voiceCatalog, providerCatalog }) {
+    this.catalog = voiceCatalog;
     this.providerCatalog = providerCatalog;
+  }
+
+  normalizeRequest(request = {}) {
+    const topLevelOptions = extractTopLevelOptions(request);
+    const nestedOptions = request.options && typeof request.options === 'object'
+      ? request.options
+      : {};
+
+    const normalizedOptions = {
+      ...topLevelOptions,
+      ...nestedOptions
+    };
+
+    const voiceCode = extractField(request, 'voiceCode', 'voice_code') ||
+                      extractField(normalizedOptions, 'voiceCode', 'voice_code');
+
+    const systemId = extractField(request, 'systemId', 'system_id') ||
+                     extractField(normalizedOptions, 'systemId', 'system_id');
+
+    const voiceId = pickFirst(
+      extractField(request, 'voiceId', 'voice_id'),
+      request.voice,
+      extractField(normalizedOptions, 'voiceId', 'voice_id'),
+      normalizedOptions.voice
+    );
+
+    let service = request.service;
+    if (!service && voiceCode) {
+      const stored = this.catalog.getByVoiceCode(voiceCode);
+      if (stored?.identity?.provider && stored.identity.service) {
+        service = `${stored.identity.provider}_${stored.identity.service}`;
+      }
+    }
+    if (!service && systemId) {
+      const stored = this.catalog.get(systemId);
+      const provider = stored?.identity?.provider;
+      const serviceType = stored?.identity?.service;
+      if (provider && serviceType) {
+        service = `${provider}_${serviceType}`;
+      }
+    }
+
+    return {
+      text: request.text,
+      service: service || null,
+      voiceCode,
+      systemId,
+      voiceId,
+      options: normalizedOptions
+    };
   }
 
   /**
@@ -218,47 +268,38 @@ class VoiceResolver {
       throw error;
     }
 
-    // O(1) 查找：使用 voiceCodeIndex
-    const voiceIdByCode = this.registry.voiceCodeIndex.get(voiceCode);
-    if (!voiceIdByCode) {
+    const stored = this.catalog.getByVoiceCode(voiceCode);
+    if (!stored) {
       const error = new Error(`voiceCode not found: ${voiceCode}`);
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
 
-    const rawVoice = this.registry.get(voiceIdByCode);
-    if (!rawVoice) {
-      const error = new Error(`Voice not found in registry: ${voiceIdByCode}`);
-      error.code = 'VOICE_NOT_FOUND';
-      throw error;
-    }
+    const identity = stored.identity || {};
 
-    // 从实际音色数据构建 expectedServiceKey（不依赖 parse 的 serviceKey 推断）
-    const identity = rawVoice.identity || {};
     const expectedServiceKey = (identity.provider && identity.service)
       ? `${identity.provider}_${identity.service}` : null;
 
     return {
       voiceCode,
-      systemId: voiceIdByCode,
-      providerVoiceId: rawVoice.runtime?.voiceId,
-      runtime: rawVoice.runtime,
+      systemId: identity.id,
+      providerVoiceId: stored.runtime?.voiceId,
+      runtime: stored.runtime,
       expectedServiceKey
     };
   }
 
   _resolveBySystemId(systemId) {
-    const rawVoice = this.registry.get(systemId);
-    if (!rawVoice) {
+    const stored = this.catalog.get(systemId);
+    if (!stored) {
       const error = new Error(`System ID not found: ${systemId}`);
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
 
-    const identity = rawVoice.identity || {};
-    const runtime = rawVoice.runtime || {};
+    const identity = stored.identity || {};
+    const runtime = stored.runtime || {};
 
-    // voiceCode 优先从 identity.voiceCode 获取，回退到 compatMap（向后兼容旧数据）
     const voiceCode = identity.voiceCode || null;
 
     let expectedServiceKey = null;
@@ -276,17 +317,16 @@ class VoiceResolver {
   }
 
   _resolveByLegacyVoice(voiceId) {
-    const rawVoice = this.registry.get(voiceId);
-    if (!rawVoice) {
+    const stored = this.catalog.get(voiceId);
+    if (!stored) {
       const error = new Error(`Voice not found: ${voiceId}`);
       error.code = 'VOICE_NOT_FOUND';
       throw error;
     }
 
-    const identity = rawVoice.identity || {};
-    const runtime = rawVoice.runtime || {};
+    const identity = stored.identity || {};
+    const runtime = stored.runtime || {};
 
-    // voiceCode 优先从 identity.voiceCode 获取（数据已在 _buildIndex 中标准化）
     const voiceCode = identity.voiceCode || null;
 
     return {

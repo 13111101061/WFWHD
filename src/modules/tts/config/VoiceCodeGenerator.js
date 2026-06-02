@@ -73,18 +73,28 @@ function validateLuhn(code) {
 }
 
 const VoiceCodeGenerator = {
-  generate({ providerKey, voiceNumber }) {
+  /**
+   * @param {Object} params
+   * @param {string} params.providerKey
+   * @param {number} params.voiceNumber - 业务编号 (1-9999)
+   * @param {string} [params.namespace='official'] - 'official'|'user'，决定号段高位
+   */
+  generate({ providerKey, voiceNumber, namespace = 'official' }) {
     _ensureMappings();
     const providerCode = providerKeyToCode[providerKey];
     if (!providerCode) {
       throw new Error(`Unknown providerKey: ${providerKey}`);
     }
 
-    if (!Number.isInteger(voiceNumber) || voiceNumber < 1 || voiceNumber > 99999) {
-      throw new Error(`voiceNumber must be between 1 and 99999`);
+    if (!Number.isInteger(voiceNumber) || voiceNumber < 1 || voiceNumber > 9999) {
+      throw new Error(`voiceNumber must be between 1 and 9999`);
     }
 
-    const voicePart = String(voiceNumber).padStart(5, '0');
+    // 号段高位掩码：官方 0，用户 9
+    const nsPrefix = namespace === 'user' ? '9' : '0';
+    const numberPart = String(voiceNumber).padStart(4, '0');
+    const voicePart = `${nsPrefix}${numberPart}`;
+
     const dataPart = `${providerCode}${voicePart}${RESERVED}`;
     const checkDigit = calcLuhnCheckDigit(dataPart);
 
@@ -99,20 +109,25 @@ const VoiceCodeGenerator = {
     _ensureMappings();
 
     const providerCode = voiceCode.substring(0, 3);
-    const voiceNumber = voiceCode.substring(3, 8);
+    const nsDigit = voiceCode[3];
+    const voicePart5 = voiceCode.substring(3, 8);
     const reserved = voiceCode.substring(8, 14);
     const checkDigit = voiceCode[14];
 
     const providerInfo = providerCodeToInfo[providerCode];
 
-    // 注意：parse() 只从 providerCode 推导 providerKey。
-    // 对于多 service 的 provider（如 aliyun: cosyvoice + qwen_http），
-    // providerCode 无法唯一确定 serviceKey —— 务必通过 VoiceRegistry 查询权威归属。
+    // 号段解析：高位 9 = 用户，高位 0 = 官方（兼容旧 5 位无号段格式）
+    const namespace = nsDigit === '9' ? 'user' : 'official';
+    const voiceNumber = nsDigit === '9'
+      ? parseInt(voiceCode.substring(4, 8), 10)
+      : parseInt(voicePart5, 10);
+
     return {
       voiceCode,
       providerCode,
       providerKey: providerInfo?.providerKey || null,
-      voiceNumber: parseInt(voiceNumber, 10),
+      voiceNumber,
+      namespace,
       reserved,
       checkDigit,
       valid: true
@@ -123,13 +138,15 @@ const VoiceCodeGenerator = {
     return validateLuhn(voiceCode);
   },
 
-  buildDataPart({ providerKey, voiceNumber }) {
+  buildDataPart({ providerKey, voiceNumber, namespace = 'official' }) {
     _ensureMappings();
     const providerCode = providerKeyToCode[providerKey];
     if (!providerCode) {
       throw new Error(`Unknown providerKey: ${providerKey}`);
     }
-    const voicePart = String(voiceNumber).padStart(5, '0');
+    const nsPrefix = namespace === 'user' ? '9' : '0';
+    const numberPart = String(voiceNumber).padStart(4, '0');
+    const voicePart = `${nsPrefix}${numberPart}`;
     return `${providerCode}${voicePart}${RESERVED}`;
   },
 

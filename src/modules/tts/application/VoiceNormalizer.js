@@ -60,7 +60,8 @@ const VoiceNormalizer = {
       try {
         voiceCode = VoiceCodeGenerator.generate({
           providerKey: form.provider,
-          voiceNumber: options.voiceNumber
+          voiceNumber: options.voiceNumber,
+          namespace: options.namespace || 'official'
         });
       } catch (e) {
         console.warn(`[VoiceNormalizer] Failed to generate voiceCode: ${e.message}`);
@@ -238,13 +239,8 @@ const VoiceNormalizer = {
    * @param {number} voiceNumber - 音色编号
    * @returns {string|null} voiceCode 或 null
    */
-  generateVoiceCode(providerKey, voiceNumber) {
-    try {
-      return VoiceCodeGenerator.generate({ providerKey, voiceNumber });
-    } catch (e) {
-      console.warn(`[VoiceNormalizer] Failed to generate voiceCode: ${e.message}`);
-      return null;
-    }
+  generateVoiceCode(providerKey, voiceNumber, namespace = 'official') {
+    return VoiceCodeGenerator.generate({ providerKey, voiceNumber, namespace });
   },
 
   /**

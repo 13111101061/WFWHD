@@ -3,28 +3,41 @@
  *
  * 架构：
  * ┌─────────────────────────────────────────┐
- * │           VoiceRegistry                 │
+ * │           VoiceRegistry                  │
  * │  ┌─────────────┐  ┌─────────────┐       │
  * │  │ 内存索引     │  │ 持久化后端   │       │
  * │  │ Map<id,V>   │  │ Redis/File  │       │
  * │  └─────────────┘  └─────────────┘       │
  * │         ↓                ↓              │
- * │    查询API          持久化API            │
+ * │    查询API          持久化API           │
+ * │                                           │
+ * │  EventEmitter: voice:added/updated/      │
+ * │  removed/reloaded/saved                  │
+ * │  DebouncedSave: 500ms 合并写入            │
+ * │  AtomicWrite: tmp + rename 防损坏         │
+ * │  HotReload: chokidar 监听文件变化        │
  * └─────────────────────────────────────────┘
  */
 
 const fs = require('fs').promises;
+const fsc = require('fs');
 const path = require('path');
+const { EventEmitter } = require('events');
 const VoiceNormalizer = require('../application/VoiceNormalizer');
 
-class VoiceRegistry {
+class VoiceRegistry extends EventEmitter {
   /**
    * @param {Object} options
    * @param {string} [options.configPath] - 配置文件路径
+   * @param {string} [options.storagePath] - configPath 别名
    * @param {Object} [options.redis] - Redis配置 { host, port }
+   * @param {number} [options.saveDebounceMs=500] - 保存防抖间隔（ms）
+   * @param {boolean} [options.hotReload=false] - 是否启用文件监听热更新
+   * @param {boolean} [options.readOnly=false] - 只读模式：禁止 save/auto-save，仅用于官方预置库
    */
   constructor(options = {}) {
-    this.configPath = options.configPath || path.join(__dirname, '../../../../voices/dist/voices.json');
+    super();
+    this.configPath = options.storagePath || options.configPath || path.join(__dirname, '../../../../voices/dist/voices.json');
 
     // Redis配置
     this.redisConfig = options.redis || null;
@@ -47,6 +60,18 @@ class VoiceRegistry {
     // 状态
     this.isReady = false;
     this.lastUpdated = null;
+
+    // 读写模式
+    this.readOnly = options.readOnly === true;
+
+    // 防抖保存（只读模式不调度）
+    this._saveDebounceMs = this.readOnly ? 0 : (options.saveDebounceMs ?? 500);
+    this._saveTimer = null;
+    this._dirty = false;
+
+    // 文件监听
+    this._watcher = null;
+    this._hotReload = this.readOnly ? false : (options.hotReload === true || process.env.VOICE_HOT_RELOAD === 'true');
   }
 
   // ==================== 初始化 ====================
@@ -149,6 +174,9 @@ class VoiceRegistry {
     this._invalidateCompatMap();
     this.lastUpdated = new Date();
 
+    this.emit('voice:added', id, storedVoice);
+    this._scheduleSave();
+
     return storedVoice;
   }
 
@@ -231,6 +259,8 @@ class VoiceRegistry {
       throw new Error(`Voice not found: ${id}`);
     }
 
+    const previous = { ...existing };
+
     // 1. 先移除旧索引
     this._removeFromIndexes(existing);
 
@@ -270,6 +300,9 @@ class VoiceRegistry {
 
     this.lastUpdated = new Date();
 
+    this.emit('voice:updated', id, updated, previous);
+    this._scheduleSave();
+
     return updated;
   }
 
@@ -282,6 +315,9 @@ class VoiceRegistry {
     this._invalidateCompatMap();
     this.lastUpdated = new Date();
 
+    this.emit('voice:removed', id);
+    this._scheduleSave();
+
     return true;
   }
 
@@ -290,23 +326,53 @@ class VoiceRegistry {
     this.providerIndex.clear();
     this.serviceIndex.clear();
     this.voiceCodeIndex.clear();
+    this.categoryIndex.clear();
     this._invalidateCompatMap();
     this.lastUpdated = new Date();
+
+    this.emit('voices:cleared');
+    this._scheduleSave();
   }
 
   // ==================== 持久化 ====================
 
   /**
-   * 保存（自动选择Redis或文件）
+   * 计划保存（防抖）：所有变更操作自动调度，不频繁写盘
+   */
+  _scheduleSave() {
+    if (this.readOnly) return;
+    this._dirty = true;
+    if (this._saveTimer) clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => this._doSave(), this._saveDebounceMs);
+  }
+
+  /**
+   * 立即保存（跳过防抖）
    */
   async save() {
+    if (this.readOnly) return;
+    if (this._saveTimer) clearTimeout(this._saveTimer);
+    await this._doSave();
+  }
+
+  /**
+   * 强制落盘并等待完成
+   */
+  async flush() {
+    return this.save();
+  }
+
+  async _doSave() {
+    if (this.readOnly || !this._dirty) return;
+    this._dirty = false;
+
     if (this.redisClient) {
       await this._saveToRedis();
       console.log(`[VoiceRegistry] Saved ${this.voices.size} voices to Redis`);
     } else {
-      await this._saveToFile();
-      console.log(`[VoiceRegistry] Saved ${this.voices.size} voices to file`);
+      await this._saveToFileAtomic();
     }
+    this.emit('voices:saved', this.voices.size);
   }
 
   /**
@@ -319,7 +385,87 @@ class VoiceRegistry {
       await this._loadFromFile();
     }
     this.lastUpdated = new Date();
+    this._dirty = false;
+    this.emit('voices:reloaded', this.voices.size);
     console.log(`[VoiceRegistry] Reloaded ${this.voices.size} voices`);
+  }
+
+  // ==================== 热重载（文件监听） ====================
+
+  /**
+   * 启用文件监听热更新
+   */
+  enableHotReload() {
+    if (this.redisClient) return; // Redis 模式不需要文件监听
+    if (this._watcher) return;
+
+    try {
+      const chokidar = require('chokidar');
+      const watchPath = path.resolve(this.configPath);
+
+      this._watcher = chokidar.watch(watchPath, {
+        ignoreInitial: true,
+        awaitWriteFinish: { stabilityThreshold: 300, pollInterval: 100 }
+      });
+
+      this._watcher.on('change', async (filePath) => {
+        console.log(`[VoiceRegistry] File changed, auto-reloading: ${filePath}`);
+        try {
+          await this.reload();
+        } catch (e) {
+          console.error('[VoiceRegistry] Hot reload failed:', e.message);
+        }
+      });
+
+      this._watcher.on('error', (err) => {
+        console.error('[VoiceRegistry] File watcher error:', err.message);
+      });
+
+      console.log(`[VoiceRegistry] Hot reload enabled: ${watchPath}`);
+    } catch (e) {
+      console.warn('[VoiceRegistry] chokidar not available, hot reload disabled:', e.message);
+    }
+  }
+
+  disableHotReload() {
+    if (this._watcher) {
+      this._watcher.close();
+      this._watcher = null;
+      console.log('[VoiceRegistry] Hot reload disabled');
+    }
+  }
+
+  /**
+   * 获取同步状态
+   */
+  getSyncStatus() {
+    const status = {
+      inMemory: {
+        count: this.voices.size,
+        lastUpdated: this.lastUpdated?.toISOString() || null,
+        dirty: this._dirty,
+        savePending: !!this._saveTimer
+      },
+      hotReload: !!this._watcher
+    };
+
+    if (!this.redisClient) {
+      try {
+        const fileStat = fsc.statSync(this.configPath);
+        status.file = {
+          path: this.configPath,
+          mtime: fileStat.mtime.toISOString(),
+          size: fileStat.size
+        };
+        status.file.inSync = this.lastUpdated && !this._dirty
+          ? fileStat.mtime <= this.lastUpdated
+          : false;
+      } catch (e) {
+        status.file = { error: e.message };
+      }
+    }
+
+    return status;
   }
 
   // ==================== 统计 ====================
@@ -419,14 +565,16 @@ class VoiceRegistry {
     let maxNumber = 0;
     for (const [voiceCode] of this.voiceCodeIndex) {
       if (voiceCode.substring(0, 3) === providerCode) {
-        const num = parseInt(voiceCode.substring(3, 8), 10);
-        if (num > maxNumber) maxNumber = num;
+        const parsed = VoiceCodeGenerator.parse(voiceCode);
+        if (parsed && parsed.voiceNumber > maxNumber) {
+          maxNumber = parsed.voiceNumber;
+        }
       }
     }
 
     const next = maxNumber + 1;
-    if (next > 99999) {
-      throw new Error(`[VoiceRegistry] provider "${providerKey}" voiceNumber 溢出（超过 99999）`);
+    if (next > 9999) {
+      throw new Error(`[VoiceRegistry] provider "${providerKey}" voiceNumber 溢出（超过 9999）`);
     }
     return next;
   }
@@ -694,8 +842,10 @@ class VoiceRegistry {
     }
   }
 
-  async _saveToFile() {
-    // 构建 providers 元数据
+  /**
+   * 原子写入：先写 tmp，再 rename（防崩溃损坏）
+   */
+  async _saveToFileAtomic() {
     const enabledProviders = [];
     const disabledProviders = [];
 
@@ -712,12 +862,10 @@ class VoiceRegistry {
         version: '3.0',
         savedAt: new Date().toISOString(),
         totalVoices: this.voices.size,
-        // 保留 providers 状态
         providers: {
           enabled: enabledProviders,
           disabled: disabledProviders
         },
-        // 保留 sources 信息（基于当前索引重建）
         sources: Array.from(this.providerIndex.keys()).map(provider => ({
           provider,
           count: this.providerIndex.get(provider).size,
@@ -727,7 +875,15 @@ class VoiceRegistry {
       voices: Array.from(this.voices.values())
     };
 
-    await fs.writeFile(this.configPath, JSON.stringify(data, null, 2));
+    const tmpPath = this.configPath + '.tmp';
+    await fs.writeFile(tmpPath, JSON.stringify(data, null, 2), 'utf8');
+    await fs.rename(tmpPath, this.configPath);
+    console.log(`[VoiceRegistry] Saved ${this.voices.size} voices to file`);
+  }
+
+  async _saveToFile() {
+    // Old path — delegates to atomic
+    return this._saveToFileAtomic();
   }
 
   // ==================== 关闭 ====================
