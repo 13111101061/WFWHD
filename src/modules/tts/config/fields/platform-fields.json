@@ -41,6 +41,25 @@
       }
     },
 
+    "instruction": {
+      "key": "instruction",
+      "displayName": "声音指令",
+      "description": "通过自然语言描述期望的声音风格特征",
+      "type": "string",
+      "category": "core",
+      "required": false,
+      "ui": {
+        "group": "basic",
+        "order": 1,
+        "highlight": true,
+        "inputType": "textarea",
+        "placeholder": "例如：一个温柔的女声，语速偏慢，带点知性的感觉"
+      },
+      "validation": {
+        "maxLength": 2000
+      }
+    },
+
     "speed": {
       "key": "speed",
       "displayName": "语速",

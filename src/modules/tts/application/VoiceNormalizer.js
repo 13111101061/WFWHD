@@ -74,7 +74,8 @@ const VoiceNormalizer = {
         voiceCode,
         sourceId: form.sourceId,
         provider: form.provider,
-        service: form.service
+        service: form.service,
+        sourceType: form.sourceType || 'clone'
       },
       profile: {
         displayName: form.displayName,
@@ -87,7 +88,7 @@ const VoiceNormalizer = {
         preview: form.preview || null
       },
       runtime: {
-        voiceId: form.providerVoiceId,
+        voiceId: form.providerVoiceId || null,
         model: form.model || null,
         providerOptions: form.providerOptions || {}
       },

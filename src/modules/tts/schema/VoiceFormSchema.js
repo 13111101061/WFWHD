@@ -86,11 +86,18 @@ const VoiceFormSchema = {
       }
     }
 
-    // 2. 检查必填字段
+    // 2. 检查必填字段（instruction 来源音色不要求 providerVoiceId）
+    const isInstruction = form.sourceType === 'instruction';
     for (const field of this.required) {
+      if (isInstruction && field === 'providerVoiceId') continue;
       if (form[field] === undefined || form[field] === null || form[field] === '') {
         errors.push(`缺少必填字段: ${field}`);
       }
+    }
+
+    // instruction 来源必须提供 providerOptions.instruction
+    if (isInstruction && !form.providerOptions?.instruction) {
+      errors.push('instruction 来源音色必须提供 providerOptions.instruction');
     }
 
     // 3. 校验字段格式

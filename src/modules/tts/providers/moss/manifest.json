@@ -130,5 +130,25 @@
       "successThreshold": 2,
       "timeout": 60000
     }
+  },
+  "supportsVoiceCloning": true,
+  "voiceCloningConfig": {
+    "maxAudioSizeMb": 100,
+    "supportedFormats": ["audio/wav", "audio/mpeg", "audio/x-m4a", "audio/flac"],
+    "minDurationSec": 3,
+    "maxDurationSec": 300,
+    "supportsAsyncMode": true,
+    "testPhrases": [
+      "欢迎使用 Moss 声音克隆引擎，这是我的定制音色测试。",
+      "Hello, this is a voice cloning test using the Moss engine."
+    ]
+  },
+  "voiceGenerationConfig": {
+    "model": "moss-voice-generator",
+    "supportedFormats": ["wav"],
+    "testPhrases": [
+      "这是一个指令生成音色的预览测试文本。",
+      "This is a preview test for instruction-generated voice."
+    ]
   }
 }

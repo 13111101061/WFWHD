@@ -195,6 +195,7 @@ class CompiledCapability {
       const value = params[fieldKey];
 
       if (field.status === SupportStatus.LOCKED) continue;
+      if (field.status === SupportStatus.UNSUPPORTED) continue;
 
       if (field.required && (value === undefined || value === null || value === '')) {
         errors.push(`${field.displayName} 是必填字段`);

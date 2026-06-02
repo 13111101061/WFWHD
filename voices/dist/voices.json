@@ -1,40 +1,8 @@
 {
   "_meta": {
     "version": "3.0",
-    "generatedAt": "2026-05-29T17:58:07.492Z",
-    "totalVoices": 58,
-    "sources": [
-      {
-        "file": "minimax.yaml",
-        "count": 0,
-        "provider": "minimax",
-        "enabled": false
-      },
-      {
-        "file": "moss.yaml",
-        "count": 9,
-        "provider": "moss",
-        "enabled": true
-      },
-      {
-        "file": "qwen.yaml",
-        "count": 49,
-        "provider": "aliyun",
-        "enabled": true
-      },
-      {
-        "file": "tencent.yaml",
-        "count": 0,
-        "provider": "tencent",
-        "enabled": false
-      },
-      {
-        "file": "volcengine.yaml",
-        "count": 0,
-        "provider": "volcengine",
-        "enabled": false
-      }
-    ],
+    "savedAt": "2026-06-02T13:29:17.141Z",
+    "totalVoices": 60,
     "providers": {
       "enabled": [
         "moss",
@@ -46,8 +14,18 @@
         "volcengine"
       ]
     },
-    "buildTime": 23,
-    "format": "StoredVoice"
+    "sources": [
+      {
+        "provider": "moss",
+        "count": 11,
+        "enabled": true
+      },
+      {
+        "provider": "aliyun",
+        "count": 49,
+        "enabled": true
+      }
+    ]
   },
   "voices": [
     {
@@ -3617,6 +3595,90 @@
         "createdAt": "2026-05-29T17:58:07.490Z",
         "updatedAt": "2026-05-29T17:58:07.490Z",
         "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "moss-tts-链路测试音色",
+        "voiceCode": "001000100000006",
+        "sourceId": "链路测试音色",
+        "provider": "moss",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "链路测试音色",
+        "alias": "链路测试音色",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "",
+        "tags": [
+          "清晰",
+          "温柔",
+          "少女",
+          "陪伴",
+          "治愈",
+          "自然"
+        ],
+        "status": "inactive",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "9badbb38",
+        "model": "moss-tts",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-02T10:47:55.078Z",
+        "updatedAt": "2026-06-02T10:47:55.078Z",
+        "dataSource": "manual",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "moss-voicegen-温和女声预览_mpwoc09f",
+        "voiceCode": "001000110000005",
+        "sourceId": "温和女声预览_mpwoc09f",
+        "provider": "moss",
+        "service": "voicegen",
+        "sourceType": "instruction"
+      },
+      "profile": {
+        "displayName": "温和女声预览",
+        "alias": "温和女声预览",
+        "gender": "female",
+        "languages": [
+          "中文"
+        ],
+        "description": "",
+        "tags": [
+          "柔和",
+          "温柔",
+          "女声",
+          "陪伴",
+          "治愈",
+          "自然"
+        ],
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": null,
+        "model": "moss-voice-generator",
+        "providerOptions": {
+          "instruction": "一个温柔的女声，语速偏慢，带点磁性",
+          "temperature": 1.5,
+          "topP": 0.6,
+          "topK": 50
+        }
+      },
+      "meta": {
+        "createdAt": "2026-06-02T13:29:17.140Z",
+        "updatedAt": "2026-06-02T13:29:17.140Z",
+        "dataSource": "manual",
         "version": "v1"
       }
     }

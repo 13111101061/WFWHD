@@ -1,9 +1,17 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const os = require('os');
 const { VoiceWriteService } = require('../application/VoiceWriteService');
 const { VoiceAdminQueryService } = require('../application/VoiceAdminQueryService');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
-function createVoiceManageRoutes(voiceRegistry) {
+const upload = multer({
+  dest: path.join(os.tmpdir(), 'voice-uploads'),
+  limits: { fileSize: 20 * 1024 * 1024 } // 20MB, 各 provider 的 voiceCloningConfig 再做二次校验
+});
+
+function createVoiceManageRoutes(voiceRegistry, voiceWriteService, voiceOnboardingService) {
   const router = express.Router();
 
   const adminQuery = new VoiceAdminQueryService({ voiceRegistry });
@@ -11,7 +19,7 @@ function createVoiceManageRoutes(voiceRegistry) {
   let _voiceWriteService;
   function getVoiceWriteService() {
     if (!_voiceWriteService) {
-      _voiceWriteService = new VoiceWriteService({ registry: voiceRegistry });
+      _voiceWriteService = voiceWriteService || new VoiceWriteService({ registry: voiceRegistry });
     }
     return _voiceWriteService;
   }
@@ -224,6 +232,96 @@ function createVoiceManageRoutes(voiceRegistry) {
       });
     }
   });
+
+  // ==================== 音色入驻（上传 + 克隆 + 注册 + 测试音频） ====================
+
+  if (voiceOnboardingService) {
+    router.post('/register',
+      upload.single('audioFile'),
+      async (req, res) => {
+        const result = await voiceOnboardingService.registerVoice(req);
+
+        if (!result.success) {
+          const statusCode = result.error === 'Form validation failed' ? 400
+            : result.error === 'Provider not found' ? 404
+            : 500;
+          return res.status(statusCode).json(result);
+        }
+
+        if (result.data?.asyncMode) {
+          return res.status(202).json(result);
+        }
+
+        res.status(201).json(result);
+      }
+    );
+
+    /**
+     * 查询音色克隆进度（轮询端点）
+     * GET /api/voices/register/:voiceId/status?provider=moss
+     */
+    router.get('/register/:voiceId/status', async (req, res) => {
+      const providerKey = req.query.provider || 'moss';
+
+      try {
+        const status = await voiceOnboardingService.checkCloneStatus(
+          providerKey,
+          req.params.voiceId
+        );
+
+        res.json({
+          success: true,
+          data: status,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    });
+
+    // ==================== 指令生成音色 ====================
+
+    /**
+     * 生成指令预览音频（只生成，不入库）
+     * POST /api/voices/instruction/preview
+     */
+    router.post('/instruction/preview', async (req, res) => {
+      try {
+        const result = await voiceOnboardingService.generateInstructionPreview(req.body);
+        if (!result.success) {
+          return res.status(400).json(result);
+        }
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    });
+
+    /**
+     * 将指令音色正式注册入库
+     * POST /api/voices/instruction/register
+     */
+    router.post('/instruction/register', async (req, res) => {
+      try {
+        const result = await voiceOnboardingService.registerInstructionVoice(req.body);
+        if (!result.success) {
+          return res.status(400).json(result);
+        }
+        res.status(201).json(result);
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          error: error.message
+        });
+      }
+    });
+  }
 
   return router;
 }

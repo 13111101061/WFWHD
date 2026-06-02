@@ -114,9 +114,9 @@ const snpanRoutes = require('../../src/modules/snpan/routes/snpanRoutes');
 const adminRoutes = require('../../src/modules/admin/routes/adminRoutes');
 
 // Mount all routes in the correct order after ServiceContainer is ready
-function mountAllRoutes(voiceRegistry) {
+function mountAllRoutes(voiceRegistry, voiceWriteService, voiceOnboardingService) {
   app.use('/api/tts', ttsRoutes);
-  app.use('/api/voices', createVoiceManageRoutes(voiceRegistry));
+  app.use('/api/voices', createVoiceManageRoutes(voiceRegistry, voiceWriteService, voiceOnboardingService));
   app.use('/api/credentials', credentialsRoutes);
   app.use('/api/audio', audioRoutes);
   app.use('/api/monitoring', monitoringRoutes);
@@ -235,7 +235,9 @@ async function start() {
   console.log('✅ ServiceContainer initialized');
 
   const voiceRegistry = serviceContainer.get('voiceRegistry');
-  mountAllRoutes(voiceRegistry);
+  const voiceWriteService = serviceContainer.get('voiceWriteService');
+  const voiceOnboardingService = serviceContainer.get('voiceOnboardingService');
+  mountAllRoutes(voiceRegistry, voiceWriteService, voiceOnboardingService);
 
   // 404 handler — must be after ALL business routes
   app.use((req, res) => {

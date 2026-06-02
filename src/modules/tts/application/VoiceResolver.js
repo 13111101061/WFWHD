@@ -186,6 +186,19 @@ class VoiceResolver {
     const defaultVoiceId = CapabilitySchema.getDefaultVoiceId(service);
     if (defaultVoiceId) return this._resolveBySystemId(defaultVoiceId);
 
+    // 对于 voice 参数为 unsupported 的服务（如 moss_voicegen），不需要音色
+    const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+    const svcConfig = ProviderManifest.getServiceConfig(service);
+    if (svcConfig?.parameters?.voice?.status === 'unsupported') {
+      return {
+        voiceCode: null,
+        systemId: null,
+        providerVoiceId: null,
+        runtime: null,
+        expectedServiceKey: service
+      };
+    }
+
     const error = new Error(`No voice specified and no default available for: ${service}`);
     error.code = 'VOICE_NOT_FOUND';
     throw error;

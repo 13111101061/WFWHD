@@ -232,6 +232,9 @@ function loadAllManifests() {
           const serviceConfig = {
             providerKey,
             executionPolicy: data.executionPolicy,
+            supportsVoiceCloning: !!data.supportsVoiceCloning,
+            voiceCloningConfig: data.voiceCloningConfig || null,
+            voiceGenerationConfig: data.voiceGenerationConfig || null,
             ...svc,
             api: mergedApi || svc.api,
             _canonicalKey: serviceKey

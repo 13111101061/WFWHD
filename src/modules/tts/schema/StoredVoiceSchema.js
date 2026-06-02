@@ -21,7 +21,7 @@ const VALID_DATA_SOURCES = ['manual', 'import', 'migration', 'api'];
 const IdentitySchema = {
   // voiceCode 在字段层面对 migration/import 数据可选；active voice 必须有 voiceCode（见顶层校验）
   required: ['id', 'sourceId', 'provider', 'service'],
-  optional: ['voiceCode'],
+  optional: ['voiceCode', 'sourceType'],
   validate(identity) {
     const errors = [];
     if (!identity) {
@@ -35,6 +35,10 @@ const IdentitySchema = {
     // ID 格式校验: provider-service-sourceId
     if (identity.id && !identity.id.includes('-')) {
       errors.push('identity.id 格式不正确，应为 provider-service-sourceId');
+    }
+    // sourceType 合法值
+    if (identity.sourceType && !['clone', 'preset', 'instruction'].includes(identity.sourceType)) {
+      errors.push(`identity.sourceType 值无效: ${identity.sourceType} (应为 clone|preset|instruction)`);
     }
     return errors;
   }
@@ -67,19 +71,34 @@ const ProfileSchema = {
 
 const RuntimeSchema = {
   required: ['voiceId'],
-  validate(runtime) {
+  validate(runtime, identity = null) {
     const errors = [];
     if (!runtime) {
       return ['runtime 不能为空'];
     }
-    for (const field of this.required) {
-      if (!runtime[field]) {
-        errors.push(`runtime 缺少必填字段: ${field}`);
+
+    const isInstruction = identity?.sourceType === 'instruction';
+
+    if (isInstruction) {
+      // 指令生成音色：voiceId 允许为 null，但必须提供 instruction
+      if (!runtime.providerOptions?.instruction || typeof runtime.providerOptions.instruction !== 'string') {
+        errors.push('runtime.providerOptions.instruction 缺失：instruction 来源音色必须提供 instruction 文本');
+      }
+      if (!runtime.providerOptions || typeof runtime.providerOptions !== 'object') {
+        errors.push('runtime.providerOptions 必须为对象');
+      }
+    } else {
+      // 普通音色：voiceId 必填
+      for (const field of this.required) {
+        if (!runtime[field]) {
+          errors.push(`runtime 缺少必填字段: ${field}`);
+        }
+      }
+      if (runtime.providerOptions && typeof runtime.providerOptions !== 'object') {
+        errors.push('runtime.providerOptions 必须为对象');
       }
     }
-    if (runtime.providerOptions && typeof runtime.providerOptions !== 'object') {
-      errors.push('runtime.providerOptions 必须为对象');
-    }
+
     return errors;
   }
 };
@@ -144,7 +163,7 @@ const StoredVoiceSchema = {
     }
 
     if (stored.runtime) {
-      errors.push(...RuntimeSchema.validate(stored.runtime).map(e => `runtime: ${e}`));
+      errors.push(...RuntimeSchema.validate(stored.runtime, stored.identity).map(e => `runtime: ${e}`));
     }
 
     if (stored.meta) {

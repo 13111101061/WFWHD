@@ -672,6 +672,23 @@ file_4:modules/tts/config/VoiceCodeConfig.json
   format:{"XXX":{"providerKey":"<providerKey>","serviceKey":"<serviceKey>","displayName":"<displayName>"}}
   note:XXX is 3-digit numeric string matching manifest.json voiceCode.providerCode
 
+file_5:modules/tts/config/fields/platform-fields.json (FORCE rule)
+  RULE: 任何在 manifest.parameters 中新增的字段，如果不在 platform-fields.json 的已有字段列表中，
+        必须先在此注册，否则 CapabilityCompiler 会将其静默忽略（不编译，不映射，不校验）。
+  action: add field entry under "fields"
+  format:
+    "<fieldKey>": {
+      "key": "<fieldKey>",
+      "displayName": "中文名",
+      "description": "字段语义说明",
+      "type": "string|number|enum|object",
+      "category": "core|audio|output|expression|advanced",
+      "required": false,
+      "ui": { "group": "basic|audio|output|expression|advanced", "order": N, "inputType": "textarea|slider|select|number" }
+    }
+  example: 新增 instruction 字段 → register in platform-fields.json first, then add to manifest parameters
+  consequence_if_skip: 字段不会被 CompiledCapability 编译，mapToProvider() 不会输出，前端不可见，且无编译期警告
+
 ### MustHave:2_dataSources
 
 data_1:VoiceRegistry voice records

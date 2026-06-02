@@ -155,5 +155,16 @@
       "maxRequests": 60,
       "windowMs": 60000
     }
+  },
+  "supportsVoiceCloning": true,
+  "voiceCloningConfig": {
+    "maxAudioSizeMb": 20,
+    "supportedFormats": ["audio/wav", "audio/mpeg"],
+    "minDurationSec": 5,
+    "maxDurationSec": 120,
+    "supportsAsyncMode": true,
+    "testPhrases": [
+      "阿里云音色定制完成，期待为您带来优质的高保真语音服务。"
+    ]
   }
 }

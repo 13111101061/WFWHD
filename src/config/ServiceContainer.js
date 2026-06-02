@@ -172,7 +172,34 @@ class ServiceContainer {
     });
     this._services.set('synthesisService', synthesisService);
 
-    // 16. HTTP 适配器
+    // 16. VoiceWriteService（音色写入，供 VoiceOnboarding + voiceManageRoutes 共用）
+    const { VoiceWriteService } = require('../modules/tts/application/VoiceWriteService');
+    const voiceWriteService = new VoiceWriteService({ registry: voiceRegistry });
+    this._services.set('voiceWriteService', voiceWriteService);
+
+    // 17. VoiceRegistrationRegistry（音色克隆适配器注册表）
+    const VoiceRegistrationRegistry = require('../modules/tts/voice-onboarding/VoiceRegistrationRegistry');
+    const MossVoiceRegistrationAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceRegistrationAdapter');
+    const voiceRegRegistry = new VoiceRegistrationRegistry();
+    voiceRegRegistry.register('moss', new MossVoiceRegistrationAdapter());
+    this._services.set('voiceRegistrationRegistry', voiceRegRegistry);
+
+    // 18. VoiceOnboardingService（音色入驻编排）
+    const VoiceOnboardingService = require('../modules/tts/voice-onboarding/VoiceOnboardingService');
+    const MossVoiceGenAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceGenAdapter');
+    const voiceGenAdapter = new MossVoiceGenAdapter({
+      audioStorage: require('../shared/utils/audioStorage').audioStorageManager
+    });
+    const voiceOnboardingService = new VoiceOnboardingService({
+      voiceWriteService,
+      voiceRegistrationRegistry: voiceRegRegistry,
+      ttsSynthesisService: synthesisService,
+      credentials,
+      voiceGenAdapter
+    });
+    this._services.set('voiceOnboardingService', voiceOnboardingService);
+
+    // 19. HTTP 适配器
     let clearAllCacheFn = null;
     try {
       const audioCache = require('../shared/utils/audioCache');
