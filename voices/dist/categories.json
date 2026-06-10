@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "generatedAt": "2026-05-29T17:58:07.494Z",
-    "totalVoices": 58,
+    "generatedAt": "2026-06-03T14:19:29.504Z",
+    "totalVoices": 67,
     "categoryNames": [
       "其他",
       "地域",
@@ -21,6 +21,17 @@
     ]
   },
   "byProvider": {
+    "mimo": [
+      "mimo-tts-mimo_default",
+      "mimo-tts-冰糖",
+      "mimo-tts-茉莉",
+      "mimo-tts-苏打",
+      "mimo-tts-白桦",
+      "mimo-tts-Mia",
+      "mimo-tts-Chloe",
+      "mimo-tts-Milo",
+      "mimo-tts-Dean"
+    ],
     "moss": [
       "moss-tts-beijingnan",
       "moss-tts-taiwannv",
@@ -86,6 +97,11 @@
   },
   "byGender": {
     "female": [
+      "mimo-tts-mimo_default",
+      "mimo-tts-冰糖",
+      "mimo-tts-茉莉",
+      "mimo-tts-Mia",
+      "mimo-tts-Chloe",
       "moss-tts-taiwannv",
       "moss-tts-ashui",
       "moss-tts-zhouzhou",
@@ -116,6 +132,10 @@
       "aliyun-qwen_http-kiki"
     ],
     "male": [
+      "mimo-tts-苏打",
+      "mimo-tts-白桦",
+      "mimo-tts-Milo",
+      "mimo-tts-Dean",
       "moss-tts-beijingnan",
       "moss-tts-chengshu",
       "moss-tts-liangzi",
@@ -149,6 +169,20 @@
     ]
   },
   "byLanguage": {
+    "zh-CN": [
+      "mimo-tts-mimo_default",
+      "mimo-tts-冰糖",
+      "mimo-tts-茉莉",
+      "mimo-tts-苏打",
+      "mimo-tts-白桦"
+    ],
+    "en": [
+      "mimo-tts-mimo_default",
+      "mimo-tts-Mia",
+      "mimo-tts-Chloe",
+      "mimo-tts-Milo",
+      "mimo-tts-Dean"
+    ],
     "中文": [
       "moss-tts-beijingnan",
       "moss-tts-taiwannv",
@@ -227,28 +261,84 @@
     ]
   },
   "byTag": {
-    "清晰": [
-      "moss-tts-beijingnan",
-      "moss-tts-chengshu",
-      "moss-tts-liangzi",
-      "aliyun-qwen_http-neil",
-      "aliyun-qwen_http-lenn",
-      "aliyun-qwen_http-li"
+    "通用": [
+      "mimo-tts-mimo_default"
     ],
-    "沉稳": [
-      "moss-tts-beijingnan",
-      "moss-tts-zhouzhou",
-      "moss-tts-chengshu",
-      "moss-tts-liangzi",
-      "aliyun-qwen_http-kai",
-      "aliyun-qwen_http-eldric-sage",
-      "aliyun-qwen_http-neil",
-      "aliyun-qwen_http-arthur",
-      "aliyun-qwen_http-andre",
-      "aliyun-qwen_http-li",
-      "aliyun-qwen_http-marcus"
+    "默认": [
+      "mimo-tts-mimo_default"
+    ],
+    "中性": [
+      "mimo-tts-mimo_default"
+    ],
+    "甜美": [
+      "mimo-tts-冰糖",
+      "aliyun-qwen_http-nini",
+      "aliyun-qwen_http-kiki"
+    ],
+    "清脆": [
+      "mimo-tts-冰糖",
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-kiki"
+    ],
+    "年轻": [
+      "mimo-tts-冰糖"
+    ],
+    "活泼": [
+      "mimo-tts-冰糖",
+      "moss-tts-ziqi",
+      "aliyun-qwen_http-chelsie",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-sunny",
+      "aliyun-qwen_http-momo",
+      "aliyun-qwen_http-bella",
+      "aliyun-qwen_http-mochi",
+      "aliyun-qwen_http-bunny",
+      "aliyun-qwen_http-pip",
+      "aliyun-qwen_http-stella",
+      "aliyun-qwen_http-ono-anna"
+    ],
+    "温柔": [
+      "mimo-tts-茉莉",
+      "moss-tts-taiwannv",
+      "moss-tts-aning",
+      "aliyun-qwen_http-cherry",
+      "aliyun-qwen_http-serena",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-mia",
+      "aliyun-qwen_http-seren",
+      "aliyun-qwen_http-sohee",
+      "aliyun-qwen_http-emilien"
+    ],
+    "知性": [
+      "mimo-tts-茉莉",
+      "aliyun-qwen_http-jada",
+      "aliyun-qwen_http-maia",
+      "aliyun-qwen_http-jennifer",
+      "aliyun-qwen_http-elias",
+      "aliyun-qwen_http-sonrisa"
+    ],
+    "女声": [
+      "mimo-tts-茉莉"
+    ],
+    "成熟": [
+      "mimo-tts-茉莉",
+      "aliyun-qwen_http-maia"
+    ],
+    "清亮": [
+      "mimo-tts-苏打"
+    ],
+    "阳光": [
+      "mimo-tts-苏打",
+      "moss-tts-xiaoman",
+      "aliyun-qwen_http-ethan",
+      "aliyun-qwen_http-bodega"
+    ],
+    "男声": [
+      "mimo-tts-苏打",
+      "mimo-tts-白桦"
     ],
     "青年": [
+      "mimo-tts-苏打",
       "moss-tts-beijingnan",
       "moss-tts-ashui",
       "moss-tts-liangzi",
@@ -262,6 +352,72 @@
       "aliyun-qwen_http-roy",
       "aliyun-qwen_http-eric",
       "aliyun-qwen_http-rocky"
+    ],
+    "沉稳": [
+      "mimo-tts-白桦",
+      "moss-tts-beijingnan",
+      "moss-tts-zhouzhou",
+      "moss-tts-chengshu",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-kai",
+      "aliyun-qwen_http-eldric-sage",
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-arthur",
+      "aliyun-qwen_http-andre",
+      "aliyun-qwen_http-li",
+      "aliyun-qwen_http-marcus"
+    ],
+    "厚重": [
+      "mimo-tts-白桦"
+    ],
+    "中年": [
+      "mimo-tts-白桦"
+    ],
+    "warm": [
+      "mimo-tts-Mia"
+    ],
+    "natural": [
+      "mimo-tts-Mia"
+    ],
+    "female": [
+      "mimo-tts-Mia",
+      "mimo-tts-Chloe"
+    ],
+    "English": [
+      "mimo-tts-Mia",
+      "mimo-tts-Chloe",
+      "mimo-tts-Milo",
+      "mimo-tts-Dean"
+    ],
+    "bright": [
+      "mimo-tts-Chloe"
+    ],
+    "energetic": [
+      "mimo-tts-Chloe"
+    ],
+    "deep": [
+      "mimo-tts-Milo"
+    ],
+    "calm": [
+      "mimo-tts-Milo"
+    ],
+    "male": [
+      "mimo-tts-Milo",
+      "mimo-tts-Dean"
+    ],
+    "confident": [
+      "mimo-tts-Dean"
+    ],
+    "clear": [
+      "mimo-tts-Dean"
+    ],
+    "清晰": [
+      "moss-tts-beijingnan",
+      "moss-tts-chengshu",
+      "moss-tts-liangzi",
+      "aliyun-qwen_http-neil",
+      "aliyun-qwen_http-lenn",
+      "aliyun-qwen_http-li"
     ],
     "播客": [
       "moss-tts-beijingnan",
@@ -284,17 +440,6 @@
       "moss-tts-aning",
       "aliyun-qwen_http-seren",
       "aliyun-qwen_http-sohee"
-    ],
-    "温柔": [
-      "moss-tts-taiwannv",
-      "moss-tts-aning",
-      "aliyun-qwen_http-cherry",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-mia",
-      "aliyun-qwen_http-seren",
-      "aliyun-qwen_http-sohee",
-      "aliyun-qwen_http-emilien"
     ],
     "少女": [
       "moss-tts-taiwannv",
@@ -386,19 +531,6 @@
       "aliyun-qwen_http-roy",
       "aliyun-qwen_http-peter"
     ],
-    "活泼": [
-      "moss-tts-ziqi",
-      "aliyun-qwen_http-chelsie",
-      "aliyun-qwen_http-serena",
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-momo",
-      "aliyun-qwen_http-bella",
-      "aliyun-qwen_http-mochi",
-      "aliyun-qwen_http-bunny",
-      "aliyun-qwen_http-pip",
-      "aliyun-qwen_http-stella",
-      "aliyun-qwen_http-ono-anna"
-    ],
     "日常": [
       "moss-tts-ziqi",
       "moss-tts-xiaoman",
@@ -422,11 +554,6 @@
     ],
     "倔强": [
       "moss-tts-ziqi"
-    ],
-    "阳光": [
-      "moss-tts-xiaoman",
-      "aliyun-qwen_http-ethan",
-      "aliyun-qwen_http-bodega"
     ],
     "朝气": [
       "moss-tts-xiaoman",
@@ -509,22 +636,11 @@
     "利落": [
       "aliyun-qwen_http-dylan"
     ],
-    "知性": [
-      "aliyun-qwen_http-jada",
-      "aliyun-qwen_http-maia",
-      "aliyun-qwen_http-jennifer",
-      "aliyun-qwen_http-elias",
-      "aliyun-qwen_http-sonrisa"
-    ],
     "干练": [
       "aliyun-qwen_http-jada"
     ],
     "阿姐": [
       "aliyun-qwen_http-jada"
-    ],
-    "清脆": [
-      "aliyun-qwen_http-sunny",
-      "aliyun-qwen_http-kiki"
     ],
     "娇媚": [
       "aliyun-qwen_http-sunny"
@@ -572,9 +688,6 @@
     "御姐": [
       "aliyun-qwen_http-maia",
       "aliyun-qwen_http-katerina"
-    ],
-    "成熟": [
-      "aliyun-qwen_http-maia"
     ],
     "深沉": [
       "aliyun-qwen_http-kai"
@@ -740,10 +853,6 @@
     "乡土": [
       "aliyun-qwen_http-arthur"
     ],
-    "甜美": [
-      "aliyun-qwen_http-nini",
-      "aliyun-qwen_http-kiki"
-    ],
     "神秘": [
       "aliyun-qwen_http-ebona"
     ],
@@ -862,7 +971,20 @@
   },
   "byCategory": {
     "角色": {
+      "知性": [
+        "mimo-tts-茉莉",
+        "aliyun-qwen_http-jada",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-jennifer",
+        "aliyun-qwen_http-elias",
+        "aliyun-qwen_http-sonrisa"
+      ],
+      "成熟": [
+        "mimo-tts-茉莉",
+        "aliyun-qwen_http-maia"
+      ],
       "青年": [
+        "mimo-tts-苏打",
         "moss-tts-beijingnan",
         "moss-tts-ashui",
         "moss-tts-liangzi",
@@ -910,13 +1032,6 @@
         "aliyun-qwen_http-moon",
         "aliyun-qwen_http-nofish"
       ],
-      "知性": [
-        "aliyun-qwen_http-jada",
-        "aliyun-qwen_http-maia",
-        "aliyun-qwen_http-jennifer",
-        "aliyun-qwen_http-elias",
-        "aliyun-qwen_http-sonrisa"
-      ],
       "干练": [
         "aliyun-qwen_http-jada"
       ],
@@ -932,9 +1047,6 @@
       "御姐": [
         "aliyun-qwen_http-maia",
         "aliyun-qwen_http-katerina"
-      ],
-      "成熟": [
-        "aliyun-qwen_http-maia"
       ],
       "个性": [
         "aliyun-qwen_http-nofish",
@@ -1001,7 +1113,45 @@
       ]
     },
     "情感": {
+      "甜美": [
+        "mimo-tts-冰糖",
+        "aliyun-qwen_http-nini",
+        "aliyun-qwen_http-kiki"
+      ],
+      "活泼": [
+        "mimo-tts-冰糖",
+        "moss-tts-ziqi",
+        "aliyun-qwen_http-chelsie",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-momo",
+        "aliyun-qwen_http-bella",
+        "aliyun-qwen_http-mochi",
+        "aliyun-qwen_http-bunny",
+        "aliyun-qwen_http-pip",
+        "aliyun-qwen_http-stella",
+        "aliyun-qwen_http-ono-anna"
+      ],
+      "温柔": [
+        "mimo-tts-茉莉",
+        "moss-tts-taiwannv",
+        "moss-tts-aning",
+        "aliyun-qwen_http-cherry",
+        "aliyun-qwen_http-serena",
+        "aliyun-qwen_http-maia",
+        "aliyun-qwen_http-mia",
+        "aliyun-qwen_http-seren",
+        "aliyun-qwen_http-sohee",
+        "aliyun-qwen_http-emilien"
+      ],
+      "阳光": [
+        "mimo-tts-苏打",
+        "moss-tts-xiaoman",
+        "aliyun-qwen_http-ethan",
+        "aliyun-qwen_http-bodega"
+      ],
       "沉稳": [
+        "mimo-tts-白桦",
         "moss-tts-beijingnan",
         "moss-tts-zhouzhou",
         "moss-tts-chengshu",
@@ -1019,17 +1169,6 @@
         "moss-tts-chengshu",
         "aliyun-qwen_http-aiden"
       ],
-      "温柔": [
-        "moss-tts-taiwannv",
-        "moss-tts-aning",
-        "aliyun-qwen_http-cherry",
-        "aliyun-qwen_http-serena",
-        "aliyun-qwen_http-maia",
-        "aliyun-qwen_http-mia",
-        "aliyun-qwen_http-seren",
-        "aliyun-qwen_http-sohee",
-        "aliyun-qwen_http-emilien"
-      ],
       "细腻": [
         "moss-tts-taiwannv"
       ],
@@ -1046,30 +1185,12 @@
       "氛围": [
         "moss-tts-zhouzhou"
       ],
-      "活泼": [
-        "moss-tts-ziqi",
-        "aliyun-qwen_http-chelsie",
-        "aliyun-qwen_http-serena",
-        "aliyun-qwen_http-sunny",
-        "aliyun-qwen_http-momo",
-        "aliyun-qwen_http-bella",
-        "aliyun-qwen_http-mochi",
-        "aliyun-qwen_http-bunny",
-        "aliyun-qwen_http-pip",
-        "aliyun-qwen_http-stella",
-        "aliyun-qwen_http-ono-anna"
-      ],
       "轻快": [
         "moss-tts-ziqi",
         "moss-tts-xiaoman"
       ],
       "倔强": [
         "moss-tts-ziqi"
-      ],
-      "阳光": [
-        "moss-tts-xiaoman",
-        "aliyun-qwen_http-ethan",
-        "aliyun-qwen_http-bodega"
       ],
       "朝气": [
         "moss-tts-xiaoman",
@@ -1193,10 +1314,6 @@
       "质朴": [
         "aliyun-qwen_http-arthur"
       ],
-      "甜美": [
-        "aliyun-qwen_http-nini",
-        "aliyun-qwen_http-kiki"
-      ],
       "神秘": [
         "aliyun-qwen_http-ebona"
       ],
@@ -1267,6 +1384,11 @@
       ]
     },
     "声线": {
+      "清脆": [
+        "mimo-tts-冰糖",
+        "aliyun-qwen_http-sunny",
+        "aliyun-qwen_http-kiki"
+      ],
       "清晰": [
         "moss-tts-beijingnan",
         "moss-tts-chengshu",
@@ -1340,10 +1462,6 @@
       ],
       "利落": [
         "aliyun-qwen_http-dylan"
-      ],
-      "清脆": [
-        "aliyun-qwen_http-sunny",
-        "aliyun-qwen_http-kiki"
       ],
       "轻盈": [
         "aliyun-qwen_http-momo"
@@ -1503,10 +1621,79 @@
         "aliyun-qwen_http-ebona"
       ]
     },
-    "其他": {}
+    "其他": {
+      "通用": [
+        "mimo-tts-mimo_default"
+      ],
+      "默认": [
+        "mimo-tts-mimo_default"
+      ],
+      "中性": [
+        "mimo-tts-mimo_default"
+      ],
+      "年轻": [
+        "mimo-tts-冰糖"
+      ],
+      "女声": [
+        "mimo-tts-茉莉"
+      ],
+      "清亮": [
+        "mimo-tts-苏打"
+      ],
+      "男声": [
+        "mimo-tts-苏打",
+        "mimo-tts-白桦"
+      ],
+      "厚重": [
+        "mimo-tts-白桦"
+      ],
+      "中年": [
+        "mimo-tts-白桦"
+      ],
+      "warm": [
+        "mimo-tts-Mia"
+      ],
+      "natural": [
+        "mimo-tts-Mia"
+      ],
+      "female": [
+        "mimo-tts-Mia",
+        "mimo-tts-Chloe"
+      ],
+      "English": [
+        "mimo-tts-Mia",
+        "mimo-tts-Chloe",
+        "mimo-tts-Milo",
+        "mimo-tts-Dean"
+      ],
+      "bright": [
+        "mimo-tts-Chloe"
+      ],
+      "energetic": [
+        "mimo-tts-Chloe"
+      ],
+      "deep": [
+        "mimo-tts-Milo"
+      ],
+      "calm": [
+        "mimo-tts-Milo"
+      ],
+      "male": [
+        "mimo-tts-Milo",
+        "mimo-tts-Dean"
+      ],
+      "confident": [
+        "mimo-tts-Dean"
+      ],
+      "clear": [
+        "mimo-tts-Dean"
+      ]
+    }
   },
   "byGlobalCategory": {
     "有声读物": [
+      "mimo-tts-苏打",
+      "mimo-tts-白桦",
       "moss-tts-beijingnan",
       "moss-tts-taiwannv",
       "moss-tts-ashui",
@@ -1542,6 +1729,7 @@
       "aliyun-qwen_http-rocky"
     ],
     "新闻资讯": [
+      "mimo-tts-苏打",
       "moss-tts-beijingnan",
       "moss-tts-ashui",
       "moss-tts-chengshu",
@@ -1567,6 +1755,7 @@
       "aliyun-qwen_http-rocky"
     ],
     "教育科普": [
+      "mimo-tts-茉莉",
       "moss-tts-beijingnan",
       "moss-tts-chengshu",
       "moss-tts-liangzi",
@@ -1584,6 +1773,7 @@
       "aliyun-qwen_http-li"
     ],
     "陪伴对话": [
+      "mimo-tts-茉莉",
       "moss-tts-beijingnan",
       "moss-tts-taiwannv",
       "moss-tts-ashui",
@@ -1621,6 +1811,8 @@
       "aliyun-qwen_http-kiki"
     ],
     "广告营销": [
+      "mimo-tts-冰糖",
+      "mimo-tts-苏打",
       "moss-tts-ziqi",
       "moss-tts-xiaoman",
       "aliyun-qwen_http-ethan",

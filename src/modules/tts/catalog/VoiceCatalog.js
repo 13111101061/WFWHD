@@ -22,6 +22,7 @@ const VoiceNormalizer = require('../application/VoiceNormalizer');
  */
 function toDisplayDto(storedVoice) {
   if (!storedVoice) return null;
+  if (storedVoice.profile?.status === 'deleted') return null;
 
   const identity = storedVoice.identity || {};
   const profile = storedVoice.profile || {};
@@ -41,7 +42,7 @@ function toDisplayDto(storedVoice) {
     description: profile.description || '',
     status: profile.status || 'active',
     previewUrl: profile.preview || null,
-    alias: profile.alias
+    alias: profile.alias || null
   };
 }
 

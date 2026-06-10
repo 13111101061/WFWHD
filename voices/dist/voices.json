@@ -1,13 +1,51 @@
 {
   "_meta": {
     "version": "3.0",
-    "savedAt": "2026-06-02T14:23:49.029Z",
-    "totalVoices": 69,
+    "generatedAt": "2026-06-03T14:19:29.502Z",
+    "totalVoices": 67,
+    "sources": [
+      {
+        "file": "mimo.yaml",
+        "count": 9,
+        "provider": "mimo",
+        "enabled": true
+      },
+      {
+        "file": "minimax.yaml",
+        "count": 0,
+        "provider": "minimax",
+        "enabled": false
+      },
+      {
+        "file": "moss.yaml",
+        "count": 9,
+        "provider": "moss",
+        "enabled": true
+      },
+      {
+        "file": "qwen.yaml",
+        "count": 49,
+        "provider": "aliyun",
+        "enabled": true
+      },
+      {
+        "file": "tencent.yaml",
+        "count": 0,
+        "provider": "tencent",
+        "enabled": false
+      },
+      {
+        "file": "volcengine.yaml",
+        "count": 0,
+        "provider": "volcengine",
+        "enabled": false
+      }
+    ],
     "providers": {
       "enabled": [
+        "mimo",
         "moss",
-        "aliyun",
-        "mimo"
+        "aliyun"
       ],
       "disabled": [
         "minimax",
@@ -15,25 +53,439 @@
         "volcengine"
       ]
     },
-    "sources": [
-      {
-        "provider": "moss",
-        "count": 11,
-        "enabled": true
-      },
-      {
-        "provider": "aliyun",
-        "count": 49,
-        "enabled": true
-      },
-      {
-        "provider": "mimo",
-        "count": 9,
-        "enabled": true
-      }
-    ]
+    "buildTime": 25,
+    "format": "StoredVoice"
   },
   "voices": [
+    {
+      "identity": {
+        "id": "mimo-tts-mimo_default",
+        "voiceCode": "006000010000006",
+        "sourceId": "mimo_default",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "MiMo-默认",
+        "alias": "MiMo-默认",
+        "gender": "female",
+        "languages": [
+          "zh-CN",
+          "en"
+        ],
+        "description": "默认音色（集群决定）",
+        "tags": [
+          "通用",
+          "默认",
+          "中性"
+        ],
+        "categories": [],
+        "tagCategories": {
+          "其他": [
+            "通用",
+            "默认",
+            "中性"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "mimo_default",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-冰糖",
+        "voiceCode": "006000020000005",
+        "sourceId": "冰糖",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "冰糖",
+        "alias": "冰糖",
+        "gender": "female",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "甜美清脆的年轻女声",
+        "tags": [
+          "甜美",
+          "清脆",
+          "年轻",
+          "活泼"
+        ],
+        "categories": [
+          "广告营销"
+        ],
+        "tagCategories": {
+          "情感": [
+            "甜美",
+            "活泼"
+          ],
+          "声线": [
+            "清脆"
+          ],
+          "其他": [
+            "年轻"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "冰糖",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-茉莉",
+        "voiceCode": "006000030000004",
+        "sourceId": "茉莉",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "茉莉",
+        "alias": "茉莉",
+        "gender": "female",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "温柔知性的女声",
+        "tags": [
+          "温柔",
+          "知性",
+          "女声",
+          "成熟"
+        ],
+        "categories": [
+          "教育科普",
+          "陪伴对话"
+        ],
+        "tagCategories": {
+          "情感": [
+            "温柔"
+          ],
+          "角色": [
+            "知性",
+            "成熟"
+          ],
+          "其他": [
+            "女声"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "茉莉",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-苏打",
+        "voiceCode": "006000040000003",
+        "sourceId": "苏打",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "苏打",
+        "alias": "苏打",
+        "gender": "male",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "清亮阳光的男声",
+        "tags": [
+          "清亮",
+          "阳光",
+          "男声",
+          "青年"
+        ],
+        "categories": [
+          "有声读物",
+          "新闻资讯",
+          "广告营销"
+        ],
+        "tagCategories": {
+          "其他": [
+            "清亮",
+            "男声"
+          ],
+          "情感": [
+            "阳光"
+          ],
+          "角色": [
+            "青年"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "苏打",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-白桦",
+        "voiceCode": "006000050000002",
+        "sourceId": "白桦",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "白桦",
+        "alias": "白桦",
+        "gender": "male",
+        "languages": [
+          "zh-CN"
+        ],
+        "description": "沉稳厚重的男声",
+        "tags": [
+          "沉稳",
+          "厚重",
+          "男声",
+          "中年"
+        ],
+        "categories": [
+          "有声读物"
+        ],
+        "tagCategories": {
+          "情感": [
+            "沉稳"
+          ],
+          "其他": [
+            "厚重",
+            "男声",
+            "中年"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "白桦",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-Mia",
+        "voiceCode": "006000060000001",
+        "sourceId": "Mia",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Mia",
+        "alias": "Mia",
+        "gender": "female",
+        "languages": [
+          "en"
+        ],
+        "description": "Warm and natural English female voice",
+        "tags": [
+          "warm",
+          "natural",
+          "female",
+          "English"
+        ],
+        "categories": [],
+        "tagCategories": {
+          "其他": [
+            "warm",
+            "natural",
+            "female",
+            "English"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Mia",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-Chloe",
+        "voiceCode": "006000070000000",
+        "sourceId": "Chloe",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Chloe",
+        "alias": "Chloe",
+        "gender": "female",
+        "languages": [
+          "en"
+        ],
+        "description": "Bright and energetic English female voice",
+        "tags": [
+          "bright",
+          "energetic",
+          "female",
+          "English"
+        ],
+        "categories": [],
+        "tagCategories": {
+          "其他": [
+            "bright",
+            "energetic",
+            "female",
+            "English"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Chloe",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-Milo",
+        "voiceCode": "006000080000009",
+        "sourceId": "Milo",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Milo",
+        "alias": "Milo",
+        "gender": "male",
+        "languages": [
+          "en"
+        ],
+        "description": "Deep and calm English male voice",
+        "tags": [
+          "deep",
+          "calm",
+          "male",
+          "English"
+        ],
+        "categories": [],
+        "tagCategories": {
+          "其他": [
+            "deep",
+            "calm",
+            "male",
+            "English"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Milo",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
+    {
+      "identity": {
+        "id": "mimo-tts-Dean",
+        "voiceCode": "006000090000008",
+        "sourceId": "Dean",
+        "provider": "mimo",
+        "service": "tts"
+      },
+      "profile": {
+        "displayName": "Dean",
+        "alias": "Dean",
+        "gender": "male",
+        "languages": [
+          "en"
+        ],
+        "description": "Confident and clear English male voice",
+        "tags": [
+          "confident",
+          "clear",
+          "male",
+          "English"
+        ],
+        "categories": [],
+        "tagCategories": {
+          "其他": [
+            "confident",
+            "clear",
+            "male",
+            "English"
+          ]
+        },
+        "status": "active",
+        "preview": null
+      },
+      "runtime": {
+        "voiceId": "Dean",
+        "providerOptions": {}
+      },
+      "meta": {
+        "createdAt": "2026-06-03T14:19:29.484Z",
+        "updatedAt": "2026-06-03T14:19:29.484Z",
+        "dataSource": "import",
+        "version": "v1"
+      }
+    },
     {
       "identity": {
         "id": "moss-tts-beijingnan",
@@ -95,8 +547,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -160,8 +612,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -226,8 +678,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -289,8 +741,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -353,8 +805,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -417,8 +869,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -483,8 +935,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -547,8 +999,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -613,8 +1065,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.481Z",
-        "updatedAt": "2026-05-29T17:58:07.481Z",
+        "createdAt": "2026-06-03T14:19:29.497Z",
+        "updatedAt": "2026-06-03T14:19:29.497Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -674,8 +1126,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -735,8 +1187,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -797,8 +1249,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -856,8 +1308,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -919,8 +1371,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -981,8 +1433,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1041,8 +1493,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1101,8 +1553,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1161,8 +1613,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1222,8 +1674,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1283,8 +1735,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1344,8 +1796,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1406,8 +1858,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1467,8 +1919,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1527,8 +1979,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1587,8 +2039,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1647,8 +2099,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1708,8 +2160,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1768,8 +2220,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1827,8 +2279,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1887,8 +2339,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -1951,8 +2403,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2012,8 +2464,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2071,8 +2523,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2132,8 +2584,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2194,8 +2646,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2257,8 +2709,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2318,8 +2770,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2382,8 +2834,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2442,8 +2894,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2502,8 +2954,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2562,8 +3014,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2623,8 +3075,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2683,8 +3135,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2744,8 +3196,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2806,8 +3258,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2867,8 +3319,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2928,8 +3380,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -2989,8 +3441,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3050,8 +3502,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3111,8 +3563,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3172,8 +3624,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3233,8 +3685,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3292,8 +3744,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3354,8 +3806,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3414,8 +3866,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3477,8 +3929,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3538,8 +3990,8 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
         "version": "v1"
       }
@@ -3598,426 +4050,9 @@
         }
       },
       "meta": {
-        "createdAt": "2026-05-29T17:58:07.490Z",
-        "updatedAt": "2026-05-29T17:58:07.490Z",
+        "createdAt": "2026-06-03T14:19:29.500Z",
+        "updatedAt": "2026-06-03T14:19:29.500Z",
         "dataSource": "import",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "moss-tts-链路测试音色",
-        "voiceCode": "001000100000006",
-        "sourceId": "链路测试音色",
-        "provider": "moss",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "链路测试音色",
-        "alias": "链路测试音色",
-        "gender": "female",
-        "languages": [
-          "中文"
-        ],
-        "description": "",
-        "tags": [
-          "清晰",
-          "温柔",
-          "少女",
-          "陪伴",
-          "治愈",
-          "自然"
-        ],
-        "status": "inactive",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "9badbb38",
-        "model": "moss-tts",
-        "providerOptions": {}
-      },
-      "meta": {
-        "createdAt": "2026-06-02T10:47:55.078Z",
-        "updatedAt": "2026-06-02T10:47:55.078Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "moss-voicegen-温和女声预览_mpwoc09f",
-        "voiceCode": "001000110000005",
-        "sourceId": "温和女声预览_mpwoc09f",
-        "provider": "moss",
-        "service": "voicegen",
-        "sourceType": "instruction"
-      },
-      "profile": {
-        "displayName": "温和女声预览",
-        "alias": "温和女声预览",
-        "gender": "female",
-        "languages": [
-          "中文"
-        ],
-        "description": "",
-        "tags": [
-          "柔和",
-          "温柔",
-          "女声",
-          "陪伴",
-          "治愈",
-          "自然"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": null,
-        "model": "moss-voice-generator",
-        "providerOptions": {
-          "instruction": "一个温柔的女声，语速偏慢，带点磁性",
-          "temperature": 1.5,
-          "topP": 0.6,
-          "topK": 50
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T13:29:17.140Z",
-        "updatedAt": "2026-06-02T13:29:17.140Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-mimo_default",
-        "voiceCode": "006000010000006",
-        "sourceId": "mimo_default",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "MiMo-默认",
-        "gender": "female",
-        "languages": [
-          "zh-CN",
-          "en"
-        ],
-        "description": "默认音色（集群决定）",
-        "tags": [
-          "通用",
-          "默认",
-          "中性"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "mimo_default",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-bingtang",
-        "voiceCode": "006000020000005",
-        "sourceId": "冰糖",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "冰糖",
-        "gender": "female",
-        "languages": [
-          "zh-CN"
-        ],
-        "description": "甜美清脆的年轻女声",
-        "tags": [
-          "甜美",
-          "清脆",
-          "年轻",
-          "活泼"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "冰糖",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-moli",
-        "voiceCode": "006000030000004",
-        "sourceId": "茉莉",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "茉莉",
-        "gender": "female",
-        "languages": [
-          "zh-CN"
-        ],
-        "description": "温柔知性的女声",
-        "tags": [
-          "温柔",
-          "知性",
-          "女声",
-          "成熟"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "茉莉",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-suda",
-        "voiceCode": "006000040000003",
-        "sourceId": "苏打",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "苏打",
-        "gender": "male",
-        "languages": [
-          "zh-CN"
-        ],
-        "description": "清亮阳光的男声",
-        "tags": [
-          "清亮",
-          "阳光",
-          "男声",
-          "青年"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "苏打",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-baihua",
-        "voiceCode": "006000050000002",
-        "sourceId": "白桦",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "白桦",
-        "gender": "male",
-        "languages": [
-          "zh-CN"
-        ],
-        "description": "沉稳厚重的男声",
-        "tags": [
-          "沉稳",
-          "厚重",
-          "男声",
-          "中年"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "白桦",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-mia",
-        "voiceCode": "006000060000001",
-        "sourceId": "Mia",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "Mia",
-        "gender": "female",
-        "languages": [
-          "en"
-        ],
-        "description": "Warm and natural English female voice",
-        "tags": [
-          "warm",
-          "natural",
-          "female",
-          "English"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "Mia",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-chloe",
-        "voiceCode": "006000070000000",
-        "sourceId": "Chloe",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "Chloe",
-        "gender": "female",
-        "languages": [
-          "en"
-        ],
-        "description": "Bright and energetic English female voice",
-        "tags": [
-          "bright",
-          "energetic",
-          "female",
-          "English"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "Chloe",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-milo",
-        "voiceCode": "006000080000009",
-        "sourceId": "Milo",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "Milo",
-        "gender": "male",
-        "languages": [
-          "en"
-        ],
-        "description": "Deep and calm English male voice",
-        "tags": [
-          "deep",
-          "calm",
-          "male",
-          "English"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "Milo",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
-        "version": "v1"
-      }
-    },
-    {
-      "identity": {
-        "id": "mimo-tts-dean",
-        "voiceCode": "006000090000008",
-        "sourceId": "Dean",
-        "provider": "mimo",
-        "service": "tts"
-      },
-      "profile": {
-        "displayName": "Dean",
-        "gender": "male",
-        "languages": [
-          "en"
-        ],
-        "description": "Confident and clear English male voice",
-        "tags": [
-          "confident",
-          "clear",
-          "male",
-          "English"
-        ],
-        "status": "active",
-        "preview": null
-      },
-      "runtime": {
-        "voiceId": "Dean",
-        "providerOptions": {
-          "model": "mimo-v2.5-tts"
-        }
-      },
-      "meta": {
-        "createdAt": "2026-06-02T14:23:49.029Z",
-        "updatedAt": "2026-06-02T14:23:49.029Z",
-        "dataSource": "manual",
         "version": "v1"
       }
     }

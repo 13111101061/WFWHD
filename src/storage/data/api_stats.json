@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 1041,
+  "totalCalls": 1212,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -79,12 +79,12 @@
       "lastCalled": "2025-09-22T09:32:02.076Z"
     },
     "GET /": {
-      "totalCalls": 54,
-      "lastCalled": "2026-05-17T09:09:16.408Z"
+      "totalCalls": 55,
+      "lastCalled": "2026-06-09T16:38:24.906Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 173,
-      "lastCalled": "2026-05-26T15:31:21.706Z"
+      "totalCalls": 241,
+      "lastCalled": "2026-06-10T07:40:39.147Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
       "totalCalls": 72,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 294,
-      "lastCalled": "2026-05-26T13:47:34.552Z"
+      "totalCalls": 330,
+      "lastCalled": "2026-06-10T06:44:42.405Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -139,8 +139,8 @@
       "lastCalled": "2025-10-31T13:48:44.640Z"
     },
     "GET /api/tts/providers": {
-      "totalCalls": 29,
-      "lastCalled": "2026-05-24T16:21:02.543Z"
+      "totalCalls": 30,
+      "lastCalled": "2026-06-03T10:53:38.798Z"
     },
     "GET /api/tts/stats": {
       "totalCalls": 4,
@@ -215,16 +215,16 @@
       "lastCalled": "2026-04-18T07:58:33.684Z"
     },
     "GET /api": {
-      "totalCalls": 17,
-      "lastCalled": "2026-05-23T03:38:46.856Z"
+      "totalCalls": 18,
+      "lastCalled": "2026-06-03T14:29:32.842Z"
     },
     "HEAD /api/tts/voices": {
       "totalCalls": 3,
       "lastCalled": "2026-03-17T11:49:15.927Z"
     },
     "GET /api/tts/frontend": {
-      "totalCalls": 34,
-      "lastCalled": "2026-05-17T12:56:36.812Z"
+      "totalCalls": 36,
+      "lastCalled": "2026-06-03T10:53:57.893Z"
     },
     "GET /api/credentials/providers": {
       "totalCalls": 1,
@@ -243,8 +243,8 @@
       "lastCalled": "2026-04-01T05:25:15.248Z"
     },
     "GET /api/tts/filters": {
-      "totalCalls": 2,
-      "lastCalled": "2026-04-13T09:22:01.394Z"
+      "totalCalls": 3,
+      "lastCalled": "2026-06-03T10:56:32.704Z"
     },
     "POST /api/tts/aliyun/qwen": {
       "totalCalls": 1,
@@ -299,8 +299,8 @@
       "lastCalled": "2026-04-20T10:48:00.857Z"
     },
     "GET /api/tts/catalog": {
-      "totalCalls": 1,
-      "lastCalled": "2026-04-21T08:45:04.633Z"
+      "totalCalls": 2,
+      "lastCalled": "2026-06-03T10:56:32.384Z"
     },
     "GET /apii/tts/frontend": {
       "totalCalls": 1,
@@ -315,8 +315,8 @@
       "lastCalled": "2026-04-21T09:27:23.449Z"
     },
     "GET /api/tts/health": {
-      "totalCalls": 10,
-      "lastCalled": "2026-05-24T05:45:41.631Z"
+      "totalCalls": 12,
+      "lastCalled": "2026-06-09T14:43:50.480Z"
     },
     "GET /api/tts/bootstrap": {
       "totalCalls": 4,
@@ -335,8 +335,8 @@
       "lastCalled": "2026-05-17T12:44:52.537Z"
     },
     "GET /api/tts/capabilities/moss_tts": {
-      "totalCalls": 13,
-      "lastCalled": "2026-05-24T16:21:02.608Z"
+      "totalCalls": 17,
+      "lastCalled": "2026-06-09T17:35:20.738Z"
     },
     "GET /tts/voices/moss-tts-ashui/detail": {
       "totalCalls": 1,
@@ -533,7 +533,55 @@
     "GET /api/audio/file/tts_%E5%81%9C%E6%AD%A2%E5%BD%93%E5%89%8D%E6%92%AD%E6%94%BE%EF%BC%8C%E9%87%8D%E7%BD%AE%E7%8A%B6%E6%80%81%E5%90%8E%E5%86%8D%E5%8A%A0%E8%BD%BD%E6%96%B0%E9%9F%B3%E9%A2%91_1779803254548_7bdaf208f348f8d7.wav": {
       "totalCalls": 1,
       "lastCalled": "2026-05-26T13:47:51.064Z"
+    },
+    "GET /api/api/tts/voices": {
+      "totalCalls": 25,
+      "lastCalled": "2026-06-03T14:44:01.586Z"
+    },
+    "GET /api/tts/capabilities/mimo_tts": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-03T10:56:33.364Z"
+    },
+    "GET /api/tts/voices/test-id/detail": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-03T10:57:21.400Z"
+    },
+    "GET /api/tts/": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-03T14:56:55.688Z"
+    },
+    "GET /audio/file/syn_001_20260610002903_17ee041f.wav": {
+      "totalCalls": 10,
+      "lastCalled": "2026-06-09T16:46:34.400Z"
+    },
+    "GET /4ea312aa-b842-4a81-bd41-c17656fcbf2a": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-09T16:31:02.450Z"
+    },
+    "GET /api/4ea312aa-b842-4a81-bd41-c17656fcbf2a": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-09T16:31:11.985Z"
+    },
+    "GET /audio/syn_001_20260607153012_a3f8b2c1.mp3": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-09T16:38:41.508Z"
+    },
+    "GET /audio/syn_001_20260610002903_17ee041f.wav": {
+      "totalCalls": 4,
+      "lastCalled": "2026-06-09T16:47:04.922Z"
+    },
+    "GET /audio/syn_001_20260610004618_4273d379.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-09T16:46:18.967Z"
+    },
+    "GET /audio/syn_001_20260610004908_a6acce04.wav": {
+      "totalCalls": 4,
+      "lastCalled": "2026-06-09T16:49:57.487Z"
+    },
+    "GET /audio/syn_001_20260610005924_197993e9.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-09T17:00:09.098Z"
     }
   },
-  "lastUpdated": "2026-05-26T15:31:21.706Z"
+  "lastUpdated": "2026-06-10T07:40:39.147Z"
 }

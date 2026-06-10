@@ -258,17 +258,34 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     );
 
     /**
-     * 查询音色克隆进度（轮询端点）
-     * GET /api/voices/register/:voiceId/status?provider=moss
+     * 查询音色克隆进度（面向资源：前端只传系统 voice.id）
+     * GET /api/voices/:id/status
+     *
+     * 后端自动从存储反查 provider + taskId，前端不感知 Provider 标识符。
      */
-    router.get('/register/:voiceId/status', async (req, res) => {
-      const providerKey = req.query.provider || 'moss';
-
+    router.get('/:id/status', async (req, res) => {
       try {
-        const status = await voiceOnboardingService.checkCloneStatus(
-          providerKey,
-          req.params.voiceId
-        );
+        // voice.id 是系统 ID，lookup 后反查 taskId
+        const stored = voiceCatalog.get(req.params.id);
+        if (!stored) {
+          return res.status(404).json({ success: false, error: `Voice not found: ${req.params.id}` });
+        }
+
+        const providerKey = stored.identity?.provider;
+        const taskId = req.query.taskId || stored.runtime?.voiceId;
+
+        if (!providerKey || !taskId) {
+          return res.status(400).json({ success: false, error: 'Voice has no provider or taskId' });
+        }
+
+        const status = await voiceOnboardingService.checkCloneStatus(providerKey, taskId);
+
+        // 异步克隆完成后自动激活
+        if (status.status === 'completed' && stored.profile?.status !== 'active') {
+          getVoiceWriteService().update(stored.identity.id, { profile: { status: 'active' } });
+          await getVoiceWriteService().save();
+          status.autoActivated = true;
+        }
 
         res.json({
           success: true,
@@ -320,6 +337,38 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
           success: false,
           error: error.message
         });
+      }
+    });
+
+    /**
+     * UGC 音色删除（默认软删除：status → deleted）
+     * DELETE /api/voices/:id
+     * DELETE /api/voices/:id?force=true  物理删除
+     */
+    router.delete('/:id/ugc', async (req, res) => {
+      try {
+        const stored = voiceCatalog.get(req.params.id);
+        if (!stored) {
+          return res.status(404).json({ success: false, error: `Voice not found: ${req.params.id}` });
+        }
+
+        // 官方库不可删
+        const isOfficial = stored.meta?.dataSource !== 'api';
+        if (isOfficial) {
+          return res.status(403).json({ success: false, error: 'Official voices cannot be deleted' });
+        }
+
+        if (req.query.force === 'true') {
+          getVoiceWriteService().remove(req.params.id);
+          await getVoiceWriteService().save();
+          res.json({ success: true, deleted: true, id: req.params.id });
+        } else {
+          getVoiceWriteService().update(req.params.id, { status: 'deleted' });
+          await getVoiceWriteService().save();
+          res.json({ success: true, deleted: false, id: req.params.id, status: 'deleted' });
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
       }
     });
 

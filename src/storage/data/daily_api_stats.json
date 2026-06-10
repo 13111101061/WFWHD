@@ -393,6 +393,47 @@
         "GET /api/audio/file/tts_%E6%88%91%E4%BB%80%E4%B9%88%E9%83%BD%E7%9C%8B%E5%9C%A8%E7%9C%BC%E9%87%8C%EF%BC%8C%E6%AF%94%E8%B0%81%E9%83%BD%E6%B8%85%E6%A5%9A%E3%80%82%E5%8F%AF%E6%88%91%E5%B0%B1%E6%98%AF%E6%B2%A1%E8%BE%A9%E8%A7%A3%EF%BC%8C%E8%BF%98%E5%9C%A8%E8%B4%AA%E6%81%8B%E9%82%A3%E4%B8%AA%E5%AE%B6%E7%9A%84%E5%81%87%E8%B1%A1%E3%80%82_1779802777142_729f011dd721d5f6.wav": 1,
         "GET /api/audio/file/tts_%E5%81%9C%E6%AD%A2%E5%BD%93%E5%89%8D%E6%92%AD%E6%94%BE%EF%BC%8C%E9%87%8D%E7%BD%AE%E7%8A%B6%E6%80%81%E5%90%8E%E5%86%8D%E5%8A%A0%E8%BD%BD%E6%96%B0%E9%9F%B3%E9%A2%91_1779803254548_7bdaf208f348f8d7.wav": 1
       }
+    },
+    "2026-06-03": {
+      "totalCalls": 81,
+      "endpoints": {
+        "GET /api/tts/voices": 46,
+        "GET /api/api/tts/voices": 25,
+        "GET /api/tts/frontend": 2,
+        "GET /api/tts/health": 1,
+        "GET /api/tts/providers": 1,
+        "GET /api/tts/catalog": 1,
+        "GET /api/tts/filters": 1,
+        "GET /api/tts/capabilities/mimo_tts": 1,
+        "GET /api/tts/voices/test-id/detail": 1,
+        "GET /api": 1,
+        "GET /api/tts/": 1
+      }
+    },
+    "2026-06-09": {
+      "totalCalls": 58,
+      "endpoints": {
+        "GET /api/tts/health": 1,
+        "GET /api/tts/voices": 13,
+        "POST /api/tts/synthesize": 13,
+        "GET /api/tts/capabilities/moss_tts": 4,
+        "GET /audio/file/syn_001_20260610002903_17ee041f.wav": 10,
+        "GET /4ea312aa-b842-4a81-bd41-c17656fcbf2a": 1,
+        "GET /api/4ea312aa-b842-4a81-bd41-c17656fcbf2a": 2,
+        "GET /": 1,
+        "GET /audio/syn_001_20260607153012_a3f8b2c1.mp3": 2,
+        "GET /audio/syn_001_20260610002903_17ee041f.wav": 4,
+        "GET /audio/syn_001_20260610004618_4273d379.wav": 1,
+        "GET /audio/syn_001_20260610004908_a6acce04.wav": 4,
+        "GET /audio/syn_001_20260610005924_197993e9.wav": 2
+      }
+    },
+    "2026-06-10": {
+      "totalCalls": 32,
+      "endpoints": {
+        "GET /api/tts/voices": 9,
+        "POST /api/tts/synthesize": 23
+      }
     }
   }
 }

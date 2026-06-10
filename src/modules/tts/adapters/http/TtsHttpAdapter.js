@@ -143,14 +143,38 @@ class TtsHttpAdapter {
     try {
       const { service } = req.query;
 
-      if (!service) {
-        const allVoices = await this.queryService.getAllVoices();
+      const hasPagination = 'page' in req.query || 'pageSize' in req.query;
+      const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+      const pageSize = Math.min(100, Math.max(1, parseInt(req.query.pageSize, 10) || 20));
+
+      const paginate = (items) => ({
+        items: hasPagination ? items.slice((page - 1) * pageSize, page * pageSize) : items,
+        pagination: {
+          total: items.length,
+          page: hasPagination ? page : 1,
+          pageSize: hasPagination ? pageSize : items.length,
+          totalPages: hasPagination ? Math.ceil(items.length / pageSize) : 1
+        }
+      });
+
+      const respond = (items, meta = {}) => {
+        const paged = paginate(items);
         return res.json({
           success: true,
-          data: allVoices,
-          totalServices: Object.keys(allVoices).length,
+          data: paged.items,
+          meta,
+          pagination: paged.pagination,
           timestamp: new Date().toISOString()
         });
+      };
+
+      if (!service) {
+        const allVoices = await this.queryService.getAllVoices();
+        const flat = [];
+        for (const [key, group] of Object.entries(allVoices)) {
+          (group.voices || []).forEach(v => flat.push({ ...v, _serviceKey: key }));
+        }
+        return respond(flat);
       }
 
       let provider, serviceType, canonicalKey;
@@ -184,17 +208,10 @@ class TtsHttpAdapter {
       }
 
       const voices = await this.queryService.getVoices(provider, serviceType);
-
-      res.json({
-        success: true,
-        data: {
-          provider,
-          service: serviceType,
-          canonicalKey: canonicalKey || `${provider}_${serviceType}`,
-          voices
-        },
-        voiceCount: voices.length,
-        timestamp: new Date().toISOString()
+      return respond(voices, {
+        provider,
+        service: serviceType,
+        canonicalKey: canonicalKey || `${provider}_${serviceType}`
       });
 
     } catch (error) {

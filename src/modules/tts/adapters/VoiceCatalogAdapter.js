@@ -7,7 +7,7 @@
  */
 
 const VoiceCatalogPort = require('../ports/VoiceCatalogPort');
-const { toDisplayDto } = require('../catalog/VoiceCatalog');
+
 
 class VoiceCatalogAdapter extends VoiceCatalogPort {
   /**
@@ -67,23 +67,20 @@ class VoiceCatalogAdapter extends VoiceCatalogPort {
       const voices = this.registry.getByProvider(provider);
 
       // 按服务分组
-      const services = {};
       for (const voice of voices) {
-        const service = voice.identity?.service || voice.service || 'default';
+        const service = voice.service || voice.identity?.service || 'default';
         const key = `${provider}_${service}`;
 
-        if (!services[key]) {
-          services[key] = {
+        if (!result[key]) {
+          result[key] = {
             provider,
             service,
             voices: []
           };
         }
-        // 使用统一的展示 DTO
-        services[key].voices.push(toDisplayDto(voice));
+        // getByProvider 已返回 DisplayDto，直接推入
+        result[key].voices.push(voice);
       }
-
-      Object.assign(result, services);
     }
 
     return result;

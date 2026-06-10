@@ -22,7 +22,7 @@
  */
 
 const VALID_GENDERS = ['male', 'female', 'neutral'];
-const VALID_STATUSES = ['active', 'inactive', 'deprecated'];
+const VALID_STATUSES = ['active', 'inactive', 'deprecated', 'deleted'];
 
 // 禁止前端填写的系统字段
 const FORBIDDEN_FIELDS = [

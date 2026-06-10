@@ -15,7 +15,7 @@
  */
 
 const VALID_GENDERS = ['male', 'female', 'neutral'];
-const VALID_STATUSES = ['active', 'inactive', 'deprecated'];
+const VALID_STATUSES = ['active', 'inactive', 'deprecated', 'deleted'];
 const VALID_DATA_SOURCES = ['manual', 'import', 'migration', 'api'];
 
 const IdentitySchema = {

@@ -258,8 +258,8 @@ async function start() {
     });
   });
 
-  const stats = voiceRegistry.getStats();
-  console.log(`✅ VoiceRegistry: ${stats.total} voices across ${Object.keys(stats.providers || {}).length} providers`);
+  const stats = voiceCatalog.getStats();
+  console.log(`✅ VoiceCatalog: ${stats.total} voices across ${Object.keys(stats.providers || {}).length} providers`);
 
   app.listen(PORT, () => {
     console.log(`TTS microservice running on port ${PORT}`);
