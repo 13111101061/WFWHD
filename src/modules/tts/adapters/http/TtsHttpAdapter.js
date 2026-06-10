@@ -396,6 +396,44 @@ class TtsHttpAdapter {
   }
 
   /**
+   * 获取服务合成表单数据（前端一体化接口）
+   * GET /api/tts/services/:service/form
+   */
+  async getServiceForm(req, res) {
+    try {
+      const { service } = req.params;
+      const { model, mode, includeVoices } = req.query;
+      const result = this.queryService.getServiceForm(service, { model, mode, includeVoices });
+
+      const statusCode = result.success ? 200 : 404;
+      if (result.success) {
+        this._applyStaticCache(res, result, 1800);
+        if (this._checkNotModified(req, res)) return;
+      }
+      res.status(statusCode).json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取全部服务的紧凑能力摘要
+   * GET /api/tts/services/form-summary
+   */
+  async getAllServicesFormSummary(req, res) {
+    try {
+      const result = this.queryService.getAllServicesFormSummary();
+      this._applyStaticCache(res, result, 1800);
+      if (this._checkNotModified(req, res)) return;
+      res.json(result);
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
    * 获取筛选选项
    * GET /api/tts/filters
    */
@@ -477,6 +515,20 @@ class TtsHttpAdapter {
       return res.status(304).end();
     }
     return false;
+  }
+
+  /**
+   * 设置废弃端点的 HTTP 响应头
+   * @param {Object} res - Express response
+   * @param {string[]} alternatives - 替代端点路径列表
+   */
+  _addDeprecationHeaders(res, alternatives = []) {
+    res.setHeader('Deprecation', 'true');
+    res.setHeader('Sunset', 'Sat, 01 Nov 2026 00:00:00 GMT');
+    if (alternatives.length > 0) {
+      const links = alternatives.map(a => `<${a}>; rel="successor-version"`);
+      res.setHeader('Link', links.join(', '));
+    }
   }
 
   /**

@@ -234,8 +234,15 @@ router.get('/capabilities/:service',
 /**
  * 获取筛选选项
  * GET /api/tts/filters
+ * @deprecated 使用 /api/tts/bootstrap 替代
  */
 router.get('/filters',
+  (req, res, next) => {
+    res.setHeader('Deprecation', 'true');
+    res.setHeader('Sunset', 'Sat, 01 Nov 2026 00:00:00 GMT');
+    res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version"');
+    next();
+  },
   async (req, res, next) => {
     try {
       const adapter = await getAdapter();
@@ -249,9 +256,16 @@ router.get('/filters',
 /**
  * 获取前端展示目录
  * GET /api/tts/catalog
+ * @deprecated 使用 /api/tts/bootstrap 替代
  */
 router.get('/catalog',
   requestLogger,
+  (req, res, next) => {
+    res.setHeader('Deprecation', 'true');
+    res.setHeader('Sunset', 'Sat, 01 Nov 2026 00:00:00 GMT');
+    res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version", </api/tts/services/form-summary>; rel="related"');
+    next();
+  },
   async (req, res, next) => {
     try {
       const adapter = await getAdapter();
@@ -265,9 +279,16 @@ router.get('/catalog',
 /**
  * 获取前端展示音色数据（精简版）
  * GET /api/tts/frontend
+ * @deprecated 使用 /api/tts/bootstrap 替代
  */
 router.get('/frontend',
   requestLogger,
+  (req, res, next) => {
+    res.setHeader('Deprecation', 'true');
+    res.setHeader('Sunset', 'Sat, 01 Nov 2026 00:00:00 GMT');
+    res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version"');
+    next();
+  },
   async (req, res, next) => {
     try {
       const adapter = await getAdapter();
@@ -288,6 +309,45 @@ router.get('/bootstrap',
     try {
       const adapter = await getAdapter();
       await adapter.getFrontendBootstrap(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// ==================== 表单一体化端点 ====================
+
+/**
+ * 获取全部服务的紧凑能力摘要
+ * GET /api/tts/services/form-summary
+ * 注意：必须在 /services/:service/form 之前注册，否则 form-summary 会被当作 :service 参数匹配
+ */
+router.get('/services/form-summary',
+  requestLogger,
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getAllServicesFormSummary(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * 获取服务合成表单数据（前端一体化接口）
+ * GET /api/tts/services/:service/form
+ *
+ * 一次请求返回渲染合成表单所需的全部数据：
+ * 服务商信息 + 紧凑能力 + 可用音色 + 调用模板
+ */
+router.get('/services/:service/form',
+  unifiedAuth.createMiddleware({ service: 'tts' }),
+  requestLogger,
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getServiceForm(req, res);
     } catch (error) {
       next(error);
     }
@@ -502,9 +562,11 @@ router.use('*', (req, res) => {
       'GET /api/tts/voices/:id/detail - Voice detail',
       'GET /api/tts/providers - Provider list',
       'GET /api/tts/capabilities/:service - Capabilities',
-      'GET /api/tts/filters - Filter options',
-      'GET /api/tts/catalog - Frontend catalog',
-      'GET /api/tts/frontend - Frontend voices',
+      'GET /api/tts/services/form-summary - All services compact capability summary',
+      'GET /api/tts/services/:service/form - Service synthesis form data',
+      'GET /api/tts/filters - Filter options (deprecated)',
+      'GET /api/tts/catalog - Frontend catalog (deprecated)',
+      'GET /api/tts/frontend - Frontend voices (deprecated)',
       'GET /api/tts/bootstrap - Frontend bootstrap',
       'GET /api/tts/health - Health check',
       'GET /api/tts/stats - Statistics',

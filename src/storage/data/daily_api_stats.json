@@ -429,10 +429,17 @@
       }
     },
     "2026-06-10": {
-      "totalCalls": 32,
+      "totalCalls": 79,
       "endpoints": {
-        "GET /api/tts/voices": 9,
-        "POST /api/tts/synthesize": 23
+        "GET /api/tts/voices": 26,
+        "POST /api/tts/synthesize": 33,
+        "GET /api/tts/capabilities/moss_tts": 4,
+        "GET /audio/syn_001_20260610225843_f2528622.wav": 5,
+        "GET /audio/syn_001_20260610230403_2cebf281.wav": 5,
+        "GET /api/tts/services/moss_tts/form": 3,
+        "GET /api/tts/services/form-summary": 1,
+        "GET /api/tts/catalog": 1,
+        "GET /services/form-summary": 1
       }
     }
   }

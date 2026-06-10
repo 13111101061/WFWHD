@@ -338,6 +338,149 @@ class TtsQueryService {
     return pms.resolveCanonicalKey(serviceKey) || serviceKey;
   }
 
+  // ==================== 紧凑转换（面向前端表单） ====================
+
+  /**
+   * 将 CompiledCapability 转换为前端表单渲染所需的最小数据集
+   * 只保留 supported 字段（排除 voice/text），剥离内部细节
+   */
+  _toCompactCapability(compiled) {
+    const schema = compiled.getSchema();
+    const fieldIndex = compiled.getFieldIndex();
+    const lockedParams = compiled.getLockedParams();
+    const uiGroups = compiled.getUiGroups();
+    const defaults = compiled.getDefaults();
+
+    // 仅保留 supported 且非 voice/text 的字段
+    const SKIP_KEYS = new Set(['voice', 'text']);
+    const parameters = {};
+
+    for (const [key, field] of Object.entries(schema)) {
+      if (field.status !== 'supported') continue;
+      if (SKIP_KEYS.has(key)) continue;
+
+      const compact = {
+        type: field.type,
+        default: field.defaultValue,
+        label: field.displayName,
+      };
+      if (field.description) compact.description = field.description;
+      if (field.range) compact.range = field.range;
+      if (field.values) compact.values = field.values;
+      if (field.ui && Object.keys(field.ui).length > 0) compact.ui = field.ui;
+
+      // 处理嵌套字段（如 samplingParams）
+      if (field.nestedFields && Array.isArray(field.nestedFields)) {
+        compact.type = 'object';
+        compact.nestedFields = field.nestedFields
+          .filter(nf => nf.status === 'supported')
+          .map(nf => {
+            const nCompact = {
+              key: nf.key,
+              type: nf.type,
+              default: nf.defaultValue,
+              label: nf.displayName,
+            };
+            if (nf.description) nCompact.description = nf.description;
+            if (nf.range) nCompact.range = nf.range;
+            if (nf.values) nCompact.values = nf.values;
+            if (nf.ui && Object.keys(nf.ui).length > 0) nCompact.ui = nf.ui;
+            return nCompact;
+          });
+      }
+
+      parameters[key] = compact;
+    }
+
+    // 构建 locked 对象（含值和原因）
+    const locked = {};
+    for (const [key, info] of Object.entries(lockedParams)) {
+      locked[key] = {
+        value: info.value,
+        valueSource: info.valueSource || null,
+        reason: info.reason || null
+      };
+    }
+
+    // 过滤 UI 分组：只保留含 supported 字段的分组
+    const supportedSet = new Set(Object.keys(parameters));
+    const groups = uiGroups
+      .map(g => ({
+        key: g.key,
+        displayName: g.displayName,
+        order: g.order,
+        collapsed: g.collapsed || false,
+        fields: (g.fields || []).filter(f => supportedSet.has(f))
+      }))
+      .filter(g => g.fields.length > 0);
+
+    return {
+      parameters,
+      locked,
+      unsupported: fieldIndex.unsupported || [],
+      groups,
+      capabilityDigest: compiled.capabilityDigest
+    };
+  }
+
+  /**
+   * 从 toDisplayDto 输出中提取统一的紧凑音色 DTO
+   * 所有新端点使用此方法，保证字段一致
+   */
+  _toCompactVoiceDto(displayDto) {
+    return {
+      id: displayDto.id,
+      voiceCode: displayDto.voiceCode,
+      displayName: displayDto.displayName,
+      gender: displayDto.gender,
+      languages: displayDto.languages,
+      categories: displayDto.categories,
+      tags: displayDto.tags,
+      previewUrl: displayDto.previewUrl
+    };
+  }
+
+  /**
+   * 构建前端可直接使用的调用模板（预填默认值）
+   */
+  _toCompactRequestTemplate(serviceKey, compiled) {
+    const basePath = '/api/tts';
+    let quickEndpoint = `POST ${basePath}/synthesize`;
+
+    if (this._providerRegistry) {
+      const rd = this._providerRegistry.getRouteDescriptor(serviceKey);
+      if (rd) {
+        quickEndpoint = `${rd.primary.method} ${rd.primary.path}`;
+      }
+    } else {
+      const parts = serviceKey.split('_');
+      quickEndpoint = `POST ${basePath}/${parts[0]}/${parts.slice(1).join('_')}`;
+    }
+
+    // 预填 options：仅 supported 字段的默认值
+    const defaults = compiled.getDefaults();
+    const supportedFields = new Set(compiled.getSupportedFields());
+    const SKIP_KEYS = new Set(['voice', 'text']);
+    const options = {};
+    for (const [key, value] of Object.entries(defaults)) {
+      if (SKIP_KEYS.has(key)) continue;
+      if (!supportedFields.has(key)) continue;
+      options[key] = value;
+    }
+
+    return {
+      endpoint: `POST ${basePath}/synthesize`,
+      quickEndpoint,
+      body: {
+        text: '...(输入文本)',
+        service: serviceKey,
+        voiceCode: '(选择音色)',
+        capabilityDigest: compiled.capabilityDigest,
+        options
+      }
+    };
+  }
+
   // ==================== 前端展示 ====================
 
   /**
@@ -585,6 +728,158 @@ class TtsQueryService {
     return {
       success: true,
       data: filters,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // ==================== 表单一体化端点 ====================
+
+  /**
+   * 获取单个服务的合成表单数据（前端一体化接口）
+   * 一次请求返回：服务商信息 + 紧凑能力 + 可用音色 + 调用模板
+   *
+   * @param {string} serviceKey - 服务标识（支持别名）
+   * @param {Object} [query] - 查询参数 { model, mode, includeVoices }
+   */
+  getServiceForm(serviceKey, query = {}) {
+    const canonicalKey = this._resolveCanonicalKey(serviceKey);
+    const pms = this._ensureProviderManagementService();
+    const allInfo = pms.getAllServiceInfo();
+    const info = allInfo.find(i => i.key === canonicalKey);
+
+    if (!info) {
+      return { success: false, error: `Service not found: ${serviceKey}` };
+    }
+
+    // 服务商信息
+    const desc = this._providerRegistry ? this._providerRegistry.get(canonicalKey) : null;
+    const serviceType = desc?.serviceType || canonicalKey.split('_').slice(1).join('_');
+
+    let routes = null;
+    if (this._providerRegistry) {
+      const rd = this._providerRegistry.getRouteDescriptor(canonicalKey);
+      if (rd) {
+        routes = {
+          primary: `${rd.primary.method} ${rd.primary.path}`,
+          aliases: rd.aliases.map(a => `${a.method} ${a.path}`)
+        };
+      }
+    }
+
+    const service = {
+      serviceKey: canonicalKey,
+      providerKey: info.provider,
+      serviceType,
+      displayName: info.displayName,
+      description: info.description,
+      status: info.status,
+      configured: info.availability.credentialsConfigured,
+      available: info.availability.available,
+      defaultVoiceId: null,
+      routes
+    };
+
+    // 能力
+    const resolver = this._ensureCapabilityResolver();
+    let capability = null;
+    let requestTemplate = null;
+
+    try {
+      const ctx = resolver.resolve({
+        serviceKey: canonicalKey,
+        modelKey: query.model || null,
+        mode: query.mode || null
+      });
+
+      if (ctx?.compiled) {
+        capability = this._toCompactCapability(ctx.compiled);
+        requestTemplate = this._toCompactRequestTemplate(canonicalKey, ctx.compiled);
+        service.defaultVoiceId = ctx.defaultVoiceId || null;
+      }
+    } catch (e) {
+      return { success: false, error: `No capability compiled for: ${canonicalKey}` };
+    }
+
+    // 音色
+    let voices = null;
+    let voiceCount = 0;
+    const includeVoices = query.includeVoices !== 'false' && query.includeVoices !== false;
+
+    if (includeVoices) {
+      const reg = this._ensureVoiceRegistry();
+      const displayVoices = reg.getByProviderAndService(info.provider, serviceType);
+      voices = displayVoices
+        .map(v => this._toCompactVoiceDto(v))
+        .filter(Boolean);
+      voiceCount = voices.length;
+    }
+
+    return {
+      success: true,
+      data: {
+        schemaVersion: 'service-form.v1',
+        generatedAt: new Date().toISOString(),
+        service,
+        capability,
+        voices,
+        voiceCount,
+        requestTemplate
+      },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
+   * 获取所有服务的紧凑能力摘要
+   * 每个服务包含：compact capability + voiceCount + formUrl
+   */
+  getAllServicesFormSummary() {
+    const pms = this._ensureProviderManagementService();
+    const resolver = this._ensureCapabilityResolver();
+    const reg = this._voiceRegistry;
+    const allInfo = pms.getAllServiceInfo();
+
+    const services = {};
+    const basePath = '/api/tts';
+
+    for (const info of allInfo) {
+      if (!info.availability.adapterRegistered) continue;
+
+      const desc = this._providerRegistry ? this._providerRegistry.get(info.key) : null;
+      const serviceType = desc?.serviceType || info.key.split('_').slice(1).join('_');
+      const voiceCount = reg ? reg.getByProviderAndService(info.provider, serviceType).length : 0;
+
+      let capability = null;
+      let defaultVoiceId = null;
+
+      try {
+        const ctx = resolver.resolve(info.key);
+        if (ctx?.compiled) {
+          capability = this._toCompactCapability(ctx.compiled);
+        }
+        defaultVoiceId = ctx?.defaultVoiceId || null;
+      } catch (e) { /* skip */ }
+
+      services[info.key] = {
+        displayName: info.displayName,
+        description: info.description,
+        status: info.status,
+        configured: info.availability.credentialsConfigured,
+        available: info.availability.available,
+        defaultVoiceId,
+        capability,
+        voiceCount,
+        formUrl: `${basePath}/services/${info.key}/form`
+      };
+    }
+
+    return {
+      success: true,
+      data: {
+        schemaVersion: 'form-summary.v1',
+        generatedAt: new Date().toISOString(),
+        services
+      },
       timestamp: new Date().toISOString()
     };
   }
