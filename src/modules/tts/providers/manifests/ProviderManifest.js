@@ -406,6 +406,7 @@ const ProviderManifest = {
         ? { min: p.range[0], max: p.range[1] } : p.range;
       if (p.values) entry.validationOverride = { enum: p.values };
       if (p.ui) entry.ui = p.ui;
+      if (p.fallback) entry.fallback = p.fallback;
       if (p.nested) {
         entry.nestedFields = {};
         for (const [nk, nv] of Object.entries(p.nested)) {
@@ -422,6 +423,11 @@ const ProviderManifest = {
 
   getAllServiceDescriptors() {
     return this.getAllServiceKeys().map(key => this.getServiceConfig(key)).filter(Boolean);
+  },
+
+  getCustomFields(serviceKey) {
+    const svc = this.getServiceConfig(serviceKey);
+    return svc?.customFields || {};
   },
 
   // ====== VoiceCode ======

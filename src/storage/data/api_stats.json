@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 1259,
+  "totalCalls": 1412,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -79,12 +79,12 @@
       "lastCalled": "2025-09-22T09:32:02.076Z"
     },
     "GET /": {
-      "totalCalls": 55,
-      "lastCalled": "2026-06-09T16:38:24.906Z"
+      "totalCalls": 56,
+      "lastCalled": "2026-06-12T14:18:08.566Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 258,
-      "lastCalled": "2026-06-10T16:56:56.332Z"
+      "totalCalls": 281,
+      "lastCalled": "2026-06-12T18:18:28.088Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
       "totalCalls": 72,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 340,
-      "lastCalled": "2026-06-10T15:04:03.445Z"
+      "totalCalls": 387,
+      "lastCalled": "2026-06-12T18:17:18.505Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -315,12 +315,12 @@
       "lastCalled": "2026-04-21T09:27:23.449Z"
     },
     "GET /api/tts/health": {
-      "totalCalls": 12,
-      "lastCalled": "2026-06-09T14:43:50.480Z"
+      "totalCalls": 16,
+      "lastCalled": "2026-06-12T18:03:41.453Z"
     },
     "GET /api/tts/bootstrap": {
-      "totalCalls": 4,
-      "lastCalled": "2026-05-23T05:04:30.856Z"
+      "totalCalls": 5,
+      "lastCalled": "2026-06-12T08:35:22.932Z"
     },
     "GET /tts/health": {
       "totalCalls": 3,
@@ -335,8 +335,8 @@
       "lastCalled": "2026-05-17T12:44:52.537Z"
     },
     "GET /api/tts/capabilities/moss_tts": {
-      "totalCalls": 21,
-      "lastCalled": "2026-06-10T15:03:53.546Z"
+      "totalCalls": 22,
+      "lastCalled": "2026-06-12T18:07:20.617Z"
     },
     "GET /tts/voices/moss-tts-ashui/detail": {
       "totalCalls": 1,
@@ -539,8 +539,8 @@
       "lastCalled": "2026-06-03T14:44:01.586Z"
     },
     "GET /api/tts/capabilities/mimo_tts": {
-      "totalCalls": 1,
-      "lastCalled": "2026-06-03T10:56:33.364Z"
+      "totalCalls": 9,
+      "lastCalled": "2026-06-12T18:17:14.877Z"
     },
     "GET /api/tts/voices/test-id/detail": {
       "totalCalls": 1,
@@ -591,17 +591,105 @@
       "lastCalled": "2026-06-10T15:05:26.731Z"
     },
     "GET /api/tts/services/moss_tts/form": {
-      "totalCalls": 3,
-      "lastCalled": "2026-06-10T15:22:22.128Z"
+      "totalCalls": 4,
+      "lastCalled": "2026-06-11T12:59:16.004Z"
     },
     "GET /api/tts/services/form-summary": {
-      "totalCalls": 1,
-      "lastCalled": "2026-06-10T15:22:02.898Z"
+      "totalCalls": 7,
+      "lastCalled": "2026-06-12T18:17:02.748Z"
     },
     "GET /services/form-summary": {
       "totalCalls": 1,
       "lastCalled": "2026-06-10T15:37:14.533Z"
+    },
+    "POST /api/voices/instruction/preview": {
+      "totalCalls": 27,
+      "lastCalled": "2026-06-12T14:31:11.263Z"
+    },
+    "GET /audio/gen_006_20260612221152_d3039027.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T14:11:59.967Z"
+    },
+    "GET /audio/gen_006_20260612221912_d5d09c48.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T14:19:12.308Z"
+    },
+    "GET /audio/gen_006_20260612222901_a2257531.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T14:29:01.399Z"
+    },
+    "GET /audio/gen_006_20260612223111_1c861ad2.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T14:31:11.320Z"
+    },
+    "GET /audio/syn_006_20260613014948_f194a2d7.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T17:50:03.565Z"
+    },
+    "GET /audio/syn_006_20260613015047_dfbb0467.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T17:50:47.599Z"
+    },
+    "GET /audio/syn_006_20260613015057_d7550e10.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T17:50:57.932Z"
+    },
+    "GET /audio/syn_006_20260613015422_c9ff002c.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T17:54:38.036Z"
+    },
+    "GET /audio/syn_006_20260613015451_0bd18fb3.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T17:54:51.394Z"
+    },
+    "GET /audio/syn_006_20260613015505_35c156dd.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T17:55:20.865Z"
+    },
+    "GET /audio/syn_006_20260613015617_49a233bc.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T17:56:32.698Z"
+    },
+    "GET /audio/syn_006_20260613015638_eac9fbd2.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T17:56:38.292Z"
+    },
+    "GET /audio/syn_006_20260613015652_a204bef0.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T17:57:07.098Z"
+    },
+    "GET /audio/syn_006_20260613020436_17b52b5c.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:04:51.352Z"
+    },
+    "GET /audio/syn_006_20260613020524_7d70d05a.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:05:39.854Z"
+    },
+    "GET /audio/syn_006_20260613020547_98495de3.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:06:02.786Z"
+    },
+    "GET /audio/syn_006_20260613020629_62d12b09.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:06:44.674Z"
+    },
+    "GET /audio/syn_006_20260613020647_ec1c4de4.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:07:02.289Z"
+    },
+    "GET /audio/syn_001_20260613020727_6649edc0.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-12T18:07:27.962Z"
+    },
+    "GET /audio/syn_006_20260613020831_b3d2e7f1.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-12T18:08:46.917Z"
+    },
+    "GET /audio/syn_006_20260613021026_d3104765.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-12T18:12:39.846Z"
     }
   },
-  "lastUpdated": "2026-06-10T16:56:56.332Z"
+  "lastUpdated": "2026-06-12T18:18:28.088Z"
 }

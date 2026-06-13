@@ -171,6 +171,23 @@ class ServiceContainer {
     const validationService = new TtsValidationService();
     this._services.set('validationService', validationService);
 
+    // 10.1 ProviderMetricsCollector（调用指标收集）
+    const { ProviderMetricsCollector } = require('../modules/tts/infrastructure/ProviderMetricsCollector');
+    const metricsCollector = new ProviderMetricsCollector({
+      redis: redisPool.isReady() ? redisPool.getPrimary() : null,
+      windowSeconds: 3600
+    });
+    this._services.set('metricsCollector', metricsCollector);
+
+    // 10.2 ProviderFallbackChain（自动降级链路）
+    const { ProviderFallbackChain } = require('../modules/tts/infrastructure/ProviderFallbackChain');
+    const fallbackChain = new ProviderFallbackChain({
+      executionPolicy,
+      capabilityResolver,
+      providerManagementService: pms
+    });
+    this._services.set('fallbackChain', fallbackChain);
+
     // 11. VoiceCatalog（查询门面，复用上面创建的 catalog 实例）
     const voiceCatalogQuery = voiceCatalog;
     this._services.set('voiceCatalogQuery', voiceCatalogQuery);
@@ -199,14 +216,15 @@ class ServiceContainer {
     // 15. 合成服务
     const synthesisService = new TtsSynthesisService({
       ttsProvider: ttsProviderAdapter,
-      voiceCatalog: voiceCatalogAdapter,
       validator: validationService,
       capabilityResolver: capabilityResolver,
       parameterResolutionService: parameterResolutionService,
       executionPolicy: executionPolicy,
       synthesisQueue,
       voiceResolver,
-      providerRegistry
+      providerRegistry,
+      metricsCollector,
+      fallbackChain
     });
     this._services.set('synthesisService', synthesisService);
 
@@ -251,8 +269,27 @@ class ServiceContainer {
       const audioCache = require('../shared/utils/audioCache');
       clearAllCacheFn = audioCache.clearAllCache;
     } catch (e) { /* audioCache 可选 */ }
-    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, { clearAllCache: clearAllCacheFn, providerRegistry, synthesisQueue });
+    const ttsHttpAdapter = new TtsHttpAdapter(synthesisService, queryService, {
+      clearAllCache: clearAllCacheFn,
+      providerRegistry,
+      synthesisQueue,
+      metricsCollector
+    });
     this._services.set('ttsHttpAdapter', ttsHttpAdapter);
+
+    // 20. ManifestWatcher（开发环境自动启用）
+    if (process.env.MANIFEST_HOT_RELOAD === 'true' ||
+        (process.env.NODE_ENV !== 'production' && process.env.MANIFEST_HOT_RELOAD !== 'false')) {
+      const { ManifestWatcher } = require('../modules/tts/config/ManifestWatcher');
+      const manifestWatcher = new ManifestWatcher({
+        providerManifest: ProviderManifest,
+        fieldDefinitionSystem: FieldDefinitionSystem,
+        providerRegistry,
+        capabilityResolver
+      });
+      manifestWatcher.start();
+      this._services.set('manifestWatcher', manifestWatcher);
+    }
 
     this._initialized = true;
     console.log('[ServiceContainer] Services initialized successfully');

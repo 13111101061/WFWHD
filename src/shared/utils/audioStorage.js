@@ -4,47 +4,33 @@ const crypto = require('crypto');
 const config = require('../config/config');
 const { sanitizeFilename, ensurePathInsideBase, sanitizeSubDir } = require('./pathSecurity');
 
-/**
- * 统一音频存储管理器
- * 提供安全、统一、高效的音频文件存储服务
- */
 class AudioStorageManager {
   constructor(options = {}) {
     this.options = {
-      // 音频存储根目录
       baseDir: options.baseDir || process.env.AUDIO_STORAGE_DIR || config.audio.directory,
-      // URL前缀
       urlPrefix: options.urlPrefix || process.env.AUDIO_URL_PREFIX || config.audio.urlPrefix,
-      // 文件名长度限制
       maxFilenameLength: options.maxFilenameLength || 100,
-      // 支持的音频格式
       supportedFormats: options.supportedFormats || ['mp3', 'wav', 'pcm', 'flac', 'ogg'],
-      // 是否启用文件清理
       enableCleanup: options.enableCleanup !== false,
-      // 文件保留时间（毫秒）
-      retentionPeriod: options.retentionPeriod || 7 * 24 * 60 * 60 * 1000, // 7天
+      retentionPeriod: options.retentionPeriod || 7 * 24 * 60 * 60 * 1000,
+      retentionByType: {
+        gen: 3 * 24 * 60 * 60 * 1000,
+        cln: 3 * 24 * 60 * 60 * 1000,
+        syn: 7 * 24 * 60 * 60 * 1000
+      },
+      maxTotalSizeBytes: options.maxTotalSizeBytes || 30 * 1024 * 1024 * 1024,
       ...options
     };
 
-    // 确保路径是绝对路径
     this.baseDir = path.resolve(this.options.baseDir);
-
-    // 定时器引用（用于关闭）
     this.cleanupTimer = null;
-
-    // 初始化
     this.initialize();
   }
 
-  /**
-   * 初始化音频存储目录
-   */
   async initialize() {
     try {
       await this.ensureDirectory(this.baseDir);
       console.log(`📁 音频存储目录初始化成功: ${this.baseDir}`);
-
-      // 如果启用清理，创建清理定时任务
       if (this.options.enableCleanup) {
         this.scheduleCleanup();
       }
@@ -54,10 +40,6 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 确保目录存在
-   * @param {string} dirPath - 目录路径
-   */
   async ensureDirectory(dirPath) {
     try {
       await fs.access(dirPath);
@@ -71,29 +53,39 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 生成安全的文件名
-   * @param {string} originalName - 原始文件名或文本
-   * @param {string} extension - 文件扩展名
-   * @param {Object} options - 选项
-   * @returns {string} 安全的文件名
-   */
+  _computeContentHash(buffer) {
+    return crypto.createHash('md5').update(buffer).digest('hex').substring(0, 8);
+  }
+
+  _resolveSubDir(metadata) {
+    const providerCode = metadata.providerCode || '000';
+    const now = new Date();
+    const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return `${providerCode}/${yearMonth}`;
+  }
+
+  _getRetentionForType(type) {
+    if (type && this.options.retentionByType[type]) {
+      return this.options.retentionByType[type];
+    }
+    return this.options.retentionPeriod;
+  }
+
   generateSafeFilename(originalName, extension = 'mp3', options = {}) {
     const {
       useTimestamp = true,
       useHash = true,
       prefix = '',
       suffix = '',
-      // 结构化命名（CDN 友好，无中文无服务商名）
       nameFormat = null,
       type = null,
-      providerCode = null
+      providerCode = null,
+      contentHash = null
     } = options;
 
     let filename = '';
 
     if (nameFormat === 'structured' && type && providerCode) {
-      // 格式：{type}_{code}_{yyyymmddHHmmss}
       const now = new Date();
       const datePart = [
         now.getFullYear(),
@@ -105,47 +97,38 @@ class AudioStorageManager {
       ].join('');
       filename = `${type}_${providerCode}_${datePart}`;
     } else {
-      // 前缀
       if (prefix) {
         filename += `${prefix}_`;
       }
-
-      // 原始名称（文本）
       if (originalName && typeof originalName === 'string') {
         const cleanName = originalName
           .replace(/[<>:"/\\|?*]/g, '_')
           .replace(/\s+/g, '_')
           .substring(0, 50);
-
         if (cleanName) {
           filename += cleanName;
         }
       }
     }
 
-    // 时间戳（结构化模式下日期已含时间，跳过）
     if (useTimestamp && nameFormat !== 'structured') {
       const timestamp = Date.now();
       filename += filename ? `_${timestamp}` : timestamp;
     }
 
-    // 哈希
     if (useHash) {
-      const hash = crypto.randomBytes(4).toString('hex');
+      const hash = contentHash || crypto.randomBytes(4).toString('hex');
       filename += filename ? `_${hash}` : hash;
     }
 
-    // 后缀
     if (suffix) {
       filename += `_${suffix}`;
     }
 
-    // 限制总长度
     if (filename.length > this.options.maxFilenameLength - extension.length - 1) {
       filename = filename.substring(0, this.options.maxFilenameLength - extension.length - 1);
     }
 
-    // 扩展名校验
     const cleanExtension = extension.replace(/^\./, '').toLowerCase();
     if (!this.options.supportedFormats.includes(cleanExtension)) {
       throw new Error(`不支持的音频格式: ${cleanExtension}`);
@@ -154,12 +137,6 @@ class AudioStorageManager {
     return `${filename}.${cleanExtension}`;
   }
 
-  /**
-   * 生成文件路径
-   * @param {string} filename - 文件名
-   * @param {string} subDir - 子目录（可选）
-   * @returns {string} 完整文件路径
-   */
   generateFilePath(filename, subDir = '') {
     const safeFilename = sanitizeFilename(filename);
     let fullPath = this.baseDir;
@@ -174,12 +151,6 @@ class AudioStorageManager {
     return finalPath;
   }
 
-  /**
-   * 生成文件URL
-   * @param {string} filename - 文件名
-   * @param {string} subDir - 子目录（可选）
-   * @returns {string} 文件URL
-   */
   generateFileUrl(filename, subDir = '') {
     const safeFilename = sanitizeFilename(filename);
     let urlPath = this.options.urlPrefix;
@@ -190,7 +161,6 @@ class AudioStorageManager {
 
     const relativeUrl = `${urlPath}/${safeFilename}`;
 
-    // 如果配置了 PUBLIC_BASE_URL，生成绝对 URL（适用于 BFF / 网关 / CDN 场景）
     const publicBaseUrl = process.env.PUBLIC_BASE_URL || this.options.publicBaseUrl;
     if (publicBaseUrl) {
       const base = publicBaseUrl.replace(/\/$/, '');
@@ -200,22 +170,93 @@ class AudioStorageManager {
     return relativeUrl;
   }
 
-  /**
-   * 保存音频文件
-   * @param {Buffer|string} audioData - 音频数据
-   * @param {Object} options - 保存选项
-   * @returns {Promise<Object>} 保存结果
-   */
+  async _findExistingFile(contentHash, providerCode, type) {
+    if (!contentHash) return null;
+
+    const scanDir = async (dirPath) => {
+      try {
+        const entries = await fs.readdir(dirPath, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(dirPath, entry.name);
+          if (entry.isDirectory()) {
+            const found = await scanDir(fullPath);
+            if (found) return found;
+          } else if (entry.isFile() && entry.name.includes('_' + contentHash + '.')) {
+            const prefix = type || '\\w+';
+            const pattern = new RegExp('^' + prefix + '_');
+            if (pattern.test(entry.name)) {
+              return fullPath;
+            }
+          }
+        }
+      } catch (e) { /* skip */ }
+      return null;
+    };
+
+    return scanDir(this.baseDir);
+  }
+
+  async _writeSidecarMeta(filePath, metadata) {
+    const metaPath = filePath + '.meta.json';
+    const sidecar = {
+      ...metadata,
+      savedAt: new Date().toISOString(),
+      audioFile: path.basename(filePath)
+    };
+    try {
+      await fs.writeFile(metaPath, JSON.stringify(sidecar, null, 2), 'utf-8');
+    } catch (e) {
+      console.warn(`⚠️ Sidecar 写入失败: ${metaPath} — ${e.message}`);
+    }
+  }
+
   async saveAudioFile(audioData, options = {}) {
     const {
       filename: originalFilename = null,
       extension = 'mp3',
-      subDir = '',
+      subDir: explicitSubDir = '',
       metadata = {}
     } = options;
 
     try {
-      // 生成文件名
+      const buffer = Buffer.isBuffer(audioData)
+        ? audioData
+        : typeof audioData === 'string'
+          ? Buffer.from(audioData, 'binary')
+          : null;
+
+      if (!buffer) {
+        throw new Error('音频数据格式不支持，必须是Buffer或string');
+      }
+
+      const contentHash = this._computeContentHash(buffer);
+      const autoSubDir = this._resolveSubDir(metadata);
+      const subDir = explicitSubDir || autoSubDir;
+
+      const existingPath = await this._findExistingFile(
+        contentHash,
+        metadata.providerCode || '000',
+        metadata.type || null
+      );
+
+      if (existingPath) {
+        const stats = await fs.stat(existingPath);
+        const existingFilename = path.basename(existingPath);
+        const existingSubDir = path.relative(this.baseDir, path.dirname(existingPath));
+        const url = this.generateFileUrl(existingFilename, existingSubDir);
+        console.log(`♻️ 命中去重缓存: ${existingFilename}`);
+        return {
+          success: true,
+          deduplicated: true,
+          filename: existingFilename,
+          filePath: existingPath,
+          url,
+          size: stats.size,
+          createdAt: stats.birthtime.toISOString(),
+          metadata: { ...metadata, extension, subDir: existingSubDir, contentHash }
+        };
+      }
+
       const filename = originalFilename || this.generateSafeFilename(
         metadata.text || metadata.service || 'audio',
         extension,
@@ -224,47 +265,36 @@ class AudioStorageManager {
           suffix: metadata.taskId || '',
           nameFormat: metadata.nameFormat || null,
           type: metadata.type || null,
-          providerCode: metadata.providerCode || null
+          providerCode: metadata.providerCode || null,
+          contentHash
         }
       );
 
-      // 生成文件路径
       const filePath = this.generateFilePath(filename, subDir);
       const dirPath = path.dirname(filePath);
-
-      // 确保目录存在
       await this.ensureDirectory(dirPath);
+      await fs.writeFile(filePath, buffer);
+      await this._writeSidecarMeta(filePath, {
+        ...metadata,
+        contentHash,
+        extension,
+        subDir
+      });
 
-      // 保存文件
-      if (Buffer.isBuffer(audioData)) {
-        await fs.writeFile(filePath, audioData);
-      } else if (typeof audioData === 'string') {
-        await fs.writeFile(filePath, Buffer.from(audioData, 'binary'));
-      } else {
-        throw new Error('音频数据格式不支持，必须是Buffer或string');
-      }
-
-      // 获取文件信息
       const stats = await fs.stat(filePath);
-
-      // 生成URL
       const url = this.generateFileUrl(filename, subDir);
 
       console.log(`💾 音频文件保存成功: ${filePath} (${stats.size} bytes)`);
 
       return {
         success: true,
+        deduplicated: false,
         filename,
         filePath,
         url,
         size: stats.size,
         createdAt: stats.birthtime.toISOString(),
-        metadata: {
-          ...metadata,
-          extension,
-          subDir,
-          originalFilename
-        }
+        metadata: { ...metadata, extension, subDir, contentHash, originalFilename }
       };
 
     } catch (error) {
@@ -273,16 +303,11 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 删除音频文件
-   * @param {string} filename - 文件名
-   * @param {string} subDir - 子目录（可选）
-   * @returns {Promise<boolean>} 是否删除成功
-   */
   async deleteAudioFile(filename, subDir = '') {
     try {
       const filePath = this.generateFilePath(filename, subDir);
       await fs.unlink(filePath);
+      try { await fs.unlink(filePath + '.meta.json'); } catch (e) { /* sidecar optional */ }
       console.log(`🗑️ 音频文件删除成功: ${filePath}`);
       return true;
     } catch (error) {
@@ -295,12 +320,6 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 检查文件是否存在
-   * @param {string} filename - 文件名
-   * @param {string} subDir - 子目录（可选）
-   * @returns {Promise<boolean>} 文件是否存在
-   */
   async fileExists(filename, subDir = '') {
     try {
       const filePath = this.generateFilePath(filename, subDir);
@@ -311,16 +330,16 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 获取文件信息
-   * @param {string} filename - 文件名
-   * @param {string} subDir - 子目录（可选）
-   * @returns {Promise<Object|null>} 文件信息
-   */
   async getFileInfo(filename, subDir = '') {
     try {
       const filePath = this.generateFilePath(filename, subDir);
       const stats = await fs.stat(filePath);
+
+      let sidecarMeta = null;
+      try {
+        const raw = await fs.readFile(filePath + '.meta.json', 'utf-8');
+        sidecarMeta = JSON.parse(raw);
+      } catch (e) { /* no sidecar */ }
 
       return {
         filename,
@@ -329,30 +348,26 @@ class AudioStorageManager {
         size: stats.size,
         createdAt: stats.birthtime.toISOString(),
         modifiedAt: stats.mtime.toISOString(),
-        accessedAt: stats.atime.toISOString()
+        accessedAt: stats.atime.toISOString(),
+        metadata: sidecarMeta
       };
     } catch (error) {
       return null;
     }
   }
 
-  /**
-   * 清理过期文件
-   * @param {number} maxAge - 最大保留时间（毫秒）
-   * @returns {Promise<Object>} 清理结果
-   */
-  async cleanupExpiredFiles(maxAge = this.options.retentionPeriod) {
+  async cleanupExpiredFiles(maxAge = null) {
     if (!this.options.enableCleanup) {
-      return { cleaned: 0, errors: [] };
+      return { cleaned: 0, errors: [], totalFreed: 0 };
     }
 
     try {
       console.log('🧹 开始清理过期音频文件...');
       const now = Date.now();
       let cleaned = 0;
+      let totalFreed = 0;
       const errors = [];
 
-      // 递归扫描目录
       const scanDirectory = async (dirPath) => {
         try {
           const entries = await fs.readdir(dirPath, { withFileTypes: true });
@@ -362,22 +377,32 @@ class AudioStorageManager {
 
             if (entry.isDirectory()) {
               await scanDirectory(fullPath);
+              try {
+                const remaining = await fs.readdir(fullPath);
+                if (remaining.length === 0) {
+                  await fs.rmdir(fullPath);
+                }
+              } catch (e) { /* ignore */ }
             } else if (entry.isFile()) {
-              // 检查文件扩展名
-              const ext = path.extname(entry.name).toLowerCase().substring(1);
-              if (!this.options.supportedFormats.includes(ext)) {
-                continue; // 跳过非音频文件
-              }
+              if (entry.name.endsWith('.meta.json')) continue;
 
-              // 检查文件年龄
+              const ext = path.extname(entry.name).toLowerCase().substring(1);
+              if (!this.options.supportedFormats.includes(ext)) continue;
+
               const stats = await fs.stat(fullPath);
               const fileAge = now - stats.mtime.getTime();
 
-              if (fileAge > maxAge) {
+              const typeMatch = entry.name.match(/^(syn|gen|cln)_/);
+              const fileType = typeMatch ? typeMatch[1] : null;
+              const retention = maxAge || this._getRetentionForType(fileType);
+
+              if (fileAge > retention) {
                 try {
                   await fs.unlink(fullPath);
+                  try { await fs.unlink(fullPath + '.meta.json'); } catch (e) { /* optional */ }
                   cleaned++;
-                  console.log(`🗑️ 删除过期文件: ${fullPath}`);
+                  totalFreed += stats.size;
+                  console.log(`🗑️ 删除过期文件 (${fileType || 'unknown'}, ${Math.round(fileAge / 86400000)}天): ${fullPath}`);
                 } catch (error) {
                   errors.push({ file: fullPath, error: error.message });
                 }
@@ -391,26 +416,89 @@ class AudioStorageManager {
 
       await scanDirectory(this.baseDir);
 
-      console.log(`🧹 清理完成，删除了 ${cleaned} 个过期文件`);
-      return { cleaned, errors };
+      console.log(`🧹 清理完成，删除了 ${cleaned} 个过期文件，释放 ${this._formatSize(totalFreed)}`);
+      return { cleaned, errors, totalFreed };
 
     } catch (error) {
       console.error('❌ 文件清理失败:', error.message);
-      return { cleaned: 0, errors: [{ error: error.message }] };
+      return { cleaned: 0, errors: [{ error: error.message }], totalFreed: 0 };
     }
   }
 
-  /**
-   * 定时清理任务
-   */
+  async enforceMaxTotalSize() {
+    const maxSize = this.options.maxTotalSizeBytes;
+    if (!maxSize) return { evicted: 0, freed: 0 };
+
+    try {
+      const files = [];
+
+      const collectFiles = async (dirPath) => {
+        try {
+          const entries = await fs.readdir(dirPath, { withFileTypes: true });
+          for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+            if (entry.isDirectory()) {
+              await collectFiles(fullPath);
+            } else if (entry.isFile() && !entry.name.endsWith('.meta.json')) {
+              const ext = path.extname(entry.name).toLowerCase().substring(1);
+              if (this.options.supportedFormats.includes(ext)) {
+                const stats = await fs.stat(fullPath);
+                files.push({ path: fullPath, size: stats.size, mtime: stats.mtime.getTime() });
+              }
+            }
+          }
+        } catch (e) { /* skip */ }
+      };
+
+      await collectFiles(this.baseDir);
+
+      let totalSize = files.reduce((sum, f) => sum + f.size, 0);
+
+      if (totalSize <= maxSize) {
+        return { evicted: 0, freed: 0, totalSize };
+      }
+
+      files.sort((a, b) => a.mtime - b.mtime);
+
+      let evicted = 0;
+      let freed = 0;
+
+      for (const file of files) {
+        if (totalSize <= maxSize) break;
+        try {
+          await fs.unlink(file.path);
+          try { await fs.unlink(file.path + '.meta.json'); } catch (e) { /* optional */ }
+          totalSize -= file.size;
+          freed += file.size;
+          evicted++;
+          console.log(`🗑️ 容量淘汰 (最旧): ${file.path} (${this._formatSize(file.size)})`);
+        } catch (e) {
+          console.warn(`⚠️ 容量淘汰失败: ${file.path} — ${e.message}`);
+        }
+      }
+
+      console.log(`🧹 容量淘汰完成: 删除 ${evicted} 个文件，释放 ${this._formatSize(freed)}，当前 ${this._formatSize(totalSize)}`);
+      return { evicted, freed, totalSize };
+
+    } catch (error) {
+      console.error('❌ 容量淘汰失败:', error.message);
+      return { evicted: 0, freed: 0, error: error.message };
+    }
+  }
+
+  _formatSize(bytes) {
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)}GB`;
+  }
+
   scheduleCleanup() {
-    // 每天凌晨2点执行清理
     const scheduleNextCleanup = () => {
       const now = new Date();
       const nextCleanup = new Date(now);
       nextCleanup.setHours(2, 0, 0, 0);
 
-      // 如果已经过了今天的2点，安排到明天
       if (nextCleanup <= now) {
         nextCleanup.setDate(nextCleanup.getDate() + 1);
       }
@@ -420,17 +508,14 @@ class AudioStorageManager {
 
       this.cleanupTimer = setTimeout(async () => {
         await this.cleanupExpiredFiles();
-        scheduleNextCleanup(); // 安排下次清理
+        await this.enforceMaxTotalSize();
+        scheduleNextCleanup();
       }, delay);
     };
 
     scheduleNextCleanup();
   }
 
-  /**
-   * 停止定时清理任务
-   * 用于测试环境或服务关闭时释放资源
-   */
   stopCleanup() {
     if (this.cleanupTimer) {
       clearTimeout(this.cleanupTimer);
@@ -439,17 +524,15 @@ class AudioStorageManager {
     }
   }
 
-  /**
-   * 获取存储统计信息
-   * @returns {Promise<Object>} 统计信息
-   */
   async getStorageStats() {
     try {
       let totalFiles = 0;
       let totalSize = 0;
+      let totalMetaFiles = 0;
       const formatStats = {};
+      const typeStats = {};
+      const providerStats = {};
 
-      // 递归扫描目录
       const scanDirectory = async (dirPath) => {
         const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
@@ -459,6 +542,11 @@ class AudioStorageManager {
           if (entry.isDirectory()) {
             await scanDirectory(fullPath);
           } else if (entry.isFile()) {
+            if (entry.name.endsWith('.meta.json')) {
+              totalMetaFiles++;
+              continue;
+            }
+
             const ext = path.extname(entry.name).toLowerCase().substring(1);
 
             if (this.options.supportedFormats.includes(ext)) {
@@ -467,6 +555,16 @@ class AudioStorageManager {
               totalSize += stats.size;
 
               formatStats[ext] = (formatStats[ext] || 0) + 1;
+
+              const typeMatch = entry.name.match(/^(syn|gen|cln)_/);
+              if (typeMatch) {
+                typeStats[typeMatch[1]] = (typeStats[typeMatch[1]] || 0) + 1;
+              }
+
+              const providerMatch = entry.name.match(/^\w+_(\d{3})_/);
+              if (providerMatch) {
+                providerStats[providerMatch[1]] = (providerStats[providerMatch[1]] || 0) + 1;
+              }
             }
           }
         }
@@ -477,8 +575,19 @@ class AudioStorageManager {
       return {
         totalFiles,
         totalSize,
+        totalSizeFormatted: this._formatSize(totalSize),
+        maxTotalSize: this._formatSize(this.options.maxTotalSizeBytes),
+        utilization: ((totalSize / this.options.maxTotalSizeBytes) * 100).toFixed(2) + '%',
+        totalMetaFiles,
         averageFileSize: totalFiles > 0 ? Math.round(totalSize / totalFiles) : 0,
         formatStats,
+        typeStats,
+        providerStats,
+        retentionByType: {
+          gen: `${this.options.retentionByType.gen / 86400000}天`,
+          cln: `${this.options.retentionByType.cln / 86400000}天`,
+          syn: `${this.options.retentionByType.syn / 86400000}天`
+        },
         baseDir: this.baseDir,
         urlPrefix: this.options.urlPrefix,
         timestamp: new Date().toISOString()
@@ -494,14 +603,8 @@ class AudioStorageManager {
   }
 }
 
-// 创建默认实例
 const audioStorageManager = new AudioStorageManager();
 
-/**
- * providerKey → providerCode 映射（从 manifest voiceCode 读取）
- * @param {string} providerKey  e.g. 'mimo', 'moss'
- * @returns {string} 3位 providerCode，未知返回 '000'
- */
 function getProviderCode(providerKey) {
   try {
     const { ProviderManifest } = require('../../modules/tts/providers/manifests/ProviderManifest');

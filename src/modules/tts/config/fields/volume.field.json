@@ -1,0 +1,26 @@
+{
+  "$field": "volume",
+  "key": "volume",
+  "displayName": "音量",
+  "description": "语音音量大小",
+  "type": "number",
+  "category": "audio",
+  "required": false,
+  "platformDefault": 5,
+  "platformRange": { "min": 0, "max": 10 },
+  "ui": {
+    "group": "audio",
+    "order": 3,
+    "inputType": "slider",
+    "step": 1,
+    "labels": {
+      "0": "静音",
+      "5": "正常",
+      "10": "最大"
+    }
+  },
+  "validation": {
+    "range": { "min": 0, "max": 10 },
+    "integer": true
+  }
+}

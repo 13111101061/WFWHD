@@ -267,6 +267,15 @@ class ExecutionPolicy {
     }));
   }
 
+  /**
+   * 检查某个 serviceKey 的 circuit breaker 是否处于 OPEN 状态
+   * 供 ProviderFallbackChain 判断降级候选的健康度
+   */
+  isCircuitOpen(serviceKey) {
+    const breaker = this.circuitBreakers.get(serviceKey);
+    return breaker ? breaker.isOpen() : false;
+  }
+
   getHealthStatus() {
     const breakerStatus = this._getCircuitBreakerStatus();
     const openBreakers = breakerStatus.filter(cb => cb.state === 'OPEN');

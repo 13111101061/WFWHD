@@ -125,6 +125,8 @@ function compileField(fieldKey, platformField, serviceOverride, providerMapping)
     mapping: providerMapping || null,
     platformNested: platformField?.nestedFields || null,
     reason: serviceOverride?.reason,
+    dependsOn: platformField?.dependsOn || null,
+    fallback: serviceOverride?.fallback || null,
 
     provenance: {
       hasPlatformDef: !!platformField,
@@ -305,6 +307,65 @@ const CapabilityCompiler = {
 
       const status = compiled.status;
       if (fieldIndex[status]) fieldIndex[status].push(fieldKey);
+    }
+
+    const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
+    const customFields = ProviderManifest.getCustomFields(serviceKey) || {};
+    for (const [fieldKey, customDef] of Object.entries(customFields)) {
+      if (compiledFields[fieldKey]) continue;
+
+      const customMapping = customDef.mapTo ? {
+        providerPath: customDef.mapTo,
+        transform: customDef.mapTo !== fieldKey ? 'rename' : 'direct'
+      } : null;
+
+      const compiled = {
+        key: fieldKey,
+        displayName: customDef.displayName || fieldKey,
+        description: customDef.description || '',
+        type: customDef.type || 'string',
+        category: customDef.category || 'advanced',
+        status: SupportStatus.SUPPORTED,
+        required: customDef.required || false,
+        defaultValue: customDef.default,
+        range: customDef.range ? (Array.isArray(customDef.range) ? { min: customDef.range[0], max: customDef.range[1] } : customDef.range) : null,
+        values: customDef.values || null,
+        ui: customDef.ui || {},
+        validation: customDef.validation || {},
+        lockedValue: null,
+        lockedValueSource: null,
+        mapping: customMapping,
+        platformNested: customDef.nestedFields || null,
+        reason: null,
+        provenance: {
+          hasPlatformDef: false,
+          hasServiceOverride: false,
+          hasProviderMapping: !!customMapping,
+          isCustomField: true
+        }
+      };
+
+      compiled.validator = generateValidator(compiled);
+      compiled.mapper = generateMapper(compiled, apiStructure);
+
+      if (customDef.type === 'object' && customDef.nestedFields) {
+        compiled.nestedFields = Object.entries(customDef.nestedFields).map(([nk, nv]) => ({
+          key: nk,
+          fullKey: `${fieldKey}.${nk}`,
+          displayName: nv.displayName || nk,
+          description: nv.description || '',
+          type: nv.type || 'number',
+          status: SupportStatus.SUPPORTED,
+          defaultValue: nv.default,
+          range: nv.range ? (Array.isArray(nv.range) ? { min: nv.range[0], max: nv.range[1] } : nv.range) : null,
+          values: nv.values || null,
+          ui: nv.ui || {},
+          mapping: nv.mapTo ? { providerPath: nv.mapTo, transform: 'nestedPath' } : null
+        }));
+      }
+
+      compiledFields[fieldKey] = compiled;
+      if (fieldIndex.supported) fieldIndex.supported.push(fieldKey);
     }
 
     const compiled = {

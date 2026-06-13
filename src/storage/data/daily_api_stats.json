@@ -441,6 +441,47 @@
         "GET /api/tts/catalog": 1,
         "GET /services/form-summary": 1
       }
+    },
+    "2026-06-11": {
+      "totalCalls": 1,
+      "endpoints": {
+        "GET /api/tts/services/moss_tts/form": 1
+      }
+    },
+    "2026-06-12": {
+      "totalCalls": 152,
+      "endpoints": {
+        "GET /api/tts/bootstrap": 1,
+        "GET /api/tts/services/form-summary": 6,
+        "GET /api/tts/health": 4,
+        "POST /api/voices/instruction/preview": 27,
+        "GET /audio/gen_006_20260612221152_d3039027.wav": 1,
+        "GET /": 1,
+        "GET /audio/gen_006_20260612221912_d5d09c48.wav": 1,
+        "GET /audio/gen_006_20260612222901_a2257531.wav": 1,
+        "GET /audio/gen_006_20260612223111_1c861ad2.wav": 1,
+        "GET /api/tts/capabilities/mimo_tts": 8,
+        "GET /api/tts/voices": 23,
+        "POST /api/tts/synthesize": 47,
+        "GET /audio/syn_006_20260613014948_f194a2d7.wav": 2,
+        "GET /audio/syn_006_20260613015047_dfbb0467.wav": 1,
+        "GET /audio/syn_006_20260613015057_d7550e10.wav": 1,
+        "GET /audio/syn_006_20260613015422_c9ff002c.wav": 2,
+        "GET /audio/syn_006_20260613015451_0bd18fb3.wav": 1,
+        "GET /audio/syn_006_20260613015505_35c156dd.wav": 2,
+        "GET /audio/syn_006_20260613015617_49a233bc.wav": 2,
+        "GET /audio/syn_006_20260613015638_eac9fbd2.wav": 1,
+        "GET /audio/syn_006_20260613015652_a204bef0.wav": 2,
+        "GET /audio/syn_006_20260613020436_17b52b5c.wav": 2,
+        "GET /audio/syn_006_20260613020524_7d70d05a.wav": 2,
+        "GET /audio/syn_006_20260613020547_98495de3.wav": 2,
+        "GET /audio/syn_006_20260613020629_62d12b09.wav": 2,
+        "GET /audio/syn_006_20260613020647_ec1c4de4.wav": 2,
+        "GET /api/tts/capabilities/moss_tts": 1,
+        "GET /audio/syn_001_20260613020727_6649edc0.wav": 1,
+        "GET /audio/syn_006_20260613020831_b3d2e7f1.wav": 2,
+        "GET /audio/syn_006_20260613021026_d3104765.wav": 3
+      }
     }
   }
 }

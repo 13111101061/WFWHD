@@ -1,0 +1,24 @@
+{
+  "$field": "emotion",
+  "key": "emotion",
+  "displayName": "情感风格",
+  "description": "语音的情感表达风格",
+  "type": "enum",
+  "category": "expression",
+  "required": false,
+  "platformDefault": "neutral",
+  "platformValues": ["neutral", "happy", "sad", "angry", "fearful", "surprised", "disgusted"],
+  "dependsOn": {
+    "field": "instruction",
+    "condition": "absent"
+  },
+  "ui": {
+    "group": "expression",
+    "order": 1,
+    "inputType": "select",
+    "advanced": true
+  },
+  "validation": {
+    "enum": ["neutral", "happy", "sad", "angry", "fearful", "surprised", "disgusted"]
+  }
+}

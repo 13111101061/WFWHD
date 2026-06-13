@@ -25,16 +25,41 @@ class FieldDefinitionRegistry {
   _loadPlatformFields() {
     const fs = require('fs');
     const path = require('path');
-    const filePath = path.join(__dirname, 'fields', 'platform-fields.json');
-    try {
-      const content = fs.readFileSync(filePath, 'utf8');
+    const fieldsDir = path.join(__dirname, 'fields');
+
+    this._platformFields = { fields: {}, uiGroups: {}, categories: {} };
+
+    const metaPath = path.join(fieldsDir, '_meta.json');
+    if (fs.existsSync(metaPath)) {
+      const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+      this._platformFields.uiGroups = meta.uiGroups || {};
+      this._platformFields.categories = meta.categories || {};
+    }
+
+    const legacyPath = path.join(fieldsDir, 'platform-fields.json');
+    const hasPluginFiles = fs.existsSync(fieldsDir) &&
+      fs.readdirSync(fieldsDir, { withFileTypes: true }).some(e => e.isFile() && e.name.endsWith('.field.json'));
+
+    if (hasPluginFiles) {
+      const entries = fs.readdirSync(fieldsDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (!entry.isFile() || !entry.name.endsWith('.field.json')) continue;
+        const content = JSON.parse(fs.readFileSync(path.join(fieldsDir, entry.name), 'utf8'));
+        const fieldKey = content.$field || content.key;
+        if (fieldKey) this._platformFields.fields[fieldKey] = content;
+      }
+      console.log(`[FieldDefinitionRegistry] 插件化加载 ${Object.keys(this._platformFields.fields).length} 个字段`);
+      return;
+    }
+
+    if (fs.existsSync(legacyPath)) {
+      const content = fs.readFileSync(legacyPath, 'utf8');
       this._platformFields = JSON.parse(content);
-    } catch (error) {
-      throw new Error(`[FieldDefinitionRegistry] 加载 platform-fields.json 失败: ${error.message}`);
+      console.log('[FieldDefinitionRegistry] 兼容模式加载 platform-fields.json');
+      return;
     }
-    if (!this._platformFields?.fields) {
-      throw new Error('[FieldDefinitionRegistry] platform-fields.json 缺少 fields 定义');
-    }
+
+    throw new Error('[FieldDefinitionRegistry] 未找到字段定义文件');
   }
 
   // ===== 平台字段 =====

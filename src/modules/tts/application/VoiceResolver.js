@@ -121,63 +121,6 @@ class VoiceResolver {
     };
   }
 
-  /**
-   * Normalize request shape to a single internal contract.
-   */
-  normalizeRequest(request = {}) {
-    const topLevelOptions = extractTopLevelOptions(request);
-    const nestedOptions = request.options && typeof request.options === 'object'
-      ? request.options
-      : {};
-
-    const normalizedOptions = {
-      ...topLevelOptions,
-      ...nestedOptions
-    };
-
-    const voiceCode = extractField(request, 'voiceCode', 'voice_code') ||
-                      extractField(normalizedOptions, 'voiceCode', 'voice_code');
-
-    const systemId = extractField(request, 'systemId', 'system_id') ||
-                     extractField(normalizedOptions, 'systemId', 'system_id');
-
-    const voiceId = pickFirst(
-      extractField(request, 'voiceId', 'voice_id'),
-      request.voice,
-      extractField(normalizedOptions, 'voiceId', 'voice_id'),
-      normalizedOptions.voice
-    );
-
-    let service = request.service;
-    if (!service && voiceCode) {
-      // 用 voiceCodeIndex 查音色，从 identity 取准确的 provider+service
-      const voiceId = this.registry.voiceCodeIndex.get(voiceCode);
-      if (voiceId) {
-        const rawVoice = this.registry.get(voiceId);
-        if (rawVoice?.identity?.provider && rawVoice.identity.service) {
-          service = `${rawVoice.identity.provider}_${rawVoice.identity.service}`;
-        }
-      }
-    }
-    if (!service && systemId) {
-      const rawVoice = this.registry.get(systemId);
-      const provider = rawVoice?.identity?.provider || rawVoice?.provider;
-      const serviceType = rawVoice?.identity?.service || rawVoice?.service;
-      if (provider && serviceType) {
-        service = `${provider}_${serviceType}`;
-      }
-    }
-
-    return {
-      text: request.text,
-      service: service || null,  // 不再硬编码默认服务；resolve() 时会校验
-      voiceCode,
-      systemId,
-      voiceId,
-      options: normalizedOptions
-    };
-  }
-
   resolve(request) {
     const normalized = this.normalizeRequest(request);
     const { service, voiceId, voiceCode, systemId, options = {} } = normalized;

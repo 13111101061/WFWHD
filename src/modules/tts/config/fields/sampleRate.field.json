@@ -1,0 +1,26 @@
+{
+  "$field": "sampleRate",
+  "key": "sampleRate",
+  "displayName": "采样率",
+  "description": "音频采样率，单位 Hz",
+  "type": "enum",
+  "category": "output",
+  "required": false,
+  "platformDefault": 24000,
+  "platformValues": [8000, 16000, 22050, 24000, 44100, 48000],
+  "ui": {
+    "group": "output",
+    "order": 2,
+    "inputType": "select",
+    "advanced": true,
+    "labels": {
+      "8000": "8kHz (电话)",
+      "16000": "16kHz (宽带)",
+      "24000": "24kHz (标准)",
+      "44100": "44.1kHz (CD)"
+    }
+  },
+  "validation": {
+    "enum": [8000, 16000, 22050, 24000, 44100, 48000]
+  }
+}

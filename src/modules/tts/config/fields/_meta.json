@@ -1,0 +1,41 @@
+{
+  "uiGroups": {
+    "basic": {
+      "key": "basic",
+      "displayName": "基础设置",
+      "order": 1,
+      "collapsed": false
+    },
+    "audio": {
+      "key": "audio",
+      "displayName": "音频参数",
+      "order": 2,
+      "collapsed": false
+    },
+    "output": {
+      "key": "output",
+      "displayName": "输出设置",
+      "order": 3,
+      "collapsed": false
+    },
+    "expression": {
+      "key": "expression",
+      "displayName": "情感表达",
+      "order": 4,
+      "collapsed": true
+    },
+    "advanced": {
+      "key": "advanced",
+      "displayName": "高级参数",
+      "order": 5,
+      "collapsed": true
+    }
+  },
+  "categories": {
+    "core": "核心参数",
+    "audio": "音频控制",
+    "output": "输出配置",
+    "expression": "情感表达",
+    "advanced": "高级设置"
+  }
+}

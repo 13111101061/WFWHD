@@ -37,9 +37,9 @@ class MossVoiceGenAdapter {
    * @returns {Promise<{ audioUrl: string, fileSize: number, format: string }>}
    */
   async generatePreview(instruction, testText, samplingParams = {}, apiKey) {
-    if (!apiKey) throw new Error('[MossVoiceGen] Missing API key');
-    if (!instruction) throw new Error('[MossVoiceGen] instruction is required');
-    if (!testText) throw new Error('[MossVoiceGen] testText is required');
+    if (!apiKey) throw this._error('CONFIG_ERROR', '[MossVoiceGen] Missing API key');
+    if (!instruction) throw this._error('VALIDATION_ERROR', '[MossVoiceGen] instruction is required');
+    if (!testText) throw this._error('VALIDATION_ERROR', '[MossVoiceGen] testText is required');
 
     const payload = {
       model: this.model,
@@ -53,24 +53,62 @@ class MossVoiceGenAdapter {
       meta_info: true
     };
 
-    const response = await axios.post(this.endpoint, payload, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      timeout: this.timeoutMs,
-      responseType: 'json'
-    });
+    try {
+      const response = await axios.post(this.endpoint, payload, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: this.timeoutMs,
+        responseType: 'json'
+      });
 
-    const audioBase64 = response.data?.audio_data;
-    if (!audioBase64) {
-      throw new Error('[MossVoiceGen] Response missing audio_data');
+      const audioBase64 = response.data?.audio_data;
+      if (!audioBase64) {
+        throw this._error('API_ERROR', '[MossVoiceGen] Response missing audio_data');
+      }
+
+      const creditCost = response.data?.usage?.credit_cost || null;
+      return await this._saveAudio(audioBase64, testText, creditCost);
+    } catch (error) {
+      if (error.code && error.code !== 'API_ERROR') throw error;
+      this._handleApiError(error);
     }
+  }
 
+  _handleApiError(error) {
+    if (error.response) {
+      const status = error.response.status;
+      const data = error.response.data;
+      const msg = data?.error?.message || data?.message || data?.detail || error.message;
+
+      if (status === 401 || status === 403) {
+        throw this._error('CONFIG_ERROR', `Moss 认证失败: ${msg}`);
+      }
+      if (status === 429) {
+        throw this._error('RATE_LIMIT_EXCEEDED', `Moss 请求频率超限: ${msg}`);
+      }
+      if (status === 400) {
+        throw this._error('VALIDATION_ERROR', `Moss 参数错误: ${msg}`);
+      }
+      throw this._error('API_ERROR', `Moss HTTP ${status}: ${msg}`);
+    }
+    if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+      throw this._error('TIMEOUT_ERROR', 'Moss 请求超时');
+    }
+    throw this._error('PROVIDER_ERROR', `Moss 请求失败: ${error.message}`);
+  }
+
+  _error(code, message) {
+    const err = new Error(message);
+    err.code = code;
+    return err;
+  }
+
+  async _saveAudio(audioBase64, testText, creditCost) {
     const buffer = Buffer.from(audioBase64, 'base64');
     const fileName = `voicegen_tmp_${uuidv4()}.wav`;
 
-    // 如果有 AudioStorage 注入，用它存；否则手动存
     if (this._audioStorage) {
       const saved = await this._audioStorage.saveAudioFile(buffer, {
         extension: 'wav',
@@ -86,11 +124,10 @@ class MossVoiceGenAdapter {
         audioUrl: saved.url,
         fileSize: saved.size,
         format: 'wav',
-        creditCost: response.data?.usage?.credit_cost || null
+        creditCost
       };
     }
 
-    // fallback: 手动写入
     const outputDir = process.env.AUDIO_STORAGE_DIR || 'src/storage/uploads/audio';
     const outputPath = path.resolve(outputDir, fileName);
     await fs.promises.mkdir(path.dirname(outputPath), { recursive: true });
@@ -100,7 +137,7 @@ class MossVoiceGenAdapter {
       audioUrl: `/audio/${fileName}`,
       fileSize: buffer.length,
       format: 'wav',
-      creditCost: response.data?.usage?.credit_cost || null
+      creditCost
     };
   }
 }

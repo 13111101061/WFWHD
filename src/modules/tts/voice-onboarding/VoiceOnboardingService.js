@@ -260,16 +260,20 @@ class VoiceOnboardingService {
 
     const adapter = this.voiceGenAdapters[providerKey] || this.voiceGenAdapter;
     if (!adapter) {
-      return { success: false, error: `Voice generation adapter not configured for provider: ${providerKey}` };
+      return { success: false, error: `Voice generation adapter not configured for provider: ${providerKey}`, errorCode: 'CONFIG_ERROR' };
     }
 
     const genConfig = this._getGenerationConfig(providerKey);
     const phrase = testText || (genConfig?.testPhrases?.[0]) || '这是一条测试语音。';
     const creds = this.credentials.getCredentials(providerKey);
 
+    if (!creds?.apiKey) {
+      return { success: false, error: `${providerKey} API Key 未配置`, errorCode: 'CONFIG_ERROR' };
+    }
+
     try {
       const result = await adapter.generatePreview(
-        instruction, phrase, samplingParams, creds?.apiKey
+        instruction, phrase, samplingParams, creds.apiKey
       );
 
       return {
@@ -285,7 +289,11 @@ class VoiceOnboardingService {
         }
       };
     } catch (error) {
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error: error.message,
+        errorCode: error.code || 'API_ERROR'
+      };
     }
   }
 
@@ -303,11 +311,11 @@ class VoiceOnboardingService {
     } = body;
 
     if (!providerKey || !displayName || !gender || !instruction) {
-      return { success: false, error: 'providerKey, displayName, gender, instruction are required' };
+      return { success: false, error: 'providerKey, displayName, gender, instruction are required', errorCode: 'VALIDATION_ERROR' };
     }
 
     if (!['male', 'female', 'neutral'].includes(gender)) {
-      return { success: false, error: 'gender must be male, female, or neutral' };
+      return { success: false, error: 'gender must be male, female, or neutral', errorCode: 'VALIDATION_ERROR' };
     }
 
     const sourceId = (displayName + '_' + Date.now().toString(36)).replace(/\s+/g, '_');
@@ -335,34 +343,42 @@ class VoiceOnboardingService {
           status: 'active'
         };
 
-    const result = this.voiceWriteService.create(form);
-    if (!result.success) {
-      return { success: false, error: result.error, details: result.details };
-    }
+    try {
+      const result = this.voiceWriteService.create(form);
+      if (!result.success) {
+        return { success: false, error: result.error, errorCode: 'VALIDATION_ERROR', details: result.details };
+      }
 
-    await this.voiceWriteService.save();
+      await this.voiceWriteService.save();
 
-    const newVoice = result.data;
+      const newVoice = result.data;
 
-    if (this.enricher) this.enricher.triggerAfterCreate(newVoice);
+      if (this.enricher) this.enricher.triggerAfterCreate(newVoice);
 
-    return {
-      success: true,
-      data: {
-        voice: {
-          id: newVoice.identity.id,
-          voiceCode: newVoice.identity.voiceCode,
-          displayName: newVoice.profile.displayName,
-          sourceType: newVoice.identity.sourceType,
-          provider: newVoice.identity.provider,
-          service: newVoice.identity.service,
-          runtime: {
-            voiceId: newVoice.runtime.voiceId,
-            providerOptions: newVoice.runtime.providerOptions
+      return {
+        success: true,
+        data: {
+          voice: {
+            id: newVoice.identity.id,
+            voiceCode: newVoice.identity.voiceCode,
+            displayName: newVoice.profile.displayName,
+            sourceType: newVoice.identity.sourceType,
+            provider: newVoice.identity.provider,
+            service: newVoice.identity.service,
+            runtime: {
+              voiceId: newVoice.runtime.voiceId,
+              providerOptions: newVoice.runtime.providerOptions
+            }
           }
         }
-      }
-    };
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        errorCode: error.code || 'API_ERROR'
+      };
+    }
   }
 
   /**

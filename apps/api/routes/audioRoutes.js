@@ -74,6 +74,34 @@ router.post('/cleanup',
 );
 
 /**
+ * 手动触发容量淘汰
+ * POST /api/audio/enforce
+ */
+router.post('/enforce',
+  unifiedAuth.createMiddleware({ service: 'audio' }),
+  requestLogger,
+  async (req, res) => {
+    try {
+      const result = await audioStorageManager.enforceMaxTotalSize();
+      res.json({
+        success: true,
+        data: result,
+        message: `Evicted ${result.evicted} files, freed ${audioStorageManager._formatSize(result.freed)}`,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('容量淘汰失败:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to enforce size limit',
+        message: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+/**
  * 检查音频文件是否存在
  * GET /api/audio/exists/:filename
  */
@@ -237,7 +265,10 @@ router.get('/config',
         supportedFormats: audioStorageManager.options.supportedFormats,
         maxFilenameLength: audioStorageManager.options.maxFilenameLength,
         enableCleanup: audioStorageManager.options.enableCleanup,
-        retentionPeriod: audioStorageManager.options.retentionPeriod
+        retentionPeriod: audioStorageManager.options.retentionPeriod,
+        retentionByType: audioStorageManager.options.retentionByType,
+        maxTotalSizeBytes: audioStorageManager.options.maxTotalSizeBytes,
+        maxTotalSizeFormatted: audioStorageManager._formatSize(audioStorageManager.options.maxTotalSizeBytes)
       };
 
       res.json({

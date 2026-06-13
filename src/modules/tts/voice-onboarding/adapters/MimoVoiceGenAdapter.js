@@ -38,9 +38,9 @@ class MimoVoiceGenAdapter {
    * @returns {Promise<{ audioUrl: string, fileSize: number, format: string, creditCost?: number }>}
    */
   async generatePreview(instruction, testText, _samplingParams = {}, apiKey) {
-    if (!apiKey) throw new Error('[MimoVoiceGen] Missing API key');
-    if (!instruction) throw new Error('[MimoVoiceGen] instruction is required');
-    if (!testText) throw new Error('[MimoVoiceGen] testText is required');
+    if (!apiKey) throw this._error('CONFIG_ERROR', '[MimoVoiceGen] Missing API key');
+    if (!instruction) throw this._error('VALIDATION_ERROR', '[MimoVoiceGen] instruction is required');
+    if (!testText) throw this._error('VALIDATION_ERROR', '[MimoVoiceGen] testText is required');
 
     const body = {
       model: this.model,
@@ -49,25 +49,63 @@ class MimoVoiceGenAdapter {
         { role: 'assistant', content: testText }
       ],
       audio: {
-        format: 'wav',
-        optimize_text_preview: true
+        format: 'wav'
       }
     };
 
-    const response = await axios.post(this.endpoint, body, {
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json'
-      },
-      timeout: this.timeoutMs,
-      responseType: 'json'
-    });
+    try {
+      const response = await axios.post(this.endpoint, body, {
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json'
+        },
+        timeout: this.timeoutMs,
+        responseType: 'json'
+      });
 
-    const audioBase64 = response.data?.choices?.[0]?.message?.audio?.data;
-    if (!audioBase64) {
-      throw new Error('[MimoVoiceGen] Response missing audio data');
+      const audioBase64 = response.data?.choices?.[0]?.message?.audio?.data;
+      if (!audioBase64) {
+        throw this._error('API_ERROR', '[MimoVoiceGen] Response missing audio data');
+      }
+
+      return await this._saveAudio(audioBase64, testText);
+    } catch (error) {
+      const HANDLED_CODES = ['CONFIG_ERROR', 'VALIDATION_ERROR', 'TIMEOUT_ERROR', 'PROVIDER_ERROR', 'RATE_LIMIT_EXCEEDED'];
+      if (error.code && HANDLED_CODES.includes(error.code)) throw error;
+      this._handleApiError(error);
     }
+  }
 
+  _handleApiError(error) {
+    if (error.response) {
+      const status = error.response.status;
+      const data = error.response.data;
+      const msg = data?.error?.message || data?.message || error.message;
+
+      if (status === 401 || status === 403) {
+        throw this._error('CONFIG_ERROR', `MiMo 认证失败: ${msg}`);
+      }
+      if (status === 429) {
+        throw this._error('RATE_LIMIT_EXCEEDED', `MiMo 请求频率超限: ${msg}`);
+      }
+      if (status === 400) {
+        throw this._error('VALIDATION_ERROR', `MiMo 参数错误: ${msg}`);
+      }
+      throw this._error('API_ERROR', `MiMo HTTP ${status}: ${msg}`);
+    }
+    if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+      throw this._error('TIMEOUT_ERROR', 'MiMo 请求超时');
+    }
+    throw this._error('PROVIDER_ERROR', `MiMo 请求失败: ${error.message}`);
+  }
+
+  _error(code, message) {
+    const err = new Error(message);
+    err.code = code;
+    return err;
+  }
+
+  async _saveAudio(audioBase64, testText) {
     const buffer = Buffer.from(audioBase64, 'base64');
     const fileName = `mimo_voicegen_${uuidv4()}.wav`;
 

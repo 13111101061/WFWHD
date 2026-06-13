@@ -1,0 +1,15 @@
+{
+  "$field": "model",
+  "key": "model",
+  "displayName": "模型",
+  "description": "TTS 模型版本",
+  "type": "string",
+  "category": "advanced",
+  "required": false,
+  "ui": {
+    "group": "advanced",
+    "order": 3,
+    "inputType": "select",
+    "advanced": true
+  }
+}

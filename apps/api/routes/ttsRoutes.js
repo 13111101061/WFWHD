@@ -10,7 +10,7 @@
 const express = require('express');
 const serviceContainer = require('../../../src/config/ServiceContainer');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
-const { validateTtsParams, securityLogger, sanitizeInput, detectMaliciousContent } = require('../../../src/shared/middleware/securityMiddleware');
+const { validateTtsParams, securityLogger, sanitizeInput } = require('../../../src/shared/middleware/securityMiddleware');
 const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
 const { ProviderManifest } = require('../../../src/modules/tts/providers/manifests/ProviderManifest');
 
@@ -63,10 +63,6 @@ const validateBatchParams = (req, res, next) => {
       } else {
         if (sanitizeInput(text) !== text) {
           errors.push(`texts[${index}]包含不安全的HTML/脚本内容`);
-        }
-        const maliciousCheck = detectMaliciousContent(text);
-        if (maliciousCheck.detected) {
-          errors.push(`texts[${index}]检测到恶意内容 (威胁级别: ${maliciousCheck.severity})`);
         }
       }
     });
@@ -209,6 +205,38 @@ router.get('/providers',
     try {
       const adapter = await getAdapter();
       await adapter.getProviders(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * 获取 Provider 调用指标
+ * GET /api/tts/providers/metrics?service=xxx&window=1h
+ */
+router.get('/providers/metrics',
+  unifiedAuth.createMiddleware({ service: 'tts' }),
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.getProviderMetrics(req, res);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+/**
+ * 能力匹配查询
+ * POST /api/tts/providers/match
+ */
+router.post('/providers/match',
+  unifiedAuth.createMiddleware({ service: 'tts' }),
+  async (req, res, next) => {
+    try {
+      const adapter = await getAdapter();
+      await adapter.matchProviders(req, res);
     } catch (error) {
       next(error);
     }

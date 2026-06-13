@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-06-10T16:39:33.144Z",
+  "timestamp": "2026-06-12T17:29:28.472Z",
   "today": {},
   "sevenDayAverage": null,
   "realtime": {
-    "timestamp": 1781109573144,
+    "timestamp": 1781285368472,
     "auth": {
       "success": 0,
       "failure": 0,

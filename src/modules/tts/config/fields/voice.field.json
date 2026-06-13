@@ -1,0 +1,18 @@
+{
+  "$field": "voice",
+  "key": "voice",
+  "displayName": "音色",
+  "description": "语音合成的音色标识",
+  "type": "string",
+  "category": "core",
+  "required": true,
+  "ui": {
+    "group": "basic",
+    "order": 1,
+    "highlight": true,
+    "placeholder": "选择音色"
+  },
+  "validation": {
+    "notEmpty": true
+  }
+}

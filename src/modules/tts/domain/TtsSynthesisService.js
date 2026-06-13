@@ -24,27 +24,28 @@ class TtsSynthesisService {
   /**
    * @param {Object} deps
    * @param {Object} deps.ttsProvider - TTS提供者端口
-   * @param {Object} deps.voiceCatalog - 音色目录端口
    * @param {Object} deps.validator - 验证服务
    * @param {Object} [deps.capabilityResolver] - 能力解析器
    * @param {Object} [deps.parameterResolutionService] - 参数解析服务
    * @param {Object} [deps.executionPolicy] - 执行策略 (可选)
    * @param {Object} [deps.voiceResolver] - 音色解析器
    * @param {Object} [deps.providerRegistry] - ProviderRegistry 实例
+   * @param {Object} [deps.metricsCollector] - 指标收集器 (可选)
+   * @param {Object} [deps.fallbackChain] - 降级链路 (可选)
    */
   constructor({
     ttsProvider,
-    voiceCatalog,
     validator,
     capabilityResolver = null,
     parameterResolutionService = null,
     executionPolicy = null,
     synthesisQueue = null,
     voiceResolver = null,
-    providerRegistry = null
+    providerRegistry = null,
+    metricsCollector = null,
+    fallbackChain = null
   }) {
     this.ttsProvider = ttsProvider;
-    this.voiceCatalog = voiceCatalog;
     this.validator = validator;
     this.capabilityResolver = capabilityResolver;
     this.parameterResolutionService = parameterResolutionService;
@@ -52,6 +53,8 @@ class TtsSynthesisService {
     this.synthesisQueue = synthesisQueue;
     this.voiceResolver = voiceResolver;
     this._providerRegistry = providerRegistry;
+    this._metricsCollector = metricsCollector;
+    this._fallbackChain = fallbackChain;
 
     this.metrics = {
       credentialErrors: 0,
@@ -71,6 +74,8 @@ class TtsSynthesisService {
     const ctx = new SynthesisContext({ request: sr });
     ctx.normalizedInput = normalized;
 
+    const startTime = Date.now();
+
     this._resolveVoice(sr, ctx);
     const canonicalKey = ctx.serviceKey || 'default';
 
@@ -86,22 +91,115 @@ class TtsSynthesisService {
     };
 
     const queue = this.synthesisQueue;
-    if (queue) {
-      const { result: queueResult } = await queue.enqueue(canonicalKey, taskFn, {
+    let primaryError = null;
+
+    try {
+      if (queue) {
+        const { result: queueResult } = await queue.enqueue(canonicalKey, taskFn, {
+          requestId: sr.requestId,
+          text: sr.text
+        });
+      } else {
+        await taskFn();
+      }
+
+      const audioResult = ctx.toAudioResult();
+      if (ctx.warnings.length > 0) {
+        audioResult.warnings = ctx.warnings;
+        this.metrics.capabilityValidationFailures++;
+      }
+
+      await this._recordMetrics(ctx, sr, startTime, true, null);
+
+      return audioResult;
+    } catch (error) {
+      primaryError = error;
+
+      // 尝试降级
+      if (this._fallbackChain && this._fallbackChain.isDegradable(error)) {
+        const fallbackResult = await this._tryFallback(sr, ctx, canonicalKey, startTime);
+        if (fallbackResult) return fallbackResult;
+      }
+
+      await this._recordMetrics(ctx, sr, startTime, false, error);
+      throw error;
+    }
+  }
+
+  async _tryFallback(sr, originalCtx, failedServiceKey, startTime) {
+    const candidates = this._fallbackChain.getCandidates(failedServiceKey);
+
+    for (const candidate of candidates) {
+      if (candidate.circuitOpen || !candidate.available) continue;
+
+      try {
+        const fallbackCtx = new SynthesisContext({ request: sr });
+        fallbackCtx.normalizedInput = originalCtx.normalizedInput;
+
+        // 用候选 serviceKey 重新解析
+        const fallbackRequest = {
+          text: sr.text,
+          service: candidate.key,
+          options: sr.options
+        };
+
+        const fallbackSr = SynthesisRequest.fromJSON(fallbackRequest);
+        this._resolveVoice(fallbackSr, fallbackCtx);
+
+        await this.executionPolicy.execute(candidate.key, async () => {
+          this._buildCapability(fallbackCtx);
+          this._compileInput(fallbackCtx);
+          this._mergeAndValidateParams(fallbackCtx);
+          this._mapToProvider(fallbackCtx);
+          await this._callProvider(fallbackCtx);
+        });
+
+        const audioResult = fallbackCtx.toAudioResult();
+        audioResult.degraded = true;
+        audioResult.originalServiceKey = failedServiceKey;
+        audioResult.actualServiceKey = candidate.key;
+        audioResult.degradeReason = 'PRIMARY_PROVIDER_FAILED';
+
+        if (fallbackCtx.warnings.length > 0) {
+          audioResult.warnings = fallbackCtx.warnings;
+        }
+
+        await this._recordMetrics(fallbackCtx, sr, startTime, true, null);
+
+        return audioResult;
+      } catch (fallbackError) {
+        // 候选也失败，继续尝试下一个
+        continue;
+      }
+    }
+
+    return null;
+  }
+
+  async _recordMetrics(ctx, sr, startTime, success, error) {
+    if (!this._metricsCollector) return;
+
+    const identity = ctx.voiceIdentity;
+    const latencyMs = Date.now() - startTime;
+
+    try {
+      await this._metricsCollector.record({
         requestId: sr.requestId,
-        text: sr.text
+        providerKey: identity?.providerKey || null,
+        serviceKey: identity?.serviceKey || ctx.serviceKey || 'unknown',
+        credentialAccountId: null,
+        latencyMs,
+        success,
+        errorCode: error?.code || null,
+        errorMessage: error?.message || null,
+        inputTextLength: sr.text?.length || 0,
+        outputFormat: sr.options?.format || null,
+        outputSampleRate: sr.options?.sampleRate || null,
+        timestamp: new Date().toISOString()
       });
-    } else {
-      await taskFn();
+    } catch (e) {
+      // 指标记录失败不影响主流程
     }
-
-    const audioResult = ctx.toAudioResult();
-    if (ctx.warnings.length > 0) {
-      audioResult.warnings = ctx.warnings;
-      this.metrics.capabilityValidationFailures++;
-    }
-
-    return audioResult;
   }
 
   // ==================== 阶段方法 ====================

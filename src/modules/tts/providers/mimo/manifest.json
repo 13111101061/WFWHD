@@ -43,12 +43,6 @@
           "status": "required",
           "mapTo": "text"
         },
-        "instruction": {
-          "status": "supported",
-          "default": "",
-          "mapTo": "instruction",
-          "ui": { "highlight": true }
-        },
         "model": {
           "status": "locked",
           "lockedValue": "mimo-v2.5-tts",
@@ -68,35 +62,60 @@
         "speed": {
           "status": "unsupported",
           "reason": "MiMo 通过 instruction 自然语言控制语速，无独立参数",
-          "onUserInput": "ignore"
+          "onUserInput": "ignore",
+          "fallback": {
+            "target": "instruction",
+            "template": "语速调整为 ${value} 倍速"
+          }
         },
         "pitch": {
           "status": "unsupported",
           "reason": "MiMo 通过 instruction 自然语言控制音调，无独立参数",
-          "onUserInput": "ignore"
+          "onUserInput": "ignore",
+          "fallback": {
+            "target": "instruction",
+            "template": "音调调整为 ${value}"
+          }
         },
         "volume": {
           "status": "unsupported",
           "reason": "MiMo 通过 instruction 自然语言控制音量，无独立参数",
-          "onUserInput": "ignore"
+          "onUserInput": "ignore",
+          "fallback": {
+            "target": "instruction",
+            "template": "音量调整为 ${value}"
+          }
         },
         "emotion": {
           "status": "unsupported",
           "reason": "MiMo 通过 instruction 自然语言控制情绪，无独立参数",
-          "onUserInput": "ignore"
+          "onUserInput": "ignore",
+          "fallback": {
+            "target": "instruction",
+            "template": "情感风格为 ${value}"
+          }
         },
         "languageType": {
           "status": "unsupported",
           "reason": "MiMo 自动检测语言",
           "onUserInput": "ignore"
-        },
-        "expectedDurationSec": {
-          "status": "unsupported",
-          "onUserInput": "ignore"
-        },
-        "samplingParams": {
-          "status": "unsupported",
-          "onUserInput": "ignore"
+        }
+      },
+      "customFields": {
+        "instruction": {
+          "displayName": "声音指令",
+          "description": "通过自然语言描述期望的声音风格特征",
+          "type": "string",
+          "category": "core",
+          "default": "",
+          "mapTo": "instruction",
+          "ui": {
+            "group": "basic",
+            "order": 1,
+            "highlight": true,
+            "inputType": "textarea",
+            "placeholder": "例如：一个温柔的女声，语速偏慢，带点知性的感觉"
+          }
         }
       }
     }

@@ -1,0 +1,26 @@
+{
+  "$field": "pitch",
+  "key": "pitch",
+  "displayName": "音调",
+  "description": "语音音调高低，1.0 为正常音调",
+  "type": "number",
+  "category": "audio",
+  "required": false,
+  "platformDefault": 1.0,
+  "platformRange": { "min": 0.5, "max": 2.0 },
+  "ui": {
+    "group": "audio",
+    "order": 2,
+    "inputType": "slider",
+    "step": 0.1,
+    "advanced": true,
+    "labels": {
+      "0.5": "低",
+      "1.0": "正常",
+      "2.0": "高"
+    }
+  },
+  "validation": {
+    "range": { "min": 0.5, "max": 2.0 }
+  }
+}

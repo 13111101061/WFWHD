@@ -8,7 +8,9 @@
 class TtsValidationService {
   constructor() {
     this.maxTextLength = 10000;
+    // 允许 <style>...</style> 标签（MiMo TTS 支持），其他 <> {} [] \ 仍拦截
     this.invalidCharsPattern = /[<>{}[\]\\]/g;
+    this.allowedTagsPattern = /<style>[\s\S]*?<\/style>/g;
   }
 
   validateText(text) {
@@ -27,7 +29,9 @@ class TtsValidationService {
       errors.push(`Text too long, maximum ${this.maxTextLength} characters allowed`);
     }
 
-    if (this.invalidCharsPattern.test(text)) {
+    // 先移除允许的标签，再检查非法字符
+    const textWithoutAllowedTags = text.replace(this.allowedTagsPattern, '');
+    if (this.invalidCharsPattern.test(textWithoutAllowedTags)) {
       errors.push('Text contains invalid characters');
     }
 

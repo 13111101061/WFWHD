@@ -21,7 +21,16 @@ class ProviderManagementService {
   resolveCanonicalKey(key) { return this._registry.resolveCanonicalKey(key); }
   isValidKey(key) { return this._registry.has(key); }
   getServiceDescriptor(key) { return this._registry.get(key); }
-  getAllServices(options) { return this._registry.getAll(); }
+  getAllServices(options = {}) {
+    const all = this._registry.getAll();
+    if (options.enabledOnly) {
+      return all.filter(d => d.status !== 'disabled');
+    }
+    if (options.provider) {
+      return all.filter(d => d.provider === options.provider);
+    }
+    return all;
+  }
   getServicesByProvider() { return this._registry.getByProvider(); }
   getProvider(key) { return this._registry.getProvider(key); }
   getAllProviders() { return this._registry.getAllProviders(); }
@@ -54,15 +63,6 @@ class ProviderManagementService {
     result.available = true;
     result.reason = 'ok';
     return result;
-  }
-
-  _checkCredentialStatus(providerKey) {
-    try {
-      const configured = this._credentials.isConfigured(providerKey);
-      return { configured, reason: configured ? 'ok' : 'not_configured' };
-    } catch (e) {
-      return { configured: false, reason: 'error', error: e.message };
-    }
   }
 
   /**

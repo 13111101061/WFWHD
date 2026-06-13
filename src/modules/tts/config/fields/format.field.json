@@ -1,0 +1,19 @@
+{
+  "$field": "format",
+  "key": "format",
+  "displayName": "音频格式",
+  "description": "输出音频的编码格式",
+  "type": "enum",
+  "category": "output",
+  "required": false,
+  "platformDefault": "mp3",
+  "platformValues": ["mp3", "wav", "pcm", "flac", "ogg", "aac"],
+  "ui": {
+    "group": "output",
+    "order": 1,
+    "inputType": "select"
+  },
+  "validation": {
+    "enum": ["mp3", "wav", "pcm", "flac", "ogg", "aac"]
+  }
+}

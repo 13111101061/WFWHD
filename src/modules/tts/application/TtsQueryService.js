@@ -142,6 +142,123 @@ class TtsQueryService {
   }
 
   /**
+   * 能力匹配查询 — 根据需求找到最合适的 Provider
+   * @param {Object} requirements - 需求条件
+   * @param {boolean} [requirements.streaming] - 是否需要流式
+   * @param {boolean} [requirements.emotion] - 是否需要情感控制
+   * @param {string} [requirements.language] - 语言代码 (如 "zh-CN")
+   * @param {string} [requirements.format] - 输出格式 (如 "mp3")
+   * @param {number} [requirements.maxLatency] - 最大延迟 (ms)
+   * @returns {{ matched: Object[], unmatched: Object[] }}
+   */
+  matchProviders(requirements = {}) {
+    const pms = this._ensureProviderManagementService();
+    const resolver = this._ensureCapabilityResolver();
+    const allServices = pms.getAllServices();
+    const matched = [];
+    const unmatched = [];
+
+    for (const svc of allServices) {
+      const availability = pms.checkServiceAvailability(svc.key);
+      if (!availability.available) {
+        unmatched.push({
+          serviceKey: svc.key,
+          reason: `服务不可用: ${availability.reason}`
+        });
+        continue;
+      }
+
+      let compiled;
+      try {
+        const ctx = resolver.resolve(svc.key);
+        compiled = ctx?.compiled;
+      } catch (e) {
+        unmatched.push({ serviceKey: svc.key, reason: '能力编译失败' });
+        continue;
+      }
+
+      if (!compiled) {
+        unmatched.push({ serviceKey: svc.key, reason: '无编译能力数据' });
+        continue;
+      }
+
+      const schema = compiled.getSchema();
+      const matchDetails = {};
+      const mismatchReasons = [];
+      let score = 0;
+      let totalRequirements = 0;
+
+      for (const [reqKey, reqValue] of Object.entries(requirements)) {
+        totalRequirements++;
+
+        if (reqKey === 'language') {
+          const langField = schema.languageType;
+          const supported = langField &&
+            langField.status === 'supported' &&
+            (langField.values?.includes(reqValue) || langField.values?.includes('Auto'));
+          matchDetails[reqKey] = !!supported;
+          if (supported) score++;
+          else mismatchReasons.push(`不支持语言 ${reqValue}`);
+        } else if (reqKey === 'format') {
+          const formatField = schema.format;
+          const supported = formatField &&
+            formatField.status === 'supported' &&
+            formatField.values?.includes(reqValue);
+          matchDetails[reqKey] = !!supported;
+          if (supported) score++;
+          else mismatchReasons.push(`不支持格式 ${reqValue}`);
+        } else if (reqKey === 'maxLatency') {
+          // 延迟无法静态判断，跳过
+          totalRequirements--;
+          continue;
+        } else if (reqKey === 'streaming') {
+          const svcConfig = pms.getServiceDescriptor(svc.key);
+          const supported = reqValue ? svcConfig?.supportsStreaming : true;
+          matchDetails[reqKey] = !!supported;
+          if (supported) score++;
+          else mismatchReasons.push('不支持流式合成');
+        } else {
+          // 通用能力匹配
+          const field = schema[reqKey];
+          const supported = field && field.status === 'supported';
+          matchDetails[reqKey] = !!supported;
+          if (supported) score++;
+          else mismatchReasons.push(`不支持 ${reqKey} 参数`);
+        }
+      }
+
+      const scorePercent = totalRequirements > 0
+        ? Math.round(score / totalRequirements * 100) : 100;
+
+      const entry = {
+        serviceKey: svc.key,
+        provider: svc.provider,
+        displayName: svc.displayName,
+        score: scorePercent,
+        matchDetails
+      };
+
+      if (scorePercent >= 50) {
+        if (mismatchReasons.length) entry.mismatchReasons = mismatchReasons;
+        matched.push(entry);
+      } else {
+        unmatched.push({
+          serviceKey: svc.key,
+          reason: mismatchReasons.join(', ') || '能力匹配度过低'
+        });
+      }
+    }
+
+    matched.sort((a, b) => b.score - a.score);
+
+    return {
+      success: true,
+      data: { matched, unmatched },
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  /**
    * 从 ProviderManagementService 获取提供商列表
    * @private
    */
@@ -622,9 +739,10 @@ class TtsQueryService {
       let capabilitySummary = null;
       let defaultVoiceId = null;
       let capabilityCompiled = false;
+      let ctx = null;
 
       try {
-        const ctx = resolver.resolve(info.key);
+        ctx = resolver.resolve(info.key);
         if (ctx?.compiled) {
           digest = ctx.contextualDigest || ctx.compiled.capabilityDigest;
           capabilitySummary = ctx.compiled.getCapabilities();
@@ -887,7 +1005,8 @@ class TtsQueryService {
   // ==================== 辅助方法 ====================
 
   _isProviderVisible(provider) {
-    return this._ensureVoiceRegistry().isProviderEnabled(provider);
+    const stats = this._ensureVoiceRegistry().getStats();
+    return !!(stats.providers[provider] && stats.providers[provider].count > 0);
   }
 
   _hasVisibleVoicesFor(provider, service) {

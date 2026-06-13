@@ -103,6 +103,20 @@ class ProviderRegistry {
 
   isInitialized() { return this._initialized; }
 
+  /**
+   * 重新初始化 — 清除所有缓存并重新加载
+   * 用于 manifest 热更新场景
+   */
+  reinitialize() {
+    this._aliasToCanonical = null;
+    this._canonicalToAliases = null;
+    this._adapterClasses.clear();
+    this._adapterInstances.clear();
+    this._initialized = false;
+    this.initialize();
+    console.log('[ProviderRegistry] Reinitialized');
+  }
+
   _assertInit() {
     if (!this._initialized) throw new Error('[ProviderRegistry] Not initialized');
   }

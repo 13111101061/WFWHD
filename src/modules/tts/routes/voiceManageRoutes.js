@@ -8,8 +8,20 @@ const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
 
 const upload = multer({
   dest: path.join(os.tmpdir(), 'voice-uploads'),
-  limits: { fileSize: 20 * 1024 * 1024 } // 20MB, 各 provider 的 voiceCloningConfig 再做二次校验
+  limits: { fileSize: 20 * 1024 * 1024 }
 });
+
+function mapErrorCodeToStatus(code) {
+  switch (code) {
+    case 'CONFIG_ERROR': return 500;
+    case 'VALIDATION_ERROR': return 400;
+    case 'RATE_LIMIT_EXCEEDED': return 429;
+    case 'TIMEOUT_ERROR': return 504;
+    case 'PROVIDER_ERROR': return 502;
+    case 'API_ERROR': return 502;
+    default: return 400;
+  }
+}
 
 function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardingService) {
   const router = express.Router();
@@ -310,13 +322,16 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       try {
         const result = await voiceOnboardingService.generateInstructionPreview(req.body);
         if (!result.success) {
-          return res.status(400).json(result);
+          const statusCode = mapErrorCodeToStatus(result.errorCode || result.code);
+          return res.status(statusCode).json(result);
         }
         res.json(result);
       } catch (error) {
-        res.status(500).json({
+        const statusCode = mapErrorCodeToStatus(error.code);
+        res.status(statusCode).json({
           success: false,
-          error: error.message
+          error: error.message,
+          errorCode: error.code
         });
       }
     });
@@ -329,13 +344,16 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       try {
         const result = await voiceOnboardingService.registerInstructionVoice(req.body);
         if (!result.success) {
-          return res.status(400).json(result);
+          const statusCode = mapErrorCodeToStatus(result.errorCode || result.code);
+          return res.status(statusCode).json(result);
         }
         res.status(201).json(result);
       } catch (error) {
-        res.status(500).json({
+        const statusCode = mapErrorCodeToStatus(error.code);
+        res.status(statusCode).json({
           success: false,
-          error: error.message
+          error: error.message,
+          errorCode: error.code
         });
       }
     });

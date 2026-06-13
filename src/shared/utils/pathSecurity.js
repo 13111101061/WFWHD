@@ -27,7 +27,7 @@ function ensurePathInsideBase(resolvedPath, baseDir) {
 
 function sanitizeSubDir(subDir) {
   if (!subDir) return '';
-  return subDir.replace(/[^a-zA-Z0-9_-]/g, '_');
+  return subDir.replace(/[^a-zA-Z0-9_\-\/]/g, '_');
 }
 
 function maskSecret(secret) {

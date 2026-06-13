@@ -1,0 +1,19 @@
+{
+  "$field": "languageType",
+  "key": "languageType",
+  "displayName": "语言类型",
+  "description": "文本语言类型，用于多语言语音合成",
+  "type": "enum",
+  "category": "core",
+  "required": false,
+  "platformDefault": "Auto",
+  "platformValues": ["Auto", "Chinese", "English", "Japanese", "Korean", "German", "French", "Spanish", "Russian", "Italian", "Portuguese"],
+  "ui": {
+    "group": "basic",
+    "order": 2,
+    "inputType": "select"
+  },
+  "validation": {
+    "enum": ["Auto", "Chinese", "English", "Japanese", "Korean", "German", "French", "Spanish", "Russian", "Italian", "Portuguese"]
+  }
+}

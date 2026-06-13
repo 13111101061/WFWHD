@@ -18,12 +18,13 @@ const AudioResult = require('../../domain/AudioResult');
 const { TtsErrorCodes, HTTP_STATUS_MAP, RETRYABLE_MAP } = require('../../TtsErrorCodes');
 
 class TtsHttpAdapter {
-  constructor(synthesisService, queryService, { clearAllCache, providerRegistry, synthesisQueue } = {}) {
+  constructor(synthesisService, queryService, { clearAllCache, providerRegistry, synthesisQueue, metricsCollector } = {}) {
     this.synthesisService = synthesisService;
     this.queryService = queryService;
     this._clearAllCache = clearAllCache || null;
     this._providerRegistry = providerRegistry || null;
     this._synthesisQueue = synthesisQueue || null;
+    this._metricsCollector = metricsCollector || null;
   }
 
   // ==================== HTTP入口方法 ====================
@@ -239,6 +240,57 @@ class TtsHttpAdapter {
         timestamp: new Date().toISOString()
       });
 
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 获取 Provider 调用指标
+   * GET /api/tts/providers/metrics?service=xxx&window=1h
+   * GET /api/tts/providers/metrics?window=1h (all services)
+   */
+  async getProviderMetrics(req, res) {
+    try {
+      if (!this._metricsCollector) {
+        return res.status(501).json({
+          success: false,
+          code: 'METRICS_NOT_AVAILABLE',
+          message: 'Metrics collector not configured'
+        });
+      }
+
+      const { service, window = '1h' } = req.query;
+      const windowMap = { '1h': 3600000, '24h': 86400000, '7d': 604800000 };
+      const windowMs = windowMap[window] || 3600000;
+
+      let metrics;
+      if (service) {
+        metrics = await this._metricsCollector.getMetrics(service, windowMs);
+      } else {
+        metrics = await this._metricsCollector.getAllMetrics(windowMs);
+      }
+
+      res.json({
+        success: true,
+        data: metrics,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      this._handleError(error, res);
+    }
+  }
+
+  /**
+   * 能力匹配查询
+   * POST /api/tts/providers/match
+   */
+  async matchProviders(req, res) {
+    try {
+      const requirements = req.body?.requirements || {};
+      const result = this.queryService.matchProviders(requirements);
+      res.json(result);
     } catch (error) {
       this._handleError(error, res);
     }

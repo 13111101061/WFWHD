@@ -139,46 +139,68 @@ class CompiledCapability {
    * @param {Object} [context] - 锁定参数上下文（如 providerVoiceId）
    * @returns {{ params: Object, warnings: Object[] }}
    */
-  resolveParams(userParams = {}, context = {}) {
-    const defaults = this.getDefaults();
-    const result = { ...defaults };
-    const warnings = [];
+   resolveParams(userParams = {}, context = {}) {
+     const defaults = this.getDefaults();
+     const result = { ...defaults };
+     const warnings = [];
+     const fallbacks = [];
 
-    for (const [key, value] of Object.entries(userParams)) {
-      if (value === undefined) continue;
+     for (const [key, value] of Object.entries(userParams)) {
+       if (value === undefined) continue;
 
-      const status = this.getFieldStatus(key);
+       const status = this.getFieldStatus(key);
 
-      if (status === SupportStatus.UNSUPPORTED) {
-        const field = this.getField(key);
-        warnings.push({
-          type: 'unsupported',
-          param: key,
-          value,
-          message: field?.reason || `此服务商不支持参数 ${key}`
-        });
-        continue;
-      }
+       if (status === SupportStatus.UNSUPPORTED) {
+         const field = this.getField(key);
 
-      if (status === SupportStatus.LOCKED) {
-        warnings.push({
-          type: 'locked',
-          param: key,
-          value,
-          message: `参数 ${key} 已被锁定，用户值被忽略`
-        });
-        continue;
-      }
+         if (field?.fallback?.target && field.fallback.template) {
+           const fallbackText = field.fallback.template.replace(/\$\{value\}/g, String(value));
+           fallbacks.push({ target: field.fallback.target, text: fallbackText });
+           warnings.push({
+             type: 'unsupported',
+             param: key,
+             value,
+             message: field?.reason || `此服务商不支持参数 ${key}`,
+             fallbackApplied: true,
+             fallbackTarget: field.fallback.target,
+             fallbackValue: fallbackText
+           });
+         } else {
+           warnings.push({
+             type: 'unsupported',
+             param: key,
+             value,
+             message: field?.reason || `此服务商不支持参数 ${key}`
+           });
+         }
+         continue;
+       }
 
-      if (status === SupportStatus.HIDDEN) continue;
+       if (status === SupportStatus.LOCKED) {
+         warnings.push({
+           type: 'locked',
+           param: key,
+           value,
+           message: `参数 ${key} 已被锁定，用户值被忽略`
+         });
+         continue;
+       }
 
-      result[key] = value;
-    }
+       if (status === SupportStatus.HIDDEN) continue;
 
-    const lockedApplied = this.applyLockedParams(result, context);
+       result[key] = value;
+     }
 
-    return { params: lockedApplied, warnings };
-  }
+     for (const fb of fallbacks) {
+       result[fb.target] = result[fb.target]
+         ? `${result[fb.target]}。${fb.text}`
+         : fb.text;
+     }
+
+     const lockedApplied = this.applyLockedParams(result, context);
+
+     return { params: lockedApplied, warnings };
+   }
 
   // ==================== 校验 ====================
 

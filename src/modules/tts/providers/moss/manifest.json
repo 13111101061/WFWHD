@@ -69,43 +69,65 @@
             24000
           ],
           "mapTo": "sample_rate"
-        },
+        }
+      },
+      "customFields": {
         "expectedDurationSec": {
+          "displayName": "期望时长",
+          "description": "期望生成的语音时长（秒）",
+          "type": "number",
+          "category": "advanced",
+          "default": 5,
+          "range": [0.5, 300],
+          "mapTo": "expected_duration_sec",
           "ui": {
-            "highlight": true
-          },
-          "mapTo": "expected_duration_sec"
+            "group": "advanced",
+            "order": 1,
+            "inputType": "number",
+            "highlight": true,
+            "unit": "秒"
+          }
         },
         "samplingParams": {
+          "displayName": "采样参数",
+          "description": "高级采样参数配置（topP, temperature 等）",
+          "type": "object",
+          "category": "advanced",
+          "mapTo": "sampling_params",
           "ui": {
+            "group": "advanced",
+            "order": 2,
             "collapsed": true
           },
-          "nested": {
+          "nestedFields": {
             "temperature": {
+              "displayName": "Temperature",
+              "description": "采样温度",
+              "type": "number",
               "default": 1.7,
-              "range": [
-                0.1,
-                3
-              ],
+              "range": [0.1, 3.0],
               "mapTo": "sampling_params.temperature"
             },
             "topP": {
+              "displayName": "Top P",
+              "description": "核采样参数",
+              "type": "number",
               "default": 0.8,
-              "range": [
-                0,
-                1
-              ],
+              "range": [0, 1.0],
               "mapTo": "sampling_params.top_p"
             },
             "topK": {
+              "displayName": "Top K",
+              "description": "Top-K 采样参数",
+              "type": "number",
               "default": 25,
-              "range": [
-                1,
-                100
-              ],
+              "range": [1, 100],
               "mapTo": "sampling_params.top_k"
             },
             "maxNewTokens": {
+              "displayName": "Max New Tokens",
+              "description": "最大生成令牌数",
+              "type": "number",
               "default": 20000,
               "mapTo": "sampling_params.max_new_tokens"
             }

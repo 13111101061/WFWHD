@@ -122,11 +122,6 @@ const validateTtsParams = (req, res, next) => {
     if (sanitizedText !== body.text) {
       errors.push('文本包含不安全的HTML/脚本内容');
     }
-
-    const maliciousCheck = detectMaliciousContent(body.text);
-    if (maliciousCheck.detected) {
-      errors.push(`检测到恶意内容 (威胁级别: ${maliciousCheck.severity})`);
-    }
   }
 
   if (body.service && typeof body.service !== 'string') {

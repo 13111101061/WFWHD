@@ -20,7 +20,7 @@ voices:
     tags: [通用, 默认, 中性]
     ttsConfig:
       voiceId: mimo_default
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: 冰糖
     displayName: 冰糖
@@ -31,7 +31,7 @@ voices:
     tags: [甜美, 清脆, 年轻, 活泼]
     ttsConfig:
       voiceId: 冰糖
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: 茉莉
     displayName: 茉莉
@@ -42,7 +42,7 @@ voices:
     tags: [温柔, 知性, 女声, 成熟]
     ttsConfig:
       voiceId: 茉莉
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: 苏打
     displayName: 苏打
@@ -53,7 +53,7 @@ voices:
     tags: [清亮, 阳光, 男声, 青年]
     ttsConfig:
       voiceId: 苏打
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: 白桦
     displayName: 白桦
@@ -64,7 +64,7 @@ voices:
     tags: [沉稳, 厚重, 男声, 中年]
     ttsConfig:
       voiceId: 白桦
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: Mia
     displayName: Mia
@@ -75,7 +75,7 @@ voices:
     tags: [warm, natural, female, English]
     ttsConfig:
       voiceId: Mia
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: Chloe
     displayName: Chloe
@@ -86,7 +86,7 @@ voices:
     tags: [bright, energetic, female, English]
     ttsConfig:
       voiceId: Chloe
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: Milo
     displayName: Milo
@@ -97,7 +97,7 @@ voices:
     tags: [deep, calm, male, English]
     ttsConfig:
       voiceId: Milo
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
 
   - id: Dean
     displayName: Dean
@@ -108,4 +108,4 @@ voices:
     tags: [confident, clear, male, English]
     ttsConfig:
       voiceId: Dean
-      model: mimo-v2.5-tts-realtime
+      model: mimo-v2.5-tts
