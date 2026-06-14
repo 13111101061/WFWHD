@@ -482,6 +482,47 @@
         "GET /audio/syn_006_20260613020831_b3d2e7f1.wav": 2,
         "GET /audio/syn_006_20260613021026_d3104765.wav": 3
       }
+    },
+    "2026-06-13": {
+      "totalCalls": 135,
+      "endpoints": {
+        "GET /api/tts/voices": 4,
+        "POST /api/tts/synthesize": 64,
+        "GET /api/tts/capabilities/mimo_tts": 8,
+        "GET /audio/syn_006_20260614001758_9b1394c2.wav": 2,
+        "GET /api/tts/capabilities/moss_tts": 2,
+        "GET /audio/syn_001_20260614002644_38b74f89.wav": 2,
+        "GET /audio/syn_006_20260614003014_b9763bec.wav": 3,
+        "GET /audio/syn_006_20260614003709_83f238cb.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614004520_950c5782.wav": 1,
+        "HEAD /audio/syn_006_20260614005044_1c439fdd.wav": 1,
+        "HEAD /audio/006/2026-06/syn_006_20260614005557_3275048d.wav": 1,
+        "HEAD /audio/syn_006_20260614005557_3275048d.wav": 1,
+        "HEAD /audio/006/2026-06/syn_006_20260614005749_182393e6.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614005819_f6ed480d.wav": 4,
+        "GET /audio/006/2026-06/syn_006_20260614010018_6a178773.wav": 3,
+        "GET /audio/006/2026-06/syn_006_20260614010511_80919d84.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614010742_f58b8ee1.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614010801_56a0892d.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614010817_bf681bb6.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614010836_c565850b.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614010857_d24fd241.wav": 3,
+        "GET /audio/006/2026-06/syn_006_20260614010958_e49bcce1.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011030_9ba9094e.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011055_b95e3df1.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011113_6136130b.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011127_eef9fb4c.wav": 3,
+        "GET /audio/006/2026-06/syn_006_20260614011805_820cee37.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011818_1c344d98.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011830_0b90e577.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260614011842_465afbb6.wav": 3,
+        "GET /audio/006/2026-06/syn_006_20260614012242_ca296205.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614012306_3d8cc6f0.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614012342_7d29e43a.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614012406_cb01a189.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260614012443_3c91cbc1.wav": 3,
+        "GET /audio/001/2026-06/syn_001_20260614012556_727883b3.wav": 1
+      }
     }
   }
 }

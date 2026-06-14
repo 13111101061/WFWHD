@@ -27,7 +27,9 @@ function ensurePathInsideBase(resolvedPath, baseDir) {
 
 function sanitizeSubDir(subDir) {
   if (!subDir) return '';
-  return subDir.replace(/[^a-zA-Z0-9_\-\/]/g, '_');
+  // Normalize Windows backslashes to forward slashes
+  const normalized = subDir.replace(/\\/g, '/');
+  return normalized.replace(/[^a-zA-Z0-9_\-\/]/g, '_');
 }
 
 function maskSecret(secret) {

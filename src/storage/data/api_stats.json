@@ -4,7 +4,7 @@
     "version": 0,
     "lastModified": "2025-09-16T03:14:19.967Z"
   },
-  "totalCalls": 1412,
+  "totalCalls": 1547,
   "endpoints": {
     "GET /admin/stats/overall": {
       "totalCalls": 2,
@@ -83,8 +83,8 @@
       "lastCalled": "2026-06-12T14:18:08.566Z"
     },
     "GET /api/tts/voices": {
-      "totalCalls": 281,
-      "lastCalled": "2026-06-12T18:18:28.088Z"
+      "totalCalls": 285,
+      "lastCalled": "2026-06-13T16:59:57.711Z"
     },
     "GET /hybridaction/zybTrackerStatisticsAction": {
       "totalCalls": 72,
@@ -115,8 +115,8 @@
       "lastCalled": "2026-01-10T14:26:54.293Z"
     },
     "POST /api/tts/synthesize": {
-      "totalCalls": 387,
-      "lastCalled": "2026-06-12T18:17:18.505Z"
+      "totalCalls": 451,
+      "lastCalled": "2026-06-13T17:25:56.669Z"
     },
     "GET /admin/api-keys": {
       "totalCalls": 1,
@@ -335,8 +335,8 @@
       "lastCalled": "2026-05-17T12:44:52.537Z"
     },
     "GET /api/tts/capabilities/moss_tts": {
-      "totalCalls": 22,
-      "lastCalled": "2026-06-12T18:07:20.617Z"
+      "totalCalls": 24,
+      "lastCalled": "2026-06-13T17:25:41.310Z"
     },
     "GET /tts/voices/moss-tts-ashui/detail": {
       "totalCalls": 1,
@@ -539,8 +539,8 @@
       "lastCalled": "2026-06-03T14:44:01.586Z"
     },
     "GET /api/tts/capabilities/mimo_tts": {
-      "totalCalls": 9,
-      "lastCalled": "2026-06-12T18:17:14.877Z"
+      "totalCalls": 17,
+      "lastCalled": "2026-06-13T17:23:05.354Z"
     },
     "GET /api/tts/voices/test-id/detail": {
       "totalCalls": 1,
@@ -689,7 +689,135 @@
     "GET /audio/syn_006_20260613021026_d3104765.wav": {
       "totalCalls": 3,
       "lastCalled": "2026-06-12T18:12:39.846Z"
+    },
+    "GET /audio/syn_006_20260614001758_9b1394c2.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T16:17:58.126Z"
+    },
+    "GET /audio/syn_001_20260614002644_38b74f89.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T16:26:44.965Z"
+    },
+    "GET /audio/syn_006_20260614003014_b9763bec.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T16:34:22.165Z"
+    },
+    "GET /audio/syn_006_20260614003709_83f238cb.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T16:37:09.849Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614004520_950c5782.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T16:45:20.426Z"
+    },
+    "HEAD /audio/syn_006_20260614005044_1c439fdd.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T16:55:56.551Z"
+    },
+    "HEAD /audio/006/2026-06/syn_006_20260614005557_3275048d.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T16:56:12.126Z"
+    },
+    "HEAD /audio/syn_006_20260614005557_3275048d.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T16:56:12.153Z"
+    },
+    "HEAD /audio/006/2026-06/syn_006_20260614005749_182393e6.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T16:57:49.310Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614005819_f6ed480d.wav": {
+      "totalCalls": 4,
+      "lastCalled": "2026-06-13T16:59:40.523Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010018_6a178773.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T17:01:33.937Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010511_80919d84.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:05:11.470Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010742_f58b8ee1.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:07:57.521Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010801_56a0892d.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:08:01.871Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010817_bf681bb6.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:08:32.958Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010836_c565850b.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:08:51.380Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010857_d24fd241.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T17:09:59.029Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614010958_e49bcce1.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:09:58.995Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011030_9ba9094e.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:10:30.474Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011055_b95e3df1.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:10:55.317Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011113_6136130b.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:11:13.146Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011127_eef9fb4c.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T17:18:05.410Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011805_820cee37.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:18:05.379Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011818_1c344d98.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:18:18.064Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011830_0b90e577.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:18:30.937Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614011842_465afbb6.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T17:22:42.292Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614012242_ca296205.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:22:57.277Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614012306_3d8cc6f0.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:23:21.941Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614012342_7d29e43a.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:23:58.073Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614012406_cb01a189.wav": {
+      "totalCalls": 2,
+      "lastCalled": "2026-06-13T17:24:21.956Z"
+    },
+    "GET /audio/006/2026-06/syn_006_20260614012443_3c91cbc1.wav": {
+      "totalCalls": 3,
+      "lastCalled": "2026-06-13T17:25:56.731Z"
+    },
+    "GET /audio/001/2026-06/syn_001_20260614012556_727883b3.wav": {
+      "totalCalls": 1,
+      "lastCalled": "2026-06-13T17:25:56.703Z"
     }
   },
-  "lastUpdated": "2026-06-12T18:18:28.088Z"
+  "lastUpdated": "2026-06-13T17:25:56.731Z"
 }
