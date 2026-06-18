@@ -4,16 +4,14 @@ const axios = require('axios');
 class MimoTtsAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
     super({ provider: 'mimo', serviceType: 'tts', ...config });
-    const creds = this._getCredentials();
-    this.apiKey = config.apiKey || creds?.apiKey;
     this.endpoint = config.endpoint || 'https://api.xiaomimimo.com/v1/chat/completions';
     this.model = config.model || 'mimo-v2.5-tts';
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
-    const creds = this._getCredentials();
-    const apiKey = creds?.apiKey || this.apiKey;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const apiKey = creds?.apiKey;
     if (!apiKey) {
       throw this._error('CONFIG_ERROR', 'MiMo API Key 未配置');
     }
@@ -45,7 +43,8 @@ class MimoTtsAdapter extends BaseTtsAdapter {
           'Content-Type': 'application/json'
         },
         timeout: this.config.timeout || 60000,
-        responseType: 'json'
+        responseType: 'json',
+        signal
       });
 
       const choice = response.data?.choices?.[0];
@@ -61,7 +60,7 @@ class MimoTtsAdapter extends BaseTtsAdapter {
 
       const audio = Buffer.from(audioData, 'base64');
 
-      this._reportSuccess();
+      this._reportSuccess(accountId);
       return {
         audio,
         format,
@@ -74,7 +73,7 @@ class MimoTtsAdapter extends BaseTtsAdapter {
       if (error.code === 'CONFIG_ERROR' || error.code === 'VALIDATION_ERROR') {
         throw error;
       }
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       this._handleApiError(error);
     }
   }
@@ -117,8 +116,7 @@ class MimoTtsAdapter extends BaseTtsAdapter {
     return {
       ...super.getStatus(),
       endpoint: this.endpoint,
-      model: this.model,
-      hasApiKey: !!this.apiKey
+      model: this.model
     };
   }
 }

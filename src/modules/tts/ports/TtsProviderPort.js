@@ -39,9 +39,11 @@ class TtsProviderPort {
    * @param {string} serviceType - 服务类型
    * @param {string} text - 文本
    * @param {Object} options - 选项
+   * @param {Object|null} [providerInput] - 额外输入
+   * @param {AbortSignal|null} [signal] - 取消信号
    * @returns {Promise<SynthesisResult>}
    */
-  async synthesize(provider, serviceType, text, options) {
+  async synthesize(provider, serviceType, text, options, providerInput = null, signal = null) {
     throw new Error('TtsProviderPort.synthesize must be implemented');
   }
 

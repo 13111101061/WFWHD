@@ -10,7 +10,7 @@
 const express = require('express');
 const serviceContainer = require('../../../src/config/ServiceContainer');
 const { unifiedAuth } = require('../../../src/core/middleware/apiKeyMiddleware');
-const { validateTtsParams, securityLogger, sanitizeInput } = require('../../../src/shared/middleware/securityMiddleware');
+const { validateTtsParams, validateBatchParams, securityLogger } = require('../../../src/shared/middleware/securityMiddleware');
 const { createUnifiedTtsMiddleware } = require('../../../src/shared/middleware/combinedMiddleware');
 const { ProviderManifest } = require('../../../src/modules/tts/providers/manifests/ProviderManifest');
 
@@ -32,59 +32,20 @@ const requestLogger = (req, res, next) => {
   next();
 };
 
-// 批量请求专用验证中间件（不要求text字段，验证texts数组）
-const validateBatchParams = (req, res, next) => {
-  const body = req.body || {};
-  const errors = [];
+// 鉴权中间件快捷引用
+const ttsAuth = unifiedAuth.createMiddleware({ service: 'tts' });
 
-  // 批量请求验证
-  if (!body.service || typeof body.service !== 'string') {
-    errors.push('service字段是必需的且必须是字符串');
+/**
+ * 路由包装器：消除重复的 try/catch + getAdapter 样板
+ * @param {string} handlerName - TtsHttpAdapter 方法名
+ */
+const wrap = (handlerName) => async (req, res, next) => {
+  try {
+    const adapter = await getAdapter();
+    await adapter[handlerName](req, res);
+  } catch (error) {
+    next(error);
   }
-
-  if (!body.texts || !Array.isArray(body.texts)) {
-    errors.push('texts字段是必需的且必须是数组');
-  }
-
-  if (body.texts) {
-    if (body.texts.length === 0) {
-      errors.push('texts数组不能为空');
-    }
-    if (body.texts.length > 10) {
-      errors.push('批量请求最多支持10个文本');
-    }
-    body.texts.forEach((text, index) => {
-      if (typeof text !== 'string') {
-        errors.push(`texts[${index}]必须是字符串`);
-      } else if (text.length === 0) {
-        errors.push(`texts[${index}]不能为空`);
-      } else if (text.length > 5000) {
-        errors.push(`texts[${index}]长度不能超过5000字符`);
-      } else {
-        if (sanitizeInput(text) !== text) {
-          errors.push(`texts[${index}]包含不安全的HTML/脚本内容`);
-        }
-      }
-    });
-  }
-
-  if (errors.length > 0) {
-    return res.status(400).json({
-      success: false,
-      code: 'VALIDATION_ERROR',
-      message: errors.join('; '),
-      errors,
-      retryable: false,
-      requestId: req.requestId,
-      timestamp: new Date().toISOString()
-    });
-  }
-
-  if (body.texts) {
-    req.body.texts = body.texts.map(text => sanitizeInput(text));
-  }
-
-  next();
 };
 
 // ==================== 核心合成端点 ====================
@@ -94,18 +55,11 @@ const validateBatchParams = (req, res, next) => {
  * POST /api/tts/synthesize
  */
 router.post('/synthesize',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   securityLogger,
   validateTtsParams,
   createUnifiedTtsMiddleware(),
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.synthesize(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('synthesize')
 );
 
 /**
@@ -113,18 +67,11 @@ router.post('/synthesize',
  * 与 /synthesize 完全相同，用于向后兼容
  */
 router.post('/',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   securityLogger,
   validateTtsParams,
   createUnifiedTtsMiddleware(),
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.synthesize(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('synthesize')
 );
 
 /**
@@ -133,17 +80,10 @@ router.post('/',
  * 修复：使用专用验证中间件，不要求text字段
  */
 router.post('/batch',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   securityLogger,
   validateBatchParams,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.batchSynthesize(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('batchSynthesize')
 );
 
 // ==================== 音色查询端点 ====================
@@ -151,47 +91,29 @@ router.post('/batch',
 /**
  * 获取音色列表
  * GET /api/tts/voices?service=xxx
+ * 注意：公开只读端点，不加 auth，便于前端音色页免登录访问
  */
 router.get('/voices',
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getVoices(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getVoices')
 );
 
 /**
  * 获取单个音色
  * GET /api/tts/voices/:id
+ * 注意：公开只读端点，不加 auth
  */
 router.get('/voices/:id',
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getVoiceById(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getVoiceById')
 );
 
 /**
  * 获取音色详情
  * GET /api/tts/voices/:id/detail
+ * 注意：公开只读端点，不加 auth
  */
 router.get('/voices/:id/detail',
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getVoiceDetail(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getVoiceDetail')
 );
 
 /**
@@ -199,16 +121,9 @@ router.get('/voices/:id/detail',
  * GET /api/tts/providers
  */
 router.get('/providers',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getProviders(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getProviders')
 );
 
 /**
@@ -216,15 +131,8 @@ router.get('/providers',
  * GET /api/tts/providers/metrics?service=xxx&window=1h
  */
 router.get('/providers/metrics',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getProviderMetrics(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  ttsAuth,
+  wrap('getProviderMetrics')
 );
 
 /**
@@ -232,15 +140,8 @@ router.get('/providers/metrics',
  * POST /api/tts/providers/match
  */
 router.post('/providers/match',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.matchProviders(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  ttsAuth,
+  wrap('matchProviders')
 );
 
 /**
@@ -248,21 +149,15 @@ router.post('/providers/match',
  * GET /api/tts/capabilities/:service
  */
 router.get('/capabilities/:service',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getCapabilities(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  ttsAuth,
+  wrap('getCapabilities')
 );
 
 /**
  * 获取筛选选项
  * GET /api/tts/filters
  * @deprecated 使用 /api/tts/bootstrap 替代
+ * 注意：deprecated 端点不加强 auth，避免破坏存量调用方
  */
 router.get('/filters',
   (req, res, next) => {
@@ -271,20 +166,14 @@ router.get('/filters',
     res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version"');
     next();
   },
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getFilterOptions(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getFilterOptions')
 );
 
 /**
  * 获取前端展示目录
  * GET /api/tts/catalog
  * @deprecated 使用 /api/tts/bootstrap 替代
+ * 注意：deprecated 端点不加强 auth，避免破坏存量调用方
  */
 router.get('/catalog',
   requestLogger,
@@ -294,20 +183,14 @@ router.get('/catalog',
     res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version", </api/tts/services/form-summary>; rel="related"');
     next();
   },
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getFrontendCatalog(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getFrontendCatalog')
 );
 
 /**
  * 获取前端展示音色数据（精简版）
  * GET /api/tts/frontend
  * @deprecated 使用 /api/tts/bootstrap 替代
+ * 注意：deprecated 端点不加强 auth，避免破坏存量调用方
  */
 router.get('/frontend',
   requestLogger,
@@ -317,14 +200,7 @@ router.get('/frontend',
     res.setHeader('Link', '</api/tts/bootstrap>; rel="successor-version"');
     next();
   },
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getFrontendVoices(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getFrontendVoices')
 );
 
 /**
@@ -332,15 +208,9 @@ router.get('/frontend',
  * GET /api/tts/bootstrap
  */
 router.get('/bootstrap',
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getFrontendBootstrap(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getFrontendBootstrap')
 );
 
 // ==================== 表单一体化端点 ====================
@@ -351,15 +221,9 @@ router.get('/bootstrap',
  * 注意：必须在 /services/:service/form 之前注册，否则 form-summary 会被当作 :service 参数匹配
  */
 router.get('/services/form-summary',
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getAllServicesFormSummary(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getAllServicesFormSummary')
 );
 
 /**
@@ -370,16 +234,9 @@ router.get('/services/form-summary',
  * 服务商信息 + 紧凑能力 + 可用音色 + 调用模板
  */
 router.get('/services/:service/form',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getServiceForm(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getServiceForm')
 );
 
 // ==================== 排队系统端点 ====================
@@ -389,15 +246,9 @@ router.get('/services/:service/form',
  * GET /api/tts/queue
  */
 router.get('/queue',
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getQueueSnapshot(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getQueueSnapshot')
 );
 
 /**
@@ -405,14 +256,8 @@ router.get('/queue',
  * GET /api/tts/queue/:requestId
  */
 router.get('/queue/:requestId',
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getQueueStatus(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  ttsAuth,
+  wrap('getQueueStatus')
 );
 
 /**
@@ -420,14 +265,8 @@ router.get('/queue/:requestId',
  * DELETE /api/tts/queue/:requestId
  */
 router.delete('/queue/:requestId',
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.cancelQueueTask(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  ttsAuth,
+  wrap('cancelQueueTask')
 );
 
 // ==================== 运维管理端点 ====================
@@ -437,16 +276,9 @@ router.delete('/queue/:requestId',
  * GET /api/tts/health
  */
 router.get('/health',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getHealthStatus(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getHealthStatus')
 );
 
 /**
@@ -454,16 +286,9 @@ router.get('/health',
  * GET /api/tts/stats
  */
 router.get('/stats',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.getStats(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('getStats')
 );
 
 /**
@@ -471,16 +296,9 @@ router.get('/stats',
  * POST /api/tts/reset-stats
  */
 router.post('/reset-stats',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.resetStats(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('resetStats')
 );
 
 /**
@@ -488,16 +306,9 @@ router.post('/reset-stats',
  * POST /api/tts/clear-cache
  */
 router.post('/clear-cache',
-  unifiedAuth.createMiddleware({ service: 'tts' }),
+  ttsAuth,
   requestLogger,
-  async (req, res, next) => {
-    try {
-      const adapter = await getAdapter();
-      await adapter.clearCache(req, res);
-    } catch (error) {
-      next(error);
-    }
-  }
+  wrap('clearCache')
 );
 
 // ==================== 服务专用路由（动态注册） ====================

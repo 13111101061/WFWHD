@@ -32,6 +32,7 @@ class SynthesisContext {
     this.normalizedInput = null;
 
     this.result = null;
+    this.signal = null;
 
     this.warnings = [];
 

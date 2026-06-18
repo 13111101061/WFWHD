@@ -17,13 +17,7 @@ class TencentTtsAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 初始化时获取凭证（向后兼容）
-    const creds = this._getCredentials();
-    this.secretId = config.secretId || creds?.secretId;
-    this.secretKey = config.secretKey || creds?.secretKey;
-    this.region = config.region || creds?.region || 'ap-guangzhou';
-
-    this._client = null;
+    this.region = config.region || 'ap-guangzhou';
   }
 
   _getClient(secretId, secretKey) {
@@ -39,14 +33,13 @@ class TencentTtsAdapter extends BaseTtsAdapter {
     }
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 请求时获取凭证（支持池化选择和健康追踪）
-    const creds = this._getCredentials();
-    const secretId = creds?.secretId || this.secretId;
-    const secretKey = creds?.secretKey || this.secretKey;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const secretId = creds?.secretId;
+    const secretKey = creds?.secretKey;
 
     if (!secretId || !secretKey) {
       throw this._error('CONFIG_ERROR', '腾讯云TTS密钥未配置');
@@ -74,10 +67,10 @@ class TencentTtsAdapter extends BaseTtsAdapter {
         requestBody.SampleRate = sampleRate;
       }
 
-      const response = await client.TextToVoice(requestBody);
+      // 腾讯 SDK 无原生 signal 支持，用 AbortController + 超时包裹
+      const response = await this._withAbort(signal, () => client.TextToVoice(requestBody));
 
-      // 报告成功
-      this._reportSuccess();
+      this._reportSuccess(accountId);
 
       const audio = await decodeAudio(response.Audio);
 
@@ -89,10 +82,29 @@ class TencentTtsAdapter extends BaseTtsAdapter {
         requestId: response.RequestId
       };
     } catch (error) {
-      // 报告失败
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
+  }
+
+  /**
+   * AbortController 包裹：对于不支持 signal 的 SDK，通过超时中断等待
+   */
+  _withAbort(signal, fn) {
+    if (!signal) return fn();
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const onAbort = () => {
+        if (!settled) {
+          settled = true;
+          reject(this._error('TIMEOUT_ERROR', 'Request aborted'));
+        }
+      };
+      signal.addEventListener('abort', onAbort, { once: true });
+      fn()
+        .then(result => { if (!settled) { settled = true; signal.removeEventListener('abort', onAbort); resolve(result); } })
+        .catch(err => { if (!settled) { settled = true; signal.removeEventListener('abort', onAbort); reject(err); } });
+    });
   }
 
   getFallbackVoices() {

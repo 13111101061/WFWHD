@@ -15,11 +15,14 @@ class BaseTtsAdapter {
     this.audioStorage = audioStorageManager;
     this.provider = config.provider || 'unknown';
     this.serviceType = config.serviceType || 'default';
-    this._currentAccountId = null;
     this.voiceRegistry = config.voiceRegistry || null;
     this._providerCode = getProviderCode(this.provider);
   }
 
+  /**
+   * 获取凭证（无副作用，不写实例状态）
+   * @returns {{ credentials: Object|null, accountId: string|null }}
+   */
   _getCredentials(context = {}) {
     if (credentials.selectCredentials) {
       const result = credentials.selectCredentials(
@@ -28,13 +31,11 @@ class BaseTtsAdapter {
         context
       );
       if (result) {
-        this._currentAccountId = result.accountId;
-        return result.credentials;
+        return { credentials: result.credentials, accountId: result.accountId };
       }
     }
 
-    this._currentAccountId = null;
-    return credentials.getCredentials(this.provider);
+    return { credentials: credentials.getCredentials(this.provider), accountId: null };
   }
 
   _getServiceConfig() {
@@ -49,19 +50,19 @@ class BaseTtsAdapter {
     return credentials.isServiceAvailable(this.provider, this.serviceType);
   }
 
-  _reportSuccess() {
-    if (this._currentAccountId && credentials.reportSuccess) {
-      credentials.reportSuccess(this.provider, this._currentAccountId, this.serviceType);
+  _reportSuccess(accountId) {
+    if (accountId && credentials.reportSuccess) {
+      credentials.reportSuccess(this.provider, accountId, this.serviceType);
     }
   }
 
-  _reportFailure(error) {
-    if (this._currentAccountId && credentials.reportFailure) {
-      credentials.reportFailure(this.provider, this._currentAccountId, this.serviceType, error);
+  _reportFailure(accountId, error) {
+    if (accountId && credentials.reportFailure) {
+      credentials.reportFailure(this.provider, accountId, this.serviceType, error);
     }
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     throw new Error(`synthesize() must be implemented by ${this.constructor.name}`);
   }
 
@@ -75,8 +76,8 @@ class BaseTtsAdapter {
     }, {});
   }
 
-  async synthesizeAndSave(text, options = {}, providerInput = null) {
-    const result = await this.synthesize(text, options, providerInput);
+  async synthesizeAndSave(text, options = {}, providerInput = null, signal = null) {
+    const result = await this.synthesize(text, options, providerInput, signal);
     const metadata = this._extractResultMetadata(result);
 
     if (result.audioUrl) {
@@ -211,24 +212,11 @@ class BaseTtsAdapter {
   }
 
   /**
-   * @deprecated 重试由 ExecutionPolicy 统一管理，适配器层不应自行重试。
-   *             使用此方法会导致双重重试（ExecutionPolicy retry × Adapter retry），
-   *             影响 billing、timeout 预期、circuit breaker 统计和 credential health。
+   * @forbidden 重试由 ExecutionPolicy 统一管理，适配器层禁止自行重试。
+   *            调用此方法会直接抛出错误，避免双重重试导致计费/熔断/指标异常。
    */
-  async _retry(fn, maxRetries = this.config.maxRetries) {
-    console.warn(`[BaseTtsAdapter DEPRECATED] _retry() called on ${this.provider}/${this.serviceType} — 重试应由 ExecutionPolicy 管理`);
-    let lastError;
-    for (let i = 0; i < maxRetries; i += 1) {
-      try {
-        return await fn();
-      } catch (error) {
-        lastError = error;
-        if (i < maxRetries - 1) {
-          await this._delay(this.config.retryDelay * (i + 1));
-        }
-      }
-    }
-    throw lastError;
+  async _retry() {
+    throw new Error('Adapter-level retry forbidden; use ExecutionPolicy for retry management');
   }
 }
 

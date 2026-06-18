@@ -1,0 +1,72 @@
+
+> tts-microservice@2.0.0 test
+> mocha 'tests/unit/**/*.test.js' 'tests/regression/**/*.test.js' 'tests/integration/credential-pool.test.js' 'tests/TemplateResolver.test.js' 'tests/NormalizedSynthesisInput.test.js' --timeout 10000
+
+
+=== TtsSynthesisService 测试 ===
+
+初始化 ServiceContainer...
+[ServiceContainer] Initializing services...
+[ProviderManifest] Loaded 6 providers
+
+=== toDisplayDto 函数测试 ===
+
+测试 1: 正确转换为展示 DTO
+✅ 通过
+
+测试 2: 展示 DTO 不暴露 voiceId 和 runtime
+✅ 通过
+
+测试 3: 展示 DTO 不包含完整 runtime
+✅ 通过
+
+=== toDetailDto 函数测试 ===
+
+测试 4: 详情 DTO 包含 identity, profile 和 runtimePreview
+✅ 通过
+
+测试 5: 详情 DTO 包含 meta
+✅ 通过
+
+=== VoiceCatalog 方法测试 ===
+
+初始化 VoiceRegistry...
+
+=== VoiceResolver tests (v3.0 - refactored) ===
+
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+📁 音频存储目录初始化成功: E:\D G\H D\WFWHD\src\storage\uploads\audio
+⏰ 下次文件清理时间: 2026-06-18T18:00:00.000Z
+
+
+  TtsHttpAdapter 错误响应 shape（阶段 4 统一化基准）
+    _handleError 规范出口
+[VoiceRegistry] ✅ Loaded 67 voices from file
+[VoiceRegistry] ✅ Loaded 67 voices from file
+测试 6: voiceCatalog.get() 返回目录对象
+✅ 通过
+
+测试 7: voiceCatalog.getRuntime() 返回运行时配置
+✅ 通过
+
+测试 8: voiceCatalog.getDisplay() 返回展示 DTO
+✅ 通过
+
+测试 9: voiceCatalog.getDetail() 返回详情 DTO
+✅ 通过
+
+测试 10: voiceCatalog.query() 过滤功能
+✅ 通过
+
+测试 11: voiceCatalog.getFiltersMeta() 返回筛选元数据
+✅ 通过
+
+测试 12: voiceCatalog.getStats() 返回统计信息
+  total: 67, providers: 3个
+✅ 通过
+
+========================================
+✅ VoiceCatalog 所有测试通过！
+========================================
+

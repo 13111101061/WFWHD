@@ -30,9 +30,6 @@ const BaseTtsAdapter = require('./BaseTtsAdapter');
 const TemplateResolver = require('./TemplateResolver');
 const { resolveProviderError } = require('../TtsErrorCodes');
 
-const RETRYABLE_HTTP = new Set([429, 503, 502]);
-const CIRCUIT_HTTP = new Set([500]);
-
 class GenericHttpAdapter extends BaseTtsAdapter {
   constructor(config = {}) {
     super({ ...config });
@@ -43,14 +40,6 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     this._bodyTemplate = this._api.bodyTemplate || {};
     this._responseMap = this._api.responseMapping || {};
 
-    const errorMap = this._api.errorMapping || {};
-    this._retryableHttp = new Set(
-      Array.isArray(errorMap.retryable) ? errorMap.retryable : [...RETRYABLE_HTTP]
-    );
-    this._circuitHttp = new Set(
-      Array.isArray(errorMap.circuitBreaker) ? errorMap.circuitBreaker : [...CIRCUIT_HTTP]
-    );
-
     this._resolver = new TemplateResolver();
 
     if (!this._endpoint) {
@@ -58,10 +47,10 @@ class GenericHttpAdapter extends BaseTtsAdapter {
     }
   }
 
-  async synthesize(text, providerParams = {}) {
+  async synthesize(text, providerParams = {}, providerInput = null, signal = null) {
     this.validateText(text);
 
-    const creds = this._getCredentials();
+    const { credentials: creds, accountId } = this._getCredentials();
 
     if (!this._hasCredential(creds)) {
       throw this._error('CONFIG_ERROR', `${this.provider} API Key 未配置`);
@@ -74,7 +63,8 @@ class GenericHttpAdapter extends BaseTtsAdapter {
       const response = await fetch(this._endpoint, {
         method: this._method,
         headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal
       });
 
       if (!response.ok) {
@@ -83,7 +73,7 @@ class GenericHttpAdapter extends BaseTtsAdapter {
 
       const result = await this._extractAudio(response, this._responseMap);
 
-      this._reportSuccess();
+      this._reportSuccess(accountId);
 
       const format = this._responseMap.formatPath
         ? this._navigate(result._parsed || {}, this._responseMap.formatPath.split('.'))
@@ -100,7 +90,7 @@ class GenericHttpAdapter extends BaseTtsAdapter {
         serviceType: this.serviceType
       };
     } catch (error) {
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
   }

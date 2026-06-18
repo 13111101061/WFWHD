@@ -23,97 +23,93 @@ class AliyunQwenAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    const creds = this._getCredentials();
     const serviceConfig = this._getServiceConfig();
-
-    this.apiKey = config.apiKey || creds?.apiKey;
     this.endpoint = config.endpoint
       || serviceConfig?.endpoint
       || 'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation';
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    const creds = this._getCredentials();
-    const apiKey = creds?.apiKey || this.apiKey;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const apiKey = creds?.apiKey;
     if (!apiKey) {
       throw this._error('CONFIG_ERROR', 'Qwen TTS API 密钥未配置');
     }
 
     try {
-      const result = await this._executeRequest(text, params, apiKey);
-      this._reportSuccess();
+      const result = await this._executeRequest(text, params, apiKey, signal);
+      this._reportSuccess(accountId);
       return result;
     } catch (error) {
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
   }
 
-  async _executeRequest(text, params, apiKey) {
-    return this._retry(async () => {
-      const headers = {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      };
+  async _executeRequest(text, params, apiKey, signal = null) {
+    const headers = {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    };
 
-      const requestBody = {
-        model: this._pickOption(params, ['model']) || 'qwen3-tts-instruct-flash',
-        input: {
-          text,
-          voice: this._pickOption(params, ['voice']) || 'Cherry'
-        }
-      };
-
-      const languageType = this._pickOption(params, ['language_type', 'languageType']);
-      if (languageType !== undefined) {
-        requestBody.input.language_type = languageType;
+    const requestBody = {
+      model: this._pickOption(params, ['model']) || 'qwen3-tts-instruct-flash',
+      input: {
+        text,
+        voice: this._pickOption(params, ['voice']) || 'Cherry'
       }
+    };
 
-      const sampleRate = this._pickOption(params, ['sample_rate', 'sampleRate']);
-      if (sampleRate !== undefined) {
-        requestBody.input.sample_rate = sampleRate;
-      }
+    const languageType = this._pickOption(params, ['language_type', 'languageType']);
+    if (languageType !== undefined) {
+      requestBody.input.language_type = languageType;
+    }
 
-      const instructions = this._pickOption(params, ['instructions']);
-      if (instructions !== undefined) {
-        requestBody.input.instructions = instructions;
-      }
+    const sampleRate = this._pickOption(params, ['sample_rate', 'sampleRate']);
+    if (sampleRate !== undefined) {
+      requestBody.input.sample_rate = sampleRate;
+    }
 
-      const optimizeInstructions = this._pickOption(params, ['optimize_instructions', 'optimizeInstructions']);
-      if (optimizeInstructions !== undefined) {
-        requestBody.input.optimize_instructions = optimizeInstructions;
-      }
+    const instructions = this._pickOption(params, ['instructions']);
+    if (instructions !== undefined) {
+      requestBody.input.instructions = instructions;
+    }
 
-      const response = await fetch(this.endpoint, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(requestBody)
-      });
+    const optimizeInstructions = this._pickOption(params, ['optimize_instructions', 'optimizeInstructions']);
+    if (optimizeInstructions !== undefined) {
+      requestBody.input.optimize_instructions = optimizeInstructions;
+    }
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw this._error('API_ERROR', `Qwen TTS 请求失败 (${response.status}): ${errText}`);
-      }
-
-      const result = await response.json();
-
-      const audioUrl = result.output?.audio?.url;
-      if (!audioUrl) {
-        throw this._error('PARSE_ERROR', '响应中未找到音频 URL', { response: result });
-      }
-
-      return {
-        audioUrl,
-        format: params.format || 'wav',
-        provider: this.provider,
-        serviceType: this.serviceType,
-        audioId: result.output?.audio?.id || null,
-        expiresAt: result.output?.audio?.expires_at || null
-      };
+    const response = await fetch(this.endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody),
+      signal
     });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw this._error('API_ERROR', `Qwen TTS 请求失败 (${response.status}): ${errText}`);
+    }
+
+    const result = await response.json();
+
+    const audioUrl = result.output?.audio?.url;
+    if (!audioUrl) {
+      throw this._error('PARSE_ERROR', '响应中未找到音频 URL', { response: result });
+    }
+
+    return {
+      audioUrl,
+      format: params.format || 'wav',
+      provider: this.provider,
+      serviceType: this.serviceType,
+      audioId: result.output?.audio?.id || null,
+      expiresAt: result.output?.audio?.expires_at || null
+    };
   }
 
   getFallbackVoices() {

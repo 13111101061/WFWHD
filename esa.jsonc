@@ -1,4 +1,0 @@
-{
-  // 阿里云 ESA Pages 边缘部署配置
-  "notFoundStrategy": "singlePageApplication"
-}

@@ -4,6 +4,7 @@
  */
 
 const crypto = require('crypto');
+const { MAX_TEXT_LENGTH, MAX_BATCH_SIZE, MAX_BATCH_TEXT_LENGTH } = require('../../modules/tts/config/limits');
 
 /**
  * XSS防护 - 清理HTML/JavaScript攻击向量
@@ -11,7 +12,7 @@ const crypto = require('crypto');
 const sanitizeInput = (input) => {
   if (typeof input !== 'string') return input;
 
-  // 移除危险的HTML标签和属性
+  // 移除危险的 HTML 标签和属性，但保留合法 TTS 文本（数学表达式、XML 标签等）
   return input
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
@@ -27,7 +28,6 @@ const sanitizeInput = (input) => {
     .replace(/onblur=/gi, '')
     .replace(/onchange=/gi, '')
     .replace(/onsubmit=/gi, '')
-    .replace(/<[^>]*>/g, '') // 移除所有HTML标签
     .trim();
 };
 
@@ -36,20 +36,10 @@ const sanitizeInput = (input) => {
  */
 const detectMaliciousContent = (text) => {
   const maliciousPatterns = [
-    // SQL注入模式（虽然不用数据库，但防御性编程）
-    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/gi,
-    /(\b(OR|AND)\s+\d+\s*=\s*\d+)/gi,
-    /['"]\s*(OR|AND)\s*['"]/gi,
-
-    // 命令注入模式
-    /(\b(curl|wget|nc|netcat|ssh|ftp|telnet|powershell|cmd)\b)/gi,
-    /(\$\(.*\)|`.*`)/g,
-    /[;&|`$(){}[\]\\]/,
-
     // 路径遍历
     /\.\.[\/\\]/g,
 
-    // XSS模式
+    // XSS 模式
     /javascript:/gi,
     /vbscript:/gi,
     /<script[^>]*>/gi,
@@ -58,7 +48,7 @@ const detectMaliciousContent = (text) => {
     // 控制字符
     /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,
 
-    // Unicode攻击
+    // Unicode 攻击
     /[\u202E\u200E\u200F\u206A\u206B\u206C\u206D]/g
   ];
 
@@ -79,20 +69,16 @@ const detectMaliciousContent = (text) => {
  * 根据模式判断威胁级别
  */
 const getSeverity = (pattern) => {
-  if (pattern.source.includes('SELECT|INSERT|UPDATE|DELETE') ||
-      pattern.source.includes('curl|wget|powershell|cmd')) {
-    return 'HIGH';
-  } else if (pattern.source.includes('javascript:|<script') ||
-             pattern.source.includes('\.\.[\/\\]')) {
+  if (pattern.source.includes('javascript:|<script') ||
+      pattern.source.includes('\\.\\.[\\/\\\\]')) {
     return 'MEDIUM';
-  } else {
-    return 'LOW';
   }
+  return 'LOW';
 };
 
-const MAX_TEXT_LENGTH = 10000;
-const MAX_BATCH_SIZE = 10;
-const MAX_BATCH_TEXT_LENGTH = 5000;
+const MAX_TEXT_LENGTH_LOCAL = MAX_TEXT_LENGTH;
+const MAX_BATCH_SIZE_LOCAL = MAX_BATCH_SIZE;
+const MAX_BATCH_TEXT_LENGTH_LOCAL = MAX_BATCH_TEXT_LENGTH;
 
 /**
  * 验证TTS请求参数（安全层 + 结构层）
@@ -110,17 +96,21 @@ const validateTtsParams = (req, res, next) => {
   }
 
   if (body.text) {
-    if (body.text.trim().length === 0) {
-      errors.push('文本内容不能为空');
-    }
+    if (typeof body.text !== 'string') {
+      errors.push('text字段必须是字符串');
+    } else {
+      if (body.text.trim().length === 0) {
+        errors.push('文本内容不能为空');
+      }
 
-    if (body.text.length > MAX_TEXT_LENGTH) {
-      errors.push(`文本长度不能超过${MAX_TEXT_LENGTH}字符`);
-    }
+      if (body.text.length > MAX_TEXT_LENGTH_LOCAL) {
+        errors.push(`文本长度不能超过${MAX_TEXT_LENGTH_LOCAL}字符`);
+      }
 
-    const sanitizedText = sanitizeInput(body.text);
-    if (sanitizedText !== body.text) {
-      errors.push('文本包含不安全的HTML/脚本内容');
+      const sanitizedText = sanitizeInput(body.text);
+      if (sanitizedText !== body.text) {
+        errors.push('文本包含不安全的HTML/脚本内容');
+      }
     }
   }
 
@@ -143,20 +133,20 @@ const validateTtsParams = (req, res, next) => {
       errors.push('批量文本数组不能为空');
     }
 
-    if (body.texts.length > MAX_BATCH_SIZE) {
-      errors.push(`批量请求最多支持${MAX_BATCH_SIZE}个文本`);
+    if (body.texts.length > MAX_BATCH_SIZE_LOCAL) {
+      errors.push(`批量请求最多支持${MAX_BATCH_SIZE_LOCAL}个文本`);
     }
 
     body.texts.forEach((text, index) => {
       if (typeof text !== 'string') {
         errors.push(`批量文本[${index}]必须是字符串`);
-      }
-      if (text.length > MAX_BATCH_TEXT_LENGTH) {
-        errors.push(`批量文本[${index}]长度不能超过${MAX_BATCH_TEXT_LENGTH}字符`);
-      }
-      const maliciousCheck = detectMaliciousContent(text);
-      if (maliciousCheck.detected) {
-        errors.push(`批量文本[${index}]包含恶意内容`);
+      } else if (text.length > MAX_BATCH_TEXT_LENGTH_LOCAL) {
+        errors.push(`批量文本[${index}]长度不能超过${MAX_BATCH_TEXT_LENGTH_LOCAL}字符`);
+      } else {
+        const maliciousCheck = detectMaliciousContent(text);
+        if (maliciousCheck.detected) {
+          errors.push(`批量文本[${index}]包含恶意内容`);
+        }
       }
     });
   }
@@ -262,10 +252,67 @@ const securityLogger = (req, res, next) => {
   next();
 };
 
+/**
+ * 批量请求验证中间件
+ */
+const validateBatchParams = (req, res, next) => {
+  const body = req.body || {};
+  const errors = [];
+
+  if (!body.service || typeof body.service !== 'string') {
+    errors.push('service字段是必需的且必须是字符串');
+  }
+
+  if (!body.texts || !Array.isArray(body.texts)) {
+    errors.push('texts字段是必需的且必须是数组');
+  }
+
+  if (body.texts) {
+    if (body.texts.length === 0) {
+      errors.push('texts数组不能为空');
+    }
+    if (body.texts.length > MAX_BATCH_SIZE_LOCAL) {
+      errors.push(`批量请求最多支持${MAX_BATCH_SIZE_LOCAL}个文本`);
+    }
+    body.texts.forEach((text, index) => {
+      if (typeof text !== 'string') {
+        errors.push(`texts[${index}]必须是字符串`);
+      } else if (text.length === 0) {
+        errors.push(`texts[${index}]不能为空`);
+      } else if (text.length > MAX_BATCH_TEXT_LENGTH_LOCAL) {
+        errors.push(`texts[${index}]长度不能超过${MAX_BATCH_TEXT_LENGTH_LOCAL}字符`);
+      } else {
+        if (sanitizeInput(text) !== text) {
+          errors.push(`texts[${index}]包含不安全的HTML/脚本内容`);
+        }
+      }
+    });
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      code: 'VALIDATION_ERROR',
+      message: errors.join('; '),
+      errors,
+      retryable: false,
+      requestId: req.requestId,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  if (body.texts) {
+    req.body.texts = body.texts.map(text => sanitizeInput(text));
+  }
+
+  next();
+};
+
 module.exports = {
   sanitizeInput,
   detectMaliciousContent,
   validateTtsParams,
+  validateBatchParams,
   validateRequestBody,
   securityLogger,
   generateRequestFingerprint

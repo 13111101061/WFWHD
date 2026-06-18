@@ -34,16 +34,32 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function withTimeout(promise, timeoutMs) {
+async function withTimeout(promise, timeoutMs, signal) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       const err = new Error(`Execution timeout after ${timeoutMs}ms`);
       err.code = 'TIMEOUT_ERROR';
       reject(err);
     }, timeoutMs);
-    promise
-      .then(result => { clearTimeout(timer); resolve(result); })
-      .catch(err => { clearTimeout(timer); reject(err); });
+
+    // 当外部 signal abort 时也触发超时拒绝
+    if (signal) {
+      const onAbort = () => {
+        clearTimeout(timer);
+        const err = new Error('Execution aborted');
+        err.code = 'TIMEOUT_ERROR';
+        reject(err);
+      };
+      if (signal.aborted) return onAbort();
+      signal.addEventListener('abort', onAbort, { once: true });
+      promise
+        .then(r => { clearTimeout(timer); signal.removeEventListener('abort', onAbort); resolve(r); })
+        .catch(e => { clearTimeout(timer); signal.removeEventListener('abort', onAbort); reject(e); });
+    } else {
+      promise
+        .then(r => { clearTimeout(timer); resolve(r); })
+        .catch(e => { clearTimeout(timer); reject(e); });
+    }
   });
 }
 
@@ -106,8 +122,10 @@ class ExecutionPolicy {
 
   /**
    * 受保护的执行：限流 → 熔断 → 重试 → 超时
+   * @param {string} serviceKey
+   * @param {Function} task - 接收 signal 参数的异步函数 task(signal)
    */
-  async execute(serviceKey, task) {
+  async execute(serviceKey, task, signal = null) {
     const startTime = Date.now();
 
     this._checkRateLimit(serviceKey);
@@ -116,9 +134,9 @@ class ExecutionPolicy {
 
     try {
       const result = circuitBreakerDisabled
-        ? await this._executeWithRetry(serviceKey, task, startTime)
+        ? await this._executeWithRetry(serviceKey, task, startTime, signal)
         : await this._getCircuitBreaker(serviceKey).execute(async () => {
-            return this._executeWithRetry(serviceKey, task, startTime);
+            return this._executeWithRetry(serviceKey, task, startTime, signal);
           });
 
       const latency = Date.now() - startTime;
@@ -134,7 +152,7 @@ class ExecutionPolicy {
   /**
    * 重试 + 超时包装（per-service 配置）
    */
-  async _executeWithRetry(serviceKey, task, startTime) {
+  async _executeWithRetry(serviceKey, task, startTime, signal = null) {
     const retryTimes = this._getRetryTimes(serviceKey);
     const timeoutMs = this._getTimeoutMs(serviceKey);
     const attempts = Math.max(1, retryTimes + 1);
@@ -142,12 +160,14 @@ class ExecutionPolicy {
 
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
-        return await withTimeout(task(), timeoutMs);
+        return await withTimeout(task(signal), timeoutMs, signal);
       } catch (error) {
         lastError = error;
         if (error.code === 'TIMEOUT_ERROR') {
           this.metrics.timeoutCount++;
         }
+        // 外部 abort不重试
+        if (signal?.aborted) break;
         const shouldRetry = attempt < attempts && isRetryable(error);
         if (!shouldRetry) break;
         await sleep(120 * attempt);

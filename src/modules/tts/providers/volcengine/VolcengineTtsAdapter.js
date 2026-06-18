@@ -17,21 +17,16 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 初始化时获取凭证（向后兼容）
-    const creds = this._getCredentials();
-    this.appId = config.appId || creds?.appId;
-    this.token = config.token || creds?.token;
     this.endpoint = config.endpoint || 'https://openspeech.bytedance.com/api/v1/tts';
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 请求时获取凭证（支持池化选择和健康追踪）
-    const creds = this._getCredentials();
-    const appId = creds?.appId || this.appId;
-    const token = creds?.token || this.token;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const appId = creds?.appId;
+    const token = creds?.token;
 
     if (!appId || !token) {
       throw this._error('CONFIG_ERROR', '火山引擎TTS配置不完整');
@@ -60,7 +55,8 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
       const response = await fetch(`${this.endpoint}?appid=${appId}&token=${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestPayload)
+        body: JSON.stringify(requestPayload),
+        signal
       });
 
       if (!response.ok) {
@@ -84,8 +80,7 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
         throw this._error('PARSE_ERROR', '火山引擎TTS: 解码Base64后音频数据为空');
       }
 
-      // 报告成功
-      this._reportSuccess();
+      this._reportSuccess(accountId);
 
       return {
         audio,
@@ -94,8 +89,7 @@ class VolcengineTtsAdapter extends BaseTtsAdapter {
         serviceType: this.serviceType
       };
     } catch (error) {
-      // 报告失败
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
   }

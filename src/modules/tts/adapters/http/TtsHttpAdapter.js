@@ -16,6 +16,7 @@
 const SynthesisRequest = require('../../domain/SynthesisRequest');
 const AudioResult = require('../../domain/AudioResult');
 const { TtsErrorCodes, HTTP_STATUS_MAP, RETRYABLE_MAP } = require('../../TtsErrorCodes');
+const { MAX_BATCH_SIZE } = require('../../config/limits');
 
 class TtsHttpAdapter {
   constructor(synthesisService, queryService, { clearAllCache, providerRegistry, synthesisQueue, metricsCollector } = {}) {
@@ -199,13 +200,7 @@ class TtsHttpAdapter {
       }
 
       if (!provider || !serviceType) {
-        return res.status(400).json({
-          success: false,
-          code: 'UNKNOWN_SERVICE',
-          message: `Could not resolve service: ${service}`,
-          retryable: false,
-          timestamp: new Date().toISOString()
-        });
+        return this._respondError(res, 400, 'UNKNOWN_SERVICE', `Could not resolve service: ${service}`);
       }
 
       const voices = await this.queryService.getVoices(provider, serviceType);
@@ -253,11 +248,7 @@ class TtsHttpAdapter {
   async getProviderMetrics(req, res) {
     try {
       if (!this._metricsCollector) {
-        return res.status(501).json({
-          success: false,
-          code: 'METRICS_NOT_AVAILABLE',
-          message: 'Metrics collector not configured'
-        });
+        return this._respondError(res, 501, 'METRICS_NOT_AVAILABLE', 'Metrics collector not configured');
       }
 
       const { service, window = '1h' } = req.query;
@@ -360,7 +351,7 @@ class TtsHttpAdapter {
   async clearCache(req, res) {
     try {
       if (!this._clearAllCache) {
-        return res.status(501).json({ success: false, message: 'Cache clearing not configured' });
+        return this._respondError(res, 501, 'NOT_IMPLEMENTED', 'Cache clearing not configured');
       }
       const clearedCount = this._clearAllCache();
 
@@ -386,10 +377,7 @@ class TtsHttpAdapter {
       const voice = this.queryService.getVoice(id);
 
       if (!voice) {
-        return res.status(404).json({
-          success: false,
-          error: `Voice not found: ${id}`
-        });
+        return this._respondError(res, 404, 'VOICE_NOT_FOUND', `Voice not found: ${id}`);
       }
 
       res.json({
@@ -413,10 +401,7 @@ class TtsHttpAdapter {
       const detail = this.queryService.getVoiceDetail(id);
 
       if (!detail) {
-        return res.status(404).json({
-          success: false,
-          error: `Voice detail not found: ${id}`
-        });
+        return this._respondError(res, 404, 'VOICE_NOT_FOUND', `Voice detail not found: ${id}`);
       }
 
       res.json({
@@ -570,20 +555,6 @@ class TtsHttpAdapter {
   }
 
   /**
-   * 设置废弃端点的 HTTP 响应头
-   * @param {Object} res - Express response
-   * @param {string[]} alternatives - 替代端点路径列表
-   */
-  _addDeprecationHeaders(res, alternatives = []) {
-    res.setHeader('Deprecation', 'true');
-    res.setHeader('Sunset', 'Sat, 01 Nov 2026 00:00:00 GMT');
-    if (alternatives.length > 0) {
-      const links = alternatives.map(a => `<${a}>; rel="successor-version"`);
-      res.setHeader('Link', links.join(', '));
-    }
-  }
-
-  /**
    * 验证批量请求参数
    */
   _validateBatchRequest(service, texts) {
@@ -599,11 +570,35 @@ class TtsHttpAdapter {
       throw error;
     }
 
-    if (texts.length > 10) {
-      const error = new Error('Maximum 10 texts allowed per batch request');
+    if (texts.length > MAX_BATCH_SIZE) {
+      const error = new Error(`Maximum ${MAX_BATCH_SIZE} texts allowed per batch request`);
       error.code = 'VALIDATION_ERROR';
       throw error;
     }
+  }
+
+  /**
+   * 统一错误响应
+   * @param {Object} res - Express response
+   * @param {number} statusCode - HTTP 状态码
+   * @param {string} code - 错误码
+   * @param {string} message - 错误描述
+   * @param {Object} opts - 可选字段 { retryable, requestId, errors, retryAfter, ... }
+   */
+  _respondError(res, statusCode, code, message, opts = {}) {
+    const { retryable = false, requestId, errors, retryAfter, ...rest } = opts;
+    const body = {
+      success: false,
+      code,
+      message,
+      retryable,
+      timestamp: new Date().toISOString(),
+      ...rest
+    };
+    if (requestId) body.requestId = requestId;
+    if (errors) body.errors = errors;
+    if (retryAfter) body.retryAfter = retryAfter;
+    return res.status(statusCode).json(body);
   }
 
   /**
@@ -634,18 +629,12 @@ class TtsHttpAdapter {
    */
   async getQueueStatus(req, res) {
     if (!this._synthesisQueue) {
-      return res.status(404).json({
-        success: false,
-        error: 'Queue system not enabled'
-      });
+      return this._respondError(res, 404, 'QUEUE_NOT_ENABLED', 'Queue system not enabled');
     }
 
     const status = this._synthesisQueue.getStatus(req.params.requestId);
     if (!status) {
-      return res.status(404).json({
-        success: false,
-        error: `Task not found: ${req.params.requestId}`
-      });
+      return this._respondError(res, 404, 'TASK_NOT_FOUND', `Task not found: ${req.params.requestId}`);
     }
 
     res.json({ success: true, data: status, timestamp: new Date().toISOString() });
@@ -657,10 +646,7 @@ class TtsHttpAdapter {
    */
   async cancelQueueTask(req, res) {
     if (!this._synthesisQueue) {
-      return res.status(404).json({
-        success: false,
-        error: 'Queue system not enabled'
-      });
+      return this._respondError(res, 404, 'QUEUE_NOT_ENABLED', 'Queue system not enabled');
     }
 
     const cancelled = this._synthesisQueue.cancel(req.params.requestId);
@@ -679,10 +665,7 @@ class TtsHttpAdapter {
    */
   async getQueueSnapshot(req, res) {
     if (!this._synthesisQueue) {
-      return res.status(404).json({
-        success: false,
-        error: 'Queue system not enabled'
-      });
+      return this._respondError(res, 404, 'QUEUE_NOT_ENABLED', 'Queue system not enabled');
     }
 
     res.json({

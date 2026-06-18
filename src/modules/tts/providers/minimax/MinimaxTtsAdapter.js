@@ -16,21 +16,15 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 初始化时获取凭证（向后兼容）
-    const creds = this._getCredentials();
-    this.apiKey = config.apiKey || creds?.apiKey;
-    this.groupId = config.groupId || creds?.groupId;
     this.endpoint = config.endpoint || 'https://api.minimax.chat/v1/text_to_speech';
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 请求时获取凭证（支持池化选择和健康追踪）
-    const creds = this._getCredentials();
-    const apiKey = creds?.apiKey || this.apiKey;
-    const groupId = creds?.groupId || this.groupId;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const apiKey = creds?.apiKey;
 
     if (!apiKey) {
       throw this._error('CONFIG_ERROR', 'MiniMax API密钥未配置');
@@ -92,7 +86,8 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
+        signal
       });
 
       if (!response.ok) {
@@ -102,8 +97,7 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
 
       const audio = Buffer.from(await response.arrayBuffer());
 
-      // 报告成功
-      this._reportSuccess();
+      this._reportSuccess(accountId);
 
       return {
         audio,
@@ -112,8 +106,7 @@ class MinimaxTtsAdapter extends BaseTtsAdapter {
         serviceType: this.serviceType
       };
     } catch (error) {
-      // 报告失败
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
   }

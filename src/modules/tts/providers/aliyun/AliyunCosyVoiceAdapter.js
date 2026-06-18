@@ -18,40 +18,32 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
       ...config
     });
 
-    // 初始化时获取凭证（向后兼容）
-    const creds = this._getCredentials();
     const serviceConfig = this._getServiceConfig();
-    this.apiKey = config.apiKey || creds?.apiKey;
     this.endpoint = config.endpoint || serviceConfig?.endpoint || 'wss://dashscope.aliyuncs.com/api-ws/v1/inference/';
   }
 
-  async synthesize(text, options = {}) {
+  async synthesize(text, options = {}, providerInput = null, signal = null) {
     this.validateText(text);
     const params = this.validateOptions(options);
 
-    // 请求时获取凭证（支持池化选择和健康追踪）
-    const creds = this._getCredentials();
-    const apiKey = creds?.apiKey || this.apiKey;
+    const { credentials: creds, accountId } = this._getCredentials();
+    const apiKey = creds?.apiKey;
 
     if (!apiKey) {
       throw this._error('CONFIG_ERROR', 'CosyVoice API密钥未配置');
     }
 
     try {
-      const result = await this._callWebSocket(text, params, apiKey);
-
-      // 报告成功
-      this._reportSuccess();
-
+      const result = await this._callWebSocket(text, params, apiKey, signal);
+      this._reportSuccess(accountId);
       return result;
     } catch (error) {
-      // 报告失败
-      this._reportFailure(error);
+      this._reportFailure(accountId, error);
       throw error;
     }
   }
 
-  _callWebSocket(text, params, apiKey) {
+  _callWebSocket(text, params, apiKey, signal = null) {
     return new Promise((resolve, reject) => {
       const taskId = uuidv4();
       const audioBuffers = [];
@@ -66,6 +58,15 @@ class AliyunCosyVoiceAdapter extends BaseTtsAdapter {
         ws.close();
         reject(this._error('TIMEOUT_ERROR', 'WebSocket连接超时'));
       }, this.config.timeout);
+
+      // AbortController signal 监听
+      if (signal) {
+        signal.addEventListener('abort', () => {
+          clearTimeout(timeout);
+          ws.close();
+          reject(this._error('TIMEOUT_ERROR', 'Request aborted'));
+        }, { once: true });
+      }
 
       ws.on('open', () => {
         const parameters = {

@@ -523,6 +523,21 @@
         "GET /audio/006/2026-06/syn_006_20260614012443_3c91cbc1.wav": 3,
         "GET /audio/001/2026-06/syn_001_20260614012556_727883b3.wav": 1
       }
+    },
+    "2026-06-14": {
+      "totalCalls": 26,
+      "endpoints": {
+        "GET /api/tts/voices": 1,
+        "POST /api/tts/synthesize": 14,
+        "GET /api/tts/capabilities/mimo_tts": 1,
+        "GET /audio/006/2026-06/syn_006_20260615004450_deba2dda.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260615004512_cc88280f.wav": 2,
+        "GET /audio/006/2026-06/syn_006_20260615004542_52089216.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260615004554_0c28298a.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260615004610_82af01be.wav": 3,
+        "GET /audio/006/2026-06/syn_006_20260615004647_b1ff9bac.wav": 1,
+        "GET /audio/006/2026-06/syn_006_20260615004701_420503d9.wav": 1
+      }
     }
   }
 }

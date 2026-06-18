@@ -63,6 +63,7 @@ class SynthesisQueue {
         resolve,
         reject,
         text,
+        abortController: new AbortController(),
         enqueuedAt: Date.now()
       };
 
@@ -91,16 +92,18 @@ class SynthesisQueue {
     const idx = this.waiting.findIndex(t => t.requestId === requestId);
     if (idx !== -1) {
       const [entry] = this.waiting.splice(idx, 1);
+      entry.abortController.abort();
       entry.reject(this._createCancelError(requestId));
       this.metrics.totalCancelled++;
       this._logCompleted(requestId, 'cancelled');
       return true;
     }
 
-    // 2. 检查活跃任务（标记取消，等待执行完成后丢弃结果）
+    // 2. 检查活跃任务（通过 AbortController 中断 HTTP）
     const active = this.active.get(requestId);
     if (active) {
       active.cancelled = true;
+      if (active.abortController) active.abortController.abort();
       this.metrics.totalCancelled++;
       return true;
     }
@@ -168,13 +171,13 @@ class SynthesisQueue {
   // ==================== 内部方法 ====================
 
   _startTask(entry) {
-    const { requestId, serviceKey, taskFn, text } = entry;
+    const { requestId, serviceKey, taskFn, text, abortController } = entry;
     const startedAt = Date.now();
 
-    const record = { requestId, serviceKey, text, startedAt, cancelled: false };
+    const record = { requestId, serviceKey, text, startedAt, cancelled: false, abortController };
     this.active.set(requestId, record);
 
-    taskFn()
+    taskFn(abortController.signal)
       .then(result => {
         if (record.cancelled) {
           this._logCompleted(requestId, 'cancelled');

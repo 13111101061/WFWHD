@@ -248,14 +248,25 @@ async function start() {
     });
   });
 
-  // Global error handler
+  // Global error handler — 统一错误响应 shape
   app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
-    res.status(500).json({
+    const statusCode = err.status || err.statusCode || 500;
+    const isDev = process.env.NODE_ENV === 'development';
+
+    console.error(`[Unhandled ${statusCode}] ${req.method} ${req.originalUrl}:`, err);
+
+    const body = {
       success: false,
-      error: 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-    });
+      code: err.code || 'INTERNAL_ERROR',
+      message: isDev ? err.message : 'Internal server error',
+      retryable: err.retryable || false,
+      requestId: req.requestId || null,
+      timestamp: new Date().toISOString()
+    };
+
+    if (isDev && err.stack) body.stack = err.stack;
+
+    res.status(statusCode).json(body);
   });
 
   const stats = voiceCatalog.getStats();

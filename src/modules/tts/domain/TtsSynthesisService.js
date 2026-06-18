@@ -79,15 +79,16 @@ class TtsSynthesisService {
     this._resolveVoice(sr, ctx);
     const canonicalKey = ctx.serviceKey || 'default';
 
-    const taskFn = async () => {
-      await this.executionPolicy.execute(canonicalKey, async () => {
+    const taskFn = async (signal) => {
+      ctx.signal = signal;
+      await this.executionPolicy.execute(canonicalKey, async (policySignal) => {
         this._buildCapability(ctx);
         this._checkCapabilityDigest(ctx);
         this._compileInput(ctx);
         this._mergeAndValidateParams(ctx);
         this._mapToProvider(ctx);
         await this._callProvider(ctx);
-      });
+      }, signal);
     };
 
     const queue = this.synthesisQueue;
@@ -136,6 +137,15 @@ class TtsSynthesisService {
         const fallbackCtx = new SynthesisContext({ request: sr });
         fallbackCtx.normalizedInput = originalCtx.normalizedInput;
 
+        // 为 fallback 创建独立的 AbortController
+        const fallbackAbort = new AbortController();
+        fallbackCtx.signal = fallbackAbort.signal;
+
+        // 如果原始请求被取消，同步取消 fallback
+        if (originalCtx.signal?.aborted) continue;
+        const onParentAbort = () => fallbackAbort.abort();
+        originalCtx.signal?.addEventListener('abort', onParentAbort, { once: true });
+
         // 用候选 serviceKey 重新解析
         const fallbackRequest = {
           text: sr.text,
@@ -152,7 +162,7 @@ class TtsSynthesisService {
           this._mergeAndValidateParams(fallbackCtx);
           this._mapToProvider(fallbackCtx);
           await this._callProvider(fallbackCtx);
-        });
+        }, fallbackAbort.signal);
 
         const audioResult = fallbackCtx.toAudioResult();
         audioResult.degraded = true;
@@ -332,7 +342,8 @@ class TtsSynthesisService {
       serviceType,
       text,
       ctx.providerParams,
-      providerInput
+      providerInput,
+      ctx.signal
     );
   }
 

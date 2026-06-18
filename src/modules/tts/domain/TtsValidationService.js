@@ -3,11 +3,14 @@
  * 纯验证逻辑，无副作用
  *
  * 参数范围校验委托给 CompiledCapability（服务商感知）。
- * 此处只保留文本结构校验和通用兜底。
+ * 此处只保留文本结构校验和通用兆底。
  */
+
+const { MAX_TEXT_LENGTH, MAX_BATCH_SIZE } = require('../config/limits');
+
 class TtsValidationService {
   constructor() {
-    this.maxTextLength = 10000;
+    this.maxTextLength = MAX_TEXT_LENGTH;
     // 允许 <style>...</style> 标签（MiMo TTS 支持），其他 <> {} [] \ 仍拦截
     this.invalidCharsPattern = /[<>{}[\]\\]/g;
     this.allowedTagsPattern = /<style>[\s\S]*?<\/style>/g;
@@ -64,8 +67,8 @@ class TtsValidationService {
       return { valid: false, errors: ['Texts array cannot be empty'], validTexts: [] };
     }
 
-    if (texts.length > 10) {
-      return { valid: false, errors: ['Maximum 10 texts allowed per batch request'], validTexts: [] };
+    if (texts.length > MAX_BATCH_SIZE) {
+      return { valid: false, errors: [`Maximum ${MAX_BATCH_SIZE} texts allowed per batch request`], validTexts: [] };
     }
 
     texts.forEach((text, index) => {
