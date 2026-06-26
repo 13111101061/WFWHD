@@ -138,6 +138,7 @@
     }
   },
   "supportsVoiceCloning": true,
+  "supportsInstructionGen": true,
   "voiceCloningConfig": {
     "maxAudioSizeMb": 10,
     "supportedFormats": ["audio/wav", "audio/mpeg", "audio/mp3"],
@@ -152,6 +153,7 @@
   },
   "voiceGenerationConfig": {
     "model": "mimo-v2.5-tts-voicedesign",
+    "samplingDefaults": {},
     "supportedFormats": ["wav", "mp3"],
     "testPhrases": [
       "这是一个指令生成音色的预览测试文本。",

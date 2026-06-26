@@ -20,6 +20,9 @@ const TtsErrorCodes = Object.freeze({
   /** 服务商能力校验失败（参数范围/必填字段） */
   CAPABILITY_ERROR: "CAPABILITY_ERROR",
 
+  /** Provider 架构上不支持该能力（如克隆 / 指令生成） */
+  CAPABILITY_NOT_SUPPORTED: "CAPABILITY_NOT_SUPPORTED",
+
   /** 前端 Schema 版本过旧 */
   CAPABILITY_SCHEMA_OUTDATED: "CAPABILITY_SCHEMA_OUTDATED",
 
@@ -61,6 +64,7 @@ const HTTP_STATUS_MAP = Object.freeze({
   [TtsErrorCodes.VALIDATION_ERROR]: 400,
   [TtsErrorCodes.UNKNOWN_SERVICE]: 400,
   [TtsErrorCodes.CAPABILITY_ERROR]: 400,
+  [TtsErrorCodes.CAPABILITY_NOT_SUPPORTED]: 400,
   [TtsErrorCodes.PARAMETER_MAPPING_ERROR]: 400,
   [TtsErrorCodes.BILLING_ERROR]: 402,
 

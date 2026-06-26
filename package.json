@@ -21,7 +21,14 @@
     "test:categories": "node tests/test-voice-categories.js",
     "voices:build": "node voices/build.js",
     "voices:validate": "node -e \"require('./voices/build.js')\"",
-    "voices:stats": "node -e \"const r = require('./src/modules/tts/config/VoiceModelRegistry').voiceModelRegistry; r.initialize().then(() => console.log(JSON.stringify(r.getStats(), null, 2)))\""
+    "voices:stats": "node -e \"const r = require('./src/modules/tts/config/VoiceModelRegistry').voiceModelRegistry; r.initialize().then(() => console.log(JSON.stringify(r.getStats(), null, 2)))\"",
+    "pm2:start": "pm2 start ecosystem.config.js --only tts-microservice",
+    "pm2:start:cluster": "pm2 start ecosystem.config.js --only tts-cluster",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:logs": "pm2 logs",
+    "pm2:monit": "pm2 monit",
+    "pm2:delete": "pm2 delete ecosystem.config.js"
   },
   "keywords": [
     "node",

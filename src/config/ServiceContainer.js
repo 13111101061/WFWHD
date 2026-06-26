@@ -30,12 +30,10 @@ const { ProviderMetricsCollector } = require('../modules/tts/infrastructure/Prov
 const { ProviderFallbackChain } = require('../modules/tts/infrastructure/ProviderFallbackChain');
 const { ParameterResolutionService } = require('../modules/tts/application/ParameterResolutionService');
 const { VoiceWriteService } = require('../modules/tts/application/VoiceWriteService');
-const VoiceRegistrationRegistry = require('../modules/tts/voice-onboarding/VoiceRegistrationRegistry');
-const MossVoiceRegistrationAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceRegistrationAdapter');
-const MimoVoiceRegistrationAdapter = require('../modules/tts/voice-onboarding/adapters/MimoVoiceRegistrationAdapter');
+const VoiceCreationRegistry = require('../modules/tts/voice-onboarding/VoiceCreationRegistry');
+const MossVoiceCreationAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceCreationAdapter');
+const MimoVoiceCreationAdapter = require('../modules/tts/voice-onboarding/adapters/MimoVoiceCreationAdapter');
 const VoiceOnboardingService = require('../modules/tts/voice-onboarding/VoiceOnboardingService');
-const MossVoiceGenAdapter = require('../modules/tts/voice-onboarding/adapters/MossVoiceGenAdapter');
-const MimoVoiceGenAdapter = require('../modules/tts/voice-onboarding/adapters/MimoVoiceGenAdapter');
 const { VoiceCreationEnricher } = require('../modules/tts/voice-onboarding/VoiceCreationEnricher');
 const { audioStorageManager } = require('../shared/utils/audioStorage');
 let audioCache = null;
@@ -271,7 +269,7 @@ class ServiceContainer {
     this._services.set('synthesisService', synthesisService);
   }
 
-  /** 阶段 16-18: VoiceWriteService + VoiceRegistrationRegistry + VoiceOnboardingService */
+  /** 阶段 16-18: VoiceWriteService + VoiceCreationRegistry + VoiceOnboardingService */
   _initVoiceManagementStack() {
     const userRegistry = this._services.get('userVoiceRegistry');
     const synthesisService = this._services.get('synthesisService');
@@ -279,24 +277,19 @@ class ServiceContainer {
     const voiceWriteService = new VoiceWriteService({ registry: userRegistry });
     this._services.set('voiceWriteService', voiceWriteService);
 
-    const voiceRegRegistry = new VoiceRegistrationRegistry();
-    voiceRegRegistry.register('moss', new MossVoiceRegistrationAdapter());
-    voiceRegRegistry.register('mimo', new MimoVoiceRegistrationAdapter({
-      audioStorage: audioStorageManager
-    }));
-    this._services.set('voiceRegistrationRegistry', voiceRegRegistry);
+    // 统一音色创建注册表：每个 Provider 一个 Adapter（克隆 + 指令生成合一），
+    // 能力路由（forClone / forInstruction）+ manifest 配置读取均由 Registry 承担。
+    const voiceCreationRegistry = new VoiceCreationRegistry();
+    voiceCreationRegistry.register(new MossVoiceCreationAdapter({ audioStorage: audioStorageManager }));
+    voiceCreationRegistry.register(new MimoVoiceCreationAdapter({ audioStorage: audioStorageManager }));
+    this._services.set('voiceCreationRegistry', voiceCreationRegistry);
 
-    const voiceGenAdapters = {
-      moss: new MossVoiceGenAdapter({ audioStorage: audioStorageManager }),
-      mimo: new MimoVoiceGenAdapter({ audioStorage: audioStorageManager })
-    };
     const voiceOnboardingService = new VoiceOnboardingService({
       voiceWriteService,
-      voiceRegistrationRegistry: voiceRegRegistry,
+      voiceCreationRegistry,
       ttsSynthesisService: synthesisService,
       credentials,
-      voiceGenAdapters,
-      enricher: new VoiceCreationEnricher()
+      enricher: new VoiceCreationEnricher({ registry: voiceCreationRegistry })
     });
     this._services.set('voiceOnboardingService', voiceOnboardingService);
   }

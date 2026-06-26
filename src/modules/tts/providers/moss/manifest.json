@@ -154,6 +154,7 @@
     }
   },
   "supportsVoiceCloning": true,
+  "supportsInstructionGen": true,
   "voiceCloningConfig": {
     "maxAudioSizeMb": 100,
     "supportedFormats": ["audio/wav", "audio/mpeg", "audio/x-m4a", "audio/flac"],
@@ -167,6 +168,7 @@
   },
   "voiceGenerationConfig": {
     "model": "moss-voice-generator",
+    "samplingDefaults": { "temperature": 1.5, "topP": 0.6, "topK": 50 },
     "supportedFormats": ["wav"],
     "testPhrases": [
       "这是一个指令生成音色的预览测试文本。",

@@ -233,6 +233,7 @@ function loadAllManifests() {
             providerKey,
             executionPolicy: data.executionPolicy,
             supportsVoiceCloning: !!data.supportsVoiceCloning,
+            supportsInstructionGen: !!data.supportsInstructionGen,
             voiceCloningConfig: data.voiceCloningConfig || null,
             voiceGenerationConfig: data.voiceGenerationConfig || null,
             ...svc,

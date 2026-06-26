@@ -2,25 +2,27 @@
  * VoiceCreationEnricher — 音色创建适配层
  *
  * 职责：
- *   1. 补齐表单缺失字段（tags/languages/description/categories 默认值）
- *   2. 从 manifest 读取 provider 特定配置（model/voiceGenerationConfig）
+ *   1. 补齐表单缺失字段（tags/languages/description 默认值）
+ *   2. 从 manifest 读取 provider 特定配置（model / samplingDefaults）
+ *      —— 通过注入的 VoiceCreationRegistry 读取，不再直接遍历 ProviderManifest，
+ *         消除与 VoiceOnboardingService 重复的 _getGenerationConfig。
  *   3. 留扩展钩子 onBeforeCreate / onAfterCreate（后期前端限制接入点）
  *
  * 当前策略：
  *   - tags → []（前端未传时空着，后续前端强制必填）
  *   - categories → []（后期加自动分类规则）
- *   - model → 从 manifest.voiceGenerationConfig.model 读取（不再写死）
+ *   - model / samplingDefaults → 来自 manifest.voiceGenerationConfig（唯一来源）
  */
-
-const { ProviderManifest } = require('../providers/manifests/ProviderManifest');
 
 class VoiceCreationEnricher {
   /**
    * @param {Object} [options]
+   * @param {Object} [options.registry] - VoiceCreationRegistry 实例（读 manifest 配置的唯一入口）
    * @param {Function} [options.onBeforeCreate] - 创建前钩子 (form) → form
    * @param {Function} [options.onAfterCreate]  - 创建后钩子 (storedVoice) → void
    */
   constructor(options = {}) {
+    this._registry = options.registry || null;
     this._onBeforeCreate = options.onBeforeCreate || null;
     this._onAfterCreate = options.onAfterCreate || null;
   }
@@ -63,6 +65,7 @@ class VoiceCreationEnricher {
   enrichInstructionForm(providerKey, body = {}) {
     const genConfig = this._getGenerationConfig(providerKey);
     const model = genConfig?.model || 'moss-voice-generator';
+    const samplingDefaults = genConfig?.samplingDefaults || {};
 
     const displayName = body.displayName || '';
     const instruction = body.instruction || '';
@@ -84,9 +87,9 @@ class VoiceCreationEnricher {
       model,
       providerOptions: {
         instruction,
-        temperature: samplingParams.temperature ?? 1.5,
-        topP: samplingParams.topP ?? 0.6,
-        topK: samplingParams.topK ?? 50
+        temperature: samplingParams.temperature ?? samplingDefaults.temperature,
+        topP: samplingParams.topP ?? samplingDefaults.topP,
+        topK: samplingParams.topK ?? samplingDefaults.topK
       },
       status: 'active'
     };
@@ -138,15 +141,11 @@ class VoiceCreationEnricher {
 
   // ==================== 内部 ====================
 
+  /**
+   * 读取指令生成配置（通过 Registry，不再直接遍历 ProviderManifest）
+   */
   _getGenerationConfig(providerKey) {
-    const keys = ProviderManifest.getAllServiceKeys();
-    for (const k of keys) {
-      if (k.startsWith(`${providerKey}_`)) {
-        const cfg = ProviderManifest.getServiceConfig(k);
-        if (cfg?.voiceGenerationConfig) return cfg.voiceGenerationConfig;
-      }
-    }
-    return null;
+    return this._registry ? this._registry.getGenerationConfig(providerKey) : null;
   }
 }
 

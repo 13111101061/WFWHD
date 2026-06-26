@@ -5,22 +5,29 @@ const os = require('os');
 const { VoiceWriteService } = require('../application/VoiceWriteService');
 const { VoiceAdminQueryService } = require('../application/VoiceAdminQueryService');
 const { unifiedAuth } = require('../../../core/middleware/apiKeyMiddleware');
+const { TtsErrorCodes, HTTP_STATUS_MAP, RETRYABLE_MAP } = require('../TtsErrorCodes');
 
 const upload = multer({
   dest: path.join(os.tmpdir(), 'voice-uploads'),
   limits: { fileSize: 20 * 1024 * 1024 }
 });
 
-function mapErrorCodeToStatus(code) {
-  switch (code) {
-    case 'CONFIG_ERROR': return 500;
-    case 'VALIDATION_ERROR': return 400;
-    case 'RATE_LIMIT_EXCEEDED': return 429;
-    case 'TIMEOUT_ERROR': return 504;
-    case 'PROVIDER_ERROR': return 502;
-    case 'API_ERROR': return 502;
-    default: return 400;
-  }
+/**
+ * 构造标准化错误响应，与主合成链路 TtsErrorCodes 约定一致：
+ *   { success: false, code, message, retryable, ...extra }
+ *
+ * HTTP 状态码 / retryable 全部由 HTTP_STATUS_MAP / RETRYABLE_MAP 派生，
+ * 调用方一般只需给 code + message；个别语义需覆盖状态码时传 status。
+ */
+function sendError(res, code, message, { status, ...extra } = {}) {
+  const httpStatus = status || HTTP_STATUS_MAP[code] || 400;
+  return res.status(httpStatus).json({
+    success: false,
+    code: code || TtsErrorCodes.INTERNAL_ERROR,
+    message: message || code || 'Unknown error',
+    retryable: RETRYABLE_MAP[code] === true,
+    ...extra
+  });
 }
 
 function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardingService) {
@@ -56,10 +63,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       });
 
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message
-      });
+      sendError(res, TtsErrorCodes.INTERNAL_ERROR, error.message);
     }
   });
 
@@ -92,10 +96,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     const voice = adminQuery.getById(req.params.id);
 
     if (!voice) {
-      return res.status(404).json({
-        success: false,
-        error: `Voice not found: ${req.params.id}`
-      });
+      return sendError(res, TtsErrorCodes.VOICE_NOT_FOUND, `Voice not found: ${req.params.id}`);
     }
 
     res.json({
@@ -108,12 +109,9 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     const result = getVoiceWriteService().create(req.body);
 
     if (!result.success) {
-      const statusCode = result.error === 'Voice already exists' ? 409 : 400;
-      return res.status(statusCode).json({
-        success: false,
-        error: result.error,
-        details: result.details
-      });
+      // "Voice already exists" 语义为冲突 → 409，但仍归 VALIDATION_ERROR 码
+      const status = result.error === 'Voice already exists' ? 409 : undefined;
+      return sendError(res, TtsErrorCodes.VALIDATION_ERROR, result.error, { status, details: result.details });
     }
 
     try {
@@ -138,10 +136,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     const { voices } = req.body;
 
     if (!Array.isArray(voices)) {
-      return res.status(400).json({
-        success: false,
-        error: 'voices must be an array'
-      });
+      return sendError(res, TtsErrorCodes.VALIDATION_ERROR, 'voices must be an array');
     }
 
     const result = getVoiceWriteService().createBatch(voices);
@@ -157,12 +152,8 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     const result = getVoiceWriteService().update(req.params.id, req.body);
 
     if (!result.success) {
-      const statusCode = result.error === 'Voice not found' ? 404 : 400;
-      return res.status(statusCode).json({
-        success: false,
-        error: result.error,
-        details: result.details
-      });
+      const code = result.error === 'Voice not found' ? TtsErrorCodes.VOICE_NOT_FOUND : TtsErrorCodes.VALIDATION_ERROR;
+      return sendError(res, code, result.error, { details: result.details });
     }
 
     try {
@@ -187,10 +178,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
     const result = getVoiceWriteService().remove(req.params.id);
 
     if (!result.success) {
-      return res.status(404).json({
-        success: false,
-        error: result.error
-      });
+      return sendError(res, TtsErrorCodes.VOICE_NOT_FOUND, result.error);
     }
 
     try {
@@ -219,10 +207,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       });
 
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message
-      });
+      sendError(res, TtsErrorCodes.INTERNAL_ERROR, error.message);
     }
   });
 
@@ -239,10 +224,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       });
 
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message
-      });
+      sendError(res, TtsErrorCodes.INTERNAL_ERROR, error.message);
     }
   });
 
@@ -255,10 +237,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
         const result = await voiceOnboardingService.registerVoice(req);
 
         if (!result.success) {
-          const statusCode = result.error === 'Form validation failed' ? 400
-            : result.error === 'Provider not found' ? 404
-            : 500;
-          return res.status(statusCode).json(result);
+          return sendError(res, result.errorCode || TtsErrorCodes.INTERNAL_ERROR, result.error, { details: result.details });
         }
 
         if (result.data?.asyncMode) {
@@ -280,14 +259,14 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
         // voice.id 是系统 ID，lookup 后反查 taskId
         const stored = voiceCatalog.get(req.params.id);
         if (!stored) {
-          return res.status(404).json({ success: false, error: `Voice not found: ${req.params.id}` });
+          return sendError(res, TtsErrorCodes.VOICE_NOT_FOUND, `Voice not found: ${req.params.id}`);
         }
 
         const providerKey = stored.identity?.provider;
         const taskId = req.query.taskId || stored.runtime?.voiceId;
 
         if (!providerKey || !taskId) {
-          return res.status(400).json({ success: false, error: 'Voice has no provider or taskId' });
+          return sendError(res, TtsErrorCodes.VALIDATION_ERROR, 'Voice has no provider or taskId');
         }
 
         const status = await voiceOnboardingService.checkCloneStatus(providerKey, taskId);
@@ -305,10 +284,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
           timestamp: new Date().toISOString()
         });
       } catch (error) {
-        res.status(500).json({
-          success: false,
-          error: error.message
-        });
+        sendError(res, error.code || TtsErrorCodes.INTERNAL_ERROR, error.message);
       }
     });
 
@@ -322,17 +298,11 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       try {
         const result = await voiceOnboardingService.generateInstructionPreview(req.body);
         if (!result.success) {
-          const statusCode = mapErrorCodeToStatus(result.errorCode || result.code);
-          return res.status(statusCode).json(result);
+          return sendError(res, result.errorCode || TtsErrorCodes.INTERNAL_ERROR, result.error, { details: result.details });
         }
         res.json(result);
       } catch (error) {
-        const statusCode = mapErrorCodeToStatus(error.code);
-        res.status(statusCode).json({
-          success: false,
-          error: error.message,
-          errorCode: error.code
-        });
+        sendError(res, error.code || TtsErrorCodes.INTERNAL_ERROR, error.message);
       }
     });
 
@@ -344,17 +314,11 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       try {
         const result = await voiceOnboardingService.registerInstructionVoice(req.body);
         if (!result.success) {
-          const statusCode = mapErrorCodeToStatus(result.errorCode || result.code);
-          return res.status(statusCode).json(result);
+          return sendError(res, result.errorCode || TtsErrorCodes.INTERNAL_ERROR, result.error, { details: result.details });
         }
         res.status(201).json(result);
       } catch (error) {
-        const statusCode = mapErrorCodeToStatus(error.code);
-        res.status(statusCode).json({
-          success: false,
-          error: error.message,
-          errorCode: error.code
-        });
+        sendError(res, error.code || TtsErrorCodes.INTERNAL_ERROR, error.message);
       }
     });
 
@@ -367,13 +331,13 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
       try {
         const stored = voiceCatalog.get(req.params.id);
         if (!stored) {
-          return res.status(404).json({ success: false, error: `Voice not found: ${req.params.id}` });
+          return sendError(res, TtsErrorCodes.VOICE_NOT_FOUND, `Voice not found: ${req.params.id}`);
         }
 
         // 官方库不可删
         const isOfficial = stored.meta?.dataSource !== 'api';
         if (isOfficial) {
-          return res.status(403).json({ success: false, error: 'Official voices cannot be deleted' });
+          return sendError(res, TtsErrorCodes.VALIDATION_ERROR, 'Official voices cannot be deleted', { status: 403 });
         }
 
         if (req.query.force === 'true') {
@@ -386,7 +350,7 @@ function createVoiceManageRoutes(voiceCatalog, voiceWriteService, voiceOnboardin
           res.json({ success: true, deleted: false, id: req.params.id, status: 'deleted' });
         }
       } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        sendError(res, error.code || TtsErrorCodes.INTERNAL_ERROR, error.message);
       }
     });
 

@@ -2,6 +2,7 @@
 var/
 audio/
 audio_cache/
+logs/
 
 # Node
 node_modules/
